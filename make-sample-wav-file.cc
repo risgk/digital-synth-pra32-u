@@ -8,8 +8,6 @@
 #include <stdio.h>
 
 typedef signed char boolean;
-typedef int32_t __int24;
-typedef uint32_t __uint24;
 
 inline uint8_t pgm_read_byte(const void* addr) {
   const uint8_t* p = static_cast<const uint8_t*>(addr);

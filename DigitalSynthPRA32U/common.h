@@ -5,6 +5,11 @@
 
 #define INLINE inline __attribute__((always_inline))
 
+#if !defined(ARDUINO_ARCH_AVR)
+typedef int32_t __int24;
+typedef uint32_t __uint24;
+#endif
+
 INLINE uint8_t low_byte(uint16_t x) {
   return x & 0xFF;
 }

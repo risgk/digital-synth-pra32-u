@@ -529,11 +529,11 @@ private:
 #else
     if ((waveform == WAVEFORM_SAW) ||
         (m_mono_mode && (waveform == WAVEFORM_1_PULSE))) {
-      result = pgm_read_word(g_osc_saw_wave_tables + (note_number - NOTE_NUMBER_MIN));
+      result = reinterpret_cast<const uint8_t*>(pgm_read_word(g_osc_saw_wave_tables + (note_number - NOTE_NUMBER_MIN)));
     } else if (waveform == WAVEFORM_TRIANGLE) {
       result = g_osc_triangle_wave_table;
     } else {     // WAVEFORM_SQUARE
-      result = pgm_read_word(g_osc_pulse_wave_tables + (note_number - NOTE_NUMBER_MIN));
+      result = reinterpret_cast<const uint8_t*>(pgm_read_word(g_osc_pulse_wave_tables + (note_number - NOTE_NUMBER_MIN)));
     }
 #endif
     return result;
