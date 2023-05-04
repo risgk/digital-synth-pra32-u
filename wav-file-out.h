@@ -1,7 +1,7 @@
 #pragma once
 
 #include <stdio.h>
-#include "./DigitalSynthVRA8U/common.h"
+#include "./DigitalSynthPRA32U/common.h"
 
 template <uint8_t T>
 class WAVFileOut {

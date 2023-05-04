@@ -30,8 +30,8 @@ inline uint32_t pgm_read_dword(const void* addr) {
 
 #define ENABLE_OSCILLATOR_2
 
-#include "./DigitalSynthVRA8U/common.h"
-#include "./DigitalSynthVRA8U/synth.h"
+#include "./DigitalSynthPRA32U/common.h"
+#include "./DigitalSynthPRA32U/synth.h"
 #include "./wav-file-out.h"
 
 const uint16_t RECORDING_SEC = 60;

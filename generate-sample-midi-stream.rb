@@ -1,4 +1,4 @@
-require_relative 'DigitalSynthVRA8U/constants'
+require_relative 'DigitalSynthPRA32U/constants'
 
 $file = File.open("sample-midi-stream.bin", "wb")
 
