@@ -1,7 +1,7 @@
-# Digital Synth VRA8-U v2.2.1
+# Digital Synth PRA32-U v2.2.1
 
 - 2023-05-04 ISGK Instruments
-- <https://github.com/risgk/digital-synth-vra8-u>
+- <https://github.com/risgk/digital-synth-pra32-u>
 
 ## Concept
 
@@ -9,7 +9,7 @@
     - Monophonic Mode: 1-Voice, 2-Oscillator (with Sub Oscillator)
     - Paraphonic Mode: 4-Voice, 1-Oscillator
     - Built-in Chorus FX
-    - Controlled by MIDI: VRA8-U is MIDI Sound Module
+    - Controlled by MIDI: PRA32-U is MIDI Sound Module
 - The 8th in the Digital Synth VRA8 series that pushes the limits of the Arduino Uno
 
 ## Caution about Arduino AVR Boards Version
@@ -38,8 +38,6 @@
         - `"make-sample-wav-file-cc.bat"` makes a sample WAV file (working on Windows)
     - `"generate-*.rb"` generates source files
         - Requiring a Ruby execution environment
-- **VRA8-U type-16**
-    - To operate **VRA8-U type-16** (Special Edition with 16-bit Audio Output), refer to [VRA8-U type-16 Operation Guide](/VRA8-U-type-16-Operation-Guide.md)
 
 ## Limitations
 
@@ -54,21 +52,21 @@
     - Modify `FOR_ARDUINO_NANO = false` to `FOR_ARDUINO_NANO = true` in `"generate-osc-table.rb"`, and execute this Ruby script
     - Alternatively, delete `"osc-table.h"`, and rename `"osc-table.h.FOR_ARDUINO_NANO.txt"` to `"osc-table.h"`
 
-## VRA8-U CTRL
+## PRA32-U CTRL
 
-- `"vra8-u-ctrl.html"`: MIDI Controller (Editor) Application for VRA8-U, HTML App (Web App)
+- `"pra32-u-ctrl.html"`: MIDI Controller (Editor) Application for PRA32-U, HTML App (Web App)
 - We recommend using Google Chrome, which implements Web MIDI API
-- On Windows, We recommend using [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html) (virtual loopback MIDI cable) to connect VRA8-U
+- On Windows, We recommend using [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html) (virtual loopback MIDI cable) to connect PRA32-U
     - On Mac, a virtual MIDI bus (port) can be created by using the IAC bus
 - Functions
-    - VRA8-U CTRL converts Program Changes (#0-7 for PRESET, #8-15 for user programs) into Control Changes
+    - PRA32-U CTRL converts Program Changes (#0-7 for PRESET, #8-15 for user programs) into Control Changes
     - When Program Change #127 is entered or Control Change #90 is changed from Off (63 or lower) to On (64 or higher), "Rand Ctrl" is processed
-    - VRA8-U CTRL stores the current control values and the user programs (#8-15) in a Web browser (localStorage)
+    - PRA32-U CTRL stores the current control values and the user programs (#8-15) in a Web browser (localStorage)
     - Current parameter values and user programs (#8-15) can be imported/exported from/to JSON files
 
-## [Parameter Guide](/VRA8-U-Parameter-Guide.md)
+## [Parameter Guide](/PRA32-U-Parameter-Guide.md)
 
-## [MIDI Implementation Chart](/VRA8-U-MIDI-Implementation-Chart.md)
+## [MIDI Implementation Chart](/PRA32-U-MIDI-Implementation-Chart.md)
 
 ## Synthesizer Block Diagram
 
@@ -108,15 +106,3 @@ graph LR
     L          -.-> F
     AE[Amp EG] -.-> A
 ```
-
-## Recommended Circuit Diagram
-
-![Recommended Circuit Diagram](./vra8-u-circuit-diagram.png)
-
-This image was created with Fritzing.
-
-## Actual Wiring Diagram
-
-![Actual Wiring Diagram](./vra8-u-bread-board.png)
-
-This image was created with Fritzing.
