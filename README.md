@@ -1,20 +1,21 @@
-# Digital Synth PRA32-U v2.2.1
+# Digital Synth PRA32-U v0.0.0
 
 - 2023-05-04 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
 
 ## Concept
 
-- Monophonic/Paraphonic United Synthesizer for Arduino Uno
+- Monophonic/Paraphonic United Synthesizer for Raspberry Pi Pico
     - Monophonic Mode: 1-Voice, 2-Oscillator (with Sub Oscillator)
     - Paraphonic Mode: 4-Voice, 1-Oscillator
     - Built-in Chorus FX
     - Controlled by MIDI: PRA32-U is MIDI Sound Module
-- The 8th in the Digital Synth VRA8 series that pushes the limits of the Arduino Uno
+- We use Arduino IDE and **Raspberry Pi Pico/RP2040** (Arduino-Pico) core (by Earle F. Philhower, III)
+    - Additional Board Manager URL: https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
 
 ## Caution about Arduino AVR Boards Version
 
-- We *strongly recommend* **Arduino AVR Boards version version 1.8.5 (or from 1.8.3 to 1.8.6)**
+- We *strongly recommend* Raspberry Pi Pico/RP2040 (Arduino-Pico) core **3.1.1**
     - If you use another version, the sketch *may not work well*: CPU Busy LED (LED L) *may continue to be lit*
 
 ## Features
@@ -22,17 +23,17 @@
 - Serial MIDI In (38.4 kbps)
     - We recommend [Hairless MIDI<->Serial Bridge](https://projectgus.github.io/hairless-midiserial/) to connect PC
     - **NOTE**: A combination of a **MIDI Shield** (or MIDI Breakout) and a **power supply adapter** is *better* to avoiding USB noise
-        - To use MIDI Shield (or MIDI Breakout), take `#define SERIAL_SPEED (31250)` (31.25 kbps) in `"DigitalSynthVRA8U.ino"`
+        - To use MIDI Shield (or MIDI Breakout), take `#define SERIAL_SPEED (31250)` (31.25 kbps) in `"DigitalSynthPRA32U.ino"`
         - Even using only the power supply adapter *significantly* reduces USB noise
 - PWM Audio Out (Unipolar, Line Level) **L/Mono**: **Pin D5** (or D6), **R**: **Pin D11**
     - Sampling Rate: 31.25 kHz, PWM Rate: 62.5 kHz, Bit Depth: 8 bit
-    - **NOTE**: When using the SparkFun MIDI Shield (DEV-12898), it should be modified to `#define L_MONO_AUDIO_OUT_PIN (6)` in `"DigitalSynthVRA8U.ino"`
+    - **NOTE**: When using the SparkFun MIDI Shield (DEV-12898), it should be modified to `#define L_MONO_AUDIO_OUT_PIN (6)` in `"DigitalSynthPRA32U.ino"`
     - We recommend adding RC filter (post LPF) circuits to reduce PWM ripples
         - A 1st-order LPF with a cutoff frequency 7.2 kHz (R = 220 ohm, C = 100 nF) works well
     - We recommend adding AC coupling capacitors to reduce DC components
         - A 10 uF electrolytic capacitor works well
 - Files
-    - `"DigitalSynthVRA8U.ino"` is a sketch for Arduino Uno Rev3 (ATmega328P)
+    - `"DigitalSynthPRA32U.ino"` is a Arduino sketch for Raspberry Pi Pico/RP2040 core
     - `"make-sample-wav-file.cc"` is for Debugging on PC
         - Requiring GCC (g++) or other
         - `"make-sample-wav-file-cc.bat"` makes a sample WAV file (working on Windows)
@@ -45,12 +46,6 @@
     - At that time, CPU Busy LED (LED L) probably blink
     - Particularly noticeable with Note ON in paraphonic mode
 - Especially when the waveform is square wave, the noise of chorus delay component is noticeable at high frequency
-
-## Restricted Support for Arduino Nano
-
-- If you want to run this sketch in Arduino Nano (ATmega328), you must reduce the sketch size as follows (and sound quality in the high frequency range will be degraded):
-    - Modify `FOR_ARDUINO_NANO = false` to `FOR_ARDUINO_NANO = true` in `"generate-osc-table.rb"`, and execute this Ruby script
-    - Alternatively, delete `"osc-table.h"`, and rename `"osc-table.h.FOR_ARDUINO_NANO.txt"` to `"osc-table.h"`
 
 ## PRA32-U CTRL
 

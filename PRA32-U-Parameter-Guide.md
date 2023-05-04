@@ -1,7 +1,7 @@
-# Digital Synth VRA8-U Parameter Guide v2.2.1
+# Digital Synth PRA32-U Parameter Guide v0.0.0
 
 - 2023-05-04 ISGK Instruments
-- <https://github.com/risgk/digital-synth-vra8-u>
+- <https://github.com/risgk/digital-synth-pra32-u>
 
 ## Control Change Parameters
 
@@ -136,18 +136,3 @@
 - Setting D3 -- Chorus Mode: 127, Chorus Rate: 32, Chorus Depth: 24, Chorus Delay Time: 60
 - Setting J1 -- Chorus Mode: 127, Chorus Rate: 32, Chorus Depth: 32, Chorus Delay Time: 20
 - Setting J2 -- Chorus Mode: 127, Chorus Rate: 48, Chorus Depth: 32, Chorus Delay Time: 20
-
-## NOTE: Control Change Parameters for VRA8-U type-16
-
-- Chorus Mode [Off|S|PS]
-    - 0 (0-31): Chorus Off
-    - 64 (32-95): Stereo Chorus
-    - 127 (96-127): Pseudo-Stereo Chorus
-- Chorus Depth
-    - 0: Delay Time +/- 0.0 ms (min)
-    - 64: Delay Time +/- 2.0 ms
-    - 125: Delay Time +/- 4.0 ms (max)
-- Chorus Delay Time
-    - 0: 0.03 ms (min)
-    - 64: 4.1 ms
-    - 125: 8.1 ms (max)
