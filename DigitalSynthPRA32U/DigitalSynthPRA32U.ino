@@ -25,25 +25,27 @@
 #include "serial-in.h"
 
 void setup() {
-  noInterrupts();
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, 1);
+
   Synth<0>::initialize();
   SerialIn<0>::open(SERIAL_SPEED);
   AudioOut<0>::open();
 }
 
 void loop() {
-  while (true) {
-    if (SerialIn<0>::available()) {
-      uint8_t b = SerialIn<0>::read();
-      Synth<0>::receive_midi_byte(b);
-    }
-#if defined(ENABLE_16_BIT_OUTPUT)
-    int16_t right_level;
-    int16_t left_level = Synth<0>::process(right_level);
-#else
-    int8_t right_level;
-    int8_t left_level = Synth<0>::process(right_level);
-#endif
-    AudioOut<0>::write(left_level, right_level);
+  if (SerialIn<0>::available()) {
+    digitalWrite(LED_BUILTIN, 0);
+
+    uint8_t b = SerialIn<0>::read();
+    Synth<0>::receive_midi_byte(b);
   }
+#if defined(ENABLE_16_BIT_OUTPUT)
+  int16_t right_level;
+  int16_t left_level = Synth<0>::process(right_level);
+#else
+  int8_t right_level;
+  int8_t left_level = Synth<0>::process(right_level);
+#endif
+  AudioOut<0>::write(left_level, right_level);
 }
