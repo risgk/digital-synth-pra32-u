@@ -1,4 +1,4 @@
-//#define ENABLE_16_BIT_OUTPUT
+#define ENABLE_16_BIT_OUTPUT
 
 #define MAKE_SAMPLE_WAV_FILE
 
