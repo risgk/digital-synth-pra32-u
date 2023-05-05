@@ -104,7 +104,7 @@ public:
     IVoice<0>::program_change(program_number);
   }
 
-  INLINE static int16_t process(int16_t& right_level) {
+  INLINE static int16_t __not_in_flash_func(process)(int16_t& right_level) {
     return IVoice<0>::process(right_level);
   }
 

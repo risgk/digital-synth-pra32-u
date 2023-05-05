@@ -97,7 +97,7 @@ public:
     m_cutoff_offset = cutoff_offset;
   }
 
-  INLINE static int16_t process(uint8_t count, int16_t audio_input, uint8_t eg_input, int16_t lfo_input) {
+  INLINE static int16_t __not_in_flash_func(process)(uint8_t count, int16_t audio_input, uint8_t eg_input, int16_t lfo_input) {
 #if 1
     if ((count & (FILTER_CONTROL_INTERVAL - 1)) == 7) {
       //printf("%d Filter\n", count);

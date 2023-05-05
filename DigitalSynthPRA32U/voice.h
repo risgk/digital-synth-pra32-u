@@ -656,7 +656,7 @@ public:
 
   }
 
-  INLINE static int16_t process(int16_t& right_level) {
+  INLINE static int16_t __not_in_flash_func(process)(int16_t& right_level) {
     ++m_count;
 
     uint8_t eg_output_0 = IEG<0>::process(m_count);

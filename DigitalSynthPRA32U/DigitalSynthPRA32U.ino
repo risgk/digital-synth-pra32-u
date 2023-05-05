@@ -34,7 +34,7 @@ I2S i2s(OUTPUT);
 void setup() {
 }
 
-void loop() {
+void __not_in_flash_func(loop)() {
 }
 
 void setup1() {
@@ -52,7 +52,7 @@ void setup1() {
   i2s.begin(SAMPLING_RATE);
 }
 
-void loop1() {
+void __not_in_flash_func(loop1)() {
   if (SerialIn<0>::available()) {
     digitalWrite(LED_BUILTIN, 0);
 
