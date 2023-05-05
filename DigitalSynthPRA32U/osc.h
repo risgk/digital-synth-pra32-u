@@ -517,7 +517,6 @@ public:
 private:
   INLINE static const uint8_t* get_wave_table(uint8_t waveform, uint8_t note_number) {
     const uint8_t* result;
-#if defined(MAKE_SAMPLE_WAV_FILE)
     if ((waveform == WAVEFORM_SAW) ||
         (m_mono_mode && (waveform == WAVEFORM_1_PULSE))) {
       result = g_osc_saw_wave_tables[note_number - NOTE_NUMBER_MIN];
@@ -526,23 +525,13 @@ private:
     } else {     // WAVEFORM_SQUARE
       result = g_osc_pulse_wave_tables[note_number - NOTE_NUMBER_MIN];
     }
-#else
-    if ((waveform == WAVEFORM_SAW) ||
-        (m_mono_mode && (waveform == WAVEFORM_1_PULSE))) {
-      result = reinterpret_cast<const uint8_t*>(pgm_read_word(g_osc_saw_wave_tables + (note_number - NOTE_NUMBER_MIN)));
-    } else if (waveform == WAVEFORM_TRIANGLE) {
-      result = g_osc_triangle_wave_table;
-    } else {     // WAVEFORM_SQUARE
-      result = reinterpret_cast<const uint8_t*>(pgm_read_word(g_osc_pulse_wave_tables + (note_number - NOTE_NUMBER_MIN)));
-    }
-#endif
     return result;
   }
 
   INLINE static int8_t get_wave_level(const uint8_t* wave_table, uint16_t phase) {
     uint8_t curr_index = high_byte(phase);
     uint8_t next_weight = low_byte(phase);
-    uint16_t two_data = pgm_read_word(wave_table + curr_index);
+    uint16_t two_data = ram_read_word(wave_table + curr_index);
     uint8_t curr_data = low_byte(two_data);
     uint8_t next_data = high_byte(two_data);
 
