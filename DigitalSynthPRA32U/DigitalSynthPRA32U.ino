@@ -58,12 +58,12 @@ void __not_in_flash_func(setup1)() {
 }
 
 void __not_in_flash_func(loop1)() {
-  uint32_t loop_start_us;
-  uint32_t loop_end_us;
-  uint32_t process_start_us;
-  uint32_t process_end_us;
+  uint32_t debug_loop_start_us;
+  uint32_t debug_loop_end_us;
+  uint32_t debug_process_start_us;
+  uint32_t debug_process_end_us;
 
-  loop_start_us = micros();
+  debug_loop_start_us = micros();
   {
     int32_t b = Serial1.read();
     if (b >= 0) {
@@ -74,38 +74,38 @@ void __not_in_flash_func(loop1)() {
       digitalWrite(LED_BUILTIN, 0);
     }
 
-    process_start_us = micros();
+    debug_process_start_us = micros();
 
     int16_t right_level;
     int16_t left_level = Synth<0>::process(right_level);
 
-    process_end_us = micros();
+    debug_process_end_us = micros();
 
 //    AudioOut<0>::write(left_level, right_level);
 
     i2s.write(left_level);
     i2s.write(right_level);
   }
-  loop_end_us = micros();
+  debug_loop_end_us = micros();
 
-  uint32_t loop_elapsed_us = loop_end_us - loop_start_us;
-  static uint32_t s_loop_max_us = 0;
-  if (s_loop_max_us < loop_elapsed_us) {
-    s_loop_max_us = loop_elapsed_us;
+  uint32_t debug_loop_elapsed_us = debug_loop_end_us - debug_loop_start_us;
+  static uint32_t s_debug_loop_max_us = 0;
+  if (s_debug_loop_max_us < debug_loop_elapsed_us) {
+    s_debug_loop_max_us = debug_loop_elapsed_us;
   }
 
-  uint32_t process_elapsed_us = process_end_us - process_start_us;
-  static uint32_t s_process_max_us = 0;
-  if (s_process_max_us < process_elapsed_us) {
-    s_process_max_us = process_elapsed_us;
+  uint32_t debug_process_elapsed_us = debug_process_end_us - debug_process_start_us;
+  static uint32_t s_debug_process_max_us = 0;
+  if (s_debug_process_max_us < debug_process_elapsed_us) {
+    s_debug_process_max_us = debug_process_elapsed_us;
   }
 
-  static uint16_t s_loop_counter = 0;
-  if (++s_loop_counter == 0) {
-    Serial.println(loop_elapsed_us);
-    Serial.println(s_loop_max_us);
-    Serial.println(process_elapsed_us);
-    Serial.println(s_process_max_us);
+  static uint16_t s_debug_loop_counter = 0;
+  if (++s_debug_loop_counter == 0) {
+    Serial.println(debug_loop_elapsed_us);
+    Serial.println(s_debug_loop_max_us);
+    Serial.println(debug_process_elapsed_us);
+    Serial.println(s_debug_process_max_us);
     Serial.println();
   }
 }
