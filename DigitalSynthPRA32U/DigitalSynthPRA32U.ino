@@ -76,15 +76,18 @@ void __not_in_flash_func(loop1)() {
 
     debug_process_start_us = micros();
 
+    int32_t buffer[8];
     for (uint32_t i = 0; i < 8; i++) {
       int16_t right_level;
       int16_t left_level = Synth<0>::process(right_level);
-//      AudioOut<0>::write(left_level, right_level);
-      i2s.write(left_level);
-      i2s.write(right_level);
+      buffer[i] = (left_level << 16) + right_level;
     }
 
     debug_process_end_us = micros();
+
+    for (uint32_t i = 0; i < 8; i++) {
+      i2s.write(buffer[i], true);
+    }
   }
   debug_loop_end_us = micros();
 
