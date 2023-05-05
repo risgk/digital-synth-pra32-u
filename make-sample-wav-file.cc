@@ -1,11 +1,7 @@
-#define MAKE_SAMPLE_WAV_FILE
-
 #include <stdint.h>
 #include <stdio.h>
 
 typedef signed char boolean;
-
-#define ENABLE_OSCILLATOR_2
 
 #define __not_in_flash_func(func) (func)
 
