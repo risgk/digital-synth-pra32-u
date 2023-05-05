@@ -668,8 +668,8 @@ public:
 
     int16_t dir_sample = amp_output;
 
-    int16_t eff_sample_0 = IDelayFx<0>::get(IOsc<0>::get_chorus_delay_time<0>());
-    int16_t eff_sample_1 = IDelayFx<0>::get(IOsc<0>::get_chorus_delay_time<1>());
+    int8_t eff_sample_0 = IDelayFx<0>::get(IOsc<0>::get_chorus_delay_time<0>());
+    int8_t eff_sample_1 = IDelayFx<0>::get(IOsc<0>::get_chorus_delay_time<1>());
     IDelayFx<0>::push(dir_sample);
 
     if (m_chorus_mode >= CHORUS_MODE_MONO) {

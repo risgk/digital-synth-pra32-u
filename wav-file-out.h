@@ -21,15 +21,9 @@ public:
     fwrite("\x01\x00\x02\x00", 1, 4, m_file);
     uint32_t a[1] = {SAMPLING_RATE};
     fwrite(a, 4, 1, m_file);
-#if defined(ENABLE_16_BIT_OUTPUT)
     a[0] = {SAMPLING_RATE * 4};
     fwrite(a, 4, 1, m_file);
     fwrite("\x04\x00\x10\x00", 1, 4, m_file);
-#else
-    a[0] = {SAMPLING_RATE * 2};
-    fwrite(a, 4, 1, m_file);
-    fwrite("\x02\x00\x08\x00", 1, 4, m_file);
-#endif
     fwrite("data", 1, 4, m_file);
     fwrite("\x00\x00\x00\x00", 1, 4, m_file);
     m_max_size = (SAMPLING_RATE) * 2 * sec;
@@ -37,7 +31,6 @@ public:
     m_closed = false;
   }
 
-#if defined(ENABLE_16_BIT_OUTPUT)
   INLINE static void write(int16_t left, int16_t right) {
     if (m_data_size < m_max_size) {
       int16_t l[1] = {left};
@@ -51,21 +44,6 @@ public:
       m_closed = true;
     }
   }
-#else
-  INLINE static void write(int8_t left, int8_t right) {
-    if (m_data_size < m_max_size) {
-      uint8_t l[1] = {static_cast<uint8_t>(left  + 0x80)};
-      uint8_t r[1] = {static_cast<uint8_t>(right + 0x80)};
-      fwrite(l, 1, 1, m_file);
-      fwrite(r, 1, 1, m_file);
-      ++m_data_size;
-      ++m_data_size;
-    } else {
-      close();
-      m_closed = true;
-    }
-  }
-#endif
 
   INLINE static void close() {
     if (!m_closed) {

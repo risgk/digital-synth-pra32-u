@@ -104,11 +104,7 @@ public:
     IVoice<0>::program_change(program_number);
   }
 
-#if defined(ENABLE_16_BIT_OUTPUT)
   INLINE static int16_t process(int16_t& right_level) {
-#else
-  INLINE static int8_t process(int8_t& right_level) {
-#endif
     return IVoice<0>::process(right_level);
   }
 

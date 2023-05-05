@@ -11,7 +11,6 @@
 #define R_AUDIO_OUT_PIN      (11)       // Pin D11 (Fixed)
 #define CPU_BUSY_LED_OUT_PIN (13)       // Pin D13 (Fixed)
 
-#define ENABLE_16_BIT_OUTPUT
 #define L_MONO_LOW_AUDIO_OUT_PIN (6)    // Pin D6 (or D5): L/Mono channel, low 8-bit audio output
 #define R_LOW_AUDIO_OUT_PIN      (3)    // Pin D3 (Fixed): R      channel, low 8-bit audio output
 
@@ -60,19 +59,10 @@ void loop1() {
     uint8_t b = SerialIn<0>::read();
     Synth<0>::receive_midi_byte(b);
   }
-#if defined(ENABLE_16_BIT_OUTPUT)
   int16_t right_level;
   int16_t left_level = Synth<0>::process(right_level);
 //  AudioOut<0>::write(left_level, right_level);
 
   i2s.write(left_level);
   i2s.write(right_level);
-#else
-  int8_t right_level;
-  int8_t left_level = Synth<0>::process(right_level);
-//  AudioOut<0>::write(left_level << 8, right_level << 8);
-
-  i2s.write((int16_t) (left_level << 8));
-  i2s.write((int16_t) (right_level << 8));
-#endif
 }
