@@ -23,7 +23,7 @@ def freq_from_note_number(note_number, pr = false)
   return freq
 end
 
-$file.printf("const uint16_t g_osc_freq_table[] = {\n  ")
+$file.printf("uint16_t g_osc_freq_table[] = {\n  ")
 (NOTE_NUMBER_MIN..NOTE_NUMBER_MAX).each do |note_number|
   freq = freq_from_note_number(note_number, true)
 
@@ -39,7 +39,7 @@ end
 $file.printf("};\n\n")
 
 max_tune_rate = -Float::INFINITY
-$file.printf("const int8_t g_osc_tune_table[] = {\n  ")
+$file.printf("int8_t g_osc_tune_table[] = {\n  ")
 (0..(1 << OSC_TUNE_TABLE_STEPS_BITS) - 1).each do |i|
   tune_rate = ((2.0 ** ((i - (1 << (OSC_TUNE_TABLE_STEPS_BITS - 1))) / (12.0 * (1 << OSC_TUNE_TABLE_STEPS_BITS)))) *
                (1 << OSC_TUNE_DENOMINATOR_BITS) / 1.0).round -
@@ -59,7 +59,7 @@ end
 $file.printf("};\n\n")
 
 def generate_osc_wave_table(name, last, amp, organ = false)
-  $file.printf("const uint8_t g_osc_#{name}_wave_table_h%d[] PROGMEM = {\n  ", last)
+  $file.printf("uint8_t g_osc_#{name}_wave_table_h%d[] = {\n  ", last)
   (0..(1 << OSC_WAVE_TABLE_SAMPLES_BITS)).each do |n|
     level = 0
     nn = n
@@ -140,7 +140,7 @@ generate_osc_wave_table_arrays do |last|
 end
 
 def generate_osc_wave_tables_array(name, organ = false, organ_last = 8)
-  $file.printf("const uint8_t* const g_osc_#{name}_wave_tables[] PROGMEM = {\n  ")
+  $file.printf("uint8_t* g_osc_#{name}_wave_tables[] = {\n  ")
   $osc_harmonics_restriction_table.each_with_index do |freq, idx|
     $file.printf("g_osc_#{name}_wave_table_h%-3d,", last_harmonic(freq, organ, organ_last))
     if idx == DATA_BYTE_MAX
@@ -157,7 +157,7 @@ end
 generate_osc_wave_tables_array("saw")
 generate_osc_wave_tables_array("pulse")
 
-$file.printf("const uint8_t g_osc_triangle_wave_table[] PROGMEM = {\n  ")
+$file.printf("uint8_t g_osc_triangle_wave_table[] = {\n  ")
 (0..(1 << OSC_WAVE_TABLE_SAMPLES_BITS)).each do |n|
   level = n
   level = level - 256 if level >= 128
@@ -181,7 +181,7 @@ $file.printf("const uint8_t g_osc_triangle_wave_table[] PROGMEM = {\n  ")
 end
 $file.printf("};\n\n")
 
-$file.printf("const uint16_t g_lfo_rate_table[] = {\n  ")
+$file.printf("uint16_t g_lfo_rate_table[] = {\n  ")
 (0..64).each do |i|
   lfo_rate = (10.0 ** ((i - 32) / 32.0)) * (2.0 * (1 << 16) * 64 / SAMPLING_RATE)
 

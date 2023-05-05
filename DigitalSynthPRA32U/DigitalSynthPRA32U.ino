@@ -33,6 +33,12 @@ I2S i2s(OUTPUT);
 #define I2S_BCLK_PIN  (10) // I2S_LRCLK_PIN is (I2S_BCLK_PIN + 1)
 
 void setup() {
+}
+
+void loop() {
+}
+
+void setup1() {
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, 1);
 
@@ -43,11 +49,11 @@ void setup() {
   i2s.setDATA(I2S_DATA_PIN);
   i2s.setBCLK(I2S_BCLK_PIN);
   i2s.setBitsPerSample(16);
-  i2s.setBuffers(4, 64);
+  i2s.setBuffers(2, 8);
   i2s.begin(SAMPLING_RATE);
 }
 
-void loop() {
+void loop1() {
   if (SerialIn<0>::available()) {
     digitalWrite(LED_BUILTIN, 0);
 

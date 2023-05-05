@@ -2,8 +2,6 @@
 
 #define MAKE_SAMPLE_WAV_FILE
 
-#define PROGMEM
-
 #include <stdint.h>
 #include <stdio.h>
 

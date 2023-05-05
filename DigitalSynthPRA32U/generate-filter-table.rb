@@ -9,7 +9,7 @@ $file.printf("#pragma once\n\n")
 OCTAVES = 5
 
 def generate_filter_lpf_table(res_idx, name, q)
-  $file.printf("const uint8_t g_filter_lpf_table_%s[] PROGMEM = {\n  ", name)
+  $file.printf("uint8_t g_filter_lpf_table_%s[] = {\n  ", name)
   (0..DATA_BYTE_MAX).each do |i|
     f_idx = [[1, i - 3].max, 121].min
     f_0 = (2.0 ** (f_idx / (120.0 / OCTAVES))) * ((FILTER_A4_FREQ * 2.0) * 16.0) * 2.0 / (2.0 ** (OCTAVES.to_f + 1.0))
@@ -53,7 +53,7 @@ MAX_RES_IDX = 6
   generate_filter_lpf_table(res_idx, res_idx.to_s, Math.sqrt(2.0) ** (res_idx - 1.0))
 end
 
-$file.printf("const uint8_t* g_filter_lpf_tables[] = {\n  ")
+$file.printf("uint8_t* g_filter_lpf_tables[] = {\n  ")
 (0..8).each do |res_idx|
   i = [[res_idx - 1, 0].max, MAX_RES_IDX].min
   $file.printf("g_filter_lpf_table_%-2d,", i)
