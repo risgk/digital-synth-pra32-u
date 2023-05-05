@@ -42,7 +42,7 @@ void setup() {
   i2s.setDATA(I2S_DATA_PIN);
   i2s.setBCLK(I2S_BCLK_PIN);
   i2s.setBitsPerSample(16);
-  i2s.setBuffers(16, 16);
+  i2s.setBuffers(16, 256);
   i2s.begin(SAMPLING_RATE);
 }
 
