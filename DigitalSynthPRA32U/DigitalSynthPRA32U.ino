@@ -39,7 +39,6 @@ void __not_in_flash_func(loop)() {
 
 void __not_in_flash_func(setup1)() {
   pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, 1);
 
   Synth<0>::initialize();
   SerialIn<0>::open(SERIAL_SPEED);
@@ -55,30 +54,50 @@ void __not_in_flash_func(setup1)() {
 }
 
 void __not_in_flash_func(loop1)() {
-  if (SerialIn<0>::available()) {
-    digitalWrite(LED_BUILTIN, 0);
+  uint32_t loop_start_us;
+  uint32_t loop_end_us;
+  uint32_t process_start_us;
+  uint32_t process_end_us;
 
-    uint8_t b = SerialIn<0>::read();
-    Synth<0>::receive_midi_byte(b);
+  loop_start_us = micros();
+  {
+    if (SerialIn<0>::available()) {
+      digitalWrite(LED_BUILTIN, 1);
+
+      uint8_t b = SerialIn<0>::read();
+      Synth<0>::receive_midi_byte(b);
+
+      digitalWrite(LED_BUILTIN, 0);
+    }
+
+    process_start_us = micros();
+
+    int16_t right_level;
+    int16_t left_level = Synth<0>::process(right_level);
+
+    process_end_us = micros();
+
+//    AudioOut<0>::write(left_level, right_level);
+
+    i2s.write(left_level);
+    i2s.write(right_level);
   }
+  loop_end_us = micros();
 
-  uint32_t start_us = micros();
+  uint32_t loop_elapsed_us = loop_end_us - loop_start_us;
+  static uint32_t s_loop_max_us = 0;
+  if (s_loop_max_us < loop_elapsed_us) { s_loop_max_us = loop_elapsed_us; }
 
-  int16_t right_level;
-  int16_t left_level = Synth<0>::process(right_level);
-
-  uint32_t end_us = micros();
-  uint32_t elapsed_us = end_us - start_us;
-  static uint32_t s_max_us = 0;
-  if (s_max_us < elapsed_us) { s_max_us = elapsed_us; }
+  uint32_t process_elapsed_us = process_end_us - process_start_us;
+  static uint32_t s_process_max_us = 0;
+  if (s_process_max_us < process_elapsed_us) { s_process_max_us = process_elapsed_us; }
 
   static uint16_t s_loop_counter = 0;
   if (++s_loop_counter == 0) {
-    Serial.println(s_max_us);
+    Serial.println(loop_elapsed_us);
+    Serial.println(s_loop_max_us);
+    Serial.println(process_elapsed_us);
+    Serial.println(s_process_max_us);
+    Serial.println();
   }
-
-//  AudioOut<0>::write(left_level, right_level);
-
-  i2s.write(left_level);
-  i2s.write(right_level);
 }
