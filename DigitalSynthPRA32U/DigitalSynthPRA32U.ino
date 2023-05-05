@@ -50,6 +50,8 @@ void __not_in_flash_func(setup1)() {
   i2s.setBitsPerSample(16);
   i2s.setBuffers(3, 8);
   i2s.begin(SAMPLING_RATE);
+
+  Serial.begin(0);
 }
 
 void __not_in_flash_func(loop1)() {
@@ -59,8 +61,22 @@ void __not_in_flash_func(loop1)() {
     uint8_t b = SerialIn<0>::read();
     Synth<0>::receive_midi_byte(b);
   }
+
+  uint32_t start_us = micros();
+
   int16_t right_level;
   int16_t left_level = Synth<0>::process(right_level);
+
+  uint32_t end_us = micros();
+  uint32_t elapsed_us = end_us - start_us;
+  static uint32_t s_max_us = 0;
+  if (s_max_us < elapsed_us) { s_max_us = elapsed_us; }
+
+  static uint16_t s_loop_counter = 0;
+  if (++s_loop_counter == 0) {
+    Serial.println(s_max_us);
+  }
+
 //  AudioOut<0>::write(left_level, right_level);
 
   i2s.write(left_level);
