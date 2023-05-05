@@ -24,13 +24,26 @@
 #include "synth.h"
 #include "serial-in.h"
 
+#include <I2S.h>
+
+I2S i2s(OUTPUT);
+
+#define I2S_DATA_PIN  (9)
+#define I2S_BCLK_PIN  (10) // I2S_LRCLK_PIN is (I2S_BCLK_PIN + 1)
+
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, 1);
 
   Synth<0>::initialize();
   SerialIn<0>::open(SERIAL_SPEED);
-  AudioOut<0>::open();
+//  AudioOut<0>::open();
+
+  i2s.setDATA(I2S_DATA_PIN);
+  i2s.setBCLK(I2S_BCLK_PIN);
+  i2s.setBitsPerSample(16);
+  i2s.setBuffers(16, 16);
+  i2s.begin(SAMPLING_RATE);
 }
 
 void loop() {
@@ -43,9 +56,16 @@ void loop() {
 #if defined(ENABLE_16_BIT_OUTPUT)
   int16_t right_level;
   int16_t left_level = Synth<0>::process(right_level);
+//  AudioOut<0>::write(left_level, right_level);
+
+  i2s.write(left_level);
+  i2s.write(right_level);
 #else
   int8_t right_level;
   int8_t left_level = Synth<0>::process(right_level);
+//  AudioOut<0>::write(left_level << 8, right_level << 8);
+
+  i2s.write((int16_t) (left_level << 8));
+  i2s.write((int16_t) (right_level << 8));
 #endif
-  AudioOut<0>::write(left_level, right_level);
 }
