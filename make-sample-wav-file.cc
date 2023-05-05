@@ -7,6 +7,8 @@ typedef signed char boolean;
 
 #define ENABLE_OSCILLATOR_2
 
+#define __not_in_flash_func(func) (func)
+
 #include "./DigitalSynthPRA32U/common.h"
 #include "./DigitalSynthPRA32U/synth.h"
 #include "./wav-file-out.h"
