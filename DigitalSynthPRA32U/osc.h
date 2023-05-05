@@ -390,7 +390,7 @@ public:
     return m_chorus_delay_time[N];
   }
 
-  INLINE static int16_t __not_in_flash_func(process)(uint8_t count, uint8_t eg_level) {
+  INLINE static int16_t process(uint8_t count, uint8_t eg_level) {
 #if 1
     if ((count & (OSC_CONTROL_INTERVAL - 1)) == 0) {
       //printf("%d Osc\n", count);

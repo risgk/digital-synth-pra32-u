@@ -102,7 +102,7 @@ public:
     m_rest = m_release_update_coef;
   }
 
-  INLINE static uint8_t __not_in_flash_func(process)(uint8_t count) {
+  INLINE static uint8_t process(uint8_t count) {
 #if 1
     if ((count & (EG_CONTROL_INTERVAL - 1)) == ((T == 0) ? 3 : 11)) {
       //printf("%d EG\n", count);

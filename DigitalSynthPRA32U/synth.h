@@ -33,7 +33,7 @@ public:
     ISynthCore<0>::receive_midi_byte(b);
   }
 
-  INLINE static int16_t __not_in_flash_func(process)(int16_t& right_level) {
+  INLINE static int16_t process(int16_t& right_level) {
     return ISynthCore<0>::process(right_level);
   }
 };

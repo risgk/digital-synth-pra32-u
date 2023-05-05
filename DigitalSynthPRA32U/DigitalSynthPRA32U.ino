@@ -31,13 +31,13 @@ I2S i2s(OUTPUT);
 #define I2S_DATA_PIN  (9)
 #define I2S_BCLK_PIN  (10) // I2S_LRCLK_PIN is (I2S_BCLK_PIN + 1)
 
-void setup() {
+void __not_in_flash_func(setup)() {
 }
 
 void __not_in_flash_func(loop)() {
 }
 
-void setup1() {
+void __not_in_flash_func(setup1)() {
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, 1);
 
