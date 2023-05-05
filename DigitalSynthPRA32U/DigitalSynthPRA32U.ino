@@ -41,7 +41,11 @@ void __not_in_flash_func(setup1)() {
   pinMode(LED_BUILTIN, OUTPUT);
 
   Synth<0>::initialize();
-  SerialIn<0>::open(SERIAL_SPEED);
+
+  Serial1.setTX(PIN_SERIAL1_TX);
+  Serial1.setRX(PIN_SERIAL1_RX);
+  Serial1.begin(SERIAL_SPEED);
+
 //  AudioOut<0>::open();
 
   i2s.setDATA(I2S_DATA_PIN);
@@ -61,10 +65,10 @@ void __not_in_flash_func(loop1)() {
 
   loop_start_us = micros();
   {
-    if (SerialIn<0>::available()) {
+    int32_t b = Serial1.read();
+    if (b >= 0) {
       digitalWrite(LED_BUILTIN, 1);
 
-      uint8_t b = SerialIn<0>::read();
       Synth<0>::receive_midi_byte(b);
 
       digitalWrite(LED_BUILTIN, 0);
@@ -86,11 +90,15 @@ void __not_in_flash_func(loop1)() {
 
   uint32_t loop_elapsed_us = loop_end_us - loop_start_us;
   static uint32_t s_loop_max_us = 0;
-  if (s_loop_max_us < loop_elapsed_us) { s_loop_max_us = loop_elapsed_us; }
+  if (s_loop_max_us < loop_elapsed_us) {
+    s_loop_max_us = loop_elapsed_us;
+  }
 
   uint32_t process_elapsed_us = process_end_us - process_start_us;
   static uint32_t s_process_max_us = 0;
-  if (s_process_max_us < process_elapsed_us) { s_process_max_us = process_elapsed_us; }
+  if (s_process_max_us < process_elapsed_us) {
+    s_process_max_us = process_elapsed_us;
+  }
 
   static uint16_t s_loop_counter = 0;
   if (++s_loop_counter == 0) {
