@@ -62,10 +62,10 @@ void __not_in_flash_func(setup1)() {
 }
 
 void __not_in_flash_func(loop1)() {
-  uint32_t debug_loop_start_us;
-  uint32_t debug_loop_end_us;
-  uint32_t debug_process_start_us;
-  uint32_t debug_process_end_us;
+  uint32_t debug_loop_start_us    = 0;
+  uint32_t debug_loop_end_us      = 0;
+  uint32_t debug_process_start_us = 0;
+  uint32_t debug_process_end_us   = 0;
 
   debug_loop_start_us = micros();
   {
@@ -78,19 +78,23 @@ void __not_in_flash_func(loop1)() {
       digitalWrite(LED_BUILTIN, LOW);
     }
 
-    debug_process_start_us = micros();
+    if (i2s.availableForWrite() >= I2S_BUFFER_WORDS) {
+      debug_process_start_us = micros();
 
-    int32_t buffer[I2S_BUFFER_WORDS];
-    for (uint32_t i = 0; i < I2S_BUFFER_WORDS; i++) {
-      int16_t right_level;
-      int16_t left_level = Synth<0>::process(right_level);
-      buffer[i] = (left_level << 16) + right_level;
-    }
+      int32_t buffer[I2S_BUFFER_WORDS];
+      for (uint32_t i = 0; i < I2S_BUFFER_WORDS; i++) {
+        int16_t right_level;
+        int16_t left_level = Synth<0>::process(right_level);
+        buffer[i] = (left_level << 16) + right_level;
+      }
 
-    debug_process_end_us = micros();
+      debug_process_end_us = micros();
 
-    for (uint32_t i = 0; i < I2S_BUFFER_WORDS; i++) {
-      i2s.write(buffer[i], true);
+      for (uint32_t i = 0; i < I2S_BUFFER_WORDS; i++) {
+        i2s.write(buffer[i], true);
+      }
+    } else {
+      delayMicroseconds(100);
     }
   }
   debug_loop_end_us = micros();
