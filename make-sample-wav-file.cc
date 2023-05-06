@@ -1,3 +1,6 @@
+#define MIDI_CH (0)
+
+
 #include <stdint.h>
 #include <stdio.h>
 

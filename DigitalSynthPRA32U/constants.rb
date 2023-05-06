@@ -2,7 +2,6 @@
 
 A4_FREQ = 440.0
 
-MIDI_CH             = 0
 SAMPLING_RATE       = 31250
 FREQUENCY_MAX       = 15000
 BIT_DEPTH           = 8

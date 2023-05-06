@@ -1,5 +1,7 @@
 require_relative 'DigitalSynthPRA32U/constants'
 
+MIDI_CH = 0
+
 $file = File.open("sample-midi-stream.bin", "wb")
 
 def control_change(control_number, value)
