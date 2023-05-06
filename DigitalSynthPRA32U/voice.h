@@ -572,7 +572,6 @@ public:
       reset_all_controllers();
       break;
 
-#if defined(ENABLE_SPECIAL_PROGRAM_CHANGE)
     // Special Program Change
     case SP_PROG_CHG_0  :
     case SP_PROG_CHG_1  :
@@ -591,7 +590,6 @@ public:
         }
       }
       break;
-#endif
     }
   }
 

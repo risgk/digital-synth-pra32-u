@@ -28,8 +28,11 @@
 
 I2S i2s(OUTPUT);
 
-#define I2S_DATA_PIN  (9)
-#define I2S_BCLK_PIN  (10) // I2S_LRCLK_PIN is (I2S_BCLK_PIN + 1)
+#define I2S_DATA_PIN        (9)
+#define I2S_BCLK_PIN        (10) // I2S_LRCLK_PIN is (I2S_BCLK_PIN + 1)
+#define I2S_BITS_PER_SAMPLE (16)
+#define I2S_BUFFERS         (3)
+#define I2S_BUFFER_WORDS    (8)
 
 void __not_in_flash_func(setup)() {
 }
@@ -50,9 +53,10 @@ void __not_in_flash_func(setup1)() {
 
   i2s.setDATA(I2S_DATA_PIN);
   i2s.setBCLK(I2S_BCLK_PIN);
-  i2s.setBitsPerSample(16);
-  i2s.setBuffers(3, 8);
-  i2s.begin(SAMPLING_RATE);
+  i2s.setBitsPerSample(I2S_BITS_PER_SAMPLE);
+  i2s.setBuffers(I2S_BUFFERS, I2S_BUFFER_WORDS);
+  i2s.setFrequency(SAMPLING_RATE);
+  i2s.begin();
 
   Serial.begin(0);
 }
@@ -67,17 +71,17 @@ void __not_in_flash_func(loop1)() {
   {
     int32_t b = Serial1.read();
     if (b >= 0) {
-      digitalWrite(LED_BUILTIN, 1);
+      digitalWrite(LED_BUILTIN, HIGH);
 
       Synth<0>::receive_midi_byte(b);
 
-      digitalWrite(LED_BUILTIN, 0);
+      digitalWrite(LED_BUILTIN, LOW);
     }
 
     debug_process_start_us = micros();
 
-    int32_t buffer[8];
-    for (uint32_t i = 0; i < 8; i++) {
+    int32_t buffer[I2S_BUFFER_WORDS];
+    for (uint32_t i = 0; i < I2S_BUFFER_WORDS; i++) {
       int16_t right_level;
       int16_t left_level = Synth<0>::process(right_level);
       buffer[i] = (left_level << 16) + right_level;
@@ -85,7 +89,7 @@ void __not_in_flash_func(loop1)() {
 
     debug_process_end_us = micros();
 
-    for (uint32_t i = 0; i < 8; i++) {
+    for (uint32_t i = 0; i < I2S_BUFFER_WORDS; i++) {
       i2s.write(buffer[i], true);
     }
   }
