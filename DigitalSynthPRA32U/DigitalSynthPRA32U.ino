@@ -1,21 +1,12 @@
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Digital Synth PRA32-U
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+ * Digital Synth PRA32-U
+ * - We strongly recommend Raspberry Pi Pico/RP2040 (by Earle F. Philhower, III) version 3.1.1
+ */
 
 //#define DEBUG
 
 #define SERIAL_SPEED (38400)            // For Serial MIDI
-//#define SERIAL_SPEED (31250)            // For MIDI Shield (MIDI Breakout)
-
-#define L_MONO_AUDIO_OUT_PIN (5)        // Pin D5 (or D6)
-#define R_AUDIO_OUT_PIN      (11)       // Pin D11 (Fixed)
-#define CPU_BUSY_LED_OUT_PIN (13)       // Pin D13 (Fixed)
-
-#define L_MONO_LOW_AUDIO_OUT_PIN (6)    // Pin D6 (or D5): L/Mono channel, low 8-bit audio output
-#define R_LOW_AUDIO_OUT_PIN      (3)    // Pin D3 (Fixed): R      channel, low 8-bit audio output
-
-#define ENABLE_SPECIAL_PROGRAM_CHANGE   // Program Change by Control Change (112-119)
-                                        // Interpret Program Change 8-15 as 0-7
+//#define SERIAL_SPEED (31250)            // For MIDI
 
 
 
@@ -80,17 +71,24 @@ void __not_in_flash_func(loop1)() {
 
     debug_process_start_us = micros();
 
-    int32_t buffer[I2S_BUFFER_WORDS];
+    int16_t left_buffer[I2S_BUFFER_WORDS];
+    int16_t right_buffer[I2S_BUFFER_WORDS];
     for (uint32_t i = 0; i < I2S_BUFFER_WORDS; i++) {
-      int16_t right_level;
-      int16_t left_level = Synth<0>::process(right_level);
-      buffer[i] = (left_level << 16) + right_level;
+      left_buffer[i] = Synth<0>::process(right_buffer[i]);
     }
 
     debug_process_end_us = micros();
 
     for (uint32_t i = 0; i < I2S_BUFFER_WORDS; i++) {
-      i2s.write(buffer[i], true);
+#if (I2S_BITS_PER_SAMPLE == 8)
+      i2s.write8(left_buffer[i] >> 8, right_buffer[i] >> 8);
+#elif  (I2S_BITS_PER_SAMPLE == 16)
+      i2s.write16(left_buffer[i], right_buffer[i]);
+#elif  (I2S_BITS_PER_SAMPLE == 24)
+      i2s.write24(left_buffer[i] << 16, right_buffer[i] << 16);
+#elif  (I2S_BITS_PER_SAMPLE == 32)
+      i2s.write32(left_buffer[i] << 16, right_buffer[i] << 16);
+#endif
     }
   }
   debug_loop_end_us = micros();
