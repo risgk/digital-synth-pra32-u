@@ -32,6 +32,7 @@
     - The default setting is for Pimoroni's [Pico Audio Pack](https://shop.pimoroni.com/products/pico-audio-pack)
     - Modify `I2S_DATA_PIN` and `I2S_BCLK_PIN` in `"DigitalSynthPRA32U.ino"` to match the hardware configuration
 - Files
+    - `"digital-synth-pra32-u-0.1.0.uf2"` (in the directory `"bin"`) is a UF2 file for Pico Audio Pack
     - `"DigitalSynthPRA32U.ino"` is a Arduino sketch for Raspberry Pi Pico/RP2040 core
     - `"make-sample-wav-file.cc"` is for debugging on PC
         - GCC (g++) for PC is required
