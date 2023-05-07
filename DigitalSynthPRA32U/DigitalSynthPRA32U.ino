@@ -5,8 +5,8 @@
 
 #define DEBUG
 
-//#define USE_USB_MIDI
-#define USE_SERIAL_MIDI
+#define USE_USB_MIDI
+//#define USE_SERIAL_MIDI
 
 #define SERIAL_MIDI_SPEED   (38400)
 //#define SERIAL_MIDI_SPEED   (31250)
@@ -23,9 +23,27 @@
 
 #include "common.h"
 #include "synth.h"
+
+//#include <Arduino.h>
+#include <Adafruit_TinyUSB.h>
+
+#if defined(USE_USB_MIDI)
+#include <MIDI.h>
+
+Adafruit_USBD_MIDI g_usbd_midi;
+MIDI_CREATE_INSTANCE(Adafruit_USBD_MIDI, g_usbd_midi, MIDI);
+#endif
+
 #include <I2S.h>
 
 I2S g_i2s_output(OUTPUT);
+
+void handleNoteOn(byte channel, byte pitch, byte velocity);
+void handleNoteOff(byte channel, byte pitch, byte velocity);
+void handleControlChange(byte channel, byte number, byte value);
+void handleHandleProgramChange(byte channel, byte number);
+void handleHandlePitchBend(byte channel, int bend);
+
 
 void __not_in_flash_func(setup)() {
 }
@@ -37,6 +55,16 @@ void __not_in_flash_func(setup1)() {
   pinMode(LED_BUILTIN, OUTPUT);
 
   Synth<0>::initialize();
+
+#if defined(USE_USB_MIDI)
+  TinyUSB_Device_Init(0);
+  MIDI.begin(MIDI_CHANNEL_OMNI);
+  MIDI.setHandleNoteOn(handleNoteOn);
+  MIDI.setHandleNoteOff(handleNoteOff);
+  MIDI.setHandleControlChange(handleControlChange);
+  MIDI.setHandleProgramChange(handleHandleProgramChange);
+  MIDI.setHandlePitchBend(handleHandlePitchBend);
+#endif
 
 #if defined(USE_SERIAL_MIDI)
   Serial1.setTX(PIN_SERIAL1_TX);
@@ -59,6 +87,10 @@ void __not_in_flash_func(setup1)() {
 }
 
 void __not_in_flash_func(loop1)() {
+
+#if defined(USE_USB_MIDI)
+  MIDI.read();
+#endif
 
 #if defined(USE_SERIAL_MIDI)
   int32_t b = Serial1.read();
@@ -108,3 +140,52 @@ void __not_in_flash_func(loop1)() {
   }
 #endif
 }
+
+
+#if defined(USE_USB_MIDI)
+void __not_in_flash_func(handleNoteOn)(byte channel, byte pitch, byte velocity)
+{
+  if ((channel - 1) == MIDI_CH) {
+    digitalWrite(LED_BUILTIN, HIGH);
+    ISynthCore<0>::note_on(pitch, velocity);
+    digitalWrite(LED_BUILTIN, LOW);
+  }
+}
+
+void __not_in_flash_func(handleNoteOff)(byte channel, byte pitch, byte velocity)
+{
+  if ((channel - 1) == MIDI_CH) {
+    (void) velocity;
+    digitalWrite(LED_BUILTIN, HIGH);
+    ISynthCore<0>::note_off(pitch);
+    digitalWrite(LED_BUILTIN, LOW);
+  }
+}
+
+void __not_in_flash_func(handleControlChange)(byte channel, byte number, byte value)
+{
+  if ((channel - 1) == MIDI_CH) {
+    digitalWrite(LED_BUILTIN, HIGH);
+    ISynthCore<0>::control_change(number, value);
+    digitalWrite(LED_BUILTIN, LOW);
+  }
+}
+
+void __not_in_flash_func(handleHandleProgramChange)(byte channel, byte number)
+{
+  if ((channel - 1) == MIDI_CH) {
+    digitalWrite(LED_BUILTIN, HIGH);
+    ISynthCore<0>::program_change(number);
+    digitalWrite(LED_BUILTIN, LOW);
+  }
+}
+
+void __not_in_flash_func(handleHandlePitchBend)(byte channel, int bend)
+{
+  if ((channel - 1) == MIDI_CH) {
+    digitalWrite(LED_BUILTIN, HIGH);
+    ISynthCore<0>::pitch_bend(bend & 0x7F, bend >> 7);
+    digitalWrite(LED_BUILTIN, LOW);
+  }
+}
+#endif

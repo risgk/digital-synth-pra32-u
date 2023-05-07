@@ -104,6 +104,14 @@ public:
     IVoice<0>::program_change(program_number);
   }
 
+  INLINE static void note_on(uint8_t note_number, uint8_t velocity) {
+    IVoice<0>::note_on(note_number, velocity);
+  }
+
+  INLINE static void note_off(uint8_t note_number) {
+    IVoice<0>::note_off(note_number);
+  }
+
   INLINE static int16_t process(int16_t& right_level) {
     return IVoice<0>::process(right_level);
   }
@@ -125,13 +133,6 @@ private:
     return b <= DATA_BYTE_MAX;
   }
 
-  INLINE static void note_on(uint8_t note_number, uint8_t velocity) {
-    IVoice<0>::note_on(note_number, velocity);
-  }
-
-  INLINE static void note_off(uint8_t note_number) {
-    IVoice<0>::note_off(note_number);
-  }
 };
 
 template <uint8_t T> uint8_t SynthCore<T>::m_system_exclusive;
