@@ -144,7 +144,11 @@ void __not_in_flash_func(loop1)() {
 void __not_in_flash_func(handleNoteOn)(byte channel, byte pitch, byte velocity)
 {
   if ((channel - 1) == MIDI_CH) {
-    Synth<0>::note_on(pitch, velocity);
+    if (velocity > 0) {
+      Synth<0>::note_on(pitch, velocity);
+    } else {
+      Synth<0>::note_off(pitch);
+    }
   }
 }
 
