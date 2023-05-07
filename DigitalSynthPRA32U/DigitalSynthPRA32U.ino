@@ -7,7 +7,7 @@
 
 #define DEBUG_PRINT
 
-#define USE_USB_MIDI      // Select USB Stack: "Adafruit TinuUSB"
+#define USE_USB_MIDI      // USB Stack: "Adafruit TinuUSB" is required
 //#define USE_SERIAL1_MIDI
 
 #define SERIAL1_MIDI_SPEED   (38400)
@@ -79,7 +79,7 @@ void __not_in_flash_func(setup1)() {
 
 #if defined(DEBUG_PRINT)
 #if defined(USE_SERIAL1_MIDI)
-  Serial.begin(0);  // Select USB Stack: "Pico SDK"
+  Serial.begin(0);  // USB Stack: "Pico SDK" is required
 #else
   Serial1.begin(115200);
 #endif
