@@ -53,6 +53,7 @@ void __not_in_flash_func(loop)() {
 
 void __not_in_flash_func(setup1)() {
   pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, HIGH);
 
   Synth<0>::initialize();
 
@@ -82,11 +83,21 @@ void __not_in_flash_func(setup1)() {
   g_i2s_output.begin();
 
 #if defined(DEBUG)
+#if defined(USE_USB_MIDI)
+  Serial1.setTX(PIN_SERIAL1_TX);
+  Serial1.setRX(PIN_SERIAL1_RX);
+  Serial1.begin(115200);
+#else
   Serial.begin(0);
+#endif
 #endif
 }
 
 void __not_in_flash_func(loop1)() {
+
+//#if defined(DEBUG)
+//  uint32_t debug_measurement_start_us = micros();
+//#endif
 
 #if defined(USE_USB_MIDI)
   MIDI.read();
@@ -95,9 +106,7 @@ void __not_in_flash_func(loop1)() {
 #if defined(USE_SERIAL_MIDI)
   int32_t b = Serial1.read();
   if (b >= 0) {
-    digitalWrite(LED_BUILTIN, HIGH);
     Synth<0>::receive_midi_byte(b);
-    digitalWrite(LED_BUILTIN, LOW);
   }
 #endif
 
@@ -132,11 +141,18 @@ void __not_in_flash_func(loop1)() {
     s_debug_measurement_max_us = debug_measurement_elapsed_us;
   }
 
-  static uint16_t s_debug_loop_counter = 0;
-  if (++s_debug_loop_counter == 0) {
+  static uint32_t s_debug_loop_counter = 0;
+  if (++s_debug_loop_counter == 4000) {
+    s_debug_loop_counter = 0;
+#if defined(USE_USB_MIDI)
+    Serial1.println(debug_measurement_elapsed_us);
+    Serial1.println(s_debug_measurement_max_us);
+    Serial1.println();
+#else
     Serial.println(debug_measurement_elapsed_us);
     Serial.println(s_debug_measurement_max_us);
     Serial.println();
+#endif
   }
 #endif
 }
@@ -146,9 +162,7 @@ void __not_in_flash_func(loop1)() {
 void __not_in_flash_func(handleNoteOn)(byte channel, byte pitch, byte velocity)
 {
   if ((channel - 1) == MIDI_CH) {
-    digitalWrite(LED_BUILTIN, HIGH);
     ISynthCore<0>::note_on(pitch, velocity);
-    digitalWrite(LED_BUILTIN, LOW);
   }
 }
 
@@ -156,36 +170,28 @@ void __not_in_flash_func(handleNoteOff)(byte channel, byte pitch, byte velocity)
 {
   if ((channel - 1) == MIDI_CH) {
     (void) velocity;
-    digitalWrite(LED_BUILTIN, HIGH);
     ISynthCore<0>::note_off(pitch);
-    digitalWrite(LED_BUILTIN, LOW);
   }
 }
 
 void __not_in_flash_func(handleControlChange)(byte channel, byte number, byte value)
 {
   if ((channel - 1) == MIDI_CH) {
-    digitalWrite(LED_BUILTIN, HIGH);
     ISynthCore<0>::control_change(number, value);
-    digitalWrite(LED_BUILTIN, LOW);
   }
 }
 
 void __not_in_flash_func(handleHandleProgramChange)(byte channel, byte number)
 {
   if ((channel - 1) == MIDI_CH) {
-    digitalWrite(LED_BUILTIN, HIGH);
     ISynthCore<0>::program_change(number);
-    digitalWrite(LED_BUILTIN, LOW);
   }
 }
 
 void __not_in_flash_func(handleHandlePitchBend)(byte channel, int bend)
 {
   if ((channel - 1) == MIDI_CH) {
-    digitalWrite(LED_BUILTIN, HIGH);
     ISynthCore<0>::pitch_bend(bend & 0x7F, bend >> 7);
-    digitalWrite(LED_BUILTIN, LOW);
   }
 }
 #endif
