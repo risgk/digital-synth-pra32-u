@@ -1,9 +1,8 @@
 /*
  * Digital Synth PRA32-U
- * - We strongly recommend Raspberry Pi Pico/RP2040 core (by Earle F. Philhower, III) version 3.1.1
- * - We recommend CPU Speed: "120 MHz"
- * - We recommend Optimize: "Small (-Os) (standard)"
- * - We recommend Stack Ptotector: "Disabled"
+ *
+ * - I2S DAC (e.g. Pico Audio Pack) is required
+ * - Raspberry Pi Pico/RP2040 core version 3.2.0 is recommended
  */
 
 #define DEBUG_PRINT
@@ -22,7 +21,7 @@
 #define I2S_BUFFERS         (3)
 #define I2S_BUFFER_WORDS    (8)
 
-
+////////////////////////////////////////////////////////////////
 
 #include "common.h"
 #include "synth.h"
