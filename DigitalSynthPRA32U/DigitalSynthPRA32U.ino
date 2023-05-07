@@ -5,7 +5,7 @@
  * - Raspberry Pi Pico/RP2040 core version 3.2.0 is recommended
  */
 
-#define DEBUG_PRINT
+//#define DEBUG_PRINT
 
 #define USE_USB_MIDI      // USB Stack: "Adafruit TinuUSB" is required
 //#define USE_SERIAL1_MIDI
@@ -13,7 +13,7 @@
 #define SERIAL1_MIDI_SPEED   (38400)
 //#define SERIAL1_MIDI_SPEED   (31250)
 
-#define MIDI_CH             (0)
+#define MIDI_CH             (0)  // 0-based
 
 #define I2S_DATA_PIN        (9)
 #define I2S_BCLK_PIN        (10)  // I2S_LRCLK_PIN is I2S_BCLK_PIN + 1

@@ -1,6 +1,6 @@
 require_relative 'DigitalSynthPRA32U/constants'
 
-MIDI_CH = 0
+MIDI_CH = 0  # 0-based
 
 $file = File.open("sample-midi-stream.bin", "wb")
 

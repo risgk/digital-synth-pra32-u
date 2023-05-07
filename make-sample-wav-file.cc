@@ -1,4 +1,4 @@
-#define MIDI_CH (0)
+#define MIDI_CH (0)  // 0-based
 
 
 #include <stdint.h>
