@@ -17,7 +17,7 @@
     - **NOTE**: Large noise is generated during the sketch upload!
 - **Arduino IDE** and **Raspberry Pi Pico/RP2040** (by Earle F. Philhower, III) core are required
     - Additional Board Manager URL: <https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json>
-    - Raspberry Pi Pico/RP2040 core version 3.2.0 is recommended
+    - Raspberry Pi Pico/RP2040 core **version 3.2.0** is recommended
 
 
 ## Features
@@ -29,14 +29,14 @@
         - Comment out `#define USE_USB_MIDI` and uncomment out `//#define USE_SERIAL1_MIDI` in `"DigitalSynthPRA32U.ino"`
 - Audio Out
     - I2S DAC (e.g. PCM5100A), Sampling Rate: 31.25 kHz, Bit Depth: 16 bit
-    - The default configuration is for Pimoroni's [Pico Audio Pack](https://shop.pimoroni.com/products/pico-audio-pack)
+    - The default setting is for Pimoroni's [Pico Audio Pack](https://shop.pimoroni.com/products/pico-audio-pack)
     - Modify `I2S_DATA_PIN` and `I2S_BCLK_PIN` in `"DigitalSynthPRA32U.ino"` to match the hardware configuration
 - Files
     - `"DigitalSynthPRA32U.ino"` is a Arduino sketch for Raspberry Pi Pico/RP2040 core
-    - `"make-sample-wav-file.cc"` is for Debugging on PC
+    - `"make-sample-wav-file.cc"` is for debugging on PC
         - GCC (g++) for PC is required
         - `"make-sample-wav-file-cc.bat"` makes a sample WAV file (working on Windows)
-    - `"generate-*.rb"` generates source/header files
+    - `"generate-*.rb"` generates source or header files
         - A Ruby execution environment is required
 
 
