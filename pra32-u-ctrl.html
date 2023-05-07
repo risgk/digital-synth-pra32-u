@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<title>PRA32-U CTRL</title>
+<style>
+* {
+  font-size: 12px;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+table td {
+  text-align: left;
+}
+td.key {
+  color: orange;
+  text-align: center;
+  width: 42px;
+  height: 63px;
+  border: 1px solid orange;
+}
+td.keyb {
+  color: white;
+  background-color: orange;
+  text-align: center;
+  width: 42px;
+  height: 63px;
+  border: 1px solid orange;
+}
+td.keyp {
+  color: orange;
+  text-align: center;
+  width: 42px;
+  height: 63px;
+  border: 1px solid transparent;
+}
+td.keyh {
+  text-align: center;
+  width: 18px;
+  height: 63px;
+  border: 1px solid transparent;
+}
+</style>
+<script>
+const APP_NAME_VERSION = "PRA32-U CTRL v0.1.0";
+
+const MIDI_CH        = 0;       // 0-based
+
+const NOTE_OFF       = 0x80;
+const NOTE_ON        = 0x90;
+const CONTROL_CHANGE = 0xB0;
+const PITCH_BEND     = 0xE0;
+
+
+const MODULATION      = 1;
+const SUSTAIN_PEDAL   = 64;
+const P_BEND_BY_CC    = 35;
+
+const OSC_1_WAVE      = 24;
+const OSC_1_SHAPE     = 102;
+const OSC_1_MORPH     = 103;
+const MIXER_SUB_OSC   = 26;
+
+const OSC_2_WAVE      = 55;
+const OSC_2_COARSE    = 20;
+const OSC_2_FINE      = 21;
+const MIXER_OSC_MIX   = 25;
+
+const FILTER_CUTOFF   = 16;
+const FILTER_RESO     = 17;
+const FILTER_EG_AMT   = 18;
+const FILTER_KEY_TRK  = 86;
+
+const EG_ATTACK       = 23;
+const EG_DECAY        = 19;
+const EG_SUSTAIN      = 27;
+const EG_RELEASE      = 28;
+
+const EG_OSC_AMT      = 104;
+const EG_OSC_DST      = 105;
+const VOICE_MODE      = 87;
+const PORTAMENTO      = 22;
+
+const LFO_WAVE        = 14;
+const LFO_RATE        = 80;
+const LFO_DEPTH       = 81;
+const LFO_FADE_TIME   = 15;
+
+const LFO_OSC_AMT     = 82;
+const LFO_OSC_DST     = 9;
+const LFO_FILTER_AMT  = 83;
+const AMP_LEVEL       = 110;
+
+const AMP_ATTACK      = 56;
+const AMP_DECAY       = 57;
+const AMP_SUSTAIN     = 58;
+const AMP_RELEASE     = 59;
+
+const CHORUS_MODE     = 63;
+const CHORUS_RATE     = 61;
+const CHORUS_DEPTH    = 60;
+const CHORUS_DLY_TIME = 62;
+
+const P_BEND_RANGE    = 85;
+const CHORUS_BYPASS   = 111;
+
+
+
+
+const ALL_SOUND_OFF   = 120;
+const RESET_ALL_CTRLS = 121;
+const ALL_NOTES_OFF   = 123;
+
+// Special Random Control (for PRA32-U CTRL)
+const SP_RAND_CTRL    = 90;
+
+// Special Program Change (for PRA32-U CTRL)
+const SP_PROG_CHG_0   = 112;
+const SP_PROG_CHG_1   = 113;
+const SP_PROG_CHG_2   = 114;
+const SP_PROG_CHG_3   = 115;
+
+const SP_PROG_CHG_4   = 116;
+const SP_PROG_CHG_5   = 117;
+const SP_PROG_CHG_6   = 118;
+const SP_PROG_CHG_7   = 119;
+
+var controlNumberToStringMap = new Map([
+  [ OSC_1_WAVE     , "OSC_1_WAVE     " ],
+  [ OSC_1_SHAPE    , "OSC_1_SHAPE    " ],
+  [ OSC_1_MORPH    , "OSC_1_MORPH    " ],
+  [ MIXER_SUB_OSC  , "MIXER_SUB_OSC  " ],
+
+  [ OSC_2_WAVE     , "OSC_2_WAVE     " ],
+  [ OSC_2_COARSE   , "OSC_2_COARSE   " ],
+  [ OSC_2_FINE     , "OSC_2_FINE     " ],
+  [ MIXER_OSC_MIX  , "MIXER_OSC_MIX  " ],
+
+  [ FILTER_CUTOFF  , "FILTER_CUTOFF  " ],
+  [ FILTER_RESO    , "FILTER_RESO    " ],
+  [ FILTER_EG_AMT  , "FILTER_EG_AMT  " ],
+  [ FILTER_KEY_TRK , "FILTER_KEY_TRK " ],
+
+  [ EG_ATTACK      , "EG_ATTACK      " ],
+  [ EG_DECAY       , "EG_DECAY       " ],
+  [ EG_SUSTAIN     , "EG_SUSTAIN     " ],
+  [ EG_RELEASE     , "EG_RELEASE     " ],
+
+  [ EG_OSC_AMT     , "EG_OSC_AMT     " ],
+  [ EG_OSC_DST     , "EG_OSC_DST     " ],
+  [ VOICE_MODE     , "VOICE_MODE     " ],
+  [ PORTAMENTO     , "PORTAMENTO     " ],
+
+  [ LFO_WAVE       , "LFO_WAVE       " ],
+  [ LFO_RATE       , "LFO_RATE       " ],
+  [ LFO_DEPTH      , "LFO_DEPTH      " ],
+  [ LFO_FADE_TIME  , "LFO_FADE_TIME  " ],
+
+  [ LFO_OSC_AMT    , "LFO_OSC_AMT    " ],
+  [ LFO_OSC_DST    , "LFO_OSC_DST    " ],
+  [ LFO_FILTER_AMT , "LFO_FILTER_AMT " ],
+  [ AMP_LEVEL      , "AMP_LEVEL      " ],
+
+  [ AMP_ATTACK     , "AMP_ATTACK     " ],
+  [ AMP_DECAY      , "AMP_DECAY      " ],
+  [ AMP_SUSTAIN    , "AMP_SUSTAIN    " ],
+  [ AMP_RELEASE    , "AMP_RELEASE    " ],
+
+  [ CHORUS_MODE    , "CHORUS_MODE    " ],
+  [ CHORUS_RATE    , "CHORUS_RATE    " ],
+  [ CHORUS_DEPTH   , "CHORUS_DEPTH   " ],
+  [ CHORUS_DLY_TIME, "CHORUS_DLY_TIME" ],
+
+  [ P_BEND_RANGE   , "P_BEND_RANGE   " ],
+  [ CHORUS_BYPASS  , "CHORUS_BYPASS  " ],
+
+
+]);
+
+var controllersInLocalStorage = [
+  OSC_1_WAVE     ,
+  OSC_1_SHAPE    ,
+  OSC_1_MORPH    ,
+  MIXER_SUB_OSC  ,
+
+  OSC_2_WAVE     ,
+  OSC_2_COARSE   ,
+  OSC_2_FINE     ,
+  MIXER_OSC_MIX  ,
+
+  FILTER_CUTOFF  ,
+  FILTER_RESO    ,
+  FILTER_EG_AMT  ,
+  FILTER_KEY_TRK ,
+
+  EG_ATTACK      ,
+  EG_DECAY       ,
+  EG_SUSTAIN     ,
+  EG_RELEASE     ,
+
+  EG_OSC_AMT     ,
+  EG_OSC_DST     ,
+  VOICE_MODE     ,
+  PORTAMENTO     ,
+
+  LFO_WAVE       ,
+  LFO_RATE       ,
+  LFO_DEPTH      ,
+  LFO_FADE_TIME  ,
+
+  LFO_OSC_AMT    ,
+  LFO_OSC_DST    ,
+  LFO_FILTER_AMT ,
+  AMP_LEVEL      ,
+
+  AMP_ATTACK     ,
+  AMP_DECAY      ,
+  AMP_SUSTAIN    ,
+  AMP_RELEASE    ,
+
+  CHORUS_MODE    ,
+  CHORUS_RATE    ,
+  CHORUS_DEPTH   ,
+  CHORUS_DLY_TIME,
+
+  P_BEND_RANGE   ,
+  CHORUS_BYPASS  ,
+
+
+];
+
+var presetControllers = {};
+
+// PRESET                             #0   #1   #2   #3   #4   #5   #6   #7   
+presetControllers[OSC_1_WAVE     ] = [0  , 0  , 0  , 0  , 0  , 96 , 0  , 0  ];
+presetControllers[OSC_1_SHAPE    ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
+presetControllers[OSC_1_MORPH    ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
+presetControllers[MIXER_SUB_OSC  ] = [127, 127, 127, 127, 127, 0  , 0  , 0  ];
+
+presetControllers[OSC_2_WAVE     ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
+presetControllers[OSC_2_COARSE   ] = [71 , 71 , 64 , 76 , 64 , 64 , 64 , 64 ];
+presetControllers[OSC_2_FINE     ] = [72 , 72 , 72 , 72 , 72 , 72 , 72 , 64 ];
+presetControllers[MIXER_OSC_MIX  ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 0  ];
+
+presetControllers[FILTER_CUTOFF  ] = [112, 112, 4  , 124, 4  , 112, 127, 127];
+presetControllers[FILTER_RESO    ] = [64 , 64 , 32 , 32 , 32 , 64 , 0  , 0  ];
+presetControllers[FILTER_EG_AMT  ] = [64 , 64 , 124, 4  , 124, 64 , 64 , 64 ];
+presetControllers[FILTER_KEY_TRK ] = [127, 127, 127, 127, 127, 127, 127, 127];
+
+presetControllers[EG_ATTACK      ] = [0  , 0  , 64 , 96 , 0  , 0  , 0  , 0  ];
+presetControllers[EG_DECAY       ] = [127, 127, 96 , 96 , 96 , 127, 127, 127];
+presetControllers[EG_SUSTAIN     ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
+presetControllers[EG_RELEASE     ] = [0  , 0  , 0  , 0  , 96 , 0  , 0  , 0  ];
+
+presetControllers[EG_OSC_AMT     ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
+presetControllers[EG_OSC_DST     ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
+presetControllers[VOICE_MODE     ] = [127, 0  , 0  , 0  , 64 , 127, 0  , 127];
+presetControllers[PORTAMENTO     ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
+
+presetControllers[LFO_WAVE       ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
+presetControllers[LFO_RATE       ] = [96 , 96 , 96 , 96 , 96 , 96 , 96 , 96 ];
+presetControllers[LFO_DEPTH      ] = [8  , 64 , 64 , 64 , 8  , 64 , 64 , 0  ];
+presetControllers[LFO_FADE_TIME  ] = [0  , 64 , 64 , 64 , 0  , 0  , 64 , 0  ];
+
+presetControllers[LFO_OSC_AMT    ] = [80 , 80 , 80 , 80 , 80 , 127, 80 , 64 ];
+presetControllers[LFO_OSC_DST    ] = [0  , 0  , 0  , 0  , 0  , 127, 0  , 0  ];
+presetControllers[LFO_FILTER_AMT ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
+presetControllers[AMP_LEVEL      ] = [127, 127, 127, 127, 127, 127, 127, 127];
+
+presetControllers[AMP_ATTACK     ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
+presetControllers[AMP_DECAY      ] = [127, 127, 127, 127, 96 , 127, 127, 127];
+presetControllers[AMP_SUSTAIN    ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
+presetControllers[AMP_RELEASE    ] = [0  , 0  , 0  , 0  , 96 , 0  , 0  , 0  ];
+
+presetControllers[CHORUS_MODE    ] = [127, 127, 127, 127, 127, 127, 127, 0  ];
+presetControllers[CHORUS_RATE    ] = [32 , 32 , 32 , 32 , 32 , 32 , 32 , 32 ];
+presetControllers[CHORUS_DEPTH   ] = [32 , 32 , 32 , 32 , 32 , 32 , 32 , 32 ];
+presetControllers[CHORUS_DLY_TIME] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
+
+presetControllers[P_BEND_RANGE   ] = [2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  ];
+presetControllers[CHORUS_BYPASS  ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
+
+
+
+const PRESET_NUMBER_INITIAL = 7;
+</script>
+<script>
+var transpose = 0;
+var fileReaderImportAll = new FileReader();
+var fileReaderImportCurrent = new FileReader();
+
+document.addEventListener("touchstart", function(event) {
+  if (event.target.tagName.toUpperCase() != "INPUT" &&
+      event.target.tagName.toUpperCase() != "SELECT") {
+    event.preventDefault();
+  }
+});
+
+window.onload = function() {
+  document.getElementById("spanAppNameVersion").innerHTML = "<strong>" + APP_NAME_VERSION + "</strong>";
+
+  if (navigator.requestMIDIAccess) {
+    navigator.requestMIDIAccess({sysex: false}).then(onMIDISuccess, onMIDIFailure);
+  } else {
+    console.log("No MIDI support present in your browser.");
+  }
+
+  var result = restoreControllers();
+  if (!result) {
+    onChangeTranspose(0);
+    preset(0);
+  }
+
+  document.getElementById("fileImportAll").addEventListener("change", fileImportAllChange, false);
+  document.getElementById("fileImportCurrent").addEventListener("change", fileImportCurrentChange, false);
+  fileReaderImportAll.addEventListener("load", fileReaderImportAllLoad, false);
+  fileReaderImportCurrent.addEventListener("load", fileReaderImportCurrentLoad, false);
+};
+
+function sleep(msec) {
+  var t1 = new Date().getTime();
+  var t2;
+  do {
+    t2 = new Date().getTime();
+  } while (t2 < t1 + msec);
+}
+
+function panic() {
+  if (midiOutput) {
+    midiOutput.send([(CONTROL_CHANGE | MIDI_CH), ALL_NOTES_OFF, 0]);
+    sleep(10);
+    midiOutput.send([(CONTROL_CHANGE | MIDI_CH), ALL_SOUND_OFF, 0]);
+    sleep(10);
+    midiOutput.send([(CONTROL_CHANGE | MIDI_CH), RESET_ALL_CTRLS, 0]);
+    sleep(10);
+  }
+
+  document.getElementById("spanPB").innerHTML = "+0";
+  document.getElementById("spanCC1").innerHTML = "0";
+  document.getElementById("spanCC11").innerHTML = "127";
+  document.getElementById("spanVelocity").innerHTML = "0";
+  document.getElementById("spanCC64").innerHTML = "0";
+}
+
+function restoreControllers() {
+  var value;
+
+  controllersInLocalStorage.forEach(function(i) {
+    value = localStorage.getItem("keyCC" + String(i));
+    if (!value) {
+      value = presetControllers[i][PRESET_NUMBER_INITIAL];
+    }
+    onChangeControlChange(i, value);
+  });
+
+  value = localStorage.getItem("keyTranspose");
+  if (!value) {
+    return false;
+  }
+  onChangeTranspose(value);
+
+  return true;
+}
+
+function onChangeTranspose(value) {
+  document.getElementById("inputTranspose").value = parseInt(value);
+  document.getElementById("spanTranspose").innerHTML = value;
+  if (value >= 0) {
+    document.getElementById("spanTranspose").innerHTML = "+" + String(value);
+  } else {
+    document.getElementById("spanTranspose").innerHTML = value;
+  }
+  localStorage.setItem("keyTranspose", value);
+  transpose = parseInt(value);
+}
+</script>
+<script>
+var midi        = null;
+var midiInputs  = null;
+var midiInput1  = null;
+var midiInput2  = null;
+var midiInput3  = null;
+var midiInput4  = null;
+var midiOutputs = null;
+var midiOutput  = null;
+
+var specialProgramChangeCCValues = [0, 0, 0, 0, 0, 0, 0, 0];
+var specialRandomControlCCValue = 0;
+
+function afterChangeOsc1WaveOrVoiceMode() {
+  var targetCCNumbers = [102, 103, 26, 55, 20, 21, 25, 86];
+
+  var valueVoiceMode = localStorage.getItem("keyCC87");
+  if (valueVoiceMode < 32) {
+    targetCCNumbers.forEach(function(i) {
+      document.getElementById("inputCC" + String(i)).disabled = true;
+    });
+  } else {
+    targetCCNumbers.forEach(function(i) {
+      document.getElementById("inputCC" + String(i)).disabled = false;
+    });
+
+    var valueOsc1Wave = localStorage.getItem("keyCC24");
+    if ((valueOsc1Wave >= 80) && (valueOsc1Wave < 112)) {
+      document.getElementById("inputCC26").disabled = true;
+    } else {
+      document.getElementById("inputCC102").disabled = true;
+      document.getElementById("inputCC103").disabled = true;
+    }
+  }
+}
+
+function onMIDIMessage(event) {
+  console.log(event.data);
+
+  // CAUTION: Running Status and System Exclusive are not taken into account
+  if (event.data[0] == (CONTROL_CHANGE | MIDI_CH)) {
+    var number = event.data[1];
+    var value = event.data[2];
+    if (controllersInLocalStorage.indexOf(number) >= 0) {
+      updateDisplayOfControl(number, value);
+      if ((number == OSC_1_WAVE) || (number == VOICE_MODE)) {
+        afterChangeOsc1WaveOrVoiceMode();
+      }
+    } else if (number == MODULATION     ) {
+      document.getElementById("spanCC1").innerHTML = value;
+    } else if (number == SUSTAIN_PEDAL   ) {
+      document.getElementById("spanCC64").innerHTML = value;
+    } else if (number == RESET_ALL_CTRLS) {
+      document.getElementById("spanPB").innerHTML = "+0";
+      document.getElementById("spanCC1").innerHTML = "0";
+      document.getElementById("spanCC11").innerHTML = "127";
+      document.getElementById("spanCC64").innerHTML = "0";
+    } else if (number == P_BEND_BY_CC) {
+      var pb = (value - 64) * 128;
+      if (pb == 8064) {
+        pb = 8191;
+      }
+      document.getElementById("spanPB").innerHTML = value;
+      if (pb >= 0) {
+        document.getElementById("spanPB").innerHTML = "+" + String(pb);
+      } else {
+        document.getElementById("spanPB").innerHTML = pb;
+      }
+    } else if (number >= SP_PROG_CHG_0 && number <= SP_PROG_CHG_7) {
+      // Special Program Change (only for PRA32-U CTRL)
+      var programIndex = number - SP_PROG_CHG_0;
+      var oldValue = specialProgramChangeCCValues[programIndex];
+      specialProgramChangeCCValues[programIndex] = value;
+      if (oldValue <= 63 && value >= 64) {
+        loadControllers(programIndex + 8);
+        return;
+      }
+    } else if (number == SP_RAND_CTRL   ) {
+      // Special Random Control (only for PRA32-U CTRL)
+      var oldValue = specialRandomControlCCValue;
+      specialRandomControlCCValue = value;
+      if (oldValue <= 63 && value >= 64) {
+        setRandom();
+        return;
+      }
+    }
+  } else if (event.data[0] == (PITCH_BEND | MIDI_CH)) {
+    var value = event.data[1] + (event.data[2] * 128) - 8192;
+    document.getElementById("spanPB").innerHTML = value;
+    if (value >= 0) {
+      document.getElementById("spanPB").innerHTML = "+" + String(value);
+    } else {
+      document.getElementById("spanPB").innerHTML = value;
+    }
+  } else if (event.data[0] == (NOTE_ON | MIDI_CH)) {
+    var velocity = event.data[2];
+    if (velocity > 0) {
+      document.getElementById("spanVelocity").innerHTML = velocity;
+    }
+  }
+
+  const PROGRAM_CHANGE = 0xC0;
+  if (event.data[0] == (PROGRAM_CHANGE | MIDI_CH)) {
+    var number = event.data[1];
+    if (number >= 0 && number <= 7) {
+      preset(number);
+      return;
+    } else if (number >= 8 && number <= 15) {
+      loadControllers(number);
+      return;
+    } else if (number == 127) {
+      // Program #127: Random Control
+      setRandom();
+      return;
+    }
+  }
+
+  if (midiOutput) {
+    midiOutput.send(event.data);
+  }
+}
+
+function onMIDISuccess(midiAccess) {
+  console.log("MIDI ready!");
+  midi = midiAccess;
+
+  var inputIterator = midi.inputs.values();
+  midiInputs = [""];
+  for (var o = inputIterator.next(); !o.done; o = inputIterator.next()) {
+    midiInputs.push(o.value)
+  }
+  var outputIterator = midi.outputs.values();
+  midiOutputs = [""];
+  for (var o = outputIterator.next(); !o.done; o = outputIterator.next()) {
+    midiOutputs.push(o.value)
+  }
+
+  var selectInputPort1 = document.getElementById("selectInputPort1");
+  for (var i = 0; i < midiInputs.length; i++) {
+    selectInputPort1.appendChild(new Option(midiInputs[i].name))
+  }
+  onChangeInputPort1();
+  var selectInputPort2 = document.getElementById("selectInputPort2");
+  for (var i = 0; i < midiInputs.length; i++) {
+    selectInputPort2.appendChild(new Option(midiInputs[i].name))
+  }
+  onChangeInputPort2();
+  var selectInputPort3 = document.getElementById("selectInputPort3");
+  for (var i = 0; i < midiInputs.length; i++) {
+    selectInputPort3.appendChild(new Option(midiInputs[i].name))
+  }
+  onChangeInputPort3();
+  var selectInputPort4 = document.getElementById("selectInputPort4");
+  for (var i = 0; i < midiInputs.length; i++) {
+    selectInputPort4.appendChild(new Option(midiInputs[i].name))
+  }
+  onChangeInputPort4();
+  var selectOutputPort = document.getElementById("selectOutputPort");
+  for (var i = 0; i < midiOutputs.length; i++) {
+    selectOutputPort.appendChild(new Option(midiOutputs[i].name))
+  }
+  onChangeOutputPort();
+}
+
+function onMIDIFailure(msg) {
+  console.log("Failed to get MIDI access - " + msg);
+}
+
+function onChangeInputPort1(){
+  for (var i = 0; i < midiInputs.length; i++) {
+    if (i == document.getElementById("selectInputPort1").selectedIndex) { continue; }
+    if (i == document.getElementById("selectInputPort2").selectedIndex) { continue; }
+    if (i == document.getElementById("selectInputPort3").selectedIndex) { continue; }
+    if (i == document.getElementById("selectInputPort4").selectedIndex) { continue; }
+    midiInputs[i].onmidimessage = null;
+  }
+
+  var selectInputPort = document.getElementById("selectInputPort1");
+  midiInput1 = midiInputs[selectInputPort.selectedIndex];
+  if (midiInput1) {
+    midiInput1.onmidimessage = onMIDIMessage;
+  }
+}
+
+function onChangeInputPort2(){
+  for (var i = 0; i < midiInputs.length; i++) {
+    if (i == document.getElementById("selectInputPort1").selectedIndex) { continue; }
+    if (i == document.getElementById("selectInputPort2").selectedIndex) { continue; }
+    if (i == document.getElementById("selectInputPort3").selectedIndex) { continue; }
+    if (i == document.getElementById("selectInputPort4").selectedIndex) { continue; }
+    midiInputs[i].onmidimessage = null;
+  }
+
+  var selectInputPort = document.getElementById("selectInputPort2");
+  midiInput2 = midiInputs[selectInputPort.selectedIndex];
+  if (midiInput2) {
+    midiInput2.onmidimessage = onMIDIMessage;
+  }
+}
+
+function onChangeInputPort3(){
+  for (var i = 0; i < midiInputs.length; i++) {
+    if (i == document.getElementById("selectInputPort1").selectedIndex) { continue; }
+    if (i == document.getElementById("selectInputPort2").selectedIndex) { continue; }
+    if (i == document.getElementById("selectInputPort3").selectedIndex) { continue; }
+    if (i == document.getElementById("selectInputPort4").selectedIndex) { continue; }
+    midiInputs[i].onmidimessage = null;
+  }
+
+  var selectInputPort = document.getElementById("selectInputPort3");
+  midiInput3 = midiInputs[selectInputPort.selectedIndex];
+  if (midiInput3) {
+    midiInput3.onmidimessage = onMIDIMessage;
+  }
+}
+
+function onChangeInputPort4(){
+  for (var i = 0; i < midiInputs.length; i++) {
+    if (i == document.getElementById("selectInputPort1").selectedIndex) { continue; }
+    if (i == document.getElementById("selectInputPort2").selectedIndex) { continue; }
+    if (i == document.getElementById("selectInputPort3").selectedIndex) { continue; }
+    if (i == document.getElementById("selectInputPort4").selectedIndex) { continue; }
+    midiInputs[i].onmidimessage = null;
+  }
+
+  var selectInputPort = document.getElementById("selectInputPort4");
+  midiInput4 = midiInputs[selectInputPort.selectedIndex];
+  if (midiInput4) {
+    midiInput4.onmidimessage = onMIDIMessage;
+  }
+}
+
+function onChangeOutputPort() {
+  var selectOutputPort = document.getElementById("selectOutputPort");
+  midiOutput = midiOutputs[selectOutputPort.selectedIndex];
+  if (midiOutput) {
+    panic();
+    var result = restoreControllers();
+    if (!result) {
+      onChangeTranspose(0);
+      preset(0);
+    }
+  }
+}
+
+function updateDisplayOfControl(number, value) {
+  document.getElementById("inputCC" + String(number)).value = parseInt(value);
+
+  switch (number) {
+  case OSC_2_COARSE    :
+  case OSC_2_FINE      :
+  case FILTER_EG_AMT   :
+  case EG_OSC_AMT      :
+  case LFO_OSC_AMT     :
+  case LFO_FILTER_AMT  :
+    if (value >= 64) {
+      document.getElementById("spanCC" + String(number)).innerHTML = "+" + String(value - 64);
+    } else {
+      document.getElementById("spanCC" + String(number)).innerHTML = value - 64;
+    }
+    break;
+  default:
+    document.getElementById("spanCC" + String(number)).innerHTML = value;
+    break;
+  }
+
+  localStorage.setItem("keyCC" + String(number), value);
+}
+
+function onChangeControlChange(number, value) {
+  updateDisplayOfControl(number, value);
+  if ((number == OSC_1_WAVE) || (number == VOICE_MODE)) {
+    afterChangeOsc1WaveOrVoiceMode();
+  }
+  if (midiOutput) {
+    midiOutput.send([(CONTROL_CHANGE | MIDI_CH), number, parseInt(value)]);
+    sleep(2);
+  }
+}
+
+function preset(number) {
+  controllersInLocalStorage.forEach(function(i) {
+    onChangeControlChange(i, presetControllers[i][number]);
+  });
+}
+
+function setRandom() {
+  controllersInLocalStorage.forEach(function(i) {
+    if((i != CHORUS_DEPTH   ) &&
+       (i != CHORUS_RATE    ) &&
+       (i != CHORUS_DLY_TIME) &&
+       (i != CHORUS_MODE    ) &&
+       (i != CHORUS_BYPASS  ) &&
+       (i != AMP_LEVEL      ) &&
+       (i != VOICE_MODE     )) {
+      onChangeControlChange(i, rand(128));
+    }
+  });
+}
+
+function setRandomChorus() {
+  controllersInLocalStorage.forEach(function(i) {
+    if((i == CHORUS_DEPTH   ) ||
+       (i == CHORUS_RATE    ) ||
+       (i == CHORUS_DLY_TIME) ||
+       (i == CHORUS_MODE    )) {
+      onChangeControlChange(i, rand(128));
+    }
+  });
+}
+
+function rand(n) {
+  return Math.floor(Math.random() * n);
+}
+
+function loadControllers(number) {
+  var value;
+  controllersInLocalStorage.forEach(function(i) {
+    value = localStorage.getItem("keyMemory" + String(number) + "CC" + String(i));
+    if (!value) {
+      value = presetControllers[i][PRESET_NUMBER_INITIAL];
+    }
+    onChangeControlChange(i, value);
+  });
+}
+
+function saveControllers(number) {
+  var r = confirm("Store the current control values to the program #" + String(number) + "?");
+  if (r == false) {
+    return;
+  }
+
+  controllersInLocalStorage.forEach(function(i) {
+    var value = document.getElementById("inputCC" + String(i)).value;
+    localStorage.setItem("keyMemory" + String(number) + "CC" + String(i), value);
+  });
+}
+
+function noteOn(noteNumber) {
+  if (midiOutput) {
+    midiOutput.send([(NOTE_ON | MIDI_CH), noteNumber + transpose, 100]);
+    document.getElementById("spanVelocity").innerHTML = 100;
+    sleep(2);
+  }
+}
+
+function noteOff(noteNumber) {
+  if (midiOutput) {
+    midiOutput.send([(NOTE_OFF | MIDI_CH), noteNumber + transpose, 64]);
+    sleep(2);
+  }
+}
+
+function fileImportAll() {
+  document.getElementById("fileImportAll").click();
+}
+
+function fileImportCurrent() {
+  document.getElementById("fileImportCurrent").click();
+}
+
+function fileImportCurrentChange(event) {
+  fileReaderImportCurrent.readAsText(event.target.files[0]);
+}
+
+function fileImportAllChange(event) {
+  fileReaderImportAll.readAsText(event.target.files[0]);
+}
+
+function fileReaderImportAllLoad(event) {
+  var r = confirm("Import the current control values and the stored programs?");
+  if (r == false) {
+    document.getElementById("fileImportAll").value = "";
+    return;
+  }
+
+  var obj = JSON.parse(event.target.result);
+
+  for (var number = 8; number < 16; number++) {
+    controllersInLocalStorage.forEach(function(i) {
+      var line = obj[controlNumberToStringMap.get(i)];
+      if (line != null) {
+        var value = line[1][number - 8];
+        if (value != null) {
+          localStorage.setItem("keyMemory" + String(number) + "CC" + String(i), value);
+        }
+      }
+    });
+  }
+
+  controllersInLocalStorage.forEach(function(i) {
+    var line = obj[controlNumberToStringMap.get(i)];
+    if (line != null) {
+      var value = line[0];
+      if (value != null) {
+        localStorage.setItem("keyCC" + String(i), value);
+      }
+    }
+  });
+
+  var result = restoreControllers();
+  if (!result) {
+    onChangeTranspose(0);
+    preset(0);
+  }
+
+  document.getElementById("fileImportAll").value = "";
+}
+
+function fileReaderImportCurrentLoad(event) {
+  var r = confirm("Import the current control values?");
+  if (r == false) {
+    document.getElementById("fileImportCurrent").value = "";
+    return;
+  }
+
+  var obj = JSON.parse(event.target.result);
+
+  controllersInLocalStorage.forEach(function(i) {
+    var line = obj[controlNumberToStringMap.get(i)];
+    if (line != null) {
+      var value = line[0];
+      if (value != null) {
+        localStorage.setItem("keyCC" + String(i), value);
+      }
+    }
+  });
+
+  var result = restoreControllers();
+  if (!result) {
+    onChangeTranspose(0);
+    preset(0);
+  }
+
+  document.getElementById("fileImportCurrent").value = "";
+}
+
+function fileExport() {
+  var str = "{\n";
+
+  str += "  \"_version     \" : \"" + APP_NAME_VERSION + "\",\n";
+  str += "  \"_comment     \" : \"  CURRENT  #8   #9   #10  #11  #12  #13  #14  #15  \",\n";
+  str += fileExportOneLine(OSC_1_WAVE     );
+  str += fileExportOneLine(OSC_1_SHAPE    );
+  str += fileExportOneLine(OSC_1_MORPH    );
+  str += fileExportOneLine(MIXER_SUB_OSC  );
+  str += "\n";
+  str += fileExportOneLine(OSC_2_WAVE     );
+  str += fileExportOneLine(OSC_2_COARSE   );
+  str += fileExportOneLine(OSC_2_FINE     );
+  str += fileExportOneLine(MIXER_OSC_MIX  );
+  str += "\n";
+  str += fileExportOneLine(FILTER_CUTOFF  );
+  str += fileExportOneLine(FILTER_RESO    );
+  str += fileExportOneLine(FILTER_EG_AMT  );
+  str += fileExportOneLine(FILTER_KEY_TRK );
+  str += "\n";
+  str += fileExportOneLine(EG_ATTACK      );
+  str += fileExportOneLine(EG_DECAY       );
+  str += fileExportOneLine(EG_SUSTAIN     );
+  str += fileExportOneLine(EG_RELEASE     );
+  str += "\n";
+  str += fileExportOneLine(EG_OSC_AMT     );
+  str += fileExportOneLine(EG_OSC_DST     );
+  str += fileExportOneLine(VOICE_MODE     );
+  str += fileExportOneLine(PORTAMENTO     );
+  str += "\n";
+  str += fileExportOneLine(LFO_WAVE       );
+  str += fileExportOneLine(LFO_RATE       );
+  str += fileExportOneLine(LFO_DEPTH      );
+  str += fileExportOneLine(LFO_FADE_TIME  );
+  str += "\n";
+  str += fileExportOneLine(LFO_OSC_AMT    );
+  str += fileExportOneLine(LFO_OSC_DST    );
+  str += fileExportOneLine(LFO_FILTER_AMT );
+  str += fileExportOneLine(AMP_LEVEL      );
+  str += "\n";
+  str += fileExportOneLine(AMP_ATTACK     );
+  str += fileExportOneLine(AMP_DECAY      );
+  str += fileExportOneLine(AMP_SUSTAIN    );
+  str += fileExportOneLine(AMP_RELEASE    );
+  str += "\n";
+  str += fileExportOneLine(CHORUS_MODE    );
+  str += fileExportOneLine(CHORUS_RATE    );
+  str += fileExportOneLine(CHORUS_DEPTH   );
+  str += fileExportOneLine(CHORUS_DLY_TIME);
+  str += "\n";
+  str += fileExportOneLine(P_BEND_RANGE   );
+  str += fileExportOneLine(CHORUS_BYPASS  );
+  str += "\n";
+  str += "\n";
+  str += "  \"_end         \" : \"\"\n";
+  str += "}\n";
+
+  var blob = new Blob([str]);
+  const a = document.createElement('a');
+  a.download = 'pra32-u-prog.json';
+  document.body.appendChild(a);
+  a.href = URL.createObjectURL(blob);
+  a.click();
+  document.body.removeChild(a);
+}
+
+function fileExportOneLine(number) {
+  var str = "  \"" + controlNumberToStringMap.get(number) + "\" : [ [" + getCCValueString(number) + "], [";
+  str += getStoredCCValueString(8 , number) + ", ";
+  str += getStoredCCValueString(9 , number) + ", ";
+  str += getStoredCCValueString(10, number) + ", ";
+  str += getStoredCCValueString(11, number) + ", ";
+  str += getStoredCCValueString(12, number) + ", ";
+  str += getStoredCCValueString(13, number) + ", ";
+  str += getStoredCCValueString(14, number) + ", ";
+  str += getStoredCCValueString(15, number) + "] ],\n";
+  return str;
+}
+
+function getCCValueString(number) {
+  var value = document.getElementById("inputCC" + String(number)).value;
+  var str = (value + "   ").slice(0, 3);
+  return str;
+}
+
+function getStoredCCValueString(index, number) {
+  var value = localStorage.getItem("keyMemory" + String(index) + "CC" + String(number));
+  if (!value) {
+    value = presetControllers[number][PRESET_NUMBER_INITIAL];
+  }
+  var str = (value + "   ").slice(0, 3);
+  return str;
+}
+</script>
+</head>
+<body>
+
+<table>
+<tr><td><span id="spanAppNameVersion"></span></td><td>&nbsp;&nbsp;Digital Synth PRA32-U Controller Application (<a href="https://github.com/risgk/digital-synth-pra32-u">View on GitHub</a>)</td></tr>
+<tr><td>&nbsp;</td></tr>
+</table>
+
+<table>
+<tr><td>MIDI In 1</td>
+    <td></td>
+    <td><select id="selectInputPort1" size="1" onchange="onChangeInputPort1()"></select></td>
+    <td></td>
+    <td>Pitch Bend</td>
+    <td></td>
+    <td><span id="spanPB">-</span></td>
+    </tr>
+<tr><td>MIDI In 2</td>
+    <td></td>
+    <td><select id="selectInputPort2" size="1" onchange="onChangeInputPort2()"></select></td>
+    <td></td>
+    <td>Modulation</td>
+    <td></td>
+    <td><span id="spanCC1">-</span></td>
+    </tr>
+<tr><td>MIDI In 3</td>
+    <td></td>
+    <td><select id="selectInputPort3" size="1" onchange="onChangeInputPort3()"></select></td>
+    <td></td>
+    <td>Sustain Pedal</td>
+    <td></td>
+    <td><span id="spanCC64">-</span></td>
+    </tr>
+<tr><td>MIDI In 4</td>
+    <td></td>
+    <td><select id="selectInputPort4" size="1" onchange="onChangeInputPort4()"></select></td>
+    <td></td>
+    <td style="visibility:hidden">Velocity</td>
+    <td></td>
+    <td style="visibility:hidden"><span id="spanVelocity">-</span></td>
+    </tr>
+<tr><td>MIDI Out</td>
+    <td></td>
+    <td><select id="selectOutputPort" size="1" onchange="onChangeOutputPort()"></select></td>
+    <td></td>
+    </tr>
+<tr><td></td>
+    <td></td>
+    <td></td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td></td>
+    <td>&nbsp;</td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td></td>
+    <td>&nbsp;</td>
+    </tr>
+</table>
+
+<table>
+<tr><td>Preset</td>
+    <td></td>
+    <td><input type="button" value="#4 Decay [Mono]"     onclick="preset(4)"></td>
+    <td></td>
+    <td><input type="button" value="#5 PWM [Legato]"     onclick="preset(5)"></td>
+    <td></td>
+    <td><input type="button" value="#6 Saw [Para]"       onclick="preset(6)"></td>
+    <td></td>
+    <td><input type="button" value="#7 Initial [Legato]" onclick="preset(7)"></td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>Misc</td>
+    <td></td>
+    <td><input type="button" value="Random Ctrl"         onclick="setRandom()"></td>
+    <td></td>
+    <td><input type="button" value="Random FX"           onclick="setRandomChorus()"></td></tr>
+<tr><td></td>
+    <td></td>
+    <td><input type="button" value="#0 Fifth [Legato] "  onclick="preset(0)"></td>
+    <td></td>
+    <td><input type="button" value="#1 Quad [Para]"      onclick="preset(1)"></td>
+    <td></td>
+    <td><input type="button" value="#2 Plus [Para]"      onclick="preset(2)"></td>
+    <td></td>
+    <td><input type="button" value="#3 Minus [Para]"     onclick="preset(3)"></td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td></td>
+    <td></td>
+    <td><input type="button" value="Reset"               onclick="panic()"></td></tr>
+<tr><td>&nbsp;</td></tr>
+</table>
+
+<table>
+<tr><td>Recall</td>
+    <td></td>
+    <td><input type="button" value="#12"     onclick="loadControllers(12)"></td>
+    <td></td>
+    <td><input type="button" value="#13"     onclick="loadControllers(13)"></td>
+    <td></td>
+    <td><input type="button" value="#14"     onclick="loadControllers(14)"></td>
+    <td></td>
+    <td><input type="button" value="#15"     onclick="loadControllers(15)"></td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>Store</td>
+    <td></td>
+    <td><input type="button" value="#12"     onclick="saveControllers(12)"></td>
+    <td></td>
+    <td><input type="button" value="#13"     onclick="saveControllers(13)"></td>
+    <td></td>
+    <td><input type="button" value="#14"     onclick="saveControllers(14)"></td>
+    <td></td>
+    <td><input type="button" value="#15"     onclick="saveControllers(15)"></td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>Import</td>
+    <td></td>
+    <td><input type="file" id="fileImportAll" style="display:none" accept=".json"/>
+        <input type="button" value="All"     onclick="fileImportAll()"></td>
+    <td></td>
+    <td><input type="file" id="fileImportCurrent" style="display:none" accept=".json"/>
+        <input type="button" value="Current" onclick="fileImportCurrent()"></td></tr>
+<tr><td></td>
+    <td></td>
+    <td><input type="button" value="#8 "     onclick="loadControllers(8)" ></td>
+    <td></td>
+    <td><input type="button" value="#9 "     onclick="loadControllers(9)" ></td>
+    <td></td>
+    <td><input type="button" value="#10"     onclick="loadControllers(10)"></td>
+    <td></td>
+    <td><input type="button" value="#11"     onclick="loadControllers(11)"></td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td></td>
+    <td></td>
+    <td><input type="button" value="#8 "     onclick="saveControllers(8)" ></td>
+    <td></td>
+    <td><input type="button" value="#9 "     onclick="saveControllers(9)" ></td>
+    <td></td>
+    <td><input type="button" value="#10"     onclick="saveControllers(10)"></td>
+    <td></td>
+    <td><input type="button" value="#11"     onclick="saveControllers(11)"></td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>Export</td>
+    <td></td>
+    <td><input type="button" value="All"     onclick="fileExport()"></td></tr>
+<tr><td>&nbsp;</td></tr>
+</table>
+
+<table>
+<tr>
+<td colspan="8"><hr></td>
+</tr>
+<tr>
+<td colspan="2"><b>Osc 1</b> Wave [Saw|-|Tri|Pls|Sqr]  </td>
+<td colspan="2"><b>Osc 1</b> Shape <i>$$</i>                  </td>
+<td colspan="2"><b>Osc 1</b> Morph <i>$$</i>                  </td>
+<td colspan="2"><b>Mixer</b> Sub Osc <i>$$$</i>               </td>
+</tr>
+<tr>
+<td><input  id="inputCC24"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_1_WAVE     , value)"></td>
+<td><span    id="spanCC24" >-</span></td>
+<td><input  id="inputCC102" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_1_SHAPE    , value)"></td>
+<td><span    id="spanCC102">-</span></td>
+<td><input  id="inputCC103" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_1_MORPH    , value)"></td>
+<td><span    id="spanCC103">-</span></td>
+<td><input  id="inputCC26"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(MIXER_SUB_OSC  , value)"></td>
+<td><span    id="spanCC26" >-</span></td>
+<tr>
+<td colspan="2"><b>Osc 2</b> Wave <i>$</i> [Saw|-|Tri|Nos|Sqr]</td>
+<td colspan="2"><b>Osc 2</b> Coarse <i>$</i> [-|+]            </td>
+<td colspan="2"><b>Osc 2</b> Fine <i>$</i> [-|+]              </td>
+<td colspan="2"><b>Mixer</b> Osc Mix <i>$</i> [1|2]           </td>
+</tr>
+<tr>
+<td><input  id="inputCC55"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_2_WAVE     , value)"></td>
+<td><span    id="spanCC55" >-</span></td>
+<td><input  id="inputCC20"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_2_COARSE   , value)"></td>
+<td><span    id="spanCC20" >-</span></td>
+<td><input  id="inputCC21"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_2_FINE     , value)"></td>
+<td><span    id="spanCC21" >-</span></td>
+<td><input  id="inputCC25"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(MIXER_OSC_MIX  , value)"></td>
+<td><span    id="spanCC25" >-</span></td>
+</tr>
+<tr>
+<td colspan="2"><b>Filter</b> Cutoff                   </td>
+<td colspan="2"><b>Filter</b> Resonance                </td>
+<td colspan="2"><b>Filter</b> EG Amt [-|+]             </td>
+<td colspan="2"><b>Filter</b> Key Track <i>$</i> [0.0|0.5|1.0]</td>
+</tr>
+<tr>
+<td><input  id="inputCC16"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(FILTER_CUTOFF  , value)"></td>
+<td><span    id="spanCC16" >-</span></td>
+<td><input  id="inputCC17"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(FILTER_RESO    , value)"></td>
+<td><span    id="spanCC17" >-</span></td>
+<td><input  id="inputCC18"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(FILTER_EG_AMT  , value)"></td>
+<td><span    id="spanCC18" >-</span></td>
+<td><input  id="inputCC86"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(FILTER_KEY_TRK , value)"></td>
+<td><span    id="spanCC86" >-</span></td>
+</tr>
+<tr>
+<td colspan="2"><b>EG</b> Attack                       </td>
+<td colspan="2"><b>EG</b> Decay                        </td>
+<td colspan="2"><b>EG</b> Sustain                      </td>
+<td colspan="2"><b>EG</b> Release                      </td>
+</tr>
+<tr>
+<td><input  id="inputCC23"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_ATTACK      , value)"></td>
+<td><span    id="spanCC23" >-</span></td>
+<td><input  id="inputCC19"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_DECAY       , value)"></td>
+<td><span    id="spanCC19" >-</span></td>
+<td><input  id="inputCC27"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_SUSTAIN     , value)"></td>
+<td><span    id="spanCC27" >-</span></td>
+<td><input  id="inputCC28"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_RELEASE     , value)"></td>
+<td><span    id="spanCC28" >-</span></td>
+</tr>
+<tr>
+<td colspan="8"><hr></td>
+</tr>
+<tr>
+<td colspan="2"><b>EG</b> Osc Amt [-|+]                  </td>
+<td colspan="2"><b>EG</b> Osc Dst [P|2P|1S]              </td>
+<td colspan="2">Voice Mode [Par|-|Mon|Lgt|LP]     </td>
+<td colspan="2">Portamento                        </td>
+</tr>
+<tr>
+<td><input  id="inputCC104" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_OSC_AMT     , value)"></td>
+<td><span    id="spanCC104">-</span></td>
+<td><input  id="inputCC105" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_OSC_DST     , value)"></td>
+<td><span    id="spanCC105">-</span></td>
+<td><input  id="inputCC87"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(VOICE_MODE     , value)"></td>
+<td><span    id="spanCC87" >-</span></td>
+<td><input  id="inputCC22"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(PORTAMENTO     , value)"></td>
+<td><span    id="spanCC22" >-</span></td>
+</tr>
+<tr>
+<td colspan="2"><b>LFO</b> Wave [T1|T2|Saw|SH|Sqr]     </td>
+<td colspan="2"><b>LFO</b> Rate                        </td>
+<td colspan="2"><b>LFO</b> Depth                       </td>
+<td colspan="2"><b>LFO</b> Fade Time                   </td>
+</tr>
+<tr>
+<td><input  id="inputCC14"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_WAVE       , value)"></td>
+<td><span    id="spanCC14" >-</span></td>
+<td><input  id="inputCC80"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_RATE       , value)"></td>
+<td><span    id="spanCC80" >-</span></td>
+<td><input  id="inputCC81"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_DEPTH      , value)"></td>
+<td><span    id="spanCC81" >-</span></td>
+<td><input  id="inputCC15"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_FADE_TIME  , value)"></td>
+<td><span    id="spanCC15" >-</span></td>
+</tr>
+<tr>
+<td colspan="2"><b>LFO</b> Osc Amt [-|+]               </td>
+<td colspan="2"><b>LFO</b> Osc Dst [P|2P|1S]           </td>
+<td colspan="2"><b>LFO</b> Filter Amt [-|+]            </td>
+<td colspan="2"><b>Amp</b> Level                       </td>
+</tr>
+<tr>
+<td><input  id="inputCC82"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_OSC_AMT    , value)"></td>
+<td><span    id="spanCC82" >-</span></td>
+<td><input  id="inputCC9"   type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_OSC_DST    , value)"></td>
+<td><span    id="spanCC9"  >-</span></td>
+<td><input  id="inputCC83"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_FILTER_AMT , value)"></td>
+<td><span    id="spanCC83" >-</span></td>
+<td><input  id="inputCC110" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(AMP_LEVEL      , value)"></td>
+<td><span    id="spanCC110">-</span></td>
+</tr>
+<tr>
+<td colspan="2"><b>Amp</b> Attack                      </td>
+<td colspan="2"><b>Amp</b> Decay                       </td>
+<td colspan="2"><b>Amp</b> Sustain                     </td>
+<td colspan="2"><b>Amp</b> Release                     </td>
+</tr>
+<tr>
+<td><input  id="inputCC56"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(AMP_ATTACK     , value)"></td>
+<td><span    id="spanCC56" >-</span></td>
+<td><input  id="inputCC57"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(AMP_DECAY      , value)"></td>
+<td><span    id="spanCC57" >-</span></td>
+<td><input  id="inputCC58"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(AMP_SUSTAIN    , value)"></td>
+<td><span    id="spanCC58" >-</span></td>
+<td><input  id="inputCC59"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(AMP_RELEASE    , value)"></td>
+<td><span    id="spanCC59" >-</span></td>
+</tr>
+<tr>
+<td colspan="8"><hr></td>
+</tr>
+<tr>
+<td colspan="2"><b>Chorus</b> Mode [Off|M|PS|S|S2]     </td>
+<td colspan="2"><b>Chorus</b> Rate                     </td>
+<td colspan="2"><b>Chorus</b> Depth                    </td>
+<td colspan="2"><b>Chorus</b> Delay Time               </td>
+</tr>
+<tr>
+<td><input  id="inputCC63"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_MODE    , value)"></td>
+<td><span    id="spanCC63" >-</span></td>
+<td><input  id="inputCC61"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_RATE    , value)"></td>
+<td><span    id="spanCC61" >-</span></td>
+<td><input  id="inputCC60"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_DEPTH   , value)"></td>
+<td><span    id="spanCC60" >-</span></td>
+<td><input  id="inputCC62"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_DLY_TIME, value)"></td>
+<td><span    id="spanCC62" >-</span></td>
+</tr>
+<tr>
+<td colspan="2">Pitch Bend Range                </td>
+<td colspan="2"><b>Chorus</b> Bypass [Off|On]          </td>
+<td colspan="2"></td>
+<td colspan="2"></td>
+</tr>
+<tr>
+<td><input  id="inputCC85"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(P_BEND_RANGE   , value)"></td>
+<td><span    id="spanCC85" >-</span></td>
+<td><input  id="inputCC111" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_BYPASS  , value)"></td>
+<td><span    id="spanCC111">-</span></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="8"><hr></td>
+</tr>
+<tr>
+<td>&nbsp;</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td>&nbsp;</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td>&nbsp;</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td>&nbsp;</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+</tr>
+</table>
+
+<table>
+<tr><td colspan="2">Software Kbd Transpose</td>
+    </tr>
+<tr><td><input id="inputTranspose" type="range" min="-36" max="36" step="12" oninput="onChangeTranspose(value)" ></td>
+    <td><span id="spanTranspose" >-</span></td></tr>
+<tr>
+    <td>&nbsp;</td><td>&nbsp;</td>
+</tr>
+
+</table>
+
+<table>
+<tr>
+<td class="keyh"></td>
+<td class="keyb" onContextmenu="return false" onmousedown="noteOn(49)" onmouseup="noteOff(49)" ontouchstart="noteOn(49)" ontouchend="noteOff(49)">C#3</td>
+<td class="keyb" onContextmenu="return false" onmousedown="noteOn(51)" onmouseup="noteOff(51)" ontouchstart="noteOn(51)" ontouchend="noteOff(51)">D#3</td>
+<td class="keyp"></td>
+<td class="keyb" onContextmenu="return false" onmousedown="noteOn(54)" onmouseup="noteOff(54)" ontouchstart="noteOn(54)" ontouchend="noteOff(54)">F#3</td>
+<td class="keyb" onContextmenu="return false" onmousedown="noteOn(56)" onmouseup="noteOff(56)" ontouchstart="noteOn(56)" ontouchend="noteOff(56)">G#3</td>
+<td class="keyb" onContextmenu="return false" onmousedown="noteOn(58)" onmouseup="noteOff(58)" ontouchstart="noteOn(58)" ontouchend="noteOff(58)">A#3</td>
+<td class="keyp"></td>
+<td class="keyb" onContextmenu="return false" onmousedown="noteOn(61)" onmouseup="noteOff(61)" ontouchstart="noteOn(61)" ontouchend="noteOff(61)">C#4</td>
+<td class="keyb" onContextmenu="return false" onmousedown="noteOn(63)" onmouseup="noteOff(63)" ontouchstart="noteOn(63)" ontouchend="noteOff(63)">D#4</td>
+<td class="keyp"></td>
+<td class="keyb" onContextmenu="return false" onmousedown="noteOn(66)" onmouseup="noteOff(66)" ontouchstart="noteOn(66)" ontouchend="noteOff(66)">F#4</td>
+<td class="keyb" onContextmenu="return false" onmousedown="noteOn(68)" onmouseup="noteOff(68)" ontouchstart="noteOn(68)" ontouchend="noteOff(68)">G#4</td>
+<td class="keyb" onContextmenu="return false" onmousedown="noteOn(70)" onmouseup="noteOff(70)" ontouchstart="noteOn(70)" ontouchend="noteOff(70)">A#4</td>
+<td class="keyp"></td>
+<td class="keyh"></td>
+</tr>
+</table>
+
+<table>
+<tr>
+<td class="key"  onContextmenu="return false" onmousedown="noteOn(48)" onmouseup="noteOff(48)" ontouchstart="noteOn(48)" ontouchend="noteOff(48)">C3</td>
+<td class="key"  onContextmenu="return false" onmousedown="noteOn(50)" onmouseup="noteOff(50)" ontouchstart="noteOn(50)" ontouchend="noteOff(50)">D3</td>
+<td class="key"  onContextmenu="return false" onmousedown="noteOn(52)" onmouseup="noteOff(52)" ontouchstart="noteOn(52)" ontouchend="noteOff(52)">E3</td>
+<td class="key"  onContextmenu="return false" onmousedown="noteOn(53)" onmouseup="noteOff(53)" ontouchstart="noteOn(53)" ontouchend="noteOff(53)">F3</td>
+<td class="key"  onContextmenu="return false" onmousedown="noteOn(55)" onmouseup="noteOff(55)" ontouchstart="noteOn(55)" ontouchend="noteOff(55)">G3</td>
+<td class="key"  onContextmenu="return false" onmousedown="noteOn(57)" onmouseup="noteOff(57)" ontouchstart="noteOn(57)" ontouchend="noteOff(57)">A3</td>
+<td class="key"  onContextmenu="return false" onmousedown="noteOn(59)" onmouseup="noteOff(59)" ontouchstart="noteOn(59)" ontouchend="noteOff(59)">B3</td>
+<td class="key"  onContextmenu="return false" onmousedown="noteOn(60)" onmouseup="noteOff(60)" ontouchstart="noteOn(60)" ontouchend="noteOff(60)">C4</td>
+<td class="key"  onContextmenu="return false" onmousedown="noteOn(62)" onmouseup="noteOff(62)" ontouchstart="noteOn(62)" ontouchend="noteOff(62)">D4</td>
+<td class="key"  onContextmenu="return false" onmousedown="noteOn(64)" onmouseup="noteOff(64)" ontouchstart="noteOn(64)" ontouchend="noteOff(64)">E4</td>
+<td class="key"  onContextmenu="return false" onmousedown="noteOn(65)" onmouseup="noteOff(65)" ontouchstart="noteOn(65)" ontouchend="noteOff(65)">F4</td>
+<td class="key"  onContextmenu="return false" onmousedown="noteOn(67)" onmouseup="noteOff(67)" ontouchstart="noteOn(67)" ontouchend="noteOff(67)">G4</td>
+<td class="key"  onContextmenu="return false" onmousedown="noteOn(69)" onmouseup="noteOff(69)" ontouchstart="noteOn(69)" ontouchend="noteOff(69)">A4</td>
+<td class="key"  onContextmenu="return false" onmousedown="noteOn(71)" onmouseup="noteOff(71)" ontouchstart="noteOn(71)" ontouchend="noteOff(71)">B4</td>
+<td class="key"  onContextmenu="return false" onmousedown="noteOn(72)" onmouseup="noteOff(72)" ontouchstart="noteOn(72)" ontouchend="noteOff(72)">C5</td>
+</tr>
+</table>
+
+</body>
+</html>
