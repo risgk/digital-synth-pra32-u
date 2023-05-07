@@ -11,36 +11,33 @@
     - Paraphonic Mode: 4-Voice, 1-Oscillator
     - Built-in Chorus FX
     - Controlled by MIDI -- PRA32-U is a MIDI sound module
-- The sound of PRA32-U v1.0 is very similar to that of VRA8-U (type-16) v2.2
+- The sound of **PRA32-U v0.1** is very similar to that of **VRA8-U (type-16) v2.2**
     - <https://github.com/risgk/digital-synth-vra8-u>
-- I2S DAC (e.g. Pico Audio Pack) is required
+- An **I2S DAC** hardware (e.g. Pico Audio Pack) is required
     - **NOTE**: Large noise is generated during the sketch upload!
-- Arduino IDE and Raspberry Pi Pico/RP2040 (by Earle F. Philhower, III) core is required
-    - Additional Board Manager URL: https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
+- **Arduino IDE** and **Raspberry Pi Pico/RP2040** (by Earle F. Philhower, III) core are required
+    - Additional Board Manager URL: <https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json>
     - Raspberry Pi Pico/RP2040 core version 3.2.0 is recommended
 
 
 ## Features
 
-- Serial MIDI In (38.4 kbps)
-    - We recommend [Hairless MIDI<->Serial Bridge](https://projectgus.github.io/hairless-midiserial/) to connect PC
-    - **NOTE**: A combination of a **MIDI Shield** (or MIDI Breakout) and a **power supply adapter** is *better* to avoiding USB noise
-        - To use MIDI Shield (or MIDI Breakout), take `#define SERIAL_SPEED (31250)` (31.25 kbps) in `"DigitalSynthPRA32U.ino"`
-        - Even using only the power supply adapter *significantly* reduces USB noise
-- PWM Audio Out (Unipolar, Line Level) **L/Mono**: **Pin D5** (or D6), **R**: **Pin D11**
-    - Sampling Rate: 31.25 kHz, PWM Rate: 62.5 kHz, Bit Depth: 8 bit
-    - **NOTE**: When using the SparkFun MIDI Shield (DEV-12898), it should be modified to `#define L_MONO_AUDIO_OUT_PIN (6)` in `"DigitalSynthPRA32U.ino"`
-    - We recommend adding RC filter (post LPF) circuits to reduce PWM ripples
-        - A 1st-order LPF with a cutoff frequency 7.2 kHz (R = 220 ohm, C = 100 nF) works well
-    - We recommend adding AC coupling capacitors to reduce DC components
-        - A 10 uF electrolytic capacitor works well
+- USB MIDI In
+    - **NOTE**: Select USB Stack "Adafruit TinuUSB" in the Arduino IDE "Tools" menu
+    - MIDI Device Name: "Pico"
+    - Serial MIDI (31.25 kbps or 38.4 kbps) can also be used instead of USB MIDI
+        - Comment out `#define USE_USB_MIDI` and uncomment out `//#define USE_SERIAL1_MIDI` in `"DigitalSynthPRA32U.ino"`
+- Audio Out
+    - I2S DAC (e.g. PCM5100A), Sampling Rate: 31.25 kHz, Bit Depth: 16 bit
+    - The default configuration is for Pimoroni's [Pico Audio Pack](https://shop.pimoroni.com/products/pico-audio-pack)
+    - Modify `I2S_DATA_PIN` and `I2S_BCLK_PIN` in `"DigitalSynthPRA32U.ino"` to match the hardware configuration
 - Files
     - `"DigitalSynthPRA32U.ino"` is a Arduino sketch for Raspberry Pi Pico/RP2040 core
     - `"make-sample-wav-file.cc"` is for Debugging on PC
-        - Requiring GCC (g++) or other
+        - GCC (g++) for PC is required
         - `"make-sample-wav-file-cc.bat"` makes a sample WAV file (working on Windows)
-    - `"generate-*.rb"` generates source files
-        - Requiring a Ruby execution environment
+    - `"generate-*.rb"` generates source/header files
+        - A Ruby execution environment is required
 
 
 ## Limitations
