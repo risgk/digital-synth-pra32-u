@@ -3,18 +3,18 @@
 
 #pragma once
 
-#include "common.h"
+#include "./DigitalSynthPRA32U/common.h"
+#include "./DigitalSynthPRA32U/synth.h"
 
 template <uint8_t T>
-class SynthCore {
+class MIDIIn {
   static uint8_t m_system_exclusive;
   static uint8_t m_system_data_remaining;
   static uint8_t m_running_status;
   static uint8_t m_first_data;
 
 public:
-  INLINE static void initialize() {
-    IVoice<0>::initialize();
+  INLINE static void open() {
     m_running_status = STATUS_BYTE_INVALID;
     m_first_data = DATA_BYTE_INVALID;
   }
@@ -29,35 +29,35 @@ public:
         if (!is_data_byte(m_first_data)) {
           m_first_data = b;
         } else if (b == 0) {
-          note_off(m_first_data);
+          Synth<0>::note_off(m_first_data);
           m_first_data = DATA_BYTE_INVALID;
         } else {
-          note_on(m_first_data, b);
+          Synth<0>::note_on(m_first_data, b);
           m_first_data = DATA_BYTE_INVALID;
         }
       } else if (m_running_status == (NOTE_OFF | MIDI_CH)) {
         if (!is_data_byte(m_first_data)) {
           m_first_data = b;
         } else {
-          note_off(m_first_data);
+          Synth<0>::note_off(m_first_data);
           m_first_data = DATA_BYTE_INVALID;
         }
       } else if (m_running_status == (CONTROL_CHANGE | MIDI_CH)) {
         if (!is_data_byte(m_first_data)) {
           m_first_data = b;
         } else {
-          control_change(m_first_data, b);
+          Synth<0>::control_change(m_first_data, b);
           m_first_data = DATA_BYTE_INVALID;
         }
       } else if (m_running_status == (PITCH_BEND | MIDI_CH)) {
         if (!is_data_byte(m_first_data)) {
           m_first_data = b;
         } else {
-          pitch_bend(m_first_data, b);
+          Synth<0>::pitch_bend(m_first_data, b);
           m_first_data = DATA_BYTE_INVALID;
         }
       } else if (m_running_status == (PROGRAM_CHANGE | MIDI_CH)) {
-        program_change(b);
+        Synth<0>::program_change(b);
       }
     } else if (is_system_message(b)) {
       switch (b) {
@@ -92,30 +92,6 @@ public:
     }
   }
 
-  INLINE static void control_change(uint8_t controller_number, uint8_t controller_value) {
-    IVoice<0>::control_change(controller_number, controller_value);
-  }
-
-  INLINE static void pitch_bend(uint8_t lsb, uint8_t msb) {
-    IVoice<0>::pitch_bend(lsb, msb);
-  }
-
-  INLINE static void program_change(uint8_t program_number) {
-    IVoice<0>::program_change(program_number);
-  }
-
-  INLINE static void note_on(uint8_t note_number, uint8_t velocity) {
-    IVoice<0>::note_on(note_number, velocity);
-  }
-
-  INLINE static void note_off(uint8_t note_number) {
-    IVoice<0>::note_off(note_number);
-  }
-
-  INLINE static int16_t process(int16_t& right_level) {
-    return IVoice<0>::process(right_level);
-  }
-
 private:
   INLINE static boolean is_real_time_message(uint8_t b) {
     return b >= REAL_TIME_MESSAGE_MIN;
@@ -135,7 +111,7 @@ private:
 
 };
 
-template <uint8_t T> uint8_t SynthCore<T>::m_system_exclusive;
-template <uint8_t T> uint8_t SynthCore<T>::m_system_data_remaining;
-template <uint8_t T> uint8_t SynthCore<T>::m_running_status;
-template <uint8_t T> uint8_t SynthCore<T>::m_first_data;
+template <uint8_t T> uint8_t MIDIIn<T>::m_system_exclusive;
+template <uint8_t T> uint8_t MIDIIn<T>::m_system_data_remaining;
+template <uint8_t T> uint8_t MIDIIn<T>::m_running_status;
+template <uint8_t T> uint8_t MIDIIn<T>::m_first_data;

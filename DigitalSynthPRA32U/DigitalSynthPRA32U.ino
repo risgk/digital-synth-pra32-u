@@ -145,7 +145,7 @@ void __not_in_flash_func(loop1)() {
 void __not_in_flash_func(handleNoteOn)(byte channel, byte pitch, byte velocity)
 {
   if ((channel - 1) == MIDI_CH) {
-    ISynthCore<0>::note_on(pitch, velocity);
+    Synth<0>::note_on(pitch, velocity);
   }
 }
 
@@ -153,27 +153,27 @@ void __not_in_flash_func(handleNoteOff)(byte channel, byte pitch, byte velocity)
 {
   if ((channel - 1) == MIDI_CH) {
     (void) velocity;
-    ISynthCore<0>::note_off(pitch);
+    Synth<0>::note_off(pitch);
   }
 }
 
 void __not_in_flash_func(handleControlChange)(byte channel, byte number, byte value)
 {
   if ((channel - 1) == MIDI_CH) {
-    ISynthCore<0>::control_change(number, value);
+    Synth<0>::control_change(number, value);
   }
 }
 
 void __not_in_flash_func(handleHandleProgramChange)(byte channel, byte number)
 {
   if ((channel - 1) == MIDI_CH) {
-    ISynthCore<0>::program_change(number);
+    Synth<0>::program_change(number);
   }
 }
 
 void __not_in_flash_func(handleHandlePitchBend)(byte channel, int bend)
 {
   if ((channel - 1) == MIDI_CH) {
-    ISynthCore<0>::pitch_bend(bend & 0x7F, bend >> 7);
+    Synth<0>::pitch_bend(bend & 0x7F, bend >> 7);
   }
 }

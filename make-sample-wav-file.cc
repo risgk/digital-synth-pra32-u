@@ -10,6 +10,7 @@ typedef signed char boolean;
 
 #include "./DigitalSynthPRA32U/common.h"
 #include "./DigitalSynthPRA32U/synth.h"
+#include "./midi-in.h"
 #include "./wav-file-out.h"
 
 const uint16_t RECORDING_SEC = 60;
@@ -18,13 +19,14 @@ const uint16_t SERIAL_SPEED_38400 = 38400;
 int main(int argc, char *argv[]) {
   // setup
   Synth<0>::initialize();
+  MIDIIn<0>::open();
   FILE* bin_file = ::fopen(argv[1], "rb");
   WAVFileOut<0>::open(argv[2], RECORDING_SEC);
 
   // loop
   int c;
   while ((c = ::fgetc(bin_file)) != EOF) {
-    Synth<0>::receive_midi_byte(c);
+    MIDIIn<0>::receive_midi_byte(c);
     uint16_t r = SAMPLING_RATE / (SERIAL_SPEED_38400 / 10);
     for (uint16_t i = 0; i < r; i++) {
       int16_t right_level;

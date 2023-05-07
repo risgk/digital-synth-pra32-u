@@ -1,7 +1,5 @@
 #pragma once
 
-// #define private public  // for tests
-
 #include "common.h"
 
 // associations of units
@@ -11,7 +9,6 @@
 #define IEG         EG
 #define IDelayFx    DelayFx
 #define IVoice      Voice
-#define ISynthCore  SynthCore
 
 #include "osc.h"
 #include "filter.h"
@@ -19,21 +16,36 @@
 #include "eg.h"
 #include "delay-fx.h"
 #include "voice.h"
-#include "synth-core.h"
 
 template <uint8_t T>
 class Synth {
 public:
   INLINE static void initialize() {
-    ISynthCore<0>::initialize();
-    ISynthCore<0>::program_change(PROGRAM_NUMBER_DEFAULT);
+    IVoice<0>::initialize();
+    program_change(PROGRAM_NUMBER_DEFAULT);
   }
 
-  INLINE static void receive_midi_byte(uint8_t b) {
-    ISynthCore<0>::receive_midi_byte(b);
+  INLINE static void control_change(uint8_t controller_number, uint8_t controller_value) {
+    IVoice<0>::control_change(controller_number, controller_value);
+  }
+
+  INLINE static void pitch_bend(uint8_t lsb, uint8_t msb) {
+    IVoice<0>::pitch_bend(lsb, msb);
+  }
+
+  INLINE static void program_change(uint8_t program_number) {
+    IVoice<0>::program_change(program_number);
+  }
+
+  INLINE static void note_on(uint8_t note_number, uint8_t velocity) {
+    IVoice<0>::note_on(note_number, velocity);
+  }
+
+  INLINE static void note_off(uint8_t note_number) {
+    IVoice<0>::note_off(note_number);
   }
 
   INLINE static int16_t process(int16_t& right_level) {
-    return ISynthCore<0>::process(right_level);
+    return IVoice<0>::process(right_level);
   }
 };
