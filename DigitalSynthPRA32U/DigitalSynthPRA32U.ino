@@ -5,8 +5,8 @@
 
 #define DEBUG
 
-//#define USE_USB_MIDI
-#define USE_SERIAL_MIDI
+#define USE_USB_MIDI    // Select USB Stack: "Adafruit TinuUSB"
+//#define USE_SERIAL_MIDI
 
 #define SERIAL_MIDI_SPEED   (38400)
 //#define SERIAL_MIDI_SPEED   (31250)
@@ -24,10 +24,9 @@
 #include "common.h"
 #include "synth.h"
 
-#include <Adafruit_TinyUSB.h>
 #include <MIDI.h>
-
 #if defined(USE_USB_MIDI)
+#include <Adafruit_TinyUSB.h>
 Adafruit_USBD_MIDI usbd_midi;
 MIDI_CREATE_INSTANCE(Adafruit_USBD_MIDI, usbd_midi, MIDI);
 #elif defined(USE_SERIAL_MIDI)
@@ -57,7 +56,9 @@ void __not_in_flash_func(setup1)() {
 
   Synth<0>::initialize();
 
+#if defined(USE_USB_MIDI)
   TinyUSB_Device_Init(0);
+#endif
   MIDI.setHandleNoteOn(handleNoteOn);
   MIDI.setHandleNoteOff(handleNoteOff);
   MIDI.setHandleControlChange(handleControlChange);
@@ -79,6 +80,7 @@ void __not_in_flash_func(setup1)() {
 #if defined(USE_USB_MIDI)
   Serial1.begin(115200);
 #else
+  // Select USB Stack: "Pico SDK"
   Serial.begin(0);
 #endif
 #endif
