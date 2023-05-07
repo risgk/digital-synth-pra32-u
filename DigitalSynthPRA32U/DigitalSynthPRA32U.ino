@@ -5,17 +5,17 @@
 
 #define DEBUG_PRINT
 
-#define USE_USB_MIDI    // Select USB Stack: "Adafruit TinuUSB"
-//#define USE_SERIAL_MIDI
+#define USE_USB_MIDI      // Select USB Stack: "Adafruit TinuUSB"
+//#define USE_SERIAL1_MIDI
 
-#define SERIAL_MIDI_SPEED   (38400)
-//#define SERIAL_MIDI_SPEED   (31250)
+#define SERIAL1_MIDI_SPEED   (38400)
+//#define SERIAL1_MIDI_SPEED   (31250)
 
 #define MIDI_CH             (0)
 
 #define I2S_DATA_PIN        (9)
-#define I2S_BCLK_PIN        (10) // I2S_LRCLK_PIN is I2S_BCLK_PIN + 1
-#define I2S_BITS_PER_SAMPLE (16) // 16, 24, or 32
+#define I2S_BCLK_PIN        (10)  // I2S_LRCLK_PIN is I2S_BCLK_PIN + 1
+#define I2S_BITS_PER_SAMPLE (16)  // 16, 24, or 32
 #define I2S_BUFFERS         (3)
 #define I2S_BUFFER_WORDS    (8)
 
@@ -24,16 +24,12 @@
 #include "common.h"
 #include "synth.h"
 
-#if defined(USE_TINYUSB)
-#include <Adafruit_TinyUSB.h>
-#endif
-
 #include <MIDI.h>
-
 #if defined(USE_USB_MIDI)
+#include <Adafruit_TinyUSB.h>
 Adafruit_USBD_MIDI usbd_midi;
 MIDI_CREATE_INSTANCE(Adafruit_USBD_MIDI, usbd_midi, MIDI);
-#elif defined(USE_SERIAL_MIDI)
+#elif defined(USE_SERIAL1_MIDI)
 MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
 #endif
 
@@ -68,8 +64,8 @@ void __not_in_flash_func(setup1)() {
   MIDI.setHandleProgramChange(handleHandleProgramChange);
   MIDI.setHandlePitchBend(handleHandlePitchBend);
   MIDI.begin(MIDI_CHANNEL_OMNI);
-#if defined(USE_SERIAL_MIDI)
-  Serial1.begin(SERIAL_MIDI_SPEED);
+#if defined(USE_SERIAL1_MIDI)
+  Serial1.begin(SERIAL1_MIDI_SPEED);
 #endif
 
   i2s_output.setDATA(I2S_DATA_PIN);
@@ -80,11 +76,10 @@ void __not_in_flash_func(setup1)() {
   i2s_output.begin();
 
 #if defined(DEBUG_PRINT)
-#if defined(USE_TINYUSB)
-  Serial1.begin(115200);
+#if defined(USE_SERIAL1_MIDI)
+  Serial.begin(0);  // Select USB Stack: "Pico SDK"
 #else
-  // Select USB Stack: "Pico SDK"
-  Serial.begin(0);
+  Serial1.begin(115200);
 #endif
 #endif
 }
@@ -131,14 +126,14 @@ void __not_in_flash_func(loop1)() {
   static uint32_t s_debug_loop_counter = 0;
   if (++s_debug_loop_counter == 4000) {
     s_debug_loop_counter = 0;
-#if defined(USE_TINYUSB)
-    Serial1.println(debug_measurement_elapsed_us);
-    Serial1.println(s_debug_measurement_max_us);
-    Serial1.println();
-#else
+#if defined(USE_SERIAL1_MIDI)
     Serial.println(debug_measurement_elapsed_us);
     Serial.println(s_debug_measurement_max_us);
     Serial.println();
+#else
+    Serial1.println(debug_measurement_elapsed_us);
+    Serial1.println(s_debug_measurement_max_us);
+    Serial1.println();
 #endif
   }
 #endif
