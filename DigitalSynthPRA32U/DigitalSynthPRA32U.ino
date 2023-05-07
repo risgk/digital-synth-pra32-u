@@ -5,8 +5,8 @@
 
 #define DEBUG
 
-#define USE_USB_MIDI
-//#define USE_SERIAL_MIDI
+//#define USE_USB_MIDI
+#define USE_SERIAL_MIDI
 
 #define SERIAL_MIDI_SPEED   (38400)
 //#define SERIAL_MIDI_SPEED   (31250)
@@ -24,19 +24,19 @@
 #include "common.h"
 #include "synth.h"
 
-//#include <Arduino.h>
 #include <Adafruit_TinyUSB.h>
-
-#if defined(USE_USB_MIDI)
 #include <MIDI.h>
 
-Adafruit_USBD_MIDI g_usbd_midi;
-MIDI_CREATE_INSTANCE(Adafruit_USBD_MIDI, g_usbd_midi, MIDI);
+#if defined(USE_USB_MIDI)
+Adafruit_USBD_MIDI usbd_midi;
+MIDI_CREATE_INSTANCE(Adafruit_USBD_MIDI, usbd_midi, MIDI);
+#elif defined(USE_SERIAL_MIDI)
+MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
 #endif
 
 #include <I2S.h>
 
-I2S g_i2s_output(OUTPUT);
+I2S i2s_output(OUTPUT);
 
 void handleNoteOn(byte channel, byte pitch, byte velocity);
 void handleNoteOff(byte channel, byte pitch, byte velocity);
@@ -57,35 +57,26 @@ void __not_in_flash_func(setup1)() {
 
   Synth<0>::initialize();
 
-#if defined(USE_USB_MIDI)
   TinyUSB_Device_Init(0);
-  MIDI.begin(MIDI_CHANNEL_OMNI);
   MIDI.setHandleNoteOn(handleNoteOn);
   MIDI.setHandleNoteOff(handleNoteOff);
   MIDI.setHandleControlChange(handleControlChange);
   MIDI.setHandleProgramChange(handleHandleProgramChange);
   MIDI.setHandlePitchBend(handleHandlePitchBend);
-#endif
-
+  MIDI.begin(MIDI_CHANNEL_OMNI);
 #if defined(USE_SERIAL_MIDI)
-  Serial1.setTX(PIN_SERIAL1_TX);
-  Serial1.setRX(PIN_SERIAL1_RX);
   Serial1.begin(SERIAL_MIDI_SPEED);
 #endif
 
-//  AudioOut<0>::open();
-
-  g_i2s_output.setDATA(I2S_DATA_PIN);
-  g_i2s_output.setBCLK(I2S_BCLK_PIN);
-  g_i2s_output.setBitsPerSample(I2S_BITS_PER_SAMPLE);
-  g_i2s_output.setBuffers(I2S_BUFFERS, I2S_BUFFER_WORDS);
-  g_i2s_output.setFrequency(SAMPLING_RATE);
-  g_i2s_output.begin();
+  i2s_output.setDATA(I2S_DATA_PIN);
+  i2s_output.setBCLK(I2S_BCLK_PIN);
+  i2s_output.setBitsPerSample(I2S_BITS_PER_SAMPLE);
+  i2s_output.setBuffers(I2S_BUFFERS, I2S_BUFFER_WORDS);
+  i2s_output.setFrequency(SAMPLING_RATE);
+  i2s_output.begin();
 
 #if defined(DEBUG)
 #if defined(USE_USB_MIDI)
-  Serial1.setTX(PIN_SERIAL1_TX);
-  Serial1.setRX(PIN_SERIAL1_RX);
   Serial1.begin(115200);
 #else
   Serial.begin(0);
@@ -99,16 +90,7 @@ void __not_in_flash_func(loop1)() {
 //  uint32_t debug_measurement_start_us = micros();
 //#endif
 
-#if defined(USE_USB_MIDI)
   MIDI.read();
-#endif
-
-#if defined(USE_SERIAL_MIDI)
-  int32_t b = Serial1.read();
-  if (b >= 0) {
-    Synth<0>::receive_midi_byte(b);
-  }
-#endif
 
 #if defined(DEBUG)
   uint32_t debug_measurement_start_us = micros();
@@ -126,11 +108,11 @@ void __not_in_flash_func(loop1)() {
 
   for (uint32_t i = 0; i < I2S_BUFFER_WORDS; i++) {
 #if   (I2S_BITS_PER_SAMPLE == 16)
-    g_i2s_output.write16(left_buffer[i], right_buffer[i]);
+    i2s_output.write16(left_buffer[i], right_buffer[i]);
 #elif (I2S_BITS_PER_SAMPLE == 24)
-    g_i2s_output.write24(left_buffer[i] << 16, right_buffer[i] << 16);
+    i2s_output.write24(left_buffer[i] << 16, right_buffer[i] << 16);
 #elif (I2S_BITS_PER_SAMPLE == 32)
-    g_i2s_output.write32(left_buffer[i] << 16, right_buffer[i] << 16);
+    i2s_output.write32(left_buffer[i] << 16, right_buffer[i] << 16);
 #endif
   }
 
@@ -158,7 +140,6 @@ void __not_in_flash_func(loop1)() {
 }
 
 
-#if defined(USE_USB_MIDI)
 void __not_in_flash_func(handleNoteOn)(byte channel, byte pitch, byte velocity)
 {
   if ((channel - 1) == MIDI_CH) {
@@ -194,4 +175,3 @@ void __not_in_flash_func(handleHandlePitchBend)(byte channel, int bend)
     ISynthCore<0>::pitch_bend(bend & 0x7F, bend >> 7);
   }
 }
-#endif
