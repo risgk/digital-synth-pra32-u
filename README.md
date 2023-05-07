@@ -3,6 +3,7 @@
 - 2023-05-04 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
 
+
 ## Overview
 
 - Monophonic/Paraphonic United Synthesizer for Raspberry Pi Pico
@@ -13,13 +14,11 @@
 - The sound of PRA32-U v1.0 is very similar to that of VRA8-U (type-16) v2.2
     - <https://github.com/risgk/digital-synth-vra8-u>
 - I2S DAC (e.g. Pico Audio Pack) is required
+    - **NOTE**: Large noise is generated during the sketch upload!
 - Arduino IDE and Raspberry Pi Pico/RP2040 (by Earle F. Philhower, III) core is required
     - Additional Board Manager URL: https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
+    - Raspberry Pi Pico/RP2040 core version 3.2.0 is recommended
 
-## Caution about Arduino AVR Boards Version
-
-- Raspberry Pi Pico/RP2040 core version 3.2.0 is recommended
-    - If you use another version, the sketch *may not work well*: CPU Busy LED (LED L) *may continue to be lit*
 
 ## Features
 
@@ -43,28 +42,29 @@
     - `"generate-*.rb"` generates source files
         - Requiring a Ruby execution environment
 
+
 ## Limitations
 
-- Waveforms may slightly distort when receiving MIDI bytes continuously
-    - At that time, CPU Busy LED (LED L) probably blink
-    - Particularly noticeable with Note ON in paraphonic mode
 - Especially when the waveform is square wave, the noise of chorus delay component is noticeable at high frequency
+
 
 ## PRA32-U CTRL
 
 - `"pra32-u-ctrl.html"`: MIDI Controller (Editor) Application for PRA32-U, HTML App (Web App)
 - We recommend using Google Chrome, which implements Web MIDI API
-- On Windows, We recommend using [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html) (virtual loopback MIDI cable) to connect PRA32-U
-    - On Mac, a virtual MIDI bus (port) can be created by using the IAC bus
+- Select "Pico" in the list "MIDI Out"
 - Functions
     - PRA32-U CTRL converts Program Changes (#0-7 for PRESET, #8-15 for user programs) into Control Changes
     - When Program Change #127 is entered or Control Change #90 is changed from Off (63 or lower) to On (64 or higher), "Rand Ctrl" is processed
     - PRA32-U CTRL stores the current control values and the user programs (#8-15) in a Web browser (localStorage)
     - Current parameter values and user programs (#8-15) can be imported/exported from/to JSON files
 
+
 ## [Parameter Guide](/PRA32-U-Parameter-Guide.md)
 
+
 ## [MIDI Implementation Chart](/PRA32-U-MIDI-Implementation-Chart.md)
+
 
 ## Synthesizer Block Diagram
 
@@ -83,6 +83,7 @@ graph LR
     L          -.-> F
     AE[Amp EG] -.-> A
 ```
+
 
 ### Paraphonic Mode
 
@@ -104,3 +105,17 @@ graph LR
     L          -.-> F
     AE[Amp EG] -.-> A
 ```
+
+
+## License
+
+![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)
+
+**Digital Synth PRA32-U v0.0.0 by ISGK Instruments (Ryo Ishigaki)**
+
+To the extent possible under law, ISGK Instruments (Ryo Ishigaki)
+has waived all copyright and related or neighboring rights
+to Digital Synth PRA32-U v0.0.0.
+
+You should have received a copy of the CC0 legalcode along with this
+work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
