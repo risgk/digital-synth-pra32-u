@@ -10,12 +10,12 @@
     - Paraphonic Mode: 4-Voice, 1-Oscillator
     - Built-in Chorus FX
     - Controlled by MIDI: PRA32-U is MIDI Sound Module
-- We use Arduino IDE and **Raspberry Pi Pico/RP2040** (Arduino-Pico) core (by Earle F. Philhower, III)
+- We use Arduino IDE and **Raspberry Pi Pico/RP2040** core (by Earle F. Philhower, III)
     - Additional Board Manager URL: https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
 
 ## Caution about Arduino AVR Boards Version
 
-- We *strongly recommend* Raspberry Pi Pico/RP2040 (Arduino-Pico) core **3.1.1**
+- We *strongly recommend* Raspberry Pi Pico/RP2040 core **version 3.1.1**
     - If you use another version, the sketch *may not work well*: CPU Busy LED (LED L) *may continue to be lit*
 
 ## Features
