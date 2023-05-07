@@ -3,19 +3,22 @@
 - 2023-05-04 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
 
-## Concept
+## Overview
 
 - Monophonic/Paraphonic United Synthesizer for Raspberry Pi Pico
     - Monophonic Mode: 1-Voice, 2-Oscillator (with Sub Oscillator)
     - Paraphonic Mode: 4-Voice, 1-Oscillator
     - Built-in Chorus FX
-    - Controlled by MIDI: PRA32-U is MIDI Sound Module
-- We use Arduino IDE and **Raspberry Pi Pico/RP2040** core (by Earle F. Philhower, III)
+    - Controlled by MIDI -- PRA32-U is a MIDI sound module
+- The sound of PRA32-U v1.0 is very similar to that of VRA8-U (type-16) v2.2
+    - <https://github.com/risgk/digital-synth-vra8-u>
+- I2S DAC (e.g. Pico Audio Pack) is required
+- Arduino IDE and Raspberry Pi Pico/RP2040 (by Earle F. Philhower, III) core is required
     - Additional Board Manager URL: https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
 
 ## Caution about Arduino AVR Boards Version
 
-- We *strongly recommend* Raspberry Pi Pico/RP2040 core **version 3.1.1**
+- Raspberry Pi Pico/RP2040 core version 3.2.0 is recommended
     - If you use another version, the sketch *may not work well*: CPU Busy LED (LED L) *may continue to be lit*
 
 ## Features
