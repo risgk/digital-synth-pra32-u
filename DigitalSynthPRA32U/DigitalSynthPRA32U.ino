@@ -1,6 +1,9 @@
 /*
  * Digital Synth PRA32-U
  * - We strongly recommend Raspberry Pi Pico/RP2040 core (by Earle F. Philhower, III) version 3.1.1
+ * - We recommend CPU Speed: "120 MHz"
+ * - We recommend Optimize: "Small (-Os) (standard)"
+ * - We recommend Stack Ptotector: "Disabled"
  */
 
 #define DEBUG_PRINT
