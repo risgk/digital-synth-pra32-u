@@ -1,6 +1,6 @@
 /*
  * Digital Synth PRA32-U
- * - We strongly recommend Raspberry Pi Pico/RP2040 (by Earle F. Philhower, III) version 3.1.1
+ * - We strongly recommend Raspberry Pi Pico/RP2040 core (by Earle F. Philhower, III) version 3.1.1
  */
 
 #define DEBUG
