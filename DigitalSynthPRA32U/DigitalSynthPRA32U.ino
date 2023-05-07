@@ -3,7 +3,7 @@
  * - We strongly recommend Raspberry Pi Pico/RP2040 core (by Earle F. Philhower, III) version 3.1.1
  */
 
-#define DEBUG
+#define DEBUG_PRINT
 
 #define USE_USB_MIDI    // Select USB Stack: "Adafruit TinuUSB"
 //#define USE_SERIAL_MIDI
@@ -24,9 +24,13 @@
 #include "common.h"
 #include "synth.h"
 
-#include <MIDI.h>
-#if defined(USE_USB_MIDI)
+#if defined(USE_TINYUSB)
 #include <Adafruit_TinyUSB.h>
+#endif
+
+#include <MIDI.h>
+
+#if defined(USE_USB_MIDI)
 Adafruit_USBD_MIDI usbd_midi;
 MIDI_CREATE_INSTANCE(Adafruit_USBD_MIDI, usbd_midi, MIDI);
 #elif defined(USE_SERIAL_MIDI)
@@ -42,7 +46,6 @@ void handleNoteOff(byte channel, byte pitch, byte velocity);
 void handleControlChange(byte channel, byte number, byte value);
 void handleHandleProgramChange(byte channel, byte number);
 void handleHandlePitchBend(byte channel, int bend);
-
 
 void __not_in_flash_func(setup)() {
 }
@@ -76,8 +79,8 @@ void __not_in_flash_func(setup1)() {
   i2s_output.setFrequency(SAMPLING_RATE);
   i2s_output.begin();
 
-#if defined(DEBUG)
-#if defined(USE_USB_MIDI)
+#if defined(DEBUG_PRINT)
+#if defined(USE_TINYUSB)
   Serial1.begin(115200);
 #else
   // Select USB Stack: "Pico SDK"
@@ -88,13 +91,13 @@ void __not_in_flash_func(setup1)() {
 
 void __not_in_flash_func(loop1)() {
 
-//#if defined(DEBUG)
+//#if defined(DEBUG_PRINT)
 //  uint32_t debug_measurement_start_us = micros();
 //#endif
 
   MIDI.read();
 
-#if defined(DEBUG)
+#if defined(DEBUG_PRINT)
   uint32_t debug_measurement_start_us = micros();
 #endif
 
@@ -104,7 +107,7 @@ void __not_in_flash_func(loop1)() {
     left_buffer[i] = Synth<0>::process(right_buffer[i]);
   }
 
-#if defined(DEBUG)
+#if defined(DEBUG_PRINT)
   uint32_t debug_measurement_end_us = micros();
 #endif
 
@@ -118,7 +121,7 @@ void __not_in_flash_func(loop1)() {
 #endif
   }
 
-#if defined(DEBUG)
+#if defined(DEBUG_PRINT)
   static uint32_t s_debug_measurement_max_us = 0;
   uint32_t debug_measurement_elapsed_us = debug_measurement_end_us - debug_measurement_start_us;
   if (s_debug_measurement_max_us < debug_measurement_elapsed_us) {
@@ -128,7 +131,7 @@ void __not_in_flash_func(loop1)() {
   static uint32_t s_debug_loop_counter = 0;
   if (++s_debug_loop_counter == 4000) {
     s_debug_loop_counter = 0;
-#if defined(USE_USB_MIDI)
+#if defined(USE_TINYUSB)
     Serial1.println(debug_measurement_elapsed_us);
     Serial1.println(s_debug_measurement_max_us);
     Serial1.println();
@@ -140,7 +143,6 @@ void __not_in_flash_func(loop1)() {
   }
 #endif
 }
-
 
 void __not_in_flash_func(handleNoteOn)(byte channel, byte pitch, byte velocity)
 {
