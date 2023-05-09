@@ -1,6 +1,6 @@
 ```
-  [United Synthesizer]                                            Date: 2023-05-07                  
-  Model: Digital Synth PRA32-U    MIDI Implementation Chart       Version: 0.1.0                    
+  [United Synthesizer]                                            Date: 2023-05-09                  
+  Model: Digital Synth PRA32-U    MIDI Implementation Chart       Version: 0.1.1                    
 +-------------------------------+---------------+---------------+----------------------------------+
 | Function...                   | Transmitted   | Recognized    | Remarks                          |
 +-------------------------------+---------------+---------------+----------------------------------+
