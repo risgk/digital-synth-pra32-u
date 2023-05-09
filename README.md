@@ -1,6 +1,6 @@
-# Digital Synth PRA32-U v0.1.0
+# Digital Synth PRA32-U v0.1.1
 
-- 2023-05-07 ISGK Instruments
+- 2023-05-09 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
 
 
@@ -37,7 +37,7 @@
     - The default setting is for Pimoroni's [Pico Audio Pack](https://shop.pimoroni.com/products/pico-audio-pack)
     - Modify `I2S_DATA_PIN` and `I2S_BCLK_PIN` in `"DigitalSynthPRA32U.ino"` to match the hardware configuration
 - Files
-    - `"digital-synth-pra32-u-0.1.0.uf2"` (in the directory `"bin"`) is a UF2 file for Pico Audio Pack
+    - `"digital-synth-pra32-u-0.1.1.uf2"` (in the directory `"bin"`) is a UF2 file for Pico Audio Pack
     - `"DigitalSynthPRA32U.ino"` is a Arduino sketch for Raspberry Pi Pico/RP2040 core
     - `"make-sample-wav-file.cc"` is for debugging on PC
         - GCC (g++) for PC is required
@@ -114,11 +114,11 @@ graph LR
 
 ![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)
 
-**Digital Synth PRA32-U v0.1.0 by ISGK Instruments (Ryo Ishigaki)**
+**Digital Synth PRA32-U v0.1.1 by ISGK Instruments (Ryo Ishigaki)**
 
 To the extent possible under law, ISGK Instruments (Ryo Ishigaki)
 has waived all copyright and related or neighboring rights
-to Digital Synth PRA32-U v0.1.0.
+to Digital Synth PRA32-U v0.1.1.
 
 You should have received a copy of the CC0 legalcode along with this
 work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
