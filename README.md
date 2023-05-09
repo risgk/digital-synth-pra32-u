@@ -25,6 +25,7 @@
 - v0.1.1: Fix a bug where 0-velocity Note ON is not processed as Note OFF
 - v0.1.0: The first release
 
+
 ## Features
 
 - USB MIDI In
