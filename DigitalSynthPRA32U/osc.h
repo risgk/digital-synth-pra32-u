@@ -432,26 +432,26 @@ public:
 
 #if 1
     m_phase[0] += m_freq[0];
-    int8_t wave_0 = get_wave_level(m_wave_table[0], m_phase[0]);
-    int16_t result = wave_0 * m_osc_gain_effective[0];
+    int16_t wave_0 = get_wave_level(m_wave_table[0], m_phase[0]);
+    int32_t result = wave_0 * m_osc_gain_effective[0];
 
     if (m_mono_mode == false) {
       m_phase[1] += m_freq[1];
-      int8_t wave_1 = get_wave_level(m_wave_table[1], m_phase[1]);
+      int16_t wave_1 = get_wave_level(m_wave_table[1], m_phase[1]);
       result += wave_1 * m_osc_gain_effective[1];
 
       m_phase[2] += m_freq[2];
-      int8_t wave_2 = get_wave_level(m_wave_table[2], m_phase[2]);
+      int16_t wave_2 = get_wave_level(m_wave_table[2], m_phase[2]);
       result += wave_2 * m_osc_gain_effective[2];
 
       m_phase[3] += m_freq[3];
-      int8_t wave_3 = get_wave_level(m_wave_table[3], m_phase[3]);
+      int16_t wave_3 = get_wave_level(m_wave_table[3], m_phase[3]);
       result += wave_3 * m_osc_gain_effective[3];
     } else {
       if (m_waveform[0] == WAVEFORM_1_PULSE) {
         // For Shaped Saw Wave or Pulse Wave (wave_3)
         m_phase[3] = m_phase[0] + m_osc1_shape;
-        int8_t wave_3 = get_wave_level(m_wave_table[0], m_phase[3]);
+        int16_t wave_3 = get_wave_level(m_wave_table[0], m_phase[3]);
         result += wave_3 * m_osc_gain_effective[3];
       } else {
         // Sub Osc (wave_1)
@@ -463,20 +463,20 @@ public:
           m_phase[1] += 0x8000;
         }
 
-        int8_t wave_1 = high_sbyte(m_phase[1]);
-        if (wave_1 < -64) {
-          wave_1 = -64 - (wave_1 + 64);
-        } else if (wave_1 < 64) {
+        int16_t wave_1 = m_phase[1];
+        if (wave_1 < -(64 << 8)) {
+          wave_1 = -(64 << 8) - (wave_1 + (64 << 8));
+        } else if (wave_1 < (64 << 8)) {
           // do nothing
         } else {
-          wave_1 = 64 - (wave_1 - 64);
+          wave_1 = (64 << 8) - (wave_1 - (64 << 8));
         }
-        result += wave_1 * (static_cast<uint8_t>(m_osc_gain_effective[1]) << 1);
+        result += wave_1 * (m_osc_gain_effective[1] << 1);
       }
 
       if (m_waveform[1] != WAVEFORM_2_NOISE) {
         m_phase[2] += m_freq[2];
-        int8_t wave_2 = get_wave_level(m_wave_table[2], m_phase[2]);
+        int16_t wave_2 = get_wave_level(m_wave_table[2], m_phase[2]);
         result += wave_2 * m_osc_gain_effective[2];
       } else {
         // Noise (wave_2)
@@ -491,10 +491,10 @@ public:
       }
     }
 #else
-    int16_t result  = 0;
+    int32_t result  = 0;
 #endif
 
-    return result;
+    return result >> 8;
   }
 
 private:
@@ -511,7 +511,7 @@ private:
     return result;
   }
 
-  INLINE static int8_t get_wave_level(const uint8_t* wave_table, uint16_t phase) {
+  INLINE static int16_t get_wave_level(const uint8_t* wave_table, uint16_t phase) {
     uint8_t curr_index = high_byte(phase);
     uint8_t next_weight = low_byte(phase);
     uint16_t two_data = ram_read_word(wave_table + curr_index);
@@ -519,7 +519,7 @@ private:
     uint8_t next_data = high_byte(two_data);
 
     // lerp
-    int8_t result = curr_data + high_sbyte(static_cast<int8_t>(next_data - curr_data) * next_weight);
+    int16_t result = (curr_data << 8) + (static_cast<int8_t>(next_data - curr_data) * next_weight);
 
     return result;
   }
