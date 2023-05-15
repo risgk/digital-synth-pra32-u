@@ -3,7 +3,6 @@
 // refs http://www.musicdsp.org/files/Audio-EQ-Cookbook.txt
 
 #include "common.h"
-#include "mul-q.h"
 #include "filter-table.h"
 
 template <uint8_t T>
@@ -119,9 +118,9 @@ public:
 
 #if 1
     int16_t x_0  = audio_input >> (16 - AUDIO_FRACTION_BITS);
-    int16_t tmp  = mul_sq16_sq16(x_0 + (m_x_1 << 1) + m_x_2, m_b_2_over_a_0);
-    tmp         -= mul_sq16_sq8( m_y_1,                      m_a_1_over_a_0_high);
-    tmp         -= mul_sq16_sq16(m_y_2,                      m_a_2_over_a_0);
+    int16_t tmp  = ((x_0 + (m_x_1 << 1) + m_x_2) * m_b_2_over_a_0     ) >> 16;
+    tmp         -= ( m_y_1                       * m_a_1_over_a_0_high) >> 8;
+    tmp         -= ( m_y_2                       * m_a_2_over_a_0     ) >> 16;
     int16_t y_0  = tmp << (16 - FILTER_TABLE_FRACTION_BITS);
 
     m_x_2 = m_x_1;
@@ -149,7 +148,7 @@ private:
   }
 
   INLINE static void update_coefs_1st(int16_t lfo_input) {
-    m_cutoff_candidate -= high_sbyte(mul_sq16_sq8(lfo_input, m_cutoff_lfo_amt) << 1);
+    m_cutoff_candidate -= high_sbyte(((lfo_input * m_cutoff_lfo_amt) >> 8) << 1);
 
     // OSC Pitch is handled here (not in Voice) for performance reasons
     uint16_t osc_pitch = IOsc<0>::get_osc_pitch();

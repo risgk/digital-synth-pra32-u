@@ -10,6 +10,6 @@ public:
   }
 
   INLINE static int16_t process(int16_t audio_input, uint8_t gain_control) {
-    return mul_sq16_uq8(audio_input, gain_control);
+    return (audio_input * gain_control) >> 8;
   }
 };

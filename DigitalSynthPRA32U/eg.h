@@ -5,7 +5,6 @@
 #pragma once
 
 #include "common.h"
-#include "mul-q.h"
 
 template <uint8_t T>
 class EG {
@@ -115,7 +114,7 @@ public:
           uint8_t coef;
           coef = 188 + m_attack_update_coef;
 
-          m_level = EG_LEVEL_MAX_X_1_5 - mul_uq16_uq8(EG_LEVEL_MAX_X_1_5 - m_level, coef);
+          m_level = EG_LEVEL_MAX_X_1_5 - (((EG_LEVEL_MAX_X_1_5 - m_level) * coef) >> 8);
           if (m_level >= EG_LEVEL_MAX) {
             m_level = EG_LEVEL_MAX;
             m_state = STATE_SUSTAIN;
@@ -133,7 +132,7 @@ public:
             uint8_t coef;
             coef = 188 + m_decay_update_coef;
 
-            m_level = m_sustain + mul_uq16_uq8(m_level - m_sustain, coef);
+            m_level = m_sustain + (((m_level - m_sustain) * coef) >> 8);
             if (m_level < m_sustain) {
               m_level = m_sustain;
             }
@@ -150,7 +149,7 @@ public:
             uint8_t coef;
             coef = 188 + m_release_update_coef;
 
-            m_level = mul_uq16_uq8(m_level, coef);
+            m_level = (m_level * coef) >> 8;
             if (m_level < 0x0100) {
               m_level = 0;
             }

@@ -2,7 +2,6 @@
 
 #include "common.h"
 #include "osc-table.h"
-#include "mul-q.h"
 #include <math.h>
 
 static const uint8_t OSC_MIX_TABLE_LENGTH   = 31;
@@ -573,9 +572,9 @@ private:
 
     if (m_osc_on_temp[N]) {
       if ((m_portamento_coef[N] == PORTAMENTO_COEF_OFF) || (m_pitch_current[N] <= m_pitch_target[N])) {
-        m_pitch_current[N] = m_pitch_target[N] - mul_sq16_uq8(m_pitch_target[N]  - m_pitch_current[N], m_portamento_coef[N]);
+        m_pitch_current[N] = m_pitch_target[N]  - (((m_pitch_target[N] - m_pitch_current[N]) *        m_portamento_coef[N] ) >> 8);
       } else {
-        m_pitch_current[N] = m_pitch_current[N] + mul_sq16_uq8(m_pitch_target[N] - m_pitch_current[N], 256 - m_portamento_coef[N]);
+        m_pitch_current[N] = m_pitch_current[N] + (((m_pitch_target[N] - m_pitch_current[N]) * (256 - m_portamento_coef[N])) >> 8);
       }
     }
   }
@@ -716,7 +715,7 @@ private:
   }
 
   INLINE static void update_lfo_4th(uint8_t eg_level) {
-    m_lfo_mod_level[0] = -mul_sq16_sq8(m_lfo_level, m_pitch_lfo_amt[0]);
+    m_lfo_mod_level[0] = -((m_lfo_level * m_pitch_lfo_amt[0]) >> 8);
 
     if (m_mono_mode) {
       m_osc1_shape_control_effective += (m_osc1_shape_control_effective < m_osc1_shape_control);
@@ -724,9 +723,9 @@ private:
       m_osc1_shape_control_effective -= (m_osc1_shape_control_effective > m_osc1_shape_control);
       m_osc1_shape_control_effective -= (m_osc1_shape_control_effective > m_osc1_shape_control);
 
-      m_lfo_mod_level[1] = -mul_sq16_sq8(m_lfo_level, m_pitch_lfo_amt[1]);
+      m_lfo_mod_level[1] = -(((m_lfo_level * m_pitch_lfo_amt[1])) >> 8);
       int16_t shape_eg_mod = (eg_level * m_shape_eg_amt) << 1;
-      int16_t shape_lfo_mod = mul_sq16_sq8(m_lfo_level << 2, m_shape_lfo_amt) << 1;
+      int16_t shape_lfo_mod = (((m_lfo_level << 2) * m_shape_lfo_amt) << 1) >> 8;
       uint16_t osc1_shape_base = 0x0000;
       if (m_waveform[0] == WAVEFORM_1_PULSE) {
         osc1_shape_base = 0x8000;
@@ -764,7 +763,7 @@ private:
   }
 
   INLINE static void update_chorus_lfo_2nd() {
-    m_chorus_lfo_level = mul_sq16_uq8(m_chorus_lfo_wave_level, m_chorus_depth_control_actual);
+    m_chorus_lfo_level = (m_chorus_lfo_wave_level * m_chorus_depth_control_actual) >> 8;
   }
 
   INLINE static void update_chorus_lfo_3rd() {
