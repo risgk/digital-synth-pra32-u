@@ -66,8 +66,8 @@ class Osc {
   static uint16_t       m_pitch_target[4];
   static uint16_t       m_pitch_current[4];
   static uint16_t       m_pitch_real[4];
-  static const uint8_t* m_wave_table[4];
-  static const uint8_t* m_wave_table_temp[4];
+  static const int8_t*  m_wave_table[4];
+  static const int8_t*  m_wave_table_temp[4];
   static uint16_t       m_freq[4];
   static uint16_t       m_freq_temp[4];
   static uint16_t       m_phase[4];
@@ -498,8 +498,8 @@ public:
   }
 
 private:
-  INLINE static const uint8_t* get_wave_table(uint8_t waveform, uint8_t note_number) {
-    const uint8_t* result;
+  INLINE static const int8_t* get_wave_table(uint8_t waveform, uint8_t note_number) {
+    const int8_t* result;
     if ((waveform == WAVEFORM_SAW) ||
         (m_mono_mode && (waveform == WAVEFORM_1_PULSE))) {
       result = g_osc_saw_wave_tables[note_number - NOTE_NUMBER_MIN];
@@ -511,15 +511,14 @@ private:
     return result;
   }
 
-  INLINE static int16_t get_wave_level(const uint8_t* wave_table, uint16_t phase) {
-    uint8_t curr_index = high_byte(phase);
-    uint8_t next_weight = low_byte(phase);
-    uint16_t two_data = ram_read_word(wave_table + curr_index);
-    uint8_t curr_data = low_byte(two_data);
-    uint8_t next_data = high_byte(two_data);
+  INLINE static int16_t get_wave_level(const int8_t* wave_table, uint16_t phase) {
+    uint8_t curr_index  = phase >> 8;
+    uint8_t next_weight = phase & 0xFF;
+    int8_t  curr_data   = wave_table[curr_index + 0];
+    int8_t  next_data   = wave_table[curr_index + 1];
 
     // lerp
-    int16_t result = (curr_data << 8) + (static_cast<int8_t>(next_data - curr_data) * next_weight);
+    int16_t result = (curr_data << 8) + ((next_data - curr_data) * next_weight);
 
     return result;
   }
@@ -847,8 +846,8 @@ template <uint8_t T> int16_t         Osc<T>::m_pitch_bend_normalized;
 template <uint8_t T> uint16_t        Osc<T>::m_pitch_target[4];
 template <uint8_t T> uint16_t        Osc<T>::m_pitch_current[4];
 template <uint8_t T> uint16_t        Osc<T>::m_pitch_real[4];
-template <uint8_t T> const uint8_t*  Osc<T>::m_wave_table[4];
-template <uint8_t T> const uint8_t*  Osc<T>::m_wave_table_temp[4];
+template <uint8_t T> const int8_t*   Osc<T>::m_wave_table[4];
+template <uint8_t T> const int8_t*   Osc<T>::m_wave_table_temp[4];
 template <uint8_t T> uint16_t        Osc<T>::m_freq[4];
 template <uint8_t T> uint16_t        Osc<T>::m_freq_temp[4];
 template <uint8_t T> uint16_t        Osc<T>::m_phase[4];
