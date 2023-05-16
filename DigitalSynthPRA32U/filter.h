@@ -117,11 +117,11 @@ public:
 #endif
 
 #if 1
-    int16_t x_0  = audio_input >> (16 - AUDIO_FRACTION_BITS);
-    int16_t tmp  = ((x_0 + (m_x_1 << 1) + m_x_2) * m_b_2_over_a_0) >> 16;
-    tmp         -= ( m_y_1                       * m_a_1_over_a_0) >> 16;
-    tmp         -= ( m_y_2                       * m_a_2_over_a_0) >> 16;
-    int16_t y_0  = tmp << (16 - FILTER_TABLE_FRACTION_BITS);
+    int16_t x_0   = audio_input >> (16 - AUDIO_FRACTION_BITS);
+    int32_t tmp   = ((x_0 + (m_x_1 << 1) + m_x_2) * m_b_2_over_a_0) >> 1;
+    tmp          -= ( m_y_1                       * m_a_1_over_a_0) >> 0;
+    tmp          -= ( m_y_2                       * m_a_2_over_a_0) >> 1;
+    int16_t y_0   = tmp >> FILTER_TABLE_FRACTION_BITS;
 
     m_x_2 = m_x_1;
     m_y_2 = m_y_1;
