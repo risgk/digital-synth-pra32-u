@@ -524,45 +524,41 @@ private:
   }
 
   INLINE static int16_t get_lfo_wave_level(uint16_t phase) {
-    int8_t level = 0;
+    int16_t level = 0;
 
     switch (m_lfo_waveform) {
     case LFO_WAVEFORM_TRI_ASYNC:
     case LFO_WAVEFORM_TRI_SYNC:
-      level = high_sbyte(phase);
-      if (level < -64) {
-        level = -64 - (level + 64);
-      } else if (level < 64) {
+      level = static_cast<int16_t>(phase) >> 1;
+      if (level < -(64 << 7)) {
+        level = -(64 << 7) - (level + (64 << 7));
+      } else if (level < (64 << 7)) {
         // do nothing
       } else {
-        level = 64 - (level - 64);
+        level = (64 << 7) - (level - (64 << 7));
       }
-      level = -level;
       break;
     case LFO_WAVEFORM_SAW_DOWN:
       {
-        uint8_t b = high_byte(phase);
-        b >>= 1;
-        level = b - 64;
+        level = (64 << 7) - (phase >> 2);
       }
       break;
     case LFO_WAVEFORM_RANDOM:
       if (phase < m_lfo_rate) {
-        m_lfo_sampled = (m_rnd >> 1);
+        m_lfo_sampled = (m_rnd << 6);
       }
-      level = m_lfo_sampled - 64;
+      level = (64 << 7) - m_lfo_sampled;
       break;
     case LFO_WAVEFORM_SQUARE:
-      level = high_sbyte(phase);
-      if (level >= 0) {
-        level = -128;
+      if (phase < 0x8000) {
+        level = 128 << 7;
       } else {
         level = 0;
       }
       break;
     }
 
-    return -level;
+    return level;
   }
 
   template <uint8_t N>
@@ -681,6 +677,7 @@ private:
   }
 
   INLINE static void update_rnd() {
+    // TODO
     m_rnd ^= m_rnd << 1;
     m_rnd ^= m_rnd >> 1;
     m_rnd ^= m_rnd << 2;
@@ -710,7 +707,7 @@ private:
     }
     lfo_depth <<= 1;
 
-    m_lfo_level = (lfo_depth * m_lfo_wave_level) >> 2;
+    m_lfo_level = (lfo_depth * m_lfo_wave_level) >> 9;
   }
 
   INLINE static void update_lfo_4th(int16_t eg_level) {
