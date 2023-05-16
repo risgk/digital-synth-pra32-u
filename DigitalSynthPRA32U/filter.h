@@ -7,8 +7,8 @@
 
 template <uint8_t T>
 class Filter {
-  static const int16_t*  m_lpf_table;
-  static int16_t         m_b_2_over_a_0;
+  static const uint16_t* m_lpf_table;
+  static uint16_t        m_b_2_over_a_0;
   static int16_t         m_a_1_over_a_0;
   static int16_t         m_a_2_over_a_0;
   static int16_t         m_x_1;
@@ -118,7 +118,7 @@ public:
 
 #if 1
     int16_t x_0   = audio_input >> (16 - AUDIO_FRACTION_BITS);
-    int32_t tmp   = ((x_0 + (m_x_1 << 1) + m_x_2) * m_b_2_over_a_0) >> 1;
+    int32_t tmp   = ((x_0 + (m_x_1 << 1) + m_x_2) * m_b_2_over_a_0) >> 2;
     tmp          -= ( m_y_1                       * m_a_1_over_a_0) >> 0;
     tmp          -= ( m_y_2                       * m_a_2_over_a_0) >> 1;
     int16_t y_0   = tmp >> FILTER_TABLE_FRACTION_BITS;
@@ -174,14 +174,14 @@ private:
 
   INLINE static void update_coefs_3rd() {
     size_t index = m_cutoff_current * 3;
-    m_b_2_over_a_0 = m_lpf_table[index + 0];
-    m_a_1_over_a_0 = m_lpf_table[index + 1];
-    m_a_2_over_a_0 = m_lpf_table[index + 2];
+    m_b_2_over_a_0 =                      m_lpf_table[index + 0];
+    m_a_1_over_a_0 = static_cast<int16_t>(m_lpf_table[index + 1]);
+    m_a_2_over_a_0 = static_cast<int16_t>(m_lpf_table[index + 2]);
   }
 };
 
-template <uint8_t T> const int16_t*  Filter<T>::m_lpf_table;
-template <uint8_t T> int16_t         Filter<T>::m_b_2_over_a_0;
+template <uint8_t T> const uint16_t* Filter<T>::m_lpf_table;
+template <uint8_t T> uint16_t        Filter<T>::m_b_2_over_a_0;
 template <uint8_t T> int16_t         Filter<T>::m_a_1_over_a_0;
 template <uint8_t T> int16_t         Filter<T>::m_a_2_over_a_0;
 template <uint8_t T> int16_t         Filter<T>::m_x_1;
