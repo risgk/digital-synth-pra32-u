@@ -37,7 +37,7 @@ class Osc {
   static int8_t         m_pitch_eg_amt[2];
   static int16_t        m_lfo_mod_level[2];
   static uint16_t       m_lfo_phase;
-  static int8_t         m_lfo_wave_level;
+  static int16_t        m_lfo_wave_level;
   static int16_t        m_lfo_level;
   static uint16_t       m_lfo_rate;
   static uint8_t        m_lfo_depth[2];
@@ -523,7 +523,7 @@ private:
     return result;
   }
 
-  INLINE static int8_t get_lfo_wave_level(uint16_t phase) {
+  INLINE static int16_t get_lfo_wave_level(uint16_t phase) {
     int8_t level = 0;
 
     switch (m_lfo_waveform) {
@@ -562,7 +562,7 @@ private:
       break;
     }
 
-    return level;
+    return -level;
   }
 
   template <uint8_t N>
@@ -710,27 +710,21 @@ private:
     }
     lfo_depth <<= 1;
 
-    m_lfo_level = (lfo_depth * m_lfo_wave_level) >> 1;
+    m_lfo_level = (lfo_depth * m_lfo_wave_level) >> 2;
   }
 
   INLINE static void update_lfo_4th(int16_t eg_level) {
-    m_lfo_mod_level[0] = -((m_lfo_level * m_pitch_lfo_amt[0]) >> 8);
+    m_lfo_mod_level[0] = (m_lfo_level * m_pitch_lfo_amt[0]) >> 7;
 
     if (m_mono_mode) {
-      m_osc1_shape_control_effective += (m_osc1_shape_control_effective < m_osc1_shape_control);
-      m_osc1_shape_control_effective += (m_osc1_shape_control_effective < m_osc1_shape_control);
-      m_osc1_shape_control_effective -= (m_osc1_shape_control_effective > m_osc1_shape_control);
-      m_osc1_shape_control_effective -= (m_osc1_shape_control_effective > m_osc1_shape_control);
+      m_osc1_shape_control_effective += (m_osc1_shape_control_effective < m_osc1_shape_control) << 1;
+      m_osc1_shape_control_effective -= (m_osc1_shape_control_effective > m_osc1_shape_control) << 1;
 
-      m_lfo_mod_level[1] = -(((m_lfo_level * m_pitch_lfo_amt[1])) >> 8);
-      int16_t shape_eg_mod = (eg_level * m_shape_eg_amt) >> 6;
-      int16_t shape_lfo_mod = (((m_lfo_level << 2) * m_shape_lfo_amt) << 1) >> 8;
-      uint16_t osc1_shape_base = 0x0000;
-      if (m_waveform[0] == WAVEFORM_1_PULSE) {
-        osc1_shape_base = 0x8000;
-      }
-      m_osc1_shape = osc1_shape_base - (m_osc1_shape_control_effective << 8) +
-        + shape_eg_mod + shape_eg_mod + shape_lfo_mod + shape_lfo_mod;
+      m_lfo_mod_level[1] = ((m_lfo_level * m_pitch_lfo_amt[1])) >> 7;
+      uint16_t shape_eg_mod  = (eg_level * m_shape_eg_amt) >> 6;
+      uint16_t shape_lfo_mod = -((m_lfo_level * m_shape_lfo_amt) >> 3);
+      m_osc1_shape = 0x8000u - (m_osc1_shape_control_effective << 8) +
+        + shape_eg_mod + shape_eg_mod + shape_lfo_mod;
     } else {
       m_lfo_mod_level[1] = m_lfo_mod_level[0];
     }
@@ -817,7 +811,7 @@ template <uint8_t T> uint8_t         Osc<T>::m_portamento_coef[4];
 template <uint8_t T> int8_t          Osc<T>::m_pitch_eg_amt[2];
 template <uint8_t T> int16_t         Osc<T>::m_lfo_mod_level[2];
 template <uint8_t T> uint16_t        Osc<T>::m_lfo_phase;
-template <uint8_t T> int8_t          Osc<T>::m_lfo_wave_level;
+template <uint8_t T> int16_t         Osc<T>::m_lfo_wave_level;
 template <uint8_t T> int16_t         Osc<T>::m_lfo_level;
 template <uint8_t T> uint16_t        Osc<T>::m_lfo_rate;
 template <uint8_t T> uint8_t         Osc<T>::m_lfo_depth[2];
