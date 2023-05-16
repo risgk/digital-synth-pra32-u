@@ -657,11 +657,11 @@ public:
   INLINE static int16_t process(int16_t& right_level) {
     ++m_count;
 
-    uint8_t eg_output_0 = IEG<0>::process(m_count);
+    int16_t eg_output_0 = IEG<0>::process(m_count);
     int16_t osc_output = IOsc<0>::process(m_count, eg_output_0);
     int16_t lfo_output = IOsc<0>::get_lfo_level();
     int16_t filter_output = IFilter<0>::process(m_count, osc_output, eg_output_0, lfo_output);
-    uint8_t eg_output_1 = IEG<1>::process(m_count);
+    int16_t eg_output_1 = IEG<1>::process(m_count);
     int16_t amp_output = IAmp<0>::process(filter_output, eg_output_1);
 
     int16_t dir_sample = amp_output;

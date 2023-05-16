@@ -16,7 +16,7 @@ class EG {
 
   static uint8_t  m_state;
   static uint16_t m_level;
-  static uint8_t  m_level_out;
+  static int16_t  m_level_out;
   static uint8_t  m_attack_update_coef;
   static uint8_t  m_decay_update_coef;
   static uint16_t m_sustain;
@@ -101,7 +101,7 @@ public:
     m_rest = m_release_update_coef;
   }
 
-  INLINE static uint8_t process(uint8_t count) {
+  INLINE static int16_t process(uint8_t count) {
 #if 1
     if ((count & (EG_CONTROL_INTERVAL - 1)) == ((T == 0) ? 3 : 11)) {
       //printf("%d EG\n", count);
@@ -159,12 +159,9 @@ public:
       }
 
       if (T == 1) {
-        m_level_out = high_byte(high_byte(m_level) * m_gain_coef) << 1;
-        if (m_level_out < 4) {
-          m_level_out = 0;
-        }
+        m_level_out = (m_level * m_gain_coef) >> 8;
       } else {
-        m_level_out = high_byte(m_level);
+        m_level_out = m_level >> 1;
       }
     }
 #endif
@@ -184,7 +181,7 @@ private:
 
 template <uint8_t T> uint8_t  EG<T>::m_state;
 template <uint8_t T> uint16_t EG<T>::m_level;
-template <uint8_t T> uint8_t  EG<T>::m_level_out;
+template <uint8_t T> int16_t  EG<T>::m_level_out;
 template <uint8_t T> uint8_t  EG<T>::m_attack_update_coef;
 template <uint8_t T> uint8_t  EG<T>::m_decay_update_coef;
 template <uint8_t T> uint16_t EG<T>::m_sustain;

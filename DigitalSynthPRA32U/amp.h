@@ -9,7 +9,7 @@ public:
   INLINE static void initialize() {
   }
 
-  INLINE static int16_t process(int16_t audio_input, uint8_t gain_control) {
-    return (audio_input * gain_control) >> 8;
+  INLINE static int16_t process(int16_t audio_input, int16_t gain_control) {
+    return (audio_input * gain_control) >> 15;
   }
 };
