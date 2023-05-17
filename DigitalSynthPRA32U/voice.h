@@ -52,8 +52,8 @@ public:
 
     IEG<0>::initialize();
     IEG<1>::initialize();
-    IEG<1>::set_gain<0>(90);
-    IEG<1>::set_gain<1>(127);
+    IAmp<0>::set_gain<0>(90);
+    IAmp<0>::set_gain<1>(127);
 
     IDelayFx<0>::initialize();
 
@@ -467,7 +467,7 @@ public:
       break;
 #endif
     case AMP_LEVEL      :
-      IEG<1>::set_gain<1>(controller_value);
+      IAmp<0>::set_gain<1>(controller_value);
       break;
 
     case PORTAMENTO     :
@@ -827,29 +827,29 @@ private:
       if (m_param_chorus_bypass) {
         m_chorus_mode = CHORUS_MODE_OFF;
         IOsc<0>::set_chorus_mode(CHORUS_MODE_OFF);
-        IEG<1>::set_gain<0>(127);
+        IAmp<0>::set_gain<0>(127);
       } else {
         m_chorus_mode = m_param_chorus_mode;
         switch (m_chorus_mode) {
         case CHORUS_MODE_OFF      :
           IOsc<0>::set_chorus_mode(CHORUS_MODE_OFF);
-          IEG<1>::set_gain<0>(90);
+          IAmp<0>::set_gain<0>(90);
           break;
         case CHORUS_MODE_STEREO   :
           IOsc<0>::set_chorus_mode(CHORUS_MODE_STEREO);
-          IEG<1>::set_gain<0>(90);
+          IAmp<0>::set_gain<0>(90);
           break;
         case CHORUS_MODE_P_STEREO :
           IOsc<0>::set_chorus_mode(CHORUS_MODE_P_STEREO);
-          IEG<1>::set_gain<0>(64);
+          IAmp<0>::set_gain<0>(64);
           break;
         case CHORUS_MODE_MONO     :
           IOsc<0>::set_chorus_mode(CHORUS_MODE_MONO);
-          IEG<1>::set_gain<0>(64);
+          IAmp<0>::set_gain<0>(64);
           break;
         case CHORUS_MODE_STEREO_2 :
           IOsc<0>::set_chorus_mode(CHORUS_MODE_STEREO_2);
-          IEG<1>::set_gain<0>(64);
+          IAmp<0>::set_gain<0>(64);
           break;
         }
       }
