@@ -26,7 +26,7 @@
 #include "pra32-u-common.h"
 #include "pra32-u-synth.h"
 
-Synth g_synth;
+PRA32U_Synth g_synth;
 
 #include <MIDI.h>
 #if defined(USE_USB_MIDI)
