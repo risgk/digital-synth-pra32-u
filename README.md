@@ -32,14 +32,14 @@
     - **NOTE**: Select USB Stack "Adafruit TinuUSB" in the Arduino IDE "Tools" menu
     - MIDI Device Name: "Pico"
     - Serial MIDI (31.25 kbps or 38.4 kbps) can also be used instead of USB MIDI
-        - Comment out `#define USE_USB_MIDI` and uncomment out `//#define USE_SERIAL1_MIDI` in `"DigitalSynthPRA32U.ino"`
+        - Comment out `#define USE_USB_MIDI` and uncomment out `//#define USE_SERIAL1_MIDI` in `"Digital-Synth-PRA32-U.ino"`
 - Audio Out
     - I2S DAC (e.g. PCM5100A), Sampling Rate: 31.25 kHz, Bit Depth: 16 bit
     - The default setting is for Pimoroni's [Pico Audio Pack](https://shop.pimoroni.com/products/pico-audio-pack)
-    - Modify `I2S_DATA_PIN` and `I2S_BCLK_PIN` in `"DigitalSynthPRA32U.ino"` to match the hardware configuration
+    - Modify `I2S_DATA_PIN` and `I2S_BCLK_PIN` in `"Digital-Synth-PRA32-U.ino"` to match the hardware configuration
 - Files
     - `"digital-synth-pra32-u-0.1.1.uf2"` (in the directory `"bin"`) is a UF2 file for Pico Audio Pack
-    - `"DigitalSynthPRA32U.ino"` is a Arduino sketch for Raspberry Pi Pico/RP2040 core
+    - `"Digital-Synth-PRA32-U.ino"` is a Arduino sketch for Raspberry Pi Pico/RP2040 core
     - `"pra32-u-make-sample-wav-file.cc"` is for debugging on PC
         - GCC (g++) for PC is required
         - `"pra32-u-make-sample-wav-file-cc.bat"` makes a sample WAV file (working on Windows)

@@ -1,4 +1,4 @@
-require_relative 'DigitalSynthPRA32U/pra32-u-constants'
+require_relative 'Digital-Synth-PRA32-U/pra32-u-constants'
 
 MIDI_CH = 0  # 0-based
 
@@ -93,11 +93,11 @@ end
 
 sound_off
 
-program_change(0)
-play_mono_a(3)
+program_change(5)
+play_mono_a(4)
 sound_off
 
-program_change(2)
+program_change(3)
 play_b(3)
 sound_off
 
