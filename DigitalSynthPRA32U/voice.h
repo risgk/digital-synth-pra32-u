@@ -3,36 +3,68 @@
 #include "common.h"
 #include "program-table.h"
 
-template <uint8_t T>
 class Voice {
-  static uint8_t  m_count;
+  IOsc     m_osc;
 
-  static uint8_t  m_note_queue[4];
-  static uint8_t  m_note_on_number[4];
-  static uint8_t  m_note_on_count[128];
-  static uint8_t  m_note_on_total_count;
-  static boolean  m_sustain_pedal;
-  static uint8_t  m_voice_mode;
+  uint8_t  m_count;
 
-  static uint8_t  m_output_error;
-  static uint8_t  m_portamento;
+  uint8_t  m_note_queue[4];
+  uint8_t  m_note_on_number[4];
+  uint8_t  m_note_on_count[128];
+  uint8_t  m_note_on_total_count;
+  boolean  m_sustain_pedal;
+  uint8_t  m_voice_mode;
 
-  static uint8_t  m_chorus_mode;
-  static uint8_t  m_velocity_to_cutoff;
+  uint8_t  m_output_error;
+  uint8_t  m_portamento;
 
-  static uint8_t  m_eg_osc_amt;
-  static uint8_t  m_eg_osc_dst;
-  static uint8_t  m_lfo_osc_amt;
-  static uint8_t  m_lfo_osc_dst;
+  uint8_t  m_chorus_mode;
+  uint8_t  m_velocity_to_cutoff;
 
-  static uint16_t m_rnd;
-  static uint8_t  m_sp_prog_chg_cc_values[8];
+  uint8_t  m_eg_osc_amt;
+  uint8_t  m_eg_osc_dst;
+  uint8_t  m_lfo_osc_amt;
+  uint8_t  m_lfo_osc_dst;
 
-  static uint8_t  m_param_chorus_mode;
-  static boolean  m_param_chorus_bypass;
+  uint16_t m_rnd;
+  uint8_t  m_sp_prog_chg_cc_values[8];
+
+  uint8_t  m_param_chorus_mode;
+  boolean  m_param_chorus_bypass;
 
 public:
-  INLINE static void initialize() {
+  Voice()
+
+  : m_osc()
+
+  , m_count()
+
+  , m_note_queue()
+  , m_note_on_number()
+  , m_note_on_count()
+  , m_note_on_total_count()
+  , m_sustain_pedal()
+  , m_voice_mode()
+
+  , m_output_error()
+  , m_portamento()
+
+  , m_chorus_mode()
+  , m_velocity_to_cutoff()
+
+  , m_eg_osc_amt()
+  , m_eg_osc_dst()
+  , m_lfo_osc_amt()
+  , m_lfo_osc_dst()
+
+  , m_rnd()
+  , m_sp_prog_chg_cc_values()
+
+  , m_param_chorus_mode()
+  , m_param_chorus_bypass()
+  {}
+
+  INLINE void initialize() {
     m_count = 0;
 
     m_note_queue[0] = 0;
@@ -45,8 +77,8 @@ public:
     m_note_on_number[3] = NOTE_NUMBER_INVALID;
     m_voice_mode = VOICE_PARAPHONIC;
 
-    IOsc<0>::initialize();
-    IOsc<0>::set_mono_mode(m_voice_mode);
+    m_osc.initialize();
+    m_osc.set_mono_mode(m_voice_mode);
     IFilter<0>::initialize();
     IAmp<0>::initialize();
 
@@ -63,7 +95,7 @@ public:
     m_rnd = 1;
   }
 
-  INLINE static void note_on(uint8_t note_number, uint8_t velocity) {
+  INLINE void note_on(uint8_t note_number, uint8_t velocity) {
     if (m_note_on_total_count == 255) {
       return;
     }
@@ -88,15 +120,15 @@ public:
           m_note_on_number[0] = note_number;
 
           if (m_voice_mode == VOICE_LEGATO_PORTA) {
-            IOsc<0>::set_portamento<0>(0);
-            IOsc<0>::set_portamento<2>(0);
+            m_osc.set_portamento<0>(0);
+            m_osc.set_portamento<2>(0);
           } else {
-            IOsc<0>::set_portamento<0>(m_portamento);
-            IOsc<0>::set_portamento<2>(m_portamento);
+            m_osc.set_portamento<0>(m_portamento);
+            m_osc.set_portamento<2>(m_portamento);
           }
-          IOsc<0>::note_on<0>(note_number);
-          IOsc<0>::note_on<2>(note_number);
-          IOsc<0>::trigger_lfo();
+          m_osc.note_on<0>(note_number);
+          m_osc.note_on<2>(note_number);
+          m_osc.trigger_lfo();
           IEG<0>::note_on();
           IEG<1>::note_on();
 #if 0
@@ -108,10 +140,10 @@ public:
           m_note_on_number[1] = m_note_on_number[0];
           m_note_on_number[0] = note_number;
 
-          IOsc<0>::set_portamento<0>(m_portamento);
-          IOsc<0>::set_portamento<2>(m_portamento);
-          IOsc<0>::note_on<0>(note_number);
-          IOsc<0>::note_on<2>(note_number);
+          m_osc.set_portamento<0>(m_portamento);
+          m_osc.set_portamento<2>(m_portamento);
+          m_osc.note_on<0>(note_number);
+          m_osc.note_on<2>(note_number);
         }
       } else {
         ++m_note_on_total_count;
@@ -122,11 +154,11 @@ public:
         m_note_on_number[1] = m_note_on_number[0];
         m_note_on_number[0] = note_number;
 
-        IOsc<0>::set_portamento<0>(m_portamento);
-        IOsc<0>::set_portamento<2>(m_portamento);
-        IOsc<0>::note_on<0>(note_number);
-        IOsc<0>::note_on<2>(note_number);
-        IOsc<0>::trigger_lfo();
+        m_osc.set_portamento<0>(m_portamento);
+        m_osc.set_portamento<2>(m_portamento);
+        m_osc.note_on<0>(note_number);
+        m_osc.note_on<2>(note_number);
+        m_osc.trigger_lfo();
         IEG<0>::note_on();
         IEG<1>::note_on();
 #if 0
@@ -138,8 +170,8 @@ public:
       ++m_note_on_total_count;
       ++m_note_on_count[note_number];
 
-      IOsc<0>::set_portamento<0>(m_portamento);
-      IOsc<0>::note_on<0>(note_number);
+      m_osc.set_portamento<0>(m_portamento);
+      m_osc.note_on<0>(note_number);
       IEG<0>::note_on();
       IEG<1>::note_on();
 #if 0
@@ -149,8 +181,8 @@ public:
       ++m_note_on_total_count;
       ++m_note_on_count[note_number];
 
-      IOsc<0>::set_portamento<1>(m_portamento);
-      IOsc<0>::note_on<1>(note_number);
+      m_osc.set_portamento<1>(m_portamento);
+      m_osc.note_on<1>(note_number);
       IEG<0>::note_on();
       IEG<1>::note_on();
 #if 0
@@ -160,8 +192,8 @@ public:
       ++m_note_on_total_count;
       ++m_note_on_count[note_number];
 
-      IOsc<0>::set_portamento<2>(m_portamento);
-      IOsc<0>::note_on<2>(note_number);
+      m_osc.set_portamento<2>(m_portamento);
+      m_osc.note_on<2>(note_number);
       IEG<0>::note_on();
       IEG<1>::note_on();
 #if 0
@@ -171,8 +203,8 @@ public:
       ++m_note_on_total_count;
       ++m_note_on_count[note_number];
 
-      IOsc<0>::set_portamento<3>(m_portamento);
-      IOsc<0>::note_on<3>(note_number);
+      m_osc.set_portamento<3>(m_portamento);
+      m_osc.note_on<3>(note_number);
       IEG<0>::note_on();
       IEG<1>::note_on();
 #if 0
@@ -202,25 +234,25 @@ public:
 
       switch (note_on_osc_index) {
       default:
-        IOsc<0>::set_portamento<0>(m_portamento);
-        IOsc<0>::note_on<0>(note_number);
+        m_osc.set_portamento<0>(m_portamento);
+        m_osc.note_on<0>(note_number);
         break;
       case 1:
-        IOsc<0>::set_portamento<1>(m_portamento);
-        IOsc<0>::note_on<1>(note_number);
+        m_osc.set_portamento<1>(m_portamento);
+        m_osc.note_on<1>(note_number);
         break;
       case 2:
-        IOsc<0>::set_portamento<2>(m_portamento);
-        IOsc<0>::note_on<2>(note_number);
+        m_osc.set_portamento<2>(m_portamento);
+        m_osc.note_on<2>(note_number);
         break;
       case 3:
-        IOsc<0>::set_portamento<3>(m_portamento);
-        IOsc<0>::note_on<3>(note_number);
+        m_osc.set_portamento<3>(m_portamento);
+        m_osc.note_on<3>(note_number);
         break;
       }
 
       if (prev_note_on_total_count == 0) {
-        IOsc<0>::trigger_lfo();
+        m_osc.trigger_lfo();
       }
       IEG<0>::note_on();
       IEG<1>::note_on();
@@ -230,7 +262,7 @@ public:
     }
   }
 
-  INLINE static void note_off(uint8_t note_number) {
+  INLINE void note_off(uint8_t note_number) {
     if (m_note_on_total_count == 0) {
       return;
     }
@@ -257,10 +289,10 @@ public:
         m_note_queue[1] = 1;
         m_note_queue[2] = 2;
         m_note_queue[3] = 3;
-        IOsc<0>::note_off<0>();
-        IOsc<0>::note_off<1>();
-        IOsc<0>::note_off<2>();
-        IOsc<0>::note_off<3>();
+        m_osc.note_off<0>();
+        m_osc.note_off<1>();
+        m_osc.note_off<2>();
+        m_osc.note_off<3>();
       } else if (m_note_on_number[0] == note_number) {
         m_note_on_number[0] = m_note_on_number[1];
         m_note_on_number[1] = m_note_on_number[2];
@@ -268,13 +300,13 @@ public:
         m_note_on_number[3] = NOTE_NUMBER_INVALID;
 
         if (m_note_on_number[0] != NOTE_NUMBER_INVALID) {
-          IOsc<0>::set_portamento<0>(m_portamento);
-          IOsc<0>::set_portamento<2>(m_portamento);
-          IOsc<0>::note_on<0>(m_note_on_number[0]);
-          IOsc<0>::note_on<2>(m_note_on_number[0]);
+          m_osc.set_portamento<0>(m_portamento);
+          m_osc.set_portamento<2>(m_portamento);
+          m_osc.note_on<0>(m_note_on_number[0]);
+          m_osc.note_on<2>(m_note_on_number[0]);
 
           if (m_voice_mode == VOICE_MONOPHONIC) {
-            IOsc<0>::trigger_lfo();
+            m_osc.trigger_lfo();
             IEG<0>::note_on();
             IEG<1>::note_on();
           }
@@ -294,25 +326,25 @@ public:
       if (m_note_on_count[note_number] == 0) {
         m_note_on_number[0] = NOTE_NUMBER_INVALID;
         note_queue_off(0);
-        IOsc<0>::note_off<0>();
+        m_osc.note_off<0>();
       }
     } else if (m_note_on_number[1] == note_number) {
       if (m_note_on_count[note_number] == 0) {
         m_note_on_number[1] = NOTE_NUMBER_INVALID;
         note_queue_off(1);
-        IOsc<0>::note_off<1>();
+        m_osc.note_off<1>();
       }
     } else if (m_note_on_number[2] == note_number) {
       if (m_note_on_count[note_number] == 0) {
         m_note_on_number[2] = NOTE_NUMBER_INVALID;
         note_queue_off(2);
-        IOsc<0>::note_off<2>();
+        m_osc.note_off<2>();
       }
     } else if (m_note_on_number[3] == note_number) {
       if (m_note_on_count[note_number] == 0) {
         m_note_on_number[3] = NOTE_NUMBER_INVALID;
         note_queue_off(3);
-        IOsc<0>::note_off<3>();
+        m_osc.note_off<3>();
       }
     }
 
@@ -322,7 +354,7 @@ public:
     }
   }
 
-  static void all_sound_off() {
+  void all_sound_off() {
     m_sustain_pedal = false;
     m_note_on_number[0] = NOTE_NUMBER_INVALID;
     m_note_on_number[1] = NOTE_NUMBER_INVALID;
@@ -336,15 +368,15 @@ public:
     m_note_queue[1] = 1;
     m_note_queue[2] = 2;
     m_note_queue[3] = 3;
-    IOsc<0>::note_off<0>();
-    IOsc<0>::note_off<1>();
-    IOsc<0>::note_off<2>();
-    IOsc<0>::note_off<3>();
+    m_osc.note_off<0>();
+    m_osc.note_off<1>();
+    m_osc.note_off<2>();
+    m_osc.note_off<3>();
     IEG<0>::note_off();
     IEG<1>::note_off();
   }
 
-  INLINE static void reset_all_controllers() {
+  INLINE void reset_all_controllers() {
     pitch_bend(0, 64);
     set_modulation(0);
 #if 0
@@ -353,7 +385,7 @@ public:
     set_sustain_pedal(0);
   }
 
-  INLINE static void control_change(uint8_t controller_number, uint8_t controller_value) {
+  INLINE void control_change(uint8_t controller_number, uint8_t controller_value) {
     switch (controller_number) {
 #if 0
     case EXPRESSION     :
@@ -361,7 +393,7 @@ public:
       break;
 #endif
     case MODULATION     :
-      IOsc<0>::set_lfo_depth<1>(controller_value);
+      m_osc.set_lfo_depth<1>(controller_value);
       break;
 
     case FILTER_CUTOFF  :
@@ -375,26 +407,26 @@ public:
       break;
 
     case OSC_1_WAVE     :
-      IOsc<0>::set_osc_waveform<0>(controller_value);
+      m_osc.set_osc_waveform<0>(controller_value);
       break;
     case OSC_2_WAVE     :
-      IOsc<0>::set_osc_waveform<1>(controller_value);
+      m_osc.set_osc_waveform<1>(controller_value);
       break;
     case OSC_1_SHAPE    :
-      IOsc<0>::set_osc1_shape_control(controller_value);
+      m_osc.set_osc1_shape_control(controller_value);
       break;
     case OSC_1_MORPH    :
-      IOsc<0>::set_osc1_morph_control(controller_value);
+      m_osc.set_osc1_morph_control(controller_value);
       break;
     case MIXER_SUB_OSC  :
-      IOsc<0>::set_mixer_sub_osc_control(controller_value);
+      m_osc.set_mixer_sub_osc_control(controller_value);
       break;
 
     case LFO_RATE       :
-      IOsc<0>::set_lfo_rate(controller_value);
+      m_osc.set_lfo_rate(controller_value);
       break;
     case LFO_DEPTH      :
-      IOsc<0>::set_lfo_depth<0>(controller_value);
+      m_osc.set_lfo_depth<0>(controller_value);
       break;
     case LFO_OSC_AMT    :
       m_lfo_osc_amt = controller_value;
@@ -435,13 +467,13 @@ public:
       break;
 
     case CHORUS_DEPTH   :
-      IOsc<0>::set_chorus_depth(controller_value);
+      m_osc.set_chorus_depth(controller_value);
       break;
     case CHORUS_RATE    :
-      IOsc<0>::set_chorus_rate(controller_value);
+      m_osc.set_chorus_rate(controller_value);
       break;
     case CHORUS_DLY_TIME:
-      IOsc<0>::set_chorus_delay_time(controller_value);
+      m_osc.set_chorus_delay_time(controller_value);
       break;
     case CHORUS_MODE    :
       {
@@ -463,7 +495,7 @@ public:
 
 #if 0
     case OSC_LEVEL      :
-      IOsc<0>::set_osc_level(controller_value);
+      m_osc.set_osc_level(controller_value);
       break;
 #endif
     case AMP_LEVEL      :
@@ -486,15 +518,15 @@ public:
       break;
 
     case MIXER_OSC_MIX  :
-      IOsc<0>::set_mono_osc2_mix(controller_value);
+      m_osc.set_mono_osc2_mix(controller_value);
       break;
 
     case OSC_2_COARSE   :
-      IOsc<0>::set_mono_osc2_pitch(controller_value);
+      m_osc.set_mono_osc2_pitch(controller_value);
       break;
 
     case OSC_2_FINE     :
-      IOsc<0>::set_mono_osc2_detune(controller_value);
+      m_osc.set_mono_osc2_detune(controller_value);
       break;
 
     case EG_OSC_AMT     :
@@ -511,15 +543,15 @@ public:
       break;
 
     case LFO_WAVE       :
-      IOsc<0>::set_lfo_waveform(controller_value);
+      m_osc.set_lfo_waveform(controller_value);
       break;
 
     case LFO_FADE_TIME  :
-      IOsc<0>::set_lfo_fade_time(controller_value);
+      m_osc.set_lfo_fade_time(controller_value);
       break;
 
     case P_BEND_RANGE   :
-      IOsc<0>::set_pitch_bend_range(controller_value);
+      m_osc.set_pitch_bend_range(controller_value);
       break;
 
     case CHORUS_BYPASS  :
@@ -551,7 +583,7 @@ public:
           m_voice_mode = new_voice_mode;
           all_sound_off();
           boolean mono_mode = (m_voice_mode != VOICE_PARAPHONIC);
-          IOsc<0>::set_mono_mode(mono_mode);
+          m_osc.set_mono_mode(mono_mode);
         }
       }
       break;
@@ -593,12 +625,12 @@ public:
     }
   }
 
-  INLINE static void pitch_bend(uint8_t lsb, uint8_t msb) {
+  INLINE void pitch_bend(uint8_t lsb, uint8_t msb) {
     int16_t pitch_bend = ((static_cast<uint16_t>(msb) << 8) >> 1) + lsb - 8192;
-    IOsc<0>::set_pitch_bend(pitch_bend);
+    m_osc.set_pitch_bend(pitch_bend);
   }
 
-  /* INLINE */ static void program_change(uint8_t program_number) {
+  /* INLINE */ void program_change(uint8_t program_number) {
     if (program_number > PROGRAM_NUMBER_MAX) {
       return;
     }
@@ -654,21 +686,21 @@ public:
 
   }
 
-  INLINE static int16_t process(int16_t& right_level) {
+  INLINE int16_t process(int16_t& right_level) {
     ++m_count;
 
     int16_t eg_output_0 = IEG<0>::process(m_count);
-    int16_t osc_output = IOsc<0>::process(m_count, eg_output_0);
-    int16_t lfo_output = IOsc<0>::get_lfo_level();
-    uint16_t osc_pitch = IOsc<0>::get_osc_pitch();
+    int16_t osc_output = m_osc.process(m_count, eg_output_0);
+    int16_t lfo_output = m_osc.get_lfo_level();
+    uint16_t osc_pitch = m_osc.get_osc_pitch();
     int16_t filter_output = IFilter<0>::process(m_count, osc_output, eg_output_0, lfo_output, osc_pitch);
     int16_t eg_output_1 = IEG<1>::process(m_count);
     int16_t amp_output = IAmp<0>::process(filter_output, eg_output_1);
 
     int16_t dir_sample = amp_output;
 
-    int16_t eff_sample_0 = IDelayFx<0>::get(IOsc<0>::get_chorus_delay_time<0>());
-    int16_t eff_sample_1 = IDelayFx<0>::get(IOsc<0>::get_chorus_delay_time<1>());
+    int16_t eff_sample_0 = IDelayFx<0>::get(m_osc.get_chorus_delay_time<0>());
+    int16_t eff_sample_1 = IDelayFx<0>::get(m_osc.get_chorus_delay_time<1>());
     IDelayFx<0>::push(dir_sample);
 
     if (m_chorus_mode >= CHORUS_MODE_MONO) {
@@ -690,7 +722,7 @@ public:
 
 private:
 
-  INLINE static void note_queue_on(uint8_t note_on_osc_index) {
+  INLINE void note_queue_on(uint8_t note_on_osc_index) {
     if        (m_note_queue[3] == note_on_osc_index) {
       m_note_queue[3] = note_on_osc_index;
     } else if (m_note_queue[2] == note_on_osc_index) {
@@ -708,7 +740,7 @@ private:
     }
   }
 
-  INLINE static void note_queue_off(uint8_t note_off_osc_index) {
+  INLINE void note_queue_off(uint8_t note_off_osc_index) {
     if        (m_note_queue[1] == note_off_osc_index) {
       m_note_queue[1] = m_note_queue[0];
       m_note_queue[0] = note_off_osc_index;
@@ -724,24 +756,24 @@ private:
     }
   }
 
-  static uint8_t get_rnd_7() {
+  uint8_t get_rnd_7() {
     m_rnd = m_rnd ^ (m_rnd << 5);
     m_rnd = m_rnd ^ (m_rnd >> 9);
     m_rnd = m_rnd ^ (m_rnd << 8);
     return low_byte(m_rnd) >> 1;
   }
 
-  INLINE static void set_modulation(uint8_t controller_value) {
-    IOsc<0>::set_lfo_depth<1>(controller_value);
+  INLINE void set_modulation(uint8_t controller_value) {
+    m_osc.set_lfo_depth<1>(controller_value);
   }
 
 #if 0
-  INLINE static void set_expression(uint8_t controller_value) {
+  INLINE void set_expression(uint8_t controller_value) {
     IEG<1>::set_expression(controller_value);
   }
 #endif
 
-  INLINE static void set_sustain_pedal(uint8_t controller_value) {
+  INLINE void set_sustain_pedal(uint8_t controller_value) {
     if ((m_sustain_pedal == false) && (controller_value >= 64)) {
       m_sustain_pedal = true;
     } else if (m_sustain_pedal && (controller_value < 64)) {
@@ -751,7 +783,7 @@ private:
         if (m_note_on_count[m_note_on_number[0]] == 0) {
           m_note_on_number[0] = NOTE_NUMBER_INVALID;
           note_queue_off(0);
-          IOsc<0>::note_off<0>();
+          m_osc.note_off<0>();
         }
       }
 
@@ -759,7 +791,7 @@ private:
         if (m_note_on_count[m_note_on_number[1]] == 0) {
           m_note_on_number[1] = NOTE_NUMBER_INVALID;
           note_queue_off(1);
-          IOsc<0>::note_off<1>();
+          m_osc.note_off<1>();
         }
       }
 
@@ -767,7 +799,7 @@ private:
         if (m_note_on_count[m_note_on_number[2]] == 0) {
           m_note_on_number[2] = NOTE_NUMBER_INVALID;
           note_queue_off(2);
-          IOsc<0>::note_off<2>();
+          m_osc.note_off<2>();
         }
       }
 
@@ -775,7 +807,7 @@ private:
         if (m_note_on_count[m_note_on_number[3]] == 0) {
           m_note_on_number[3] = NOTE_NUMBER_INVALID;
           note_queue_off(3);
-          IOsc<0>::note_off<3>();
+          m_osc.note_off<3>();
         }
       }
 
@@ -786,39 +818,39 @@ private:
     }
   }
 
-  INLINE static void update_eg_osc_mod() {
+  INLINE void update_eg_osc_mod() {
     if        (m_eg_osc_dst < 32) {  /* OSC_DST_PITCH */
-      IOsc<0>::set_pitch_eg_amt<0>(m_eg_osc_amt);
-      IOsc<0>::set_pitch_eg_amt<1>(m_eg_osc_amt);
-      IOsc<0>::set_shape_eg_amt(64);
+      m_osc.set_pitch_eg_amt<0>(m_eg_osc_amt);
+      m_osc.set_pitch_eg_amt<1>(m_eg_osc_amt);
+      m_osc.set_shape_eg_amt(64);
     } else if (m_eg_osc_dst < 96) {  /* OSC_DST_PITCH_2 */
-      IOsc<0>::set_pitch_eg_amt<0>(64);
-      IOsc<0>::set_pitch_eg_amt<1>(m_eg_osc_amt);
-      IOsc<0>::set_shape_eg_amt(64);
+      m_osc.set_pitch_eg_amt<0>(64);
+      m_osc.set_pitch_eg_amt<1>(m_eg_osc_amt);
+      m_osc.set_shape_eg_amt(64);
     } else {                         /* OSC_DST_SHAPE_1 */
-      IOsc<0>::set_pitch_eg_amt<0>(64);
-      IOsc<0>::set_pitch_eg_amt<1>(64);
-      IOsc<0>::set_shape_eg_amt(m_eg_osc_amt);
+      m_osc.set_pitch_eg_amt<0>(64);
+      m_osc.set_pitch_eg_amt<1>(64);
+      m_osc.set_shape_eg_amt(m_eg_osc_amt);
     }
   }
 
-  INLINE static void update_lfo_osc_mod() {
+  INLINE void update_lfo_osc_mod() {
     if        (m_lfo_osc_dst < 32) {  /* OSC_DST_PITCH */
-      IOsc<0>::set_pitch_lfo_amt<0>(m_lfo_osc_amt);
-      IOsc<0>::set_pitch_lfo_amt<1>(m_lfo_osc_amt);
-      IOsc<0>::set_shape_lfo_amt(64);
+      m_osc.set_pitch_lfo_amt<0>(m_lfo_osc_amt);
+      m_osc.set_pitch_lfo_amt<1>(m_lfo_osc_amt);
+      m_osc.set_shape_lfo_amt(64);
     } else if (m_lfo_osc_dst < 96) {  /* OSC_DST_PITCH_2 */
-      IOsc<0>::set_pitch_lfo_amt<0>(64);
-      IOsc<0>::set_pitch_lfo_amt<1>(m_lfo_osc_amt);
-      IOsc<0>::set_shape_lfo_amt(64);
+      m_osc.set_pitch_lfo_amt<0>(64);
+      m_osc.set_pitch_lfo_amt<1>(m_lfo_osc_amt);
+      m_osc.set_shape_lfo_amt(64);
     } else {                          /* OSC_DST_SHAPE_1 */
-      IOsc<0>::set_pitch_lfo_amt<0>(64);
-      IOsc<0>::set_pitch_lfo_amt<1>(64);
-      IOsc<0>::set_shape_lfo_amt(m_lfo_osc_amt);
+      m_osc.set_pitch_lfo_amt<0>(64);
+      m_osc.set_pitch_lfo_amt<1>(64);
+      m_osc.set_shape_lfo_amt(m_lfo_osc_amt);
     }
   }
 
-  INLINE static void update_chorus_mode(uint8_t new_param_chorus_mode, boolean new_param_chorus_bypass) {
+  INLINE void update_chorus_mode(uint8_t new_param_chorus_mode, boolean new_param_chorus_bypass) {
     if ((m_param_chorus_mode   != new_param_chorus_mode) ||
         (m_param_chorus_bypass != new_param_chorus_bypass)) {
       m_param_chorus_mode   = new_param_chorus_mode;
@@ -827,29 +859,29 @@ private:
 
       if (m_param_chorus_bypass) {
         m_chorus_mode = CHORUS_MODE_OFF;
-        IOsc<0>::set_chorus_mode(CHORUS_MODE_OFF);
+        m_osc.set_chorus_mode(CHORUS_MODE_OFF);
         IAmp<0>::set_gain<0>(127);
       } else {
         m_chorus_mode = m_param_chorus_mode;
         switch (m_chorus_mode) {
         case CHORUS_MODE_OFF      :
-          IOsc<0>::set_chorus_mode(CHORUS_MODE_OFF);
+          m_osc.set_chorus_mode(CHORUS_MODE_OFF);
           IAmp<0>::set_gain<0>(90);
           break;
         case CHORUS_MODE_STEREO   :
-          IOsc<0>::set_chorus_mode(CHORUS_MODE_STEREO);
+          m_osc.set_chorus_mode(CHORUS_MODE_STEREO);
           IAmp<0>::set_gain<0>(90);
           break;
         case CHORUS_MODE_P_STEREO :
-          IOsc<0>::set_chorus_mode(CHORUS_MODE_P_STEREO);
+          m_osc.set_chorus_mode(CHORUS_MODE_P_STEREO);
           IAmp<0>::set_gain<0>(64);
           break;
         case CHORUS_MODE_MONO     :
-          IOsc<0>::set_chorus_mode(CHORUS_MODE_MONO);
+          m_osc.set_chorus_mode(CHORUS_MODE_MONO);
           IAmp<0>::set_gain<0>(64);
           break;
         case CHORUS_MODE_STEREO_2 :
-          IOsc<0>::set_chorus_mode(CHORUS_MODE_STEREO_2);
+          m_osc.set_chorus_mode(CHORUS_MODE_STEREO_2);
           IAmp<0>::set_gain<0>(64);
           break;
         }
@@ -857,29 +889,3 @@ private:
     }
   }
 };
-
-template <uint8_t T> uint8_t  Voice<T>::m_count;
-
-template <uint8_t T> uint8_t  Voice<T>::m_note_queue[4];
-template <uint8_t T> uint8_t  Voice<T>::m_note_on_number[4];
-template <uint8_t T> uint8_t  Voice<T>::m_note_on_count[128];
-template <uint8_t T> uint8_t  Voice<T>::m_note_on_total_count;
-template <uint8_t T> boolean  Voice<T>::m_sustain_pedal;
-template <uint8_t T> uint8_t  Voice<T>::m_voice_mode;
-
-template <uint8_t T> uint8_t  Voice<T>::m_output_error;
-template <uint8_t T> uint8_t  Voice<T>::m_portamento;
-
-template <uint8_t T> uint8_t  Voice<T>::m_chorus_mode;
-template <uint8_t T> uint8_t  Voice<T>::m_velocity_to_cutoff;
-
-template <uint8_t T> uint8_t  Voice<T>::m_eg_osc_amt;
-template <uint8_t T> uint8_t  Voice<T>::m_eg_osc_dst;
-template <uint8_t T> uint8_t  Voice<T>::m_lfo_osc_amt;
-template <uint8_t T> uint8_t  Voice<T>::m_lfo_osc_dst;
-
-template <uint8_t T> uint16_t Voice<T>::m_rnd;
-template <uint8_t T> uint8_t  Voice<T>::m_sp_prog_chg_cc_values[8];
-
-template <uint8_t T> uint8_t  Voice<T>::m_param_chorus_mode;
-template <uint8_t T> boolean  Voice<T>::m_param_chorus_bypass;

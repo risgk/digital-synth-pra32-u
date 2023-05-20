@@ -5,7 +5,7 @@
  * - Raspberry Pi Pico/RP2040 core version 3.2.0 is recommended
  */
 
-//#define DEBUG_PRINT
+#define DEBUG_PRINT
 
 #define USE_USB_MIDI      // Select USB Stack "Adafruit TinuUSB" in the Arduino IDE "Tools" menu
 //#define USE_SERIAL1_MIDI
@@ -37,7 +37,7 @@ MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
 
 #include <I2S.h>
 
-I2S i2s_output(OUTPUT);
+I2S g_i2s_output(OUTPUT);
 
 void handleNoteOn(byte channel, byte pitch, byte velocity);
 void handleNoteOff(byte channel, byte pitch, byte velocity);
@@ -55,7 +55,7 @@ void __not_in_flash_func(setup1)() {
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
 
-  Synth<0>::initialize();
+  g_synth.initialize();
 
 #if defined(USE_USB_MIDI)
   TinyUSB_Device_Init(0);
@@ -70,12 +70,12 @@ void __not_in_flash_func(setup1)() {
   Serial1.begin(SERIAL1_MIDI_SPEED);
 #endif
 
-  i2s_output.setDATA(I2S_DATA_PIN);
-  i2s_output.setBCLK(I2S_BCLK_PIN);
-  i2s_output.setBitsPerSample(I2S_BITS_PER_SAMPLE);
-  i2s_output.setBuffers(I2S_BUFFERS, I2S_BUFFER_WORDS);
-  i2s_output.setFrequency(SAMPLING_RATE);
-  i2s_output.begin();
+  g_i2s_output.setDATA(I2S_DATA_PIN);
+  g_i2s_output.setBCLK(I2S_BCLK_PIN);
+  g_i2s_output.setBitsPerSample(I2S_BITS_PER_SAMPLE);
+  g_i2s_output.setBuffers(I2S_BUFFERS, I2S_BUFFER_WORDS);
+  g_i2s_output.setFrequency(SAMPLING_RATE);
+  g_i2s_output.begin();
 
 #if defined(DEBUG_PRINT)
 #if defined(USE_SERIAL1_MIDI)
@@ -101,7 +101,7 @@ void __not_in_flash_func(loop1)() {
   int16_t left_buffer[I2S_BUFFER_WORDS];
   int16_t right_buffer[I2S_BUFFER_WORDS];
   for (uint32_t i = 0; i < I2S_BUFFER_WORDS; i++) {
-    left_buffer[i] = Synth<0>::process(right_buffer[i]);
+    left_buffer[i] = g_synth.process(right_buffer[i]);
   }
 
 #if defined(DEBUG_PRINT)
@@ -110,11 +110,11 @@ void __not_in_flash_func(loop1)() {
 
   for (uint32_t i = 0; i < I2S_BUFFER_WORDS; i++) {
 #if   (I2S_BITS_PER_SAMPLE == 16)
-    i2s_output.write16(left_buffer[i], right_buffer[i]);
+    g_i2s_output.write16(left_buffer[i], right_buffer[i]);
 #elif (I2S_BITS_PER_SAMPLE == 24)
-    i2s_output.write24(left_buffer[i] << 16, right_buffer[i] << 16);
+    g_i2s_output.write24(left_buffer[i] << 16, right_buffer[i] << 16);
 #elif (I2S_BITS_PER_SAMPLE == 32)
-    i2s_output.write32(left_buffer[i] << 16, right_buffer[i] << 16);
+    g_i2s_output.write32(left_buffer[i] << 16, right_buffer[i] << 16);
 #endif
   }
 
@@ -145,9 +145,9 @@ void __not_in_flash_func(handleNoteOn)(byte channel, byte pitch, byte velocity)
 {
   if ((channel - 1) == MIDI_CH) {
     if (velocity > 0) {
-      Synth<0>::note_on(pitch, velocity);
+      g_synth.note_on(pitch, velocity);
     } else {
-      Synth<0>::note_off(pitch);
+      g_synth.note_off(pitch);
     }
   }
 }
@@ -156,27 +156,27 @@ void __not_in_flash_func(handleNoteOff)(byte channel, byte pitch, byte velocity)
 {
   if ((channel - 1) == MIDI_CH) {
     (void) velocity;
-    Synth<0>::note_off(pitch);
+    g_synth.note_off(pitch);
   }
 }
 
 void __not_in_flash_func(handleControlChange)(byte channel, byte number, byte value)
 {
   if ((channel - 1) == MIDI_CH) {
-    Synth<0>::control_change(number, value);
+    g_synth.control_change(number, value);
   }
 }
 
 void __not_in_flash_func(handleHandleProgramChange)(byte channel, byte number)
 {
   if ((channel - 1) == MIDI_CH) {
-    Synth<0>::program_change(number);
+    g_synth.program_change(number);
   }
 }
 
 void __not_in_flash_func(handleHandlePitchBend)(byte channel, int bend)
 {
   if ((channel - 1) == MIDI_CH) {
-    Synth<0>::pitch_bend(bend & 0x7F, bend >> 7);
+    g_synth.pitch_bend(bend & 0x7F, bend >> 7);
   }
 }
