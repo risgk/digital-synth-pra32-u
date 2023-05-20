@@ -26,6 +26,8 @@
 #include "common.h"
 #include "synth.h"
 
+Synth g_synth;
+
 #include <MIDI.h>
 #if defined(USE_USB_MIDI)
 #include <Adafruit_TinyUSB.h>

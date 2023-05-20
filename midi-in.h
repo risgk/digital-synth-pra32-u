@@ -16,7 +16,7 @@ class MIDIIn {
 
 public:
   MIDIIn()
-  : m_synth(NULL)
+  : m_synth()
   , m_system_exclusive()
   , m_system_data_remaining()
   , m_running_status()
@@ -118,7 +118,4 @@ private:
   INLINE boolean is_data_byte(uint8_t b) {
     return b <= DATA_BYTE_MAX;
   }
-
 };
-
-MIDIIn g_midi_in;

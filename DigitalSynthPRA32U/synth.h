@@ -54,5 +54,3 @@ public:
     return m_voice.process(right_level);
   }
 };
-
-Synth g_synth;
