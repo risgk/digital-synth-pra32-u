@@ -13,9 +13,9 @@ typedef signed char boolean;
 #include "./pra32-u-midi-in.h"
 #include "./pra32-u-wav-file-out.h"
 
-PRA32U_Synth      g_synth;
-PRA32U_MIDIIn     g_midi_in;
-PRA32U_WAVFileOut g_wav_file_out;
+PRA32_U_Synth      g_synth;
+PRA32_U_MIDIIn     g_midi_in;
+PRA32_U_WAVFileOut g_wav_file_out;
 
 const uint16_t RECORDING_SEC = 60;
 const uint16_t SERIAL_SPEED_38400 = 38400;

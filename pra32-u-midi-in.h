@@ -6,16 +6,16 @@
 #include "./Digital-Synth-PRA32-U/pra32-u-common.h"
 #include "./Digital-Synth-PRA32-U/pra32-u-synth.h"
 
-class PRA32U_MIDIIn {
-  PRA32U_Synth* m_synth;
+class PRA32_U_MIDIIn {
+  PRA32_U_Synth* m_synth;
 
-  uint8_t       m_system_exclusive;
-  uint8_t       m_system_data_remaining;
-  uint8_t       m_running_status;
-  uint8_t       m_first_data;
+  uint8_t        m_system_exclusive;
+  uint8_t        m_system_data_remaining;
+  uint8_t        m_running_status;
+  uint8_t        m_first_data;
 
 public:
-  PRA32U_MIDIIn()
+  PRA32_U_MIDIIn()
   : m_synth()
   , m_system_exclusive()
   , m_system_data_remaining()
@@ -23,7 +23,7 @@ public:
   , m_first_data()
   {}
 
-  INLINE void open(PRA32U_Synth& synth) {
+  INLINE void open(PRA32_U_Synth& synth) {
     m_synth = &synth;
     m_running_status = STATUS_BYTE_INVALID;
     m_first_data = DATA_BYTE_INVALID;

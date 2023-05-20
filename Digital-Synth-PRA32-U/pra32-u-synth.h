@@ -8,11 +8,11 @@
 #include "pra32-u-delay-fx.h"
 #include "pra32-u-voice.h"
 
-class PRA32U_Synth {
-  PRA32U_Voice m_voice;
+class PRA32_U_Synth {
+  PRA32_U_Voice m_voice;
 
 public:
-  PRA32U_Synth()
+  PRA32_U_Synth()
   : m_voice()
   {}
 

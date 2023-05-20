@@ -6,7 +6,7 @@
 #include "pra32-u-filter-table.h"
 
 template <uint8_t T>
-class PRA32U_Filter {
+class PRA32_U_Filter {
   static const uint16_t* m_lpf_table;
   static uint16_t        m_b_2_over_a_0;
   static int16_t         m_a_1_over_a_0;
@@ -99,7 +99,7 @@ public:
   INLINE static int16_t process(uint8_t count, int16_t audio_input, int16_t eg_input, int16_t lfo_input, uint16_t osc_pitch) {
 #if 1
     if ((count & (FILTER_CONTROL_INTERVAL - 1)) == 7) {
-      //printf("%d PRA32U_Filter\n", count);
+      //printf("%d PRA32_U_Filter\n", count);
       if (count & 0x10) {
         if (count & 0x08) {
           update_coefs_3rd();
@@ -177,19 +177,19 @@ private:
   }
 };
 
-template <uint8_t T> const uint16_t* PRA32U_Filter<T>::m_lpf_table;
-template <uint8_t T> uint16_t        PRA32U_Filter<T>::m_b_2_over_a_0;
-template <uint8_t T> int16_t         PRA32U_Filter<T>::m_a_1_over_a_0;
-template <uint8_t T> int16_t         PRA32U_Filter<T>::m_a_2_over_a_0;
-template <uint8_t T> int16_t         PRA32U_Filter<T>::m_x_1;
-template <uint8_t T> int16_t         PRA32U_Filter<T>::m_x_2;
-template <uint8_t T> int16_t         PRA32U_Filter<T>::m_y_1;
-template <uint8_t T> int16_t         PRA32U_Filter<T>::m_y_2;
-template <uint8_t T> uint8_t         PRA32U_Filter<T>::m_cutoff_current;
-template <uint8_t T> int16_t         PRA32U_Filter<T>::m_cutoff_candidate;
-template <uint8_t T> uint8_t         PRA32U_Filter<T>::m_cutoff_control;
-template <uint8_t T> uint8_t         PRA32U_Filter<T>::m_cutoff_control_effective;
-template <uint8_t T> int8_t          PRA32U_Filter<T>::m_cutoff_eg_amt;
-template <uint8_t T> int8_t          PRA32U_Filter<T>::m_cutoff_lfo_amt;
-template <uint8_t T> int8_t          PRA32U_Filter<T>::m_cutoff_pitch_amt;
-template <uint8_t T> int8_t          PRA32U_Filter<T>::m_cutoff_offset;
+template <uint8_t T> const uint16_t* PRA32_U_Filter<T>::m_lpf_table;
+template <uint8_t T> uint16_t        PRA32_U_Filter<T>::m_b_2_over_a_0;
+template <uint8_t T> int16_t         PRA32_U_Filter<T>::m_a_1_over_a_0;
+template <uint8_t T> int16_t         PRA32_U_Filter<T>::m_a_2_over_a_0;
+template <uint8_t T> int16_t         PRA32_U_Filter<T>::m_x_1;
+template <uint8_t T> int16_t         PRA32_U_Filter<T>::m_x_2;
+template <uint8_t T> int16_t         PRA32_U_Filter<T>::m_y_1;
+template <uint8_t T> int16_t         PRA32_U_Filter<T>::m_y_2;
+template <uint8_t T> uint8_t         PRA32_U_Filter<T>::m_cutoff_current;
+template <uint8_t T> int16_t         PRA32_U_Filter<T>::m_cutoff_candidate;
+template <uint8_t T> uint8_t         PRA32_U_Filter<T>::m_cutoff_control;
+template <uint8_t T> uint8_t         PRA32_U_Filter<T>::m_cutoff_control_effective;
+template <uint8_t T> int8_t          PRA32_U_Filter<T>::m_cutoff_eg_amt;
+template <uint8_t T> int8_t          PRA32_U_Filter<T>::m_cutoff_lfo_amt;
+template <uint8_t T> int8_t          PRA32_U_Filter<T>::m_cutoff_pitch_amt;
+template <uint8_t T> int8_t          PRA32_U_Filter<T>::m_cutoff_offset;

@@ -3,37 +3,37 @@
 #include "pra32-u-common.h"
 #include "pra32-u-program-table.h"
 
-class PRA32U_Voice {
-  PRA32U_Osc m_osc;
+class PRA32_U_Voice {
+  PRA32_U_Osc m_osc;
 
-  uint8_t    m_count;
+  uint8_t     m_count;
 
-  uint8_t    m_note_queue[4];
-  uint8_t    m_note_on_number[4];
-  uint8_t    m_note_on_count[128];
-  uint8_t    m_note_on_total_count;
-  boolean    m_sustain_pedal;
-  uint8_t    m_voice_mode;
+  uint8_t     m_note_queue[4];
+  uint8_t     m_note_on_number[4];
+  uint8_t     m_note_on_count[128];
+  uint8_t     m_note_on_total_count;
+  boolean     m_sustain_pedal;
+  uint8_t     m_voice_mode;
 
-  uint8_t    m_output_error;
-  uint8_t    m_portamento;
+  uint8_t     m_output_error;
+  uint8_t     m_portamento;
 
-  uint8_t    m_chorus_mode;
-  uint8_t    m_velocity_to_cutoff;
+  uint8_t     m_chorus_mode;
+  uint8_t     m_velocity_to_cutoff;
 
-  uint8_t    m_eg_osc_amt;
-  uint8_t    m_eg_osc_dst;
-  uint8_t    m_lfo_osc_amt;
-  uint8_t    m_lfo_osc_dst;
+  uint8_t     m_eg_osc_amt;
+  uint8_t     m_eg_osc_dst;
+  uint8_t     m_lfo_osc_amt;
+  uint8_t     m_lfo_osc_dst;
 
-  uint16_t   m_rnd;
-  uint8_t    m_sp_prog_chg_cc_values[8];
+  uint16_t    m_rnd;
+  uint8_t     m_sp_prog_chg_cc_values[8];
 
-  uint8_t    m_param_chorus_mode;
-  boolean    m_param_chorus_bypass;
+  uint8_t     m_param_chorus_mode;
+  boolean     m_param_chorus_bypass;
 
 public:
-  PRA32U_Voice()
+  PRA32_U_Voice()
 
   : m_osc()
 
@@ -79,15 +79,15 @@ public:
 
     m_osc.initialize();
     m_osc.set_mono_mode(m_voice_mode);
-    PRA32U_Filter<0>::initialize();
-    PRA32U_Amp<0>::initialize();
+    PRA32_U_Filter<0>::initialize();
+    PRA32_U_Amp<0>::initialize();
 
-    PRA32U_EG<0>::initialize();
-    PRA32U_EG<1>::initialize();
-    PRA32U_Amp<0>::set_gain<0>(90);
-    PRA32U_Amp<0>::set_gain<1>(127);
+    PRA32_U_EG<0>::initialize();
+    PRA32_U_EG<1>::initialize();
+    PRA32_U_Amp<0>::set_gain<0>(90);
+    PRA32_U_Amp<0>::set_gain<1>(127);
 
-    PRA32U_DelayFx<0>::initialize();
+    PRA32_U_DelayFx<0>::initialize();
 
     m_eg_osc_amt = 64;
     m_lfo_osc_amt = 64;
@@ -129,10 +129,10 @@ public:
           m_osc.note_on<0>(note_number);
           m_osc.note_on<2>(note_number);
           m_osc.trigger_lfo();
-          PRA32U_EG<0>::note_on();
-          PRA32U_EG<1>::note_on();
+          PRA32_U_EG<0>::note_on();
+          PRA32_U_EG<1>::note_on();
 #if 0
-          PRA32U_Filter<0>::set_cutoff_offset(cutoff_offset);
+          PRA32_U_Filter<0>::set_cutoff_offset(cutoff_offset);
 #endif
         } else {
           m_note_on_number[3] = m_note_on_number[2];
@@ -159,10 +159,10 @@ public:
         m_osc.note_on<0>(note_number);
         m_osc.note_on<2>(note_number);
         m_osc.trigger_lfo();
-        PRA32U_EG<0>::note_on();
-        PRA32U_EG<1>::note_on();
+        PRA32_U_EG<0>::note_on();
+        PRA32_U_EG<1>::note_on();
 #if 0
-        PRA32U_Filter<0>::set_cutoff_offset(cutoff_offset);
+        PRA32_U_Filter<0>::set_cutoff_offset(cutoff_offset);
 #endif
       }
 
@@ -172,10 +172,10 @@ public:
 
       m_osc.set_portamento<0>(m_portamento);
       m_osc.note_on<0>(note_number);
-      PRA32U_EG<0>::note_on();
-      PRA32U_EG<1>::note_on();
+      PRA32_U_EG<0>::note_on();
+      PRA32_U_EG<1>::note_on();
 #if 0
-      PRA32U_Filter<0>::set_cutoff_offset(cutoff_offset);
+      PRA32_U_Filter<0>::set_cutoff_offset(cutoff_offset);
 #endif
     } else if (m_note_on_number[1] == note_number) {
       ++m_note_on_total_count;
@@ -183,10 +183,10 @@ public:
 
       m_osc.set_portamento<1>(m_portamento);
       m_osc.note_on<1>(note_number);
-      PRA32U_EG<0>::note_on();
-      PRA32U_EG<1>::note_on();
+      PRA32_U_EG<0>::note_on();
+      PRA32_U_EG<1>::note_on();
 #if 0
-      PRA32U_Filter<0>::set_cutoff_offset(cutoff_offset);
+      PRA32_U_Filter<0>::set_cutoff_offset(cutoff_offset);
 #endif
     } else if (m_note_on_number[2] == note_number) {
       ++m_note_on_total_count;
@@ -194,10 +194,10 @@ public:
 
       m_osc.set_portamento<2>(m_portamento);
       m_osc.note_on<2>(note_number);
-      PRA32U_EG<0>::note_on();
-      PRA32U_EG<1>::note_on();
+      PRA32_U_EG<0>::note_on();
+      PRA32_U_EG<1>::note_on();
 #if 0
-      PRA32U_Filter<0>::set_cutoff_offset(cutoff_offset);
+      PRA32_U_Filter<0>::set_cutoff_offset(cutoff_offset);
 #endif
     } else if (m_note_on_number[3] == note_number) {
       ++m_note_on_total_count;
@@ -205,10 +205,10 @@ public:
 
       m_osc.set_portamento<3>(m_portamento);
       m_osc.note_on<3>(note_number);
-      PRA32U_EG<0>::note_on();
-      PRA32U_EG<1>::note_on();
+      PRA32_U_EG<0>::note_on();
+      PRA32_U_EG<1>::note_on();
 #if 0
-      PRA32U_Filter<0>::set_cutoff_offset(cutoff_offset);
+      PRA32_U_Filter<0>::set_cutoff_offset(cutoff_offset);
 #endif
     } else {
       uint8_t note_on_osc_index;
@@ -254,10 +254,10 @@ public:
       if (prev_note_on_total_count == 0) {
         m_osc.trigger_lfo();
       }
-      PRA32U_EG<0>::note_on();
-      PRA32U_EG<1>::note_on();
+      PRA32_U_EG<0>::note_on();
+      PRA32_U_EG<1>::note_on();
 #if 0
-      PRA32U_Filter<0>::set_cutoff_offset(cutoff_offset);
+      PRA32_U_Filter<0>::set_cutoff_offset(cutoff_offset);
 #endif
     }
   }
@@ -307,8 +307,8 @@ public:
 
           if (m_voice_mode == VOICE_MONOPHONIC) {
             m_osc.trigger_lfo();
-            PRA32U_EG<0>::note_on();
-            PRA32U_EG<1>::note_on();
+            PRA32_U_EG<0>::note_on();
+            PRA32_U_EG<1>::note_on();
           }
         }
       } else if (m_note_on_number[1] == note_number) {
@@ -349,8 +349,8 @@ public:
     }
 
     if (m_note_on_total_count == 0) {
-      PRA32U_EG<0>::note_off();
-      PRA32U_EG<1>::note_off();
+      PRA32_U_EG<0>::note_off();
+      PRA32_U_EG<1>::note_off();
     }
   }
 
@@ -372,8 +372,8 @@ public:
     m_osc.note_off<1>();
     m_osc.note_off<2>();
     m_osc.note_off<3>();
-    PRA32U_EG<0>::note_off();
-    PRA32U_EG<1>::note_off();
+    PRA32_U_EG<0>::note_off();
+    PRA32_U_EG<1>::note_off();
   }
 
   INLINE void reset_all_controllers() {
@@ -389,7 +389,7 @@ public:
     switch (controller_number) {
 #if 0
     case EXPRESSION     :
-      PRA32U_EG<1>::set_expression(controller_value);
+      PRA32_U_EG<1>::set_expression(controller_value);
       break;
 #endif
     case MODULATION     :
@@ -397,13 +397,13 @@ public:
       break;
 
     case FILTER_CUTOFF  :
-      PRA32U_Filter<0>::set_cutoff(controller_value);
+      PRA32_U_Filter<0>::set_cutoff(controller_value);
       break;
     case FILTER_RESO    :
-      PRA32U_Filter<0>::set_resonance(controller_value);
+      PRA32_U_Filter<0>::set_resonance(controller_value);
       break;
     case FILTER_EG_AMT  :
-      PRA32U_Filter<0>::set_cutoff_eg_amt(controller_value);
+      PRA32_U_Filter<0>::set_cutoff_eg_amt(controller_value);
       break;
 
     case OSC_1_WAVE     :
@@ -433,7 +433,7 @@ public:
       update_lfo_osc_mod();
       break;
     case LFO_FILTER_AMT :
-      PRA32U_Filter<0>::set_cutoff_lfo_amt(controller_value);
+      PRA32_U_Filter<0>::set_cutoff_lfo_amt(controller_value);
       break;
 
     case SUSTAIN_PEDAL   :
@@ -441,29 +441,29 @@ public:
       break;
 
     case EG_ATTACK      :
-      PRA32U_EG<0>::set_attack(controller_value);
+      PRA32_U_EG<0>::set_attack(controller_value);
       break;
     case EG_DECAY       :
-      PRA32U_EG<0>::set_decay(controller_value);
+      PRA32_U_EG<0>::set_decay(controller_value);
       break;
     case EG_SUSTAIN     :
-      PRA32U_EG<0>::set_sustain(controller_value);
+      PRA32_U_EG<0>::set_sustain(controller_value);
       break;
     case EG_RELEASE     :
-      PRA32U_EG<0>::set_release(controller_value);
+      PRA32_U_EG<0>::set_release(controller_value);
       break;
 
     case AMP_ATTACK     :
-      PRA32U_EG<1>::set_attack(controller_value);
+      PRA32_U_EG<1>::set_attack(controller_value);
       break;
     case AMP_DECAY      :
-      PRA32U_EG<1>::set_decay(controller_value);
+      PRA32_U_EG<1>::set_decay(controller_value);
       break;
     case AMP_SUSTAIN    :
-      PRA32U_EG<1>::set_sustain(controller_value);
+      PRA32_U_EG<1>::set_sustain(controller_value);
       break;
     case AMP_RELEASE    :
-      PRA32U_EG<1>::set_release(controller_value);
+      PRA32_U_EG<1>::set_release(controller_value);
       break;
 
     case CHORUS_DEPTH   :
@@ -499,7 +499,7 @@ public:
       break;
 #endif
     case AMP_LEVEL      :
-      PRA32U_Amp<0>::set_gain<1>(controller_value);
+      PRA32_U_Amp<0>::set_gain<1>(controller_value);
       break;
 
     case PORTAMENTO     :
@@ -565,7 +565,7 @@ public:
 #endif
 
     case FILTER_KEY_TRK :
-      PRA32U_Filter<0>::set_cutoff_pitch_amt(controller_value);
+      PRA32_U_Filter<0>::set_cutoff_pitch_amt(controller_value);
       break;
 
     case VOICE_MODE     :
@@ -689,19 +689,19 @@ public:
   INLINE int16_t process(int16_t& right_level) {
     ++m_count;
 
-    int16_t eg_output_0 = PRA32U_EG<0>::process(m_count);
+    int16_t eg_output_0 = PRA32_U_EG<0>::process(m_count);
     int16_t osc_output = m_osc.process(m_count, eg_output_0);
     int16_t lfo_output = m_osc.get_lfo_level();
     uint16_t osc_pitch = m_osc.get_osc_pitch();
-    int16_t filter_output = PRA32U_Filter<0>::process(m_count, osc_output, eg_output_0, lfo_output, osc_pitch);
-    int16_t eg_output_1 = PRA32U_EG<1>::process(m_count);
-    int16_t amp_output = PRA32U_Amp<0>::process(filter_output, eg_output_1);
+    int16_t filter_output = PRA32_U_Filter<0>::process(m_count, osc_output, eg_output_0, lfo_output, osc_pitch);
+    int16_t eg_output_1 = PRA32_U_EG<1>::process(m_count);
+    int16_t amp_output = PRA32_U_Amp<0>::process(filter_output, eg_output_1);
 
     int16_t dir_sample = amp_output;
 
-    int16_t eff_sample_0 = PRA32U_DelayFx<0>::get(m_osc.get_chorus_delay_time<0>());
-    int16_t eff_sample_1 = PRA32U_DelayFx<0>::get(m_osc.get_chorus_delay_time<1>());
-    PRA32U_DelayFx<0>::push(dir_sample);
+    int16_t eff_sample_0 = PRA32_U_DelayFx<0>::get(m_osc.get_chorus_delay_time<0>());
+    int16_t eff_sample_1 = PRA32_U_DelayFx<0>::get(m_osc.get_chorus_delay_time<1>());
+    PRA32_U_DelayFx<0>::push(dir_sample);
 
     if (m_chorus_mode >= CHORUS_MODE_MONO) {
       // For Mono Chorus and Stereo 2-phase Chorus
@@ -769,7 +769,7 @@ private:
 
 #if 0
   INLINE void set_expression(uint8_t controller_value) {
-    PRA32U_EG<1>::set_expression(controller_value);
+    PRA32_U_EG<1>::set_expression(controller_value);
   }
 #endif
 
@@ -812,8 +812,8 @@ private:
       }
 
       if (m_note_on_total_count == 0) {
-        PRA32U_EG<0>::note_off();
-        PRA32U_EG<1>::note_off();
+        PRA32_U_EG<0>::note_off();
+        PRA32_U_EG<1>::note_off();
       }
     }
   }
@@ -855,34 +855,34 @@ private:
         (m_param_chorus_bypass != new_param_chorus_bypass)) {
       m_param_chorus_mode   = new_param_chorus_mode;
       m_param_chorus_bypass = new_param_chorus_bypass;
-      PRA32U_DelayFx<0>::attenuate();
+      PRA32_U_DelayFx<0>::attenuate();
 
       if (m_param_chorus_bypass) {
         m_chorus_mode = CHORUS_MODE_OFF;
         m_osc.set_chorus_mode(CHORUS_MODE_OFF);
-        PRA32U_Amp<0>::set_gain<0>(127);
+        PRA32_U_Amp<0>::set_gain<0>(127);
       } else {
         m_chorus_mode = m_param_chorus_mode;
         switch (m_chorus_mode) {
         case CHORUS_MODE_OFF      :
           m_osc.set_chorus_mode(CHORUS_MODE_OFF);
-          PRA32U_Amp<0>::set_gain<0>(90);
+          PRA32_U_Amp<0>::set_gain<0>(90);
           break;
         case CHORUS_MODE_STEREO   :
           m_osc.set_chorus_mode(CHORUS_MODE_STEREO);
-          PRA32U_Amp<0>::set_gain<0>(90);
+          PRA32_U_Amp<0>::set_gain<0>(90);
           break;
         case CHORUS_MODE_P_STEREO :
           m_osc.set_chorus_mode(CHORUS_MODE_P_STEREO);
-          PRA32U_Amp<0>::set_gain<0>(64);
+          PRA32_U_Amp<0>::set_gain<0>(64);
           break;
         case CHORUS_MODE_MONO     :
           m_osc.set_chorus_mode(CHORUS_MODE_MONO);
-          PRA32U_Amp<0>::set_gain<0>(64);
+          PRA32_U_Amp<0>::set_gain<0>(64);
           break;
         case CHORUS_MODE_STEREO_2 :
           m_osc.set_chorus_mode(CHORUS_MODE_STEREO_2);
-          PRA32U_Amp<0>::set_gain<0>(64);
+          PRA32_U_Amp<0>::set_gain<0>(64);
           break;
         }
       }

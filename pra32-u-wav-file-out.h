@@ -3,14 +3,14 @@
 #include <stdio.h>
 #include "./Digital-Synth-PRA32-U/pra32-u-common.h"
 
-class PRA32U_WAVFileOut {
+class PRA32_U_WAVFileOut {
   FILE*    m_file;
   uint32_t m_max_size;
   uint32_t m_data_size;
   boolean  m_closed;
 
 public:
-  PRA32U_WAVFileOut()
+  PRA32_U_WAVFileOut()
   : m_file()
   , m_max_size()
   , m_data_size()

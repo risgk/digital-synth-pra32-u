@@ -14,7 +14,7 @@ static const uint8_t CHORUS_MODE_STEREO_2   = 4;
 
 static const uint8_t PORTAMENTO_COEF_OFF    = 190;
 
-class PRA32U_Osc {
+class PRA32_U_Osc {
   static const uint8_t WAVEFORM_SAW           = 0;
   static const uint8_t WAVEFORM_SQUARE        = 1;
   static const uint8_t WAVEFORM_TRIANGLE      = 2;
@@ -95,7 +95,7 @@ class PRA32U_Osc {
   int8_t         m_shape_lfo_amt;
 
 public:
-  PRA32U_Osc()
+  PRA32_U_Osc()
   : m_portamento_coef()
   , m_pitch_eg_amt()
   , m_lfo_mod_level()
