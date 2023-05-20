@@ -1,7 +1,7 @@
 #pragma once
 
-#include "common.h"
-#include "osc-table.h"
+#include "pra32-u-common.h"
+#include "pra32-u-osc-table.h"
 #include <math.h>
 
 static const uint8_t OSC_MIX_TABLE_LENGTH   = 31;

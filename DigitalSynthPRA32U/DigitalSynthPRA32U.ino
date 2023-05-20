@@ -23,8 +23,8 @@
 
 ////////////////////////////////////////////////////////////////
 
-#include "common.h"
-#include "synth.h"
+#include "pra32-u-common.h"
+#include "pra32-u-synth.h"
 
 Synth g_synth;
 

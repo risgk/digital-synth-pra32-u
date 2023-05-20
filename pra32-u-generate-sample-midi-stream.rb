@@ -1,8 +1,8 @@
-require_relative 'DigitalSynthPRA32U/constants'
+require_relative 'DigitalSynthPRA32U/pra32-u-constants'
 
 MIDI_CH = 0  # 0-based
 
-$file = File.open("sample-midi-stream.bin", "wb")
+$file = File.open("pra32-u-sample-midi-stream.bin", "wb")
 
 def control_change(control_number, value)
   $file.write([(CONTROL_CHANGE | MIDI_CH), control_number, value].pack("C*"))

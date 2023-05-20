@@ -1,8 +1,8 @@
 FOR_ARDUINO_NANO = false
 
-require_relative 'constants'
+require_relative 'pra32-u-constants'
 
-$file = File.open("osc-table.h", "w")
+$file = File.open("pra32-u-osc-table.h", "w")
 
 $file.printf("#pragma once\n\n")
 

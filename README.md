@@ -40,10 +40,10 @@
 - Files
     - `"digital-synth-pra32-u-0.1.1.uf2"` (in the directory `"bin"`) is a UF2 file for Pico Audio Pack
     - `"DigitalSynthPRA32U.ino"` is a Arduino sketch for Raspberry Pi Pico/RP2040 core
-    - `"make-sample-wav-file.cc"` is for debugging on PC
+    - `"pra32-u-make-sample-wav-file.cc"` is for debugging on PC
         - GCC (g++) for PC is required
-        - `"make-sample-wav-file-cc.bat"` makes a sample WAV file (working on Windows)
-    - `"generate-*.rb"` generates source or header files
+        - `"pra32-u-make-sample-wav-file-cc.bat"` makes a sample WAV file (working on Windows)
+    - `"pra32-u-generate-*.rb"` generates source or header files
         - A Ruby execution environment is required
 
 

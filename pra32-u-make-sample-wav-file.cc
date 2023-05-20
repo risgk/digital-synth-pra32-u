@@ -8,10 +8,10 @@ typedef signed char boolean;
 
 #define __not_in_flash_func(func) (func)
 
-#include "./DigitalSynthPRA32U/common.h"
-#include "./DigitalSynthPRA32U/synth.h"
-#include "./midi-in.h"
-#include "./wav-file-out.h"
+#include "./DigitalSynthPRA32U/pra32-u-common.h"
+#include "./DigitalSynthPRA32U/pra32-u-synth.h"
+#include "./pra32-u-midi-in.h"
+#include "./pra32-u-wav-file-out.h"
 
 Synth      g_synth;
 MIDIIn     g_midi_in;

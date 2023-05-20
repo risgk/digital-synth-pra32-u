@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common.h"
+#include "pra32-u-common.h"
 
 template <uint8_t T>
 class DelayFx {

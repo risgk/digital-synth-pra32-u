@@ -1,7 +1,7 @@
 #pragma once
 
 #include <stdio.h>
-#include "./DigitalSynthPRA32U/common.h"
+#include "./DigitalSynthPRA32U/pra32-u-common.h"
 
 class WAVFileOut {
   FILE*    m_file;

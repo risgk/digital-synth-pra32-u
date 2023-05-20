@@ -2,8 +2,8 @@
 
 // refs http://www.musicdsp.org/files/Audio-EQ-Cookbook.txt
 
-#include "common.h"
-#include "filter-table.h"
+#include "pra32-u-common.h"
+#include "pra32-u-filter-table.h"
 
 template <uint8_t T>
 class Filter {

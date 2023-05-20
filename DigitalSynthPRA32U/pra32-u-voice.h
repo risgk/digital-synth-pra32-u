@@ -1,7 +1,7 @@
 #pragma once
 
-#include "common.h"
-#include "program-table.h"
+#include "pra32-u-common.h"
+#include "pra32-u-program-table.h"
 
 class Voice {
   IOsc     m_osc;

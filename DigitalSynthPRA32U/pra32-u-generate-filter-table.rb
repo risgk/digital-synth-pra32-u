@@ -1,8 +1,8 @@
-require_relative 'constants'
+require_relative 'pra32-u-constants'
 
 FILTER_A4_FREQ = 440.0
 
-$file = File.open("filter-table.h", "w")
+$file = File.open("pra32-u-filter-table.h", "w")
 
 $file.printf("#pragma once\n\n")
 
