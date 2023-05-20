@@ -3,7 +3,7 @@
 #include "pra32-u-common.h"
 
 template <uint8_t T>
-class DelayFx {
+class PRA32U_DelayFx {
   static const uint16_t DELAY_BUFF_SIZE = 512;
 
   static int16_t  m_buff[DELAY_BUFF_SIZE];
@@ -31,5 +31,5 @@ public:
   }
 };
 
-template <uint8_t T> int16_t  DelayFx<T>::m_buff[DELAY_BUFF_SIZE];
-template <uint8_t T> uint16_t DelayFx<T>::m_wp;
+template <uint8_t T> int16_t  PRA32U_DelayFx<T>::m_buff[DELAY_BUFF_SIZE];
+template <uint8_t T> uint16_t PRA32U_DelayFx<T>::m_wp;

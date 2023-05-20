@@ -3,7 +3,7 @@
 #include "pra32-u-common.h"
 
 template <uint8_t T>
-class Amp {
+class PRA32U_Amp {
   static uint8_t m_gain[2];
 
 public:
@@ -24,4 +24,4 @@ public:
   }
 };
 
-template <uint8_t T> uint8_t Amp<T>::m_gain[2];
+template <uint8_t T> uint8_t PRA32U_Amp<T>::m_gain[2];

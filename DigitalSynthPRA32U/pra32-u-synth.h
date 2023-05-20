@@ -1,15 +1,6 @@
 #pragma once
 
 #include "pra32-u-common.h"
-
-// associations of units
-#define IOsc        Osc
-#define IFilter     Filter
-#define IAmp        Amp
-#define IEG         EG
-#define IDelayFx    DelayFx
-#define IVoice      Voice
-
 #include "pra32-u-osc.h"
 #include "pra32-u-filter.h"
 #include "pra32-u-amp.h"
@@ -18,7 +9,7 @@
 #include "pra32-u-voice.h"
 
 class Synth {
-  IVoice m_voice;
+  PRA32U_Voice m_voice;
 
 public:
   Synth()

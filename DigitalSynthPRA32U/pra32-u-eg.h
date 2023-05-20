@@ -7,7 +7,7 @@
 #include "pra32-u-common.h"
 
 template <uint8_t T>
-class EG {
+class PRA32U_EG {
   static const uint8_t STATE_ATTACK  = 0;
   static const uint8_t STATE_SUSTAIN = 1;
   static const uint8_t STATE_IDLE    = 2;
@@ -73,7 +73,7 @@ public:
   INLINE static int16_t process(uint8_t count) {
 #if 1
     if ((count & (EG_CONTROL_INTERVAL - 1)) == ((T == 0) ? 3 : 11)) {
-      //printf("%d EG\n", count);
+      //printf("%d PRA32U_EG\n", count);
       switch (m_state) {
       case STATE_ATTACK:
         --m_rest;
@@ -132,12 +132,12 @@ public:
   }
 };
 
-template <uint8_t T> uint8_t  EG<T>::m_state;
-template <uint8_t T> uint16_t EG<T>::m_level;
-template <uint8_t T> int16_t  EG<T>::m_level_out;
-template <uint8_t T> uint8_t  EG<T>::m_attack_update_coef;
-template <uint8_t T> uint8_t  EG<T>::m_decay_update_coef;
-template <uint8_t T> uint16_t EG<T>::m_sustain;
-template <uint8_t T> uint8_t  EG<T>::m_release_update_coef;
-template <uint8_t T> uint8_t  EG<T>::m_rest;
+template <uint8_t T> uint8_t  PRA32U_EG<T>::m_state;
+template <uint8_t T> uint16_t PRA32U_EG<T>::m_level;
+template <uint8_t T> int16_t  PRA32U_EG<T>::m_level_out;
+template <uint8_t T> uint8_t  PRA32U_EG<T>::m_attack_update_coef;
+template <uint8_t T> uint8_t  PRA32U_EG<T>::m_decay_update_coef;
+template <uint8_t T> uint16_t PRA32U_EG<T>::m_sustain;
+template <uint8_t T> uint8_t  PRA32U_EG<T>::m_release_update_coef;
+template <uint8_t T> uint8_t  PRA32U_EG<T>::m_rest;
 
