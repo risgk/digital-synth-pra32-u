@@ -39,7 +39,7 @@ public:
     set_cutoff_offset(0);
 
     update_coefs_0th(0);
-    update_coefs_1st(0);
+    update_coefs_1st(0, 60 << 8);
     update_coefs_2nd();
     update_coefs_3rd();
   }
@@ -96,7 +96,7 @@ public:
     m_cutoff_offset = cutoff_offset;
   }
 
-  INLINE static int16_t process(uint8_t count, int16_t audio_input, int16_t eg_input, int16_t lfo_input) {
+  INLINE static int16_t process(uint8_t count, int16_t audio_input, int16_t eg_input, int16_t lfo_input, uint16_t osc_pitch) {
 #if 1
     if ((count & (FILTER_CONTROL_INTERVAL - 1)) == 7) {
       //printf("%d Filter\n", count);
@@ -108,7 +108,7 @@ public:
         }
       } else {
         if (count & 0x08) {
-          update_coefs_1st(lfo_input);
+          update_coefs_1st(lfo_input, osc_pitch);
         } else {
           update_coefs_0th(eg_input);
         }
@@ -147,11 +147,8 @@ private:
     m_cutoff_candidate += m_cutoff_offset;
   }
 
-  INLINE static void update_coefs_1st(int16_t lfo_input) {
+  INLINE static void update_coefs_1st(int16_t lfo_input, uint16_t osc_pitch) {
     m_cutoff_candidate += (lfo_input * m_cutoff_lfo_amt) >> 14;
-
-    // OSC Pitch is handled here (not in Voice) for performance reasons
-    uint16_t osc_pitch = IOsc<0>::get_osc_pitch();
     if (m_cutoff_pitch_amt == 1) {
       m_cutoff_candidate += static_cast<int8_t>(high_byte(osc_pitch + 128) - 60);
     } else if (m_cutoff_pitch_amt == 2) {
