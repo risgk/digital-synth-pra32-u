@@ -2,6 +2,7 @@
 
 #include "pra32-u-common.h"
 #include "pra32-u-osc-table.h"
+#include "pra32-u-lfo-table.h"
 #include <math.h>
 
 static const uint8_t CHORUS_MODE_OFF        = 0;
