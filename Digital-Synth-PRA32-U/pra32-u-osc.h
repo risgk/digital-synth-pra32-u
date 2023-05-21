@@ -4,17 +4,17 @@
 #include "pra32-u-osc-table.h"
 #include <math.h>
 
-static const uint8_t OSC_MIX_TABLE_LENGTH   = 31;
-
 static const uint8_t CHORUS_MODE_OFF        = 0;
 static const uint8_t CHORUS_MODE_STEREO     = 1;
 static const uint8_t CHORUS_MODE_P_STEREO   = 2;
 static const uint8_t CHORUS_MODE_MONO       = 3;
 static const uint8_t CHORUS_MODE_STEREO_2   = 4;
 
-static const uint8_t PORTAMENTO_COEF_OFF    = 190;
-
 class PRA32_U_Osc {
+  static const uint8_t OSC_MIX_TABLE_LENGTH   = 31;
+
+  static const uint8_t PORTAMENTO_COEF_OFF    = 190;
+
   static const uint8_t WAVEFORM_SAW           = 0;
   static const uint8_t WAVEFORM_SQUARE        = 1;
   static const uint8_t WAVEFORM_TRIANGLE      = 2;

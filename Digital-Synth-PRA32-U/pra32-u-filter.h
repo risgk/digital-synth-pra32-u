@@ -5,30 +5,48 @@
 #include "pra32-u-common.h"
 #include "pra32-u-filter-table.h"
 
-template <uint8_t T>
 class PRA32_U_Filter {
-  static const uint16_t* m_lpf_table;
-  static uint16_t        m_b_2_over_a_0;
-  static int16_t         m_a_1_over_a_0;
-  static int16_t         m_a_2_over_a_0;
-  static int16_t         m_x_1;
-  static int16_t         m_x_2;
-  static int16_t         m_y_1;
-  static int16_t         m_y_2;
-  static uint8_t         m_cutoff_current;
-  static int16_t         m_cutoff_candidate;
-  static uint8_t         m_cutoff_control;
-  static uint8_t         m_cutoff_control_effective;
-  static int8_t          m_cutoff_eg_amt;
-  static int8_t          m_cutoff_lfo_amt;
-  static int8_t          m_cutoff_pitch_amt;
-  static int8_t          m_cutoff_offset;
+  const uint16_t* m_lpf_table;
+  uint16_t        m_b_2_over_a_0;
+  int16_t         m_a_1_over_a_0;
+  int16_t         m_a_2_over_a_0;
+  int16_t         m_x_1;
+  int16_t         m_x_2;
+  int16_t         m_y_1;
+  int16_t         m_y_2;
+  uint8_t         m_cutoff_current;
+  int16_t         m_cutoff_candidate;
+  uint8_t         m_cutoff_control;
+  uint8_t         m_cutoff_control_effective;
+  int8_t          m_cutoff_eg_amt;
+  int8_t          m_cutoff_lfo_amt;
+  int8_t          m_cutoff_pitch_amt;
+  int8_t          m_cutoff_offset;
 
-  static const uint8_t AUDIO_FRACTION_BITS = 14;
-  static const int16_t MAX_ABS_OUTPUT = ((124 << (AUDIO_FRACTION_BITS - 8)) >> 8) << 8;
+  const uint8_t AUDIO_FRACTION_BITS = 14;
+  const int16_t MAX_ABS_OUTPUT = ((124 << (AUDIO_FRACTION_BITS - 8)) >> 8) << 8;
 
 public:
-  INLINE static void initialize() {
+  PRA32_U_Filter()
+  : m_lpf_table()
+  , m_b_2_over_a_0()
+  , m_a_1_over_a_0()
+  , m_a_2_over_a_0()
+  , m_x_1()
+  , m_x_2()
+  , m_y_1()
+  , m_y_2()
+  , m_cutoff_current()
+  , m_cutoff_candidate()
+  , m_cutoff_control()
+  , m_cutoff_control_effective()
+  , m_cutoff_eg_amt()
+  , m_cutoff_lfo_amt()
+  , m_cutoff_pitch_amt()
+  , m_cutoff_offset()
+  {}
+
+  INLINE void initialize() {
     m_cutoff_current = 127;
 
     set_cutoff(127);
@@ -44,7 +62,7 @@ public:
     update_coefs_3rd();
   }
 
-  INLINE static void set_cutoff(uint8_t controller_value) {
+  INLINE void set_cutoff(uint8_t controller_value) {
     uint8_t value = controller_value;
     if (value < 4) {
       value = 4;
@@ -55,12 +73,12 @@ public:
     m_cutoff_control = value;
   }
 
-  INLINE static void set_resonance(uint8_t controller_value) {
+  INLINE void set_resonance(uint8_t controller_value) {
     uint8_t index = (controller_value + 4) >> 4;
     m_lpf_table = g_filter_lpf_tables[index];
   }
 
-  INLINE static void set_cutoff_eg_amt(uint8_t controller_value) {
+  INLINE void set_cutoff_eg_amt(uint8_t controller_value) {
     uint8_t value = controller_value;
     if (value < 4) {
       value = 4;
@@ -71,7 +89,7 @@ public:
     m_cutoff_eg_amt = (value - 64) << 1;
   }
 
-  INLINE static void set_cutoff_lfo_amt(uint8_t controller_value) {
+  INLINE void set_cutoff_lfo_amt(uint8_t controller_value) {
     uint8_t value = controller_value;
     if (value < 4) {
       value = 4;
@@ -82,7 +100,7 @@ public:
     m_cutoff_lfo_amt = (value - 64) << 1;
   }
 
-  INLINE static void set_cutoff_pitch_amt(uint8_t controller_value) {
+  INLINE void set_cutoff_pitch_amt(uint8_t controller_value) {
     if (controller_value < 32) {
       m_cutoff_pitch_amt = 0;
     } else if (controller_value < 96) {
@@ -92,11 +110,11 @@ public:
     }
   }
 
-  INLINE static void set_cutoff_offset(int8_t cutoff_offset) {
+  INLINE void set_cutoff_offset(int8_t cutoff_offset) {
     m_cutoff_offset = cutoff_offset;
   }
 
-  INLINE static int16_t process(uint8_t count, int16_t audio_input, int16_t eg_input, int16_t lfo_input, uint16_t osc_pitch) {
+  INLINE int16_t process(uint8_t count, int16_t audio_input, int16_t eg_input, int16_t lfo_input, uint16_t osc_pitch) {
 #if 1
     if ((count & (FILTER_CONTROL_INTERVAL - 1)) == 7) {
       //printf("%d PRA32_U_Filter\n", count);
@@ -141,13 +159,13 @@ public:
   }
 
 private:
-  INLINE static void update_coefs_0th(int16_t eg_input) {
+  INLINE void update_coefs_0th(int16_t eg_input) {
     m_cutoff_candidate = m_cutoff_control_effective;
     m_cutoff_candidate += (m_cutoff_eg_amt * eg_input) >> 14;
     m_cutoff_candidate += m_cutoff_offset;
   }
 
-  INLINE static void update_coefs_1st(int16_t lfo_input, uint16_t osc_pitch) {
+  INLINE void update_coefs_1st(int16_t lfo_input, uint16_t osc_pitch) {
     m_cutoff_candidate += (lfo_input * m_cutoff_lfo_amt) >> 14;
     if (m_cutoff_pitch_amt == 1) {
       m_cutoff_candidate += static_cast<int8_t>(high_byte(osc_pitch + 128) - 60);
@@ -156,7 +174,7 @@ private:
     }
   }
 
-  INLINE static void update_coefs_2nd() {
+  INLINE void update_coefs_2nd() {
     if (m_cutoff_candidate > 127) {
       m_cutoff_current = 127;
     } else if (m_cutoff_candidate < 0) {
@@ -169,27 +187,10 @@ private:
     m_cutoff_control_effective -= (m_cutoff_control_effective > m_cutoff_control);
   }
 
-  INLINE static void update_coefs_3rd() {
+  INLINE void update_coefs_3rd() {
     size_t index = m_cutoff_current * 3;
     m_b_2_over_a_0 =                      m_lpf_table[index + 0];
     m_a_1_over_a_0 = static_cast<int16_t>(m_lpf_table[index + 1]);
     m_a_2_over_a_0 = static_cast<int16_t>(m_lpf_table[index + 2]);
   }
 };
-
-template <uint8_t T> const uint16_t* PRA32_U_Filter<T>::m_lpf_table;
-template <uint8_t T> uint16_t        PRA32_U_Filter<T>::m_b_2_over_a_0;
-template <uint8_t T> int16_t         PRA32_U_Filter<T>::m_a_1_over_a_0;
-template <uint8_t T> int16_t         PRA32_U_Filter<T>::m_a_2_over_a_0;
-template <uint8_t T> int16_t         PRA32_U_Filter<T>::m_x_1;
-template <uint8_t T> int16_t         PRA32_U_Filter<T>::m_x_2;
-template <uint8_t T> int16_t         PRA32_U_Filter<T>::m_y_1;
-template <uint8_t T> int16_t         PRA32_U_Filter<T>::m_y_2;
-template <uint8_t T> uint8_t         PRA32_U_Filter<T>::m_cutoff_current;
-template <uint8_t T> int16_t         PRA32_U_Filter<T>::m_cutoff_candidate;
-template <uint8_t T> uint8_t         PRA32_U_Filter<T>::m_cutoff_control;
-template <uint8_t T> uint8_t         PRA32_U_Filter<T>::m_cutoff_control_effective;
-template <uint8_t T> int8_t          PRA32_U_Filter<T>::m_cutoff_eg_amt;
-template <uint8_t T> int8_t          PRA32_U_Filter<T>::m_cutoff_lfo_amt;
-template <uint8_t T> int8_t          PRA32_U_Filter<T>::m_cutoff_pitch_amt;
-template <uint8_t T> int8_t          PRA32_U_Filter<T>::m_cutoff_offset;

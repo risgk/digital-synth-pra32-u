@@ -6,7 +6,6 @@
 
 #include "pra32-u-common.h"
 
-template <uint8_t T>
 class PRA32_U_EG {
   static const uint8_t STATE_ATTACK  = 0;
   static const uint8_t STATE_SUSTAIN = 1;
@@ -14,17 +13,28 @@ class PRA32_U_EG {
 
   static const uint8_t NO_DECAY_UPDATE_COEF = 255;
 
-  static uint8_t  m_state;
-  static uint16_t m_level;
-  static int16_t  m_level_out;
-  static uint8_t  m_attack_update_coef;
-  static uint8_t  m_decay_update_coef;
-  static uint16_t m_sustain;
-  static uint8_t  m_release_update_coef;
-  static uint8_t  m_rest;
+  uint8_t  m_state;
+  uint16_t m_level;
+  int16_t  m_level_out;
+  uint8_t  m_attack_update_coef;
+  uint8_t  m_decay_update_coef;
+  uint16_t m_sustain;
+  uint8_t  m_release_update_coef;
+  uint8_t  m_rest;
 
 public:
-  INLINE static void initialize() {
+  PRA32_U_EG()
+  : m_state()
+  , m_level()
+  , m_level_out()
+  , m_attack_update_coef()
+  , m_decay_update_coef()
+  , m_sustain()
+  , m_release_update_coef()
+  , m_rest()
+  {}
+
+  INLINE void initialize() {
     m_state = STATE_IDLE;
     set_attack(0);
     set_decay(0);
@@ -32,7 +42,7 @@ public:
     set_release(0);
   }
 
-  INLINE static void set_attack(uint8_t controller_value) {
+  INLINE void set_attack(uint8_t controller_value) {
     if (controller_value == 127) {
       m_attack_update_coef = 64;
     } else {
@@ -40,7 +50,7 @@ public:
     }
   }
 
-  INLINE static void set_decay(uint8_t controller_value) {
+  INLINE void set_decay(uint8_t controller_value) {
     if (controller_value == 127) {
       m_decay_update_coef = NO_DECAY_UPDATE_COEF;
     } else {
@@ -48,11 +58,11 @@ public:
     }
   }
 
-  INLINE static void set_sustain(uint8_t controller_value) {
+  INLINE void set_sustain(uint8_t controller_value) {
     m_sustain = (((controller_value + 1) >> 1) << 1) << 8;
   }
 
-  INLINE static void set_release(uint8_t controller_value) {
+  INLINE void set_release(uint8_t controller_value) {
     if (controller_value == 127) {
       m_release_update_coef = 64;
     } else {
@@ -60,19 +70,19 @@ public:
     }
   }
 
-  INLINE static void note_on() {
+  INLINE void note_on() {
     m_state = STATE_ATTACK;
     m_rest = m_attack_update_coef;
   }
 
-  INLINE static void note_off() {
+  INLINE void note_off() {
     m_state = STATE_IDLE;
     m_rest = m_release_update_coef;
   }
 
-  INLINE static int16_t process(uint8_t count) {
+  INLINE int16_t process(uint8_t id, uint8_t count) {
 #if 1
-    if ((count & (EG_CONTROL_INTERVAL - 1)) == ((T == 0) ? 3 : 11)) {
+    if ((count & (EG_CONTROL_INTERVAL - 1)) == ((id == 0) ? 3 : 11)) {
       //printf("%d PRA32_U_EG\n", count);
       switch (m_state) {
       case STATE_ATTACK:
@@ -131,13 +141,3 @@ public:
     return m_level_out;
   }
 };
-
-template <uint8_t T> uint8_t  PRA32_U_EG<T>::m_state;
-template <uint8_t T> uint16_t PRA32_U_EG<T>::m_level;
-template <uint8_t T> int16_t  PRA32_U_EG<T>::m_level_out;
-template <uint8_t T> uint8_t  PRA32_U_EG<T>::m_attack_update_coef;
-template <uint8_t T> uint8_t  PRA32_U_EG<T>::m_decay_update_coef;
-template <uint8_t T> uint16_t PRA32_U_EG<T>::m_sustain;
-template <uint8_t T> uint8_t  PRA32_U_EG<T>::m_release_update_coef;
-template <uint8_t T> uint8_t  PRA32_U_EG<T>::m_rest;
-
