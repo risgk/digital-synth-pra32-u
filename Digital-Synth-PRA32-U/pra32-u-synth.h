@@ -6,41 +6,41 @@
 #include "pra32-u-amp.h"
 #include "pra32-u-lfo.h"
 #include "pra32-u-eg.h"
-#include "pra32-u-delay-fx.h"
+#include "pra32-u-chorus-fx.h"
 #include "pra32-u-program-table.h"
 
 class PRA32_U_Synth {
-  PRA32_U_Osc     m_osc;
-  PRA32_U_Filter  m_filter;
-  PRA32_U_Amp     m_amp;
-  PRA32_U_LFO     m_lfo;
-  PRA32_U_EG      m_eg[2];
-  PRA32_U_DelayFx m_delay_fx;
+  PRA32_U_Osc      m_osc;
+  PRA32_U_Filter   m_filter;
+  PRA32_U_Amp      m_amp;
+  PRA32_U_LFO      m_lfo;
+  PRA32_U_EG       m_eg[2];
+  PRA32_U_ChorusFx m_chorus_fx;
 
-  uint8_t         m_count;
+  uint8_t          m_count;
 
-  uint8_t         m_note_queue[4];
-  uint8_t         m_note_on_number[4];
-  uint8_t         m_note_on_count[128];
-  uint8_t         m_note_on_total_count;
-  boolean         m_sustain_pedal;
-  uint8_t         m_voice_mode;
+  uint8_t          m_note_queue[4];
+  uint8_t          m_note_on_number[4];
+  uint8_t          m_note_on_count[128];
+  uint8_t          m_note_on_total_count;
+  boolean          m_sustain_pedal;
+  uint8_t          m_voice_mode;
 
-  uint8_t         m_output_error;
-  uint8_t         m_portamento;
+  uint8_t          m_output_error;
+  uint8_t          m_portamento;
 
-  uint8_t         m_chorus_mode;
-  uint8_t         m_velocity_to_cutoff;
+  uint8_t          m_chorus_mode;
+  uint8_t          m_velocity_to_cutoff;
 
-  uint8_t         m_eg_osc_amt;
-  uint8_t         m_eg_osc_dst;
-  uint8_t         m_lfo_osc_amt;
-  uint8_t         m_lfo_osc_dst;
+  uint8_t          m_eg_osc_amt;
+  uint8_t          m_eg_osc_dst;
+  uint8_t          m_lfo_osc_amt;
+  uint8_t          m_lfo_osc_dst;
 
-  uint8_t         m_sp_prog_chg_cc_values[8];
+  uint8_t          m_sp_prog_chg_cc_values[8];
 
-  uint8_t         m_param_chorus_mode;
-  boolean         m_param_chorus_bypass;
+  uint8_t          m_param_chorus_mode;
+  boolean          m_param_chorus_bypass;
 
 public:
   PRA32_U_Synth()
@@ -50,7 +50,7 @@ public:
   , m_amp()
   , m_lfo()
   , m_eg()
-  , m_delay_fx()
+  , m_chorus_fx()
 
   , m_count()
 
@@ -101,7 +101,7 @@ public:
     m_amp.set_gain<0>(90);
     m_amp.set_gain<1>(127);
 
-    m_delay_fx.initialize();
+    m_chorus_fx.initialize();
 
     m_eg_osc_amt = 64;
     m_lfo_osc_amt = 64;
@@ -716,9 +716,9 @@ public:
 
     int16_t dir_sample = amp_output;
 
-    int16_t eff_sample_0 = m_delay_fx.get(m_osc.get_chorus_delay_time<0>());
-    int16_t eff_sample_1 = m_delay_fx.get(m_osc.get_chorus_delay_time<1>());
-    m_delay_fx.push(dir_sample);
+    int16_t eff_sample_0 = m_chorus_fx.get(m_osc.get_chorus_delay_time<0>());
+    int16_t eff_sample_1 = m_chorus_fx.get(m_osc.get_chorus_delay_time<1>());
+    m_chorus_fx.push(dir_sample);
 
     if (m_chorus_mode >= CHORUS_MODE_MONO) {
       // For Mono Chorus and Stereo 2-phase Chorus
@@ -865,7 +865,7 @@ private:
         (m_param_chorus_bypass != new_param_chorus_bypass)) {
       m_param_chorus_mode   = new_param_chorus_mode;
       m_param_chorus_bypass = new_param_chorus_bypass;
-      m_delay_fx.attenuate();
+      m_chorus_fx.attenuate();
 
       if (m_param_chorus_bypass) {
         m_chorus_mode = CHORUS_MODE_OFF;

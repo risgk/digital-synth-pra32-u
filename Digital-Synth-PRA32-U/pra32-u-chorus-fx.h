@@ -2,14 +2,14 @@
 
 #include "pra32-u-common.h"
 
-class PRA32_U_DelayFx {
+class PRA32_U_ChorusFx {
   static const uint16_t DELAY_BUFF_SIZE = 512;
 
   int16_t  m_buff[DELAY_BUFF_SIZE];
   uint16_t m_wp;
 
 public:
-PRA32_U_DelayFx()
+  PRA32_U_ChorusFx()
   : m_buff()
   , m_wp()
   {}
