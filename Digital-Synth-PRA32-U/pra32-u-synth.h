@@ -705,11 +705,13 @@ public:
 
     int16_t eg_output_0 = m_eg[0].process(0, m_count);
     int16_t eg_output_1 = m_eg[1].process(1, m_count);
-    m_lfo.process(m_count);
+    m_lfo.control(m_count);
     int16_t lfo_output = m_lfo.get_lfo_level();
     uint8_t rnd = m_lfo.get_rnd();
 
-    int16_t osc_output = m_osc.process(m_count, rnd, lfo_output, eg_output_0);
+    m_osc.control(m_count, rnd, lfo_output, eg_output_0);
+
+    int16_t osc_output = m_osc.process();
     uint16_t osc_pitch = m_osc.get_osc_pitch();
     int16_t filter_output = m_filter.process(m_count, osc_output, eg_output_0, lfo_output, osc_pitch);
     int16_t amp_output = m_amp.process(filter_output, eg_output_1);

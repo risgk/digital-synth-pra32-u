@@ -96,7 +96,7 @@ public:
     return m_rnd;
   }
 
-  INLINE void process(uint8_t count) {
+  INLINE void control(uint8_t count) {
 #if 1
     if ((count & (OSC_CONTROL_INTERVAL - 1)) == 0) {
       //printf("%d LFO\n", count);

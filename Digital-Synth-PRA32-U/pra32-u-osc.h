@@ -368,7 +368,7 @@ public:
     return m_chorus_delay_time[N];
   }
 
-  INLINE int16_t process(uint8_t count, uint8_t rnd, int16_t lfo_level, int16_t eg_level) {
+  INLINE void control(uint8_t count, uint8_t rnd, int16_t lfo_level, int16_t eg_level) {
 #if 1
     if ((count & (OSC_CONTROL_INTERVAL - 1)) == 0) {
       //printf("%d Osc\n", count);
@@ -402,6 +402,10 @@ public:
     }
 #endif
 
+    return;
+  }
+
+  INLINE int16_t process() {
 #if 1
     m_phase[0] += m_freq[0];
     int16_t wave_0 = get_wave_level(m_wave_table[0], m_phase[0]);
