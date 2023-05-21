@@ -4,6 +4,7 @@
 #include "pra32-u-osc.h"
 #include "pra32-u-filter.h"
 #include "pra32-u-amp.h"
+#include "pra32-u-lfo.h"
 #include "pra32-u-eg.h"
 #include "pra32-u-delay-fx.h"
 #include "pra32-u-program-table.h"
@@ -12,6 +13,7 @@ class PRA32_U_Synth {
   PRA32_U_Osc     m_osc;
   PRA32_U_Filter  m_filter;
   PRA32_U_Amp     m_amp;
+  PRA32_U_LFO     m_lfo;
   PRA32_U_EG      m_eg[2];
   PRA32_U_DelayFx m_delay_fx;
 
@@ -35,7 +37,6 @@ class PRA32_U_Synth {
   uint8_t         m_lfo_osc_amt;
   uint8_t         m_lfo_osc_dst;
 
-  uint16_t        m_rnd;
   uint8_t         m_sp_prog_chg_cc_values[8];
 
   uint8_t         m_param_chorus_mode;
@@ -47,6 +48,7 @@ public:
   : m_osc()
   , m_filter()
   , m_amp()
+  , m_lfo()
   , m_eg()
   , m_delay_fx()
 
@@ -70,7 +72,6 @@ public:
   , m_lfo_osc_amt()
   , m_lfo_osc_dst()
 
-  , m_rnd()
   , m_sp_prog_chg_cc_values()
 
   , m_param_chorus_mode()
@@ -104,8 +105,6 @@ public:
 
     m_eg_osc_amt = 64;
     m_lfo_osc_amt = 64;
-
-    m_rnd = 1;
 
     program_change(PROGRAM_NUMBER_DEFAULT);
   }
@@ -143,7 +142,7 @@ public:
           }
           m_osc.note_on<0>(note_number);
           m_osc.note_on<2>(note_number);
-          m_osc.trigger_lfo();
+          m_lfo.trigger_lfo();
           m_eg[0].note_on();
           m_eg[1].note_on();
 #if 0
@@ -173,7 +172,7 @@ public:
         m_osc.set_portamento<2>(m_portamento);
         m_osc.note_on<0>(note_number);
         m_osc.note_on<2>(note_number);
-        m_osc.trigger_lfo();
+        m_lfo.trigger_lfo();
         m_eg[0].note_on();
         m_eg[1].note_on();
 #if 0
@@ -267,7 +266,7 @@ public:
       }
 
       if (prev_note_on_total_count == 0) {
-        m_osc.trigger_lfo();
+        m_lfo.trigger_lfo();
       }
       m_eg[0].note_on();
       m_eg[1].note_on();
@@ -321,7 +320,7 @@ public:
           m_osc.note_on<2>(m_note_on_number[0]);
 
           if (m_voice_mode == VOICE_MONOPHONIC) {
-            m_osc.trigger_lfo();
+            m_lfo.trigger_lfo();
             m_eg[0].note_on();
             m_eg[1].note_on();
           }
@@ -408,7 +407,7 @@ public:
       break;
 #endif
     case MODULATION     :
-      m_osc.set_lfo_depth<1>(controller_value);
+      m_lfo.set_lfo_depth<1>(controller_value);
       break;
 
     case FILTER_CUTOFF  :
@@ -438,10 +437,10 @@ public:
       break;
 
     case LFO_RATE       :
-      m_osc.set_lfo_rate(controller_value);
+      m_lfo.set_lfo_rate(controller_value);
       break;
     case LFO_DEPTH      :
-      m_osc.set_lfo_depth<0>(controller_value);
+      m_lfo.set_lfo_depth<0>(controller_value);
       break;
     case LFO_OSC_AMT    :
       m_lfo_osc_amt = controller_value;
@@ -558,11 +557,11 @@ public:
       break;
 
     case LFO_WAVE       :
-      m_osc.set_lfo_waveform(controller_value);
+      m_lfo.set_lfo_waveform(controller_value);
       break;
 
     case LFO_FADE_TIME  :
-      m_osc.set_lfo_fade_time(controller_value);
+      m_lfo.set_lfo_fade_time(controller_value);
       break;
 
     case P_BEND_RANGE   :
@@ -706,8 +705,11 @@ public:
 
     int16_t eg_output_0 = m_eg[0].process(0, m_count);
     int16_t eg_output_1 = m_eg[1].process(1, m_count);
-    int16_t osc_output = m_osc.process(m_count, eg_output_0);
-    int16_t lfo_output = m_osc.get_lfo_level();
+    m_lfo.process(m_count);
+    int16_t lfo_output = m_lfo.get_lfo_level();
+    uint8_t rnd = m_lfo.get_rnd();
+
+    int16_t osc_output = m_osc.process(m_count, rnd, lfo_output, eg_output_0);
     uint16_t osc_pitch = m_osc.get_osc_pitch();
     int16_t filter_output = m_filter.process(m_count, osc_output, eg_output_0, lfo_output, osc_pitch);
     int16_t amp_output = m_amp.process(filter_output, eg_output_1);
@@ -771,15 +773,8 @@ private:
     }
   }
 
-  uint8_t get_rnd_7() {
-    m_rnd = m_rnd ^ (m_rnd << 5);
-    m_rnd = m_rnd ^ (m_rnd >> 9);
-    m_rnd = m_rnd ^ (m_rnd << 8);
-    return low_byte(m_rnd) >> 1;
-  }
-
   INLINE void set_modulation(uint8_t controller_value) {
-    m_osc.set_lfo_depth<1>(controller_value);
+    m_lfo.set_lfo_depth<1>(controller_value);
   }
 
 #if 0

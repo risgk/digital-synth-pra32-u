@@ -2,7 +2,6 @@
 
 #include "pra32-u-common.h"
 #include "pra32-u-osc-table.h"
-#include "pra32-u-lfo-table.h"
 #include <math.h>
 
 static const uint8_t CHORUS_MODE_OFF        = 0;
@@ -22,31 +21,10 @@ class PRA32_U_Osc {
   static const uint8_t WAVEFORM_1_PULSE       = 4;
   static const uint8_t WAVEFORM_2_NOISE       = 5;
 
-  static const uint8_t LFO_WAVEFORM_TRI_ASYNC = 0;
-  static const uint8_t LFO_WAVEFORM_TRI_SYNC  = 1;
-  static const uint8_t LFO_WAVEFORM_SAW_DOWN  = 2;
-  static const uint8_t LFO_WAVEFORM_RANDOM    = 3;
-  static const uint8_t LFO_WAVEFORM_SQUARE    = 4;
-
-  static const uint8_t LFO_FADE_COEF_OFF      = 1;
-  static const uint8_t LFO_FADE_COEF_ON_MIN   = 2;
-
-  static const uint8_t LFO_FADE_LEVEL_MAX     = 128;
-
   uint8_t        m_portamento_coef[4];
   int8_t         m_pitch_eg_amt[2];
   int16_t        m_lfo_mod_level[2];
-  uint16_t       m_lfo_phase;
-  int16_t        m_lfo_wave_level;
-  int16_t        m_lfo_level;
-  uint16_t       m_lfo_rate;
-  uint8_t        m_lfo_depth[2];
   int8_t         m_pitch_lfo_amt[2];
-  uint8_t        m_lfo_waveform;
-  uint8_t        m_lfo_sampled;
-  uint8_t        m_lfo_fade_coef;
-  uint8_t        m_lfo_fade_cnt;
-  uint8_t        m_lfo_fade_level;
 
   uint8_t        m_chorus_depth_control;
   uint8_t        m_chorus_rate_control;
@@ -82,8 +60,6 @@ class PRA32_U_Osc {
   int8_t         m_mono_osc2_pitch;
   int8_t         m_mono_osc2_detune;
 
-  uint8_t        m_rnd;
-
   __uint24       m_lfsr;
   uint8_t        m_phase_high;
   int8_t         m_osc1_shape_control;
@@ -100,17 +76,7 @@ public:
   : m_portamento_coef()
   , m_pitch_eg_amt()
   , m_lfo_mod_level()
-  , m_lfo_phase()
-  , m_lfo_wave_level()
-  , m_lfo_level()
-  , m_lfo_rate()
-  , m_lfo_depth()
   , m_pitch_lfo_amt()
-  , m_lfo_waveform()
-  , m_lfo_sampled()
-  , m_lfo_fade_coef()
-  , m_lfo_fade_cnt()
-  , m_lfo_fade_level()
 
   , m_chorus_depth_control()
   , m_chorus_rate_control()
@@ -146,8 +112,6 @@ public:
   , m_mono_osc2_pitch()
   , m_mono_osc2_detune()
 
-  , m_rnd()
-
   , m_lfsr()
   , m_phase_high()
   , m_osc1_shape_control()
@@ -165,12 +129,6 @@ public:
     m_portamento_coef[1] = PORTAMENTO_COEF_OFF;
     m_portamento_coef[2] = PORTAMENTO_COEF_OFF;
     m_portamento_coef[3] = PORTAMENTO_COEF_OFF;
-
-    m_lfo_waveform = LFO_WAVEFORM_TRI_ASYNC;
-    m_lfo_sampled = 64;
-    m_lfo_fade_coef = LFO_FADE_COEF_OFF;
-    m_lfo_fade_cnt = m_lfo_fade_coef;
-    m_lfo_fade_level = LFO_FADE_LEVEL_MAX;
 
     set_chorus_depth     (32 );
     set_chorus_rate      (32 );
@@ -214,8 +172,6 @@ public:
     m_freq_temp[2] = g_osc_freq_table[0];
     m_freq_temp[3] = g_osc_freq_table[0];
     m_osc_level = 48;
-
-    m_rnd = 1;
 
     m_lfsr = 0x000001u;
     m_osc1_shape = 0x8000;
@@ -295,29 +251,6 @@ public:
     m_shape_eg_amt = ((controller_value - 64) << 1);
   }
 
-  INLINE void set_lfo_waveform(uint8_t controller_value) {
-    if        (controller_value < 16) {
-      m_lfo_waveform = LFO_WAVEFORM_TRI_ASYNC;
-    } else if (controller_value < 48) {
-      m_lfo_waveform = LFO_WAVEFORM_TRI_SYNC;
-    } else if (controller_value < 80) {
-      m_lfo_waveform = LFO_WAVEFORM_SAW_DOWN;
-    } else if (controller_value < 112) {
-      m_lfo_waveform = LFO_WAVEFORM_RANDOM;
-    } else {
-      m_lfo_waveform = LFO_WAVEFORM_SQUARE;
-    }
-  }
-
-  INLINE void set_lfo_rate(uint8_t controller_value) {
-    m_lfo_rate = g_lfo_rate_table[(controller_value + 1) >> 1];
-  }
-
-  template <uint8_t N>
-  INLINE void set_lfo_depth(uint8_t controller_value) {
-    m_lfo_depth[N] = (controller_value + 1) >> 1;
-  }
-
   template <uint8_t N>
   INLINE void set_pitch_lfo_amt(uint8_t controller_value) {
     if (controller_value < 25) {
@@ -338,10 +271,6 @@ public:
       controller_value = 1;
     }
     m_shape_lfo_amt = -((controller_value - 64) << 1);
-  }
-
-  INLINE void set_lfo_fade_time(uint8_t controller_value) {
-    m_lfo_fade_coef = high_byte(controller_value * controller_value) + LFO_FADE_COEF_OFF;
   }
 
   INLINE void set_chorus_depth(uint8_t controller_value) {
@@ -413,16 +342,6 @@ public:
     m_osc_on[N] = false;
   }
 
-  INLINE void trigger_lfo() {
-    if (m_lfo_waveform != LFO_WAVEFORM_TRI_ASYNC) {
-      m_lfo_phase = 0xFFFF;
-    }
-
-    if (m_lfo_fade_coef >= LFO_FADE_COEF_ON_MIN) {
-      m_lfo_fade_level = 0;
-    }
-  }
-
   INLINE void set_pitch_bend_range(uint8_t controller_value) {
     uint8_t range = controller_value;
     if (range > 24) {
@@ -437,10 +356,6 @@ public:
     update_pitch_bend();
   }
 
-  INLINE int16_t get_lfo_level() {
-    return m_lfo_level;
-  }
-
   INLINE uint16_t get_osc_pitch() {
     if (m_mono_mode) {
       return m_pitch_current[0] + m_pitch_bend_normalized;
@@ -453,43 +368,36 @@ public:
     return m_chorus_delay_time[N];
   }
 
-  INLINE int16_t process(uint8_t count, int16_t eg_level) {
+  INLINE int16_t process(uint8_t count, uint8_t rnd, int16_t lfo_level, int16_t eg_level) {
 #if 1
     if ((count & (OSC_CONTROL_INTERVAL - 1)) == 0) {
       //printf("%d Osc\n", count);
       switch ((count >> OSC_CONTROL_INTERVAL_BITS) & 0x1F) {
-      case 0x00: update_freq_0th<0>();         break;
-      case 0x01: update_freq_1st<0>(eg_level); break;
-      case 0x02: update_freq_2nd<0>();         break;
-      case 0x03: update_freq_3rd<0>();         break;
-      case 0x04: update_gate<0>();             break;
-      case 0x05: update_rnd();                 break;
-      case 0x06: update_lfo_1st();             break;
-      case 0x07: update_lfo_2nd();             break;
-      case 0x08: update_freq_0th<1>();         break;
-      case 0x09: update_freq_1st<1>(eg_level); break;
-      case 0x0A: update_freq_2nd<1>();         break;
-      case 0x0B: update_freq_3rd<1>();         break;
-      case 0x0C: update_gate<1>();             break;
-      case 0x0D: update_rnd();                 break;
-      case 0x0E: update_lfo_3rd();             break;
-      case 0x0F: update_lfo_4th(eg_level);     break;
-      case 0x10: update_freq_0th<2>();         break;
-      case 0x11: update_freq_1st<2>(eg_level); break;
-      case 0x12: update_freq_2nd<2>();         break;
-      case 0x13: update_freq_3rd<2>();         break;
-      case 0x14: update_gate<2>();             break;
-      case 0x15: update_rnd();                 break;
-      case 0x16: update_chorus_lfo_0th();      break;
-      case 0x17: update_chorus_lfo_1st();      break;
-      case 0x18: update_freq_0th<3>();         break;
-      case 0x19: update_freq_1st<3>(eg_level); break;
-      case 0x1A: update_freq_2nd<3>();         break;
-      case 0x1B: update_freq_3rd<3>();         break;
-      case 0x1C: update_gate<3>();             break;
-      case 0x1D: update_rnd();                 break;
-      case 0x1E: update_chorus_lfo_2nd();      break;
-      case 0x1F: update_chorus_lfo_3rd();      break;
+      case 0x00: update_freq_0th<0>();                break;
+      case 0x01: update_freq_1st<0>(eg_level);        break;
+      case 0x02: update_freq_2nd<0>();                break;
+      case 0x03: update_freq_3rd<0>(rnd);             break;
+      case 0x04: update_gate<0>();                    break;
+      case 0x08: update_freq_0th<1>();                break;
+      case 0x09: update_freq_1st<1>(eg_level);        break;
+      case 0x0A: update_freq_2nd<1>();                break;
+      case 0x0B: update_freq_3rd<1>(rnd);             break;
+      case 0x0C: update_gate<1>();                    break;
+      case 0x0F: update_lfo_4th(lfo_level, eg_level); break;
+      case 0x10: update_freq_0th<2>();                break;
+      case 0x11: update_freq_1st<2>(eg_level);        break;
+      case 0x12: update_freq_2nd<2>();                break;
+      case 0x13: update_freq_3rd<2>(rnd);             break;
+      case 0x14: update_gate<2>();                    break;
+      case 0x16: update_chorus_lfo_0th();             break;
+      case 0x17: update_chorus_lfo_1st();             break;
+      case 0x18: update_freq_0th<3>();                break;
+      case 0x19: update_freq_1st<3>(eg_level);        break;
+      case 0x1A: update_freq_2nd<3>();                break;
+      case 0x1B: update_freq_3rd<3>(rnd);             break;
+      case 0x1C: update_gate<3>();                    break;
+      case 0x1E: update_chorus_lfo_2nd();             break;
+      case 0x1F: update_chorus_lfo_3rd();             break;
       }
     }
 #endif
@@ -587,44 +495,6 @@ private:
     return result;
   }
 
-  INLINE int16_t get_lfo_wave_level(uint16_t phase) {
-    int16_t level = 0;
-
-    switch (m_lfo_waveform) {
-    case LFO_WAVEFORM_TRI_ASYNC:
-    case LFO_WAVEFORM_TRI_SYNC:
-      level = static_cast<int16_t>(phase) >> 1;
-      if (level < -(64 << 7)) {
-        level = -(64 << 7) - (level + (64 << 7));
-      } else if (level < (64 << 7)) {
-        // do nothing
-      } else {
-        level = (64 << 7) - (level - (64 << 7));
-      }
-      break;
-    case LFO_WAVEFORM_SAW_DOWN:
-      {
-        level = (64 << 7) - (phase >> 2);
-      }
-      break;
-    case LFO_WAVEFORM_RANDOM:
-      if (phase < m_lfo_rate) {
-        m_lfo_sampled = (m_rnd << 6);
-      }
-      level = (64 << 7) - m_lfo_sampled;
-      break;
-    case LFO_WAVEFORM_SQUARE:
-      if (phase < 0x8000) {
-        level = 128 << 7;
-      } else {
-        level = 0;
-      }
-      break;
-    }
-
-    return level;
-  }
-
   template <uint8_t N>
   INLINE void update_freq_0th() {
     m_osc_on_temp[N] = m_osc_on[N];
@@ -686,10 +556,10 @@ private:
   }
 
   template <uint8_t N>
-  INLINE void update_freq_3rd() {
+  INLINE void update_freq_3rd(uint8_t rnd) {
     uint8_t fine = low_byte(m_pitch_real[N]);
     uint16_t freq_div_2 = (m_freq_temp[N] >> 1);
-    uint8_t bit = (m_rnd >= 0xF0);
+    uint8_t bit = (rnd >= 0xF0);
     uint8_t mono_offset = 0;
     if (N == 2) {
       if (m_mono_mode) {
@@ -740,50 +610,16 @@ private:
     }
   }
 
-  INLINE void update_rnd() {
-    // TODO
-    m_rnd ^= m_rnd << 1;
-    m_rnd ^= m_rnd >> 1;
-    m_rnd ^= m_rnd << 2;
-  }
-
-  INLINE void update_lfo_1st() {
-    ;
-  }
-
-  INLINE void update_lfo_2nd() {
-    --m_lfo_fade_cnt;
-    if (m_lfo_fade_cnt == 0) {
-      m_lfo_fade_cnt = m_lfo_fade_coef;
-      if (m_lfo_fade_level < LFO_FADE_LEVEL_MAX) {
-        m_lfo_fade_level += 2;
-      }
-    }
-
-    m_lfo_phase += m_lfo_rate;
-    m_lfo_wave_level = get_lfo_wave_level(m_lfo_phase);
-  }
-
-  INLINE void update_lfo_3rd() {
-    uint8_t lfo_depth = high_byte((m_lfo_depth[0] << 1) * m_lfo_fade_level) + m_lfo_depth[1];
-    if (lfo_depth > 64) {
-      lfo_depth = 64;
-    }
-    lfo_depth <<= 1;
-
-    m_lfo_level = (lfo_depth * m_lfo_wave_level) >> 9;
-  }
-
-  INLINE void update_lfo_4th(int16_t eg_level) {
-    m_lfo_mod_level[0] = (m_lfo_level * m_pitch_lfo_amt[0]) >> 7;
+  INLINE void update_lfo_4th(int16_t lfo_level, int16_t eg_level) {
+    m_lfo_mod_level[0] = (lfo_level * m_pitch_lfo_amt[0]) >> 7;
 
     if (m_mono_mode) {
       m_osc1_shape_control_effective += (m_osc1_shape_control_effective < m_osc1_shape_control) << 1;
       m_osc1_shape_control_effective -= (m_osc1_shape_control_effective > m_osc1_shape_control) << 1;
 
-      m_lfo_mod_level[1] = ((m_lfo_level * m_pitch_lfo_amt[1])) >> 7;
+      m_lfo_mod_level[1] = ((lfo_level * m_pitch_lfo_amt[1])) >> 7;
       uint16_t shape_eg_mod  = (eg_level * m_shape_eg_amt) >> 6;
-      uint16_t shape_lfo_mod = -((m_lfo_level * m_shape_lfo_amt) >> 3);
+      uint16_t shape_lfo_mod = -((lfo_level * m_shape_lfo_amt) >> 3);
       m_osc1_shape = 0x8000u - (m_osc1_shape_control_effective << 8) +
         + shape_eg_mod + shape_eg_mod + shape_lfo_mod;
     } else {
