@@ -80,7 +80,11 @@ public:
     m_rest = m_release_update_coef;
   }
 
-  INLINE int16_t process(uint8_t id, uint8_t count) {
+  INLINE int16_t get_output() {
+    return m_level_out;
+  }
+
+  INLINE void control(uint8_t id, uint8_t count) {
 #if 1
     if ((count & (EG_CONTROL_INTERVAL - 1)) == ((id == 0) ? 3 : 11)) {
       //printf("%d PRA32_U_EG\n", count);
@@ -137,7 +141,5 @@ public:
       m_level_out = m_level >> 1;
     }
 #endif
-
-    return m_level_out;
   }
 };

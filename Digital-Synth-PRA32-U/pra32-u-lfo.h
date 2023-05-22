@@ -88,7 +88,7 @@ public:
     }
   }
 
-  INLINE int16_t get_lfo_level() {
+  INLINE int16_t get_output() {
     return m_lfo_level;
   }
 
@@ -110,8 +110,6 @@ public:
       }
     }
 #endif
-
-    return;
   }
 
 private:

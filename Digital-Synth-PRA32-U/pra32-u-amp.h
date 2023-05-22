@@ -4,10 +4,12 @@
 
 class PRA32_U_Amp {
   uint8_t m_gain[2];
+  int16_t m_gain_mod_input;
 
 public:
 PRA32_U_Amp()
   : m_gain()
+  , m_gain_mod_input()
   {}
 
   INLINE void initialize() {
@@ -20,8 +22,12 @@ PRA32_U_Amp()
     m_gain[N] = (controller_value + 1) >> 1;
   }
 
-  INLINE int16_t process(int16_t audio_input, int16_t gain_mod_input) {
-    int16_t audio_output = (audio_input * gain_mod_input) >> 14;
+  INLINE void control(int16_t gain_mod_input) {
+    m_gain_mod_input = gain_mod_input;
+  }
+
+  INLINE int16_t process(int16_t audio_input) {
+    int16_t audio_output = (audio_input * m_gain_mod_input) >> 14;
     audio_output = (audio_output * (m_gain[0] * m_gain[1])) >> 12;
     return audio_output;
   }

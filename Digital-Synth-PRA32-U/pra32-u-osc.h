@@ -401,8 +401,6 @@ public:
       }
     }
 #endif
-
-    return;
   }
 
   INLINE int16_t process() {
