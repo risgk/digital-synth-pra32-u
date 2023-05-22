@@ -18,6 +18,14 @@ public:
     m_wp = DELAY_BUFF_SIZE - 1;
   }
 
+  INLINE void control() {
+  }
+
+  INLINE int16_t process(int16_t audio_input) {
+    return audio_input;
+  }
+
+//private:
   INLINE void push(int16_t audio_input) {
     m_wp = (m_wp + 1) & (DELAY_BUFF_SIZE - 1);
     m_buff[m_wp] = audio_input;

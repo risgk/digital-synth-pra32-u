@@ -114,7 +114,7 @@ public:
     m_cutoff_offset = cutoff_offset;
   }
 
-  INLINE int16_t process(uint8_t count, int16_t audio_input, int16_t eg_input, int16_t lfo_input, uint16_t osc_pitch) {
+  INLINE void control(uint8_t count, int16_t eg_input, int16_t lfo_input, uint16_t osc_pitch) {
 #if 1
     if ((count & (FILTER_CONTROL_INTERVAL - 1)) == 7) {
       //printf("%d PRA32_U_Filter\n", count);
@@ -133,7 +133,9 @@ public:
       }
     }
 #endif
+  }
 
+  INLINE int16_t process(int16_t audio_input) {
 #if 1
     int16_t x_0   = audio_input >> (16 - AUDIO_FRACTION_BITS);
     int32_t tmp   = ((x_0 + (m_x_1 << 1) + m_x_2) * m_b_2_over_a_0) >> 2;

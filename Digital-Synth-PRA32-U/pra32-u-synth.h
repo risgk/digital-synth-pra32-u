@@ -715,12 +715,18 @@ public:
     int16_t eg_output_1 = m_eg[1].get_output();
     m_amp.control(eg_output_1);
 
-    int16_t osc_output = m_osc.process();
     uint16_t osc_pitch = m_osc.get_osc_pitch();
-    int16_t filter_output = m_filter.process(m_count, osc_output, eg_output_0, lfo_output, osc_pitch);
+    m_filter.control(m_count, eg_output_0, lfo_output, osc_pitch);
+
+    m_chorus_fx.control();
+
+    int16_t osc_output = m_osc.process();
+    int16_t filter_output = m_filter.process(osc_output);
     int16_t amp_output = m_amp.process(filter_output);
 
     int16_t dir_sample = amp_output;
+
+    m_chorus_fx.process(dir_sample);
 
     int16_t eff_sample_0 = m_chorus_fx.get(m_osc.get_chorus_delay_time<0>());
     int16_t eff_sample_1 = m_chorus_fx.get(m_osc.get_chorus_delay_time<1>());
