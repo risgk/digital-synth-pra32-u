@@ -39,9 +39,6 @@ class PRA32_U_Synth {
 
   uint8_t          m_sp_prog_chg_cc_values[8];
 
-  uint8_t          m_param_chorus_mode;
-  boolean          m_param_chorus_bypass;
-
 public:
   PRA32_U_Synth()
 
@@ -73,9 +70,6 @@ public:
   , m_lfo_osc_dst()
 
   , m_sp_prog_chg_cc_values()
-
-  , m_param_chorus_mode()
-  , m_param_chorus_bypass()
   {}
 
   INLINE void initialize() {
@@ -98,7 +92,6 @@ public:
 
     m_eg[0].initialize();
     m_eg[1].initialize();
-    m_amp.set_gain<0>(90);
     m_amp.set_gain<1>(127);
 
     m_chorus_fx.initialize();
@@ -490,21 +483,7 @@ public:
       m_chorus_fx.set_chorus_delay_time(controller_value);
       break;
     case CHORUS_MODE    :
-      {
-        uint8_t new_param_chorus_mode = CHORUS_MODE_STEREO_2;
-
-        if        (controller_value < 16) {
-          new_param_chorus_mode = CHORUS_MODE_OFF;
-        } else if (controller_value < 48) {
-          new_param_chorus_mode = CHORUS_MODE_MONO;
-        } else if (controller_value < 80) {
-          new_param_chorus_mode = CHORUS_MODE_P_STEREO;
-        } else if (controller_value < 112) {
-          new_param_chorus_mode = CHORUS_MODE_STEREO;
-        }
-
-        update_chorus_mode(new_param_chorus_mode, m_param_chorus_bypass);
-      }
+      m_chorus_fx.set_chorus_mode(controller_value);
       break;
 
 #if 0
@@ -569,7 +548,7 @@ public:
       break;
 
     case CHORUS_BYPASS  :
-      update_chorus_mode(m_param_chorus_mode, controller_value >= 64);
+      m_chorus_fx.set_chorus_bypass(controller_value);
       break;
 
 #if 0
@@ -724,29 +703,8 @@ public:
     int16_t filter_output = m_filter.process(osc_output);
     int16_t amp_output = m_amp.process(filter_output);
 
-    int16_t dir_sample = amp_output;
-
-    m_chorus_fx.process(dir_sample);
-
-    int16_t eff_sample_0 = m_chorus_fx.get(m_chorus_fx.get_chorus_delay_time<0>());
-    int16_t eff_sample_1 = m_chorus_fx.get(m_chorus_fx.get_chorus_delay_time<1>());
-    m_chorus_fx.push(dir_sample);
-
-    if (m_chorus_mode >= CHORUS_MODE_MONO) {
-      // For Mono Chorus and Stereo 2-phase Chorus
-      right_level = dir_sample + eff_sample_1;
-      return        dir_sample + eff_sample_0;
-    }
-
-    if (m_chorus_mode == CHORUS_MODE_P_STEREO) {
-      // For Pseudo-Stereo Chorus
-      right_level = dir_sample - eff_sample_0;
-      return        dir_sample + eff_sample_0;
-    }
-
-    // For Off and Stereo Chorus
-    right_level = dir_sample;
-    return        eff_sample_0;
+    int16_t left_level = m_chorus_fx.process(amp_output, right_level);
+    return left_level;
   }
 
 private:
@@ -869,45 +827,6 @@ private:
       m_osc.set_pitch_lfo_amt<0>(64);
       m_osc.set_pitch_lfo_amt<1>(64);
       m_osc.set_shape_lfo_amt(m_lfo_osc_amt);
-    }
-  }
-
-  INLINE void update_chorus_mode(uint8_t new_param_chorus_mode, boolean new_param_chorus_bypass) {
-    if ((m_param_chorus_mode   != new_param_chorus_mode) ||
-        (m_param_chorus_bypass != new_param_chorus_bypass)) {
-      m_param_chorus_mode   = new_param_chorus_mode;
-      m_param_chorus_bypass = new_param_chorus_bypass;
-      m_chorus_fx.attenuate();
-
-      if (m_param_chorus_bypass) {
-        m_chorus_mode = CHORUS_MODE_OFF;
-        m_chorus_fx.set_chorus_mode(CHORUS_MODE_OFF);
-        m_amp.set_gain<0>(127);
-      } else {
-        m_chorus_mode = m_param_chorus_mode;
-        switch (m_chorus_mode) {
-        case CHORUS_MODE_OFF      :
-          m_chorus_fx.set_chorus_mode(CHORUS_MODE_OFF);
-          m_amp.set_gain<0>(90);
-          break;
-        case CHORUS_MODE_STEREO   :
-          m_chorus_fx.set_chorus_mode(CHORUS_MODE_STEREO);
-          m_amp.set_gain<0>(90);
-          break;
-        case CHORUS_MODE_P_STEREO :
-          m_chorus_fx.set_chorus_mode(CHORUS_MODE_P_STEREO);
-          m_amp.set_gain<0>(64);
-          break;
-        case CHORUS_MODE_MONO     :
-          m_chorus_fx.set_chorus_mode(CHORUS_MODE_MONO);
-          m_amp.set_gain<0>(64);
-          break;
-        case CHORUS_MODE_STEREO_2 :
-          m_chorus_fx.set_chorus_mode(CHORUS_MODE_STEREO_2);
-          m_amp.set_gain<0>(64);
-          break;
-        }
-      }
     }
   }
 };

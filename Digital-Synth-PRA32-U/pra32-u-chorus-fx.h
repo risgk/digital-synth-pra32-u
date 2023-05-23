@@ -2,39 +2,46 @@
 
 #include "pra32-u-common.h"
 
-static const uint8_t CHORUS_MODE_OFF        = 0;
-static const uint8_t CHORUS_MODE_STEREO     = 1;
-static const uint8_t CHORUS_MODE_P_STEREO   = 2;
-static const uint8_t CHORUS_MODE_MONO       = 3;
-static const uint8_t CHORUS_MODE_STEREO_2   = 4;
-
 class PRA32_U_ChorusFx {
   static const uint16_t DELAY_BUFF_SIZE = 512;
 
-  int16_t  m_buff[DELAY_BUFF_SIZE];
-  uint16_t m_wp;
+  static const uint8_t CHORUS_MODE_BYPASS     = 0;
+  static const uint8_t CHORUS_MODE_OFF        = 1;
+  static const uint8_t CHORUS_MODE_STEREO     = 2;
+  static const uint8_t CHORUS_MODE_P_STEREO   = 3;
+  static const uint8_t CHORUS_MODE_MONO       = 4;
+  static const uint8_t CHORUS_MODE_STEREO_2   = 5;
 
-  uint8_t        m_chorus_depth_control;
-  uint8_t        m_chorus_rate_control;
-  uint8_t        m_chorus_delay_time_control;
-  uint8_t        m_chorus_delay_time_control_effective;
-  uint8_t        m_chorus_mode;
-  uint8_t        m_chorus_depth_control_actual;
-  uint16_t       m_chorus_lfo_phase;
-  int16_t        m_chorus_lfo_wave_level;
-  int16_t        m_chorus_lfo_level;
-  uint16_t       m_chorus_delay_time[2];
+  int16_t  m_delay_buff[DELAY_BUFF_SIZE];
+  uint16_t m_delay_wp;
+
+  uint8_t  m_gain;
+
+  uint8_t  m_chorus_depth_control;
+  uint8_t  m_chorus_rate_control;
+  uint8_t  m_chorus_delay_time_control;
+  uint8_t  m_chorus_delay_time_control_effective;
+  uint8_t  m_chorus_mode;
+  boolean  m_chorus_bypass;
+  uint8_t  m_chorus_depth_control_actual;
+  uint16_t m_chorus_lfo_phase;
+  int16_t  m_chorus_lfo_wave_level;
+  int16_t  m_chorus_lfo_level;
+  uint16_t m_chorus_delay_time[2];
 
 public:
   PRA32_U_ChorusFx()
-  : m_buff()
-  , m_wp()
+  : m_delay_buff()
+  , m_delay_wp()
+
+  , m_gain()
 
   , m_chorus_depth_control()
   , m_chorus_rate_control()
   , m_chorus_delay_time_control()
   , m_chorus_delay_time_control_effective()
   , m_chorus_mode()
+  , m_chorus_bypass()
   , m_chorus_depth_control_actual()
   , m_chorus_lfo_phase()
   , m_chorus_lfo_wave_level()
@@ -43,12 +50,13 @@ public:
   {}
 
   INLINE void initialize() {
-    m_wp = DELAY_BUFF_SIZE - 1;
+    m_delay_wp = DELAY_BUFF_SIZE - 1;
 
     set_chorus_depth     (32 );
     set_chorus_rate      (32 );
     set_chorus_delay_time(80 );
-    set_chorus_mode      (CHORUS_MODE_OFF);
+
+    update_chorus_mode(127, 0  );
 
     m_chorus_depth_control_actual = 64;
   }
@@ -73,8 +81,46 @@ public:
     m_chorus_delay_time_control = controller_value;
   }
 
-  INLINE void set_chorus_mode(uint8_t chorus_mode) {
-    m_chorus_mode = chorus_mode;
+  INLINE void set_chorus_mode(uint8_t controller_value) {
+    uint8_t new_chorus_mode = CHORUS_MODE_STEREO_2;
+    if        (controller_value < 16) {
+      new_chorus_mode = CHORUS_MODE_OFF;
+    } else if (controller_value < 48) {
+      new_chorus_mode = CHORUS_MODE_MONO;
+    } else if (controller_value < 80) {
+      new_chorus_mode = CHORUS_MODE_P_STEREO;
+    } else if (controller_value < 112) {
+      new_chorus_mode = CHORUS_MODE_STEREO;
+    }
+    update_chorus_mode(new_chorus_mode, m_chorus_bypass);
+  }
+
+  INLINE void set_chorus_bypass(uint8_t controller_value) {
+    update_chorus_mode(m_chorus_mode, controller_value >= 64);
+  }
+
+  INLINE void update_chorus_mode(uint8_t new_chorus_mode, boolean new_chorus_bypass) {
+    if ((m_chorus_mode   != new_chorus_mode) ||
+        (m_chorus_bypass != new_chorus_bypass)) {
+      m_chorus_mode   = new_chorus_mode;
+      m_chorus_bypass = new_chorus_bypass;
+      delay_buff_attenuate();
+
+      switch (m_chorus_mode) {
+      case CHORUS_MODE_BYPASS   :
+        set_gain(127);
+        break;
+      case CHORUS_MODE_OFF      :
+      case CHORUS_MODE_STEREO   :
+        set_gain(90);
+        break;
+      case CHORUS_MODE_P_STEREO :
+      case CHORUS_MODE_MONO     :
+      case CHORUS_MODE_STEREO_2 :
+        set_gain(64);
+        break;
+      }
+    }
   }
 
   template <uint8_t N>
@@ -96,25 +142,47 @@ public:
 #endif
   }
 
-  INLINE int16_t process(int16_t audio_input) {
-    return audio_input;
-  }
+  INLINE int16_t process(int16_t dir_sample, int16_t& right_level) {
+    int16_t eff_sample_0 = delay_buff_get(get_chorus_delay_time<0>());
+    int16_t eff_sample_1 = delay_buff_get(get_chorus_delay_time<1>());
+    delay_buff_push(dir_sample);
 
-//private:
-  INLINE void push(int16_t audio_input) {
-    m_wp = (m_wp + 1) & (DELAY_BUFF_SIZE - 1);
-    m_buff[m_wp] = audio_input;
-  }
-
-  INLINE int16_t get(uint16_t sample_delay) {
-    uint16_t rp = (m_wp - sample_delay) & (DELAY_BUFF_SIZE - 1);
-    return m_buff[rp];
-  }
-
-  INLINE void attenuate() {
-    for (uint16_t i = 0; i < DELAY_BUFF_SIZE; ++i) {
-      m_buff[i] = m_buff[i] >> 1;
+    if (m_chorus_mode >= CHORUS_MODE_MONO) {
+      // For Mono Chorus and Stereo 2-phase Chorus
+      right_level = ((dir_sample + eff_sample_1) * m_gain) >> 6;
+      return        ((dir_sample + eff_sample_0) * m_gain) >> 6;
     }
+
+    if (m_chorus_mode == CHORUS_MODE_P_STEREO) {
+      // For Pseudo-Stereo Chorus
+      right_level = ((dir_sample - eff_sample_0) * m_gain) >> 6;
+      return        ((dir_sample + eff_sample_0) * m_gain) >> 6;
+    }
+
+    // For Off and Stereo Chorus
+    right_level = (dir_sample   * m_gain) >> 6;
+    return        (eff_sample_0 * m_gain) >> 6;
+  }
+
+private:
+  INLINE void delay_buff_push(int16_t audio_input) {
+    m_delay_wp = (m_delay_wp + 1) & (DELAY_BUFF_SIZE - 1);
+    m_delay_buff[m_delay_wp] = audio_input;
+  }
+
+  INLINE int16_t delay_buff_get(uint16_t sample_delay) {
+    uint16_t rp = (m_delay_wp - sample_delay) & (DELAY_BUFF_SIZE - 1);
+    return m_delay_buff[rp];
+  }
+
+  INLINE void delay_buff_attenuate() {
+    for (uint16_t i = 0; i < DELAY_BUFF_SIZE; ++i) {
+      m_delay_buff[i] = m_delay_buff[i] >> 1;
+    }
+  }
+
+  INLINE void set_gain(uint8_t controller_value) {
+    m_gain = (controller_value + 1) >> 1;
   }
 
   INLINE void update_chorus_lfo_0th() {
@@ -148,6 +216,7 @@ public:
 
   INLINE void update_chorus_lfo_3rd() {
     switch (m_chorus_mode) {
+    case CHORUS_MODE_BYPASS   :
     case CHORUS_MODE_OFF      :
       {
         m_chorus_delay_time[0] = 0;
