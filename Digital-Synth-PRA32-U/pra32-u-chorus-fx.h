@@ -21,8 +21,9 @@ class PRA32_U_ChorusFx {
   uint8_t  m_chorus_rate_control;
   uint8_t  m_chorus_delay_time_control;
   uint8_t  m_chorus_delay_time_control_effective;
-  uint8_t  m_chorus_mode;
-  boolean  m_chorus_bypass;
+  uint8_t  m_param_chorus_mode;
+  boolean  m_param_chorus_bypass;
+  uint8_t  m_effective_chorus_mode;
   uint8_t  m_chorus_depth_control_actual;
   uint16_t m_chorus_lfo_phase;
   int16_t  m_chorus_lfo_wave_level;
@@ -40,8 +41,9 @@ public:
   , m_chorus_rate_control()
   , m_chorus_delay_time_control()
   , m_chorus_delay_time_control_effective()
-  , m_chorus_mode()
-  , m_chorus_bypass()
+  , m_param_chorus_mode()
+  , m_param_chorus_bypass()
+  , m_effective_chorus_mode()
   , m_chorus_depth_control_actual()
   , m_chorus_lfo_phase()
   , m_chorus_lfo_wave_level()
@@ -56,7 +58,10 @@ public:
     set_chorus_rate      (32 );
     set_chorus_delay_time(80 );
 
-    update_chorus_mode(127, 0  );
+    m_param_chorus_mode     = CHORUS_MODE_OFF;
+    m_param_chorus_bypass   = false;
+    m_effective_chorus_mode = CHORUS_MODE_OFF;
+    set_gain(90);
 
     m_chorus_depth_control_actual = 64;
   }
@@ -82,31 +87,37 @@ public:
   }
 
   INLINE void set_chorus_mode(uint8_t controller_value) {
-    uint8_t new_chorus_mode = CHORUS_MODE_STEREO_2;
+    uint8_t new_param_chorus_mode = CHORUS_MODE_STEREO_2;
     if        (controller_value < 16) {
-      new_chorus_mode = CHORUS_MODE_OFF;
+      new_param_chorus_mode = CHORUS_MODE_OFF;
     } else if (controller_value < 48) {
-      new_chorus_mode = CHORUS_MODE_MONO;
+      new_param_chorus_mode = CHORUS_MODE_MONO;
     } else if (controller_value < 80) {
-      new_chorus_mode = CHORUS_MODE_P_STEREO;
+      new_param_chorus_mode = CHORUS_MODE_P_STEREO;
     } else if (controller_value < 112) {
-      new_chorus_mode = CHORUS_MODE_STEREO;
+      new_param_chorus_mode = CHORUS_MODE_STEREO;
     }
-    update_chorus_mode(new_chorus_mode, m_chorus_bypass);
+    update_effective_chorus_mode(new_param_chorus_mode, m_param_chorus_bypass);
   }
 
   INLINE void set_chorus_bypass(uint8_t controller_value) {
-    update_chorus_mode(m_chorus_mode, controller_value >= 64);
+    update_effective_chorus_mode(m_param_chorus_mode, controller_value >= 64);
   }
 
-  INLINE void update_chorus_mode(uint8_t new_chorus_mode, boolean new_chorus_bypass) {
-    if ((m_chorus_mode   != new_chorus_mode) ||
-        (m_chorus_bypass != new_chorus_bypass)) {
-      m_chorus_mode   = new_chorus_mode;
-      m_chorus_bypass = new_chorus_bypass;
+  INLINE void update_effective_chorus_mode(uint8_t new_param_chorus_mode, boolean new_param_chorus_bypass) {
+    if ((m_param_chorus_mode   != new_param_chorus_mode) ||
+        (m_param_chorus_bypass != new_param_chorus_bypass)) {
+      m_param_chorus_mode   = new_param_chorus_mode;
+      m_param_chorus_bypass = new_param_chorus_bypass;
+      if (m_param_chorus_bypass) {
+        m_effective_chorus_mode = CHORUS_MODE_BYPASS;
+      } else {
+        m_effective_chorus_mode = m_param_chorus_mode;
+      }
+
       delay_buff_attenuate();
 
-      switch (m_chorus_mode) {
+      switch (m_effective_chorus_mode) {
       case CHORUS_MODE_BYPASS   :
         set_gain(127);
         break;
@@ -147,13 +158,13 @@ public:
     int16_t eff_sample_1 = delay_buff_get(get_chorus_delay_time<1>());
     delay_buff_push(dir_sample);
 
-    if (m_chorus_mode >= CHORUS_MODE_MONO) {
+    if (m_effective_chorus_mode >= CHORUS_MODE_MONO) {
       // For Mono Chorus and Stereo 2-phase Chorus
       right_level = ((dir_sample + eff_sample_1) * m_gain) >> 6;
       return        ((dir_sample + eff_sample_0) * m_gain) >> 6;
     }
 
-    if (m_chorus_mode == CHORUS_MODE_P_STEREO) {
+    if (m_effective_chorus_mode == CHORUS_MODE_P_STEREO) {
       // For Pseudo-Stereo Chorus
       right_level = ((dir_sample - eff_sample_0) * m_gain) >> 6;
       return        ((dir_sample + eff_sample_0) * m_gain) >> 6;
@@ -215,7 +226,7 @@ private:
   }
 
   INLINE void update_chorus_lfo_3rd() {
-    switch (m_chorus_mode) {
+    switch (m_effective_chorus_mode) {
     case CHORUS_MODE_BYPASS   :
     case CHORUS_MODE_OFF      :
       {
