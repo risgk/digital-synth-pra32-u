@@ -311,26 +311,26 @@ public:
     if ((count & (OSC_CONTROL_INTERVAL - 1)) == 0) {
       //printf("%d Osc\n", count);
       switch ((count >> OSC_CONTROL_INTERVAL_BITS) & 0x1F) {
-      case 0x00: update_freq_0th<0>();                break;
-      case 0x01: update_freq_1st<0>(eg_level);        break;
-      case 0x02: update_freq_2nd<0>();                break;
-      case 0x03: update_freq_3rd<0>(rnd);             break;
+      case 0x03: update_freq_0th<0>();
+                 update_freq_1st<0>(eg_level);
+                 update_freq_2nd<0>();
+                 update_freq_3rd<0>(rnd);             break;
       case 0x04: update_gate<0>();                    break;
-      case 0x08: update_freq_0th<1>();                break;
-      case 0x09: update_freq_1st<1>(eg_level);        break;
-      case 0x0A: update_freq_2nd<1>();                break;
-      case 0x0B: update_freq_3rd<1>(rnd);             break;
+      case 0x0B: update_freq_0th<1>();
+                 update_freq_1st<1>(eg_level);
+                 update_freq_2nd<1>();
+                 update_freq_3rd<1>(rnd);             break;
       case 0x0C: update_gate<1>();                    break;
       case 0x0F: update_lfo_4th(lfo_level, eg_level); break;
-      case 0x10: update_freq_0th<2>();                break;
-      case 0x11: update_freq_1st<2>(eg_level);        break;
-      case 0x12: update_freq_2nd<2>();                break;
-      case 0x13: update_freq_3rd<2>(rnd);             break;
+      case 0x13: update_freq_0th<2>();
+                 update_freq_1st<2>(eg_level);
+                 update_freq_2nd<2>();
+                 update_freq_3rd<2>(rnd);             break;
       case 0x14: update_gate<2>();                    break;
-      case 0x18: update_freq_0th<3>();                break;
-      case 0x19: update_freq_1st<3>(eg_level);        break;
-      case 0x1A: update_freq_2nd<3>();                break;
-      case 0x1B: update_freq_3rd<3>(rnd);             break;
+      case 0x1B: update_freq_0th<3>();
+                 update_freq_1st<3>(eg_level);
+                 update_freq_2nd<3>();
+                 update_freq_3rd<3>(rnd);             break;
       case 0x1C: update_gate<3>();                    break;
       }
     }

@@ -120,15 +120,10 @@ public:
       //printf("%d PRA32_U_Filter\n", count);
       if (count & 0x10) {
         if (count & 0x08) {
-          update_coefs_3rd();
-        } else {
-          update_coefs_2nd();
-        }
-      } else {
-        if (count & 0x08) {
-          update_coefs_1st(lfo_input, osc_pitch);
-        } else {
           update_coefs_0th(eg_input);
+          update_coefs_1st(lfo_input, osc_pitch);
+          update_coefs_2nd();
+          update_coefs_3rd();
         }
       }
     }

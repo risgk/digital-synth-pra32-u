@@ -144,10 +144,10 @@ public:
     if ((count & (OSC_CONTROL_INTERVAL - 1)) == 0) {
       //printf("%d Osc\n", count);
       switch ((count >> OSC_CONTROL_INTERVAL_BITS) & 0x1F) {
-      case 0x16: update_chorus_lfo_0th();             break;
-      case 0x17: update_chorus_lfo_1st();             break;
-      case 0x1E: update_chorus_lfo_2nd();             break;
-      case 0x1F: update_chorus_lfo_3rd();             break;
+      case 0x1F: update_chorus_lfo_0th();
+                 update_chorus_lfo_1st();
+                 update_chorus_lfo_2nd();
+                 update_chorus_lfo_3rd();             break;
       }
     }
 #endif

@@ -101,10 +101,10 @@ public:
     if ((count & (OSC_CONTROL_INTERVAL - 1)) == 0) {
       //printf("%d LFO\n", count);
       switch ((count >> OSC_CONTROL_INTERVAL_BITS) & 0x1F) {
+      case 0x0E: update_lfo_2nd();
+                 update_lfo_3rd();             break;
       case 0x05: update_rnd();                 break;
-      case 0x07: update_lfo_2nd();             break;
       case 0x0D: update_rnd();                 break;
-      case 0x0E: update_lfo_3rd();             break;
       case 0x15: update_rnd();                 break;
       case 0x1D: update_rnd();                 break;
       }
