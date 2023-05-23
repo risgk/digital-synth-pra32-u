@@ -4,11 +4,6 @@
 #include "pra32-u-osc-table.h"
 #include <math.h>
 
-static const uint8_t CHORUS_MODE_OFF        = 0;
-static const uint8_t CHORUS_MODE_STEREO     = 1;
-static const uint8_t CHORUS_MODE_P_STEREO   = 2;
-static const uint8_t CHORUS_MODE_MONO       = 3;
-static const uint8_t CHORUS_MODE_STEREO_2   = 4;
 
 class PRA32_U_Osc {
   static const uint8_t OSC_MIX_TABLE_LENGTH   = 31;
@@ -25,17 +20,6 @@ class PRA32_U_Osc {
   int8_t         m_pitch_eg_amt[2];
   int16_t        m_lfo_mod_level[2];
   int8_t         m_pitch_lfo_amt[2];
-
-  uint8_t        m_chorus_depth_control;
-  uint8_t        m_chorus_rate_control;
-  uint8_t        m_chorus_delay_time_control;
-  uint8_t        m_chorus_delay_time_control_effective;
-  uint8_t        m_chorus_mode;
-  uint8_t        m_chorus_depth_control_actual;
-  uint16_t       m_chorus_lfo_phase;
-  int16_t        m_chorus_lfo_wave_level;
-  int16_t        m_chorus_lfo_level;
-  uint16_t       m_chorus_delay_time[2];
 
   uint8_t        m_waveform[2];
   int16_t        m_pitch_bend;
@@ -78,17 +62,6 @@ public:
   , m_lfo_mod_level()
   , m_pitch_lfo_amt()
 
-  , m_chorus_depth_control()
-  , m_chorus_rate_control()
-  , m_chorus_delay_time_control()
-  , m_chorus_delay_time_control_effective()
-  , m_chorus_mode()
-  , m_chorus_depth_control_actual()
-  , m_chorus_lfo_phase()
-  , m_chorus_lfo_wave_level()
-  , m_chorus_lfo_level()
-  , m_chorus_delay_time()
-
   , m_waveform()
   , m_pitch_bend()
   , m_pitch_bend_range()
@@ -130,16 +103,10 @@ public:
     m_portamento_coef[2] = PORTAMENTO_COEF_OFF;
     m_portamento_coef[3] = PORTAMENTO_COEF_OFF;
 
-    set_chorus_depth     (32 );
-    set_chorus_rate      (32 );
-    set_chorus_delay_time(80 );
-    set_chorus_mode      (CHORUS_MODE_OFF);
     set_mono_mode        (false);
     set_mono_osc2_mix    (0);
     set_mono_osc2_pitch  (0);
     set_mono_osc2_detune (0);
-
-    m_chorus_depth_control_actual = 64;
 
     m_waveform[0] = WAVEFORM_SAW;
     m_waveform[1] = WAVEFORM_SAW;
@@ -273,30 +240,6 @@ public:
     m_shape_lfo_amt = -((controller_value - 64) << 1);
   }
 
-  INLINE void set_chorus_depth(uint8_t controller_value) {
-    if (controller_value < 126) {
-      m_chorus_depth_control = controller_value;
-    } else {
-      m_chorus_depth_control = 126;
-    }
-  }
-
-  INLINE void set_chorus_rate(uint8_t controller_value) {
-    if (controller_value < 2) {
-      m_chorus_rate_control = 1;
-    } else {
-      m_chorus_rate_control = (controller_value + 2) >> 2;
-    }
-  }
-
-  INLINE void set_chorus_delay_time(uint8_t controller_value) {
-    m_chorus_delay_time_control = controller_value;
-  }
-
-  INLINE void set_chorus_mode(uint8_t chorus_mode) {
-    m_chorus_mode = chorus_mode;
-  }
-
   INLINE void set_mono_mode(boolean mono_mode) {
     m_mono_mode = mono_mode;
   }
@@ -363,11 +306,6 @@ public:
     return (60 << 8);
   }
 
-  template <uint8_t N>
-  INLINE int16_t get_chorus_delay_time() {
-    return m_chorus_delay_time[N];
-  }
-
   INLINE void control(uint8_t count, uint8_t rnd, int16_t lfo_level, int16_t eg_level) {
 #if 1
     if ((count & (OSC_CONTROL_INTERVAL - 1)) == 0) {
@@ -389,15 +327,11 @@ public:
       case 0x12: update_freq_2nd<2>();                break;
       case 0x13: update_freq_3rd<2>(rnd);             break;
       case 0x14: update_gate<2>();                    break;
-      case 0x16: update_chorus_lfo_0th();             break;
-      case 0x17: update_chorus_lfo_1st();             break;
       case 0x18: update_freq_0th<3>();                break;
       case 0x19: update_freq_1st<3>(eg_level);        break;
       case 0x1A: update_freq_2nd<3>();                break;
       case 0x1B: update_freq_3rd<3>(rnd);             break;
       case 0x1C: update_gate<3>();                    break;
-      case 0x1E: update_chorus_lfo_2nd();             break;
-      case 0x1F: update_chorus_lfo_3rd();             break;
       }
     }
 #endif
@@ -627,76 +561,6 @@ private:
     } else {
       m_lfo_mod_level[1] = m_lfo_mod_level[0];
     }
-  }
-
-  INLINE void update_chorus_lfo_0th() {
-    m_chorus_delay_time_control_effective += (m_chorus_delay_time_control_effective < m_chorus_delay_time_control);
-    m_chorus_delay_time_control_effective -= (m_chorus_delay_time_control_effective > m_chorus_delay_time_control);
-
-    if (m_chorus_delay_time_control_effective < 64) {
-      if (m_chorus_depth_control > (m_chorus_delay_time_control_effective << 1)) {
-        m_chorus_depth_control_actual = (m_chorus_delay_time_control_effective << 1);
-      } else {
-        m_chorus_depth_control_actual = m_chorus_depth_control;
-      }
-    } else {
-      if (m_chorus_depth_control > ((127 - m_chorus_delay_time_control_effective) << 1)) {
-        m_chorus_depth_control_actual = ((127 - m_chorus_delay_time_control_effective) << 1);
-      } else {
-        m_chorus_depth_control_actual = m_chorus_depth_control;
-      }
-    }
-
-    m_chorus_lfo_phase += m_chorus_rate_control;
-  }
-
-  INLINE void update_chorus_lfo_1st() {
-    m_chorus_lfo_wave_level = get_chorus_lfo_wave_level(m_chorus_lfo_phase);
-  }
-
-  INLINE void update_chorus_lfo_2nd() {
-    m_chorus_lfo_level = (m_chorus_lfo_wave_level * m_chorus_depth_control_actual) >> 8;
-  }
-
-  INLINE void update_chorus_lfo_3rd() {
-    switch (m_chorus_mode) {
-    case CHORUS_MODE_OFF      :
-      {
-        m_chorus_delay_time[0] = 0;
-        m_chorus_delay_time[1] = 0;
-      }
-      break;
-    case CHORUS_MODE_STEREO   :
-    case CHORUS_MODE_P_STEREO :
-    case CHORUS_MODE_MONO     :
-      {
-        uint16_t chorus_delay_time_control_mul_4 = m_chorus_delay_time_control_effective * 4;
-        m_chorus_delay_time[0] = chorus_delay_time_control_mul_4 + m_chorus_lfo_level;
-        m_chorus_delay_time[1] = m_chorus_delay_time[0];
-      }
-      break;
-    case CHORUS_MODE_STEREO_2 :
-      {
-        uint16_t chorus_delay_time_control_mul_4 = m_chorus_delay_time_control_effective * 4;
-        m_chorus_delay_time[0] = chorus_delay_time_control_mul_4 - m_chorus_lfo_level;
-        m_chorus_delay_time[1] = chorus_delay_time_control_mul_4 + m_chorus_lfo_level;
-      }
-      break;
-    }
-  }
-
-  INLINE int16_t get_chorus_lfo_wave_level(uint16_t phase) {
-    int16_t triangle_wave_level = 0;
-    phase &= 0x1FFC;
-    phase = (phase >> 2);
-
-    if (phase < 0x0400) {
-      triangle_wave_level = phase - 512;
-    } else {
-      triangle_wave_level = 1535 - phase;
-    }
-
-    return triangle_wave_level;
   }
 
   INLINE void update_pitch_bend() {

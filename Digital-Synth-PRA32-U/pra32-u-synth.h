@@ -481,13 +481,13 @@ public:
       break;
 
     case CHORUS_DEPTH   :
-      m_osc.set_chorus_depth(controller_value);
+      m_chorus_fx.set_chorus_depth(controller_value);
       break;
     case CHORUS_RATE    :
-      m_osc.set_chorus_rate(controller_value);
+      m_chorus_fx.set_chorus_rate(controller_value);
       break;
     case CHORUS_DLY_TIME:
-      m_osc.set_chorus_delay_time(controller_value);
+      m_chorus_fx.set_chorus_delay_time(controller_value);
       break;
     case CHORUS_MODE    :
       {
@@ -718,7 +718,7 @@ public:
     uint16_t osc_pitch = m_osc.get_osc_pitch();
     m_filter.control(m_count, eg_output_0, lfo_output, osc_pitch);
 
-    m_chorus_fx.control();
+    m_chorus_fx.control(m_count);
 
     int16_t osc_output = m_osc.process();
     int16_t filter_output = m_filter.process(osc_output);
@@ -728,8 +728,8 @@ public:
 
     m_chorus_fx.process(dir_sample);
 
-    int16_t eff_sample_0 = m_chorus_fx.get(m_osc.get_chorus_delay_time<0>());
-    int16_t eff_sample_1 = m_chorus_fx.get(m_osc.get_chorus_delay_time<1>());
+    int16_t eff_sample_0 = m_chorus_fx.get(m_chorus_fx.get_chorus_delay_time<0>());
+    int16_t eff_sample_1 = m_chorus_fx.get(m_chorus_fx.get_chorus_delay_time<1>());
     m_chorus_fx.push(dir_sample);
 
     if (m_chorus_mode >= CHORUS_MODE_MONO) {
@@ -881,29 +881,29 @@ private:
 
       if (m_param_chorus_bypass) {
         m_chorus_mode = CHORUS_MODE_OFF;
-        m_osc.set_chorus_mode(CHORUS_MODE_OFF);
+        m_chorus_fx.set_chorus_mode(CHORUS_MODE_OFF);
         m_amp.set_gain<0>(127);
       } else {
         m_chorus_mode = m_param_chorus_mode;
         switch (m_chorus_mode) {
         case CHORUS_MODE_OFF      :
-          m_osc.set_chorus_mode(CHORUS_MODE_OFF);
+          m_chorus_fx.set_chorus_mode(CHORUS_MODE_OFF);
           m_amp.set_gain<0>(90);
           break;
         case CHORUS_MODE_STEREO   :
-          m_osc.set_chorus_mode(CHORUS_MODE_STEREO);
+          m_chorus_fx.set_chorus_mode(CHORUS_MODE_STEREO);
           m_amp.set_gain<0>(90);
           break;
         case CHORUS_MODE_P_STEREO :
-          m_osc.set_chorus_mode(CHORUS_MODE_P_STEREO);
+          m_chorus_fx.set_chorus_mode(CHORUS_MODE_P_STEREO);
           m_amp.set_gain<0>(64);
           break;
         case CHORUS_MODE_MONO     :
-          m_osc.set_chorus_mode(CHORUS_MODE_MONO);
+          m_chorus_fx.set_chorus_mode(CHORUS_MODE_MONO);
           m_amp.set_gain<0>(64);
           break;
         case CHORUS_MODE_STEREO_2 :
-          m_osc.set_chorus_mode(CHORUS_MODE_STEREO_2);
+          m_chorus_fx.set_chorus_mode(CHORUS_MODE_STEREO_2);
           m_amp.set_gain<0>(64);
           break;
         }
