@@ -22,6 +22,8 @@ public:
     x ^= x >> 17;
     x ^= x << 5;
     m_state_a = x;
-    return (m_state_a >> 17) - 16384;
+
+    int16_t noise_int15 = (m_state_a >> 17) - 16384;
+    return noise_int15;
   }
 };

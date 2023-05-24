@@ -303,7 +303,7 @@ public:
     return (60 << 8);
   }
 
-  INLINE void control(uint8_t count, int16_t noise_input, int16_t lfo_level, int16_t eg_level) {
+  INLINE void control(uint8_t count, int16_t noise_int15, int16_t lfo_level, int16_t eg_level) {
 #if 1
     if ((count & (OSC_CONTROL_INTERVAL - 1)) == 0) {
       //printf("%d Osc\n", count);
@@ -311,30 +311,30 @@ public:
       case 0x03: update_freq_0th<0>();
                  update_freq_1st<0>(eg_level);
                  update_freq_2nd<0>();
-                 update_freq_3rd<0>(noise_input);     break;
+                 update_freq_3rd<0>(noise_int15);     break;
       case 0x04: update_gate<0>();                    break;
       case 0x0B: update_freq_0th<1>();
                  update_freq_1st<1>(eg_level);
                  update_freq_2nd<1>();
-                 update_freq_3rd<1>(noise_input);     break;
+                 update_freq_3rd<1>(noise_int15);     break;
       case 0x0C: update_gate<1>();                    break;
       case 0x0F: update_lfo_4th(lfo_level, eg_level); break;
       case 0x13: update_freq_0th<2>();
                  update_freq_1st<2>(eg_level);
                  update_freq_2nd<2>();
-                 update_freq_3rd<2>(noise_input);     break;
+                 update_freq_3rd<2>(noise_int15);     break;
       case 0x14: update_gate<2>();                    break;
       case 0x1B: update_freq_0th<3>();
                  update_freq_1st<3>(eg_level);
                  update_freq_2nd<3>();
-                 update_freq_3rd<3>(noise_input);     break;
+                 update_freq_3rd<3>(noise_int15);     break;
       case 0x1C: update_gate<3>();                    break;
       }
     }
 #endif
   }
 
-  INLINE int16_t process(int16_t noise_input) {
+  INLINE int16_t process(int16_t noise_int15) {
 #if 1
     m_phase[0] += m_freq[0];
     int16_t wave_0 = get_wave_level(m_wave_table[0], m_phase[0]);
@@ -386,7 +386,7 @@ public:
       } else {
         // Noise (wave_2)
         int16_t wave_2 = -(OSC_WAVE_TABLE_AMPLITUDE << 8)
-                         +(OSC_WAVE_TABLE_AMPLITUDE << 9) * ((noise_input >> 13) & 0x1);
+                         +(OSC_WAVE_TABLE_AMPLITUDE << 9) * (noise_int15 & 0x1);
         result += wave_2 * m_osc_gain_effective[2];
       }
     }
@@ -484,10 +484,10 @@ private:
   }
 
   template <uint8_t N>
-  INLINE void update_freq_3rd(int16_t noise_input) {
+  INLINE void update_freq_3rd(int16_t noise_int15) {
     uint8_t fine = low_byte(m_pitch_real[N]);
     uint16_t freq_div_2 = (m_freq_temp[N] >> 1);
-    uint8_t bit = (noise_input >= 14336);
+    uint8_t bit = (noise_int15 >= 14336);
     uint8_t mono_offset = 0;
     if (N == 2) {
       if (m_mono_mode) {

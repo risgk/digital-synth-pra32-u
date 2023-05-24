@@ -24,8 +24,8 @@ class PRA32_U_LFO {
   uint8_t  m_lfo_fade_coef;
   uint8_t  m_lfo_fade_cnt;
   uint8_t  m_lfo_fade_level;
-  int16_t  m_noise_input;
-  int16_t  m_noise_sampled;
+  int16_t  m_noise_int15;
+  int16_t  m_sampled_noise_int15;
 
 public:
   PRA32_U_LFO()
@@ -38,8 +38,8 @@ public:
   , m_lfo_fade_coef()
   , m_lfo_fade_cnt()
   , m_lfo_fade_level()
-  , m_noise_input()
-  , m_noise_sampled()
+  , m_noise_int15()
+  , m_sampled_noise_int15()
   {}
 
   INLINE void initialize() {
@@ -47,8 +47,8 @@ public:
     m_lfo_fade_coef = LFO_FADE_COEF_OFF;
     m_lfo_fade_cnt = m_lfo_fade_coef;
     m_lfo_fade_level = LFO_FADE_LEVEL_MAX;
-    m_noise_input = 0;
-    m_noise_sampled = m_noise_input;
+    m_noise_int15 = 0;
+    m_sampled_noise_int15 = m_noise_int15;
   }
 
   INLINE void set_lfo_waveform(uint8_t controller_value) {
@@ -92,8 +92,8 @@ public:
     return m_lfo_level;
   }
 
-  INLINE void control(uint8_t count, int16_t noise_input) {
-      m_noise_input = noise_input;
+  INLINE void control(uint8_t count, int16_t noise_int15) {
+      m_noise_int15 = noise_int15;
 
 #if 1
     if ((count & (OSC_CONTROL_INTERVAL - 1)) == 0) {
@@ -129,9 +129,9 @@ private:
       break;
     case LFO_WAVEFORM_RANDOM:
       if (phase < m_lfo_rate) {
-        m_noise_sampled = m_noise_input;
+        m_sampled_noise_int15 = m_noise_int15;
       }
-      level = m_noise_sampled >> 1;
+      level = m_sampled_noise_int15 >> 1;
       break;
     case LFO_WAVEFORM_SQUARE:
       if (phase < 0x8000) {

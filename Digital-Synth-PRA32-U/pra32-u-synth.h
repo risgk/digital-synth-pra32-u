@@ -687,15 +687,15 @@ public:
   INLINE int16_t process(int16_t& right_level) {
     ++m_count;
 
-    int16_t noise_gen_output = m_noise_gen.process();
+    int16_t noise_int15 = m_noise_gen.process();
 
-    m_lfo.control(m_count, noise_gen_output);
+    m_lfo.control(m_count, noise_int15);
     m_eg[0].control(0, m_count);
     m_eg[1].control(1, m_count);
 
     int16_t lfo_output = m_lfo.get_output();
     int16_t eg_output_0 = m_eg[0].get_output();
-    m_osc.control(m_count, noise_gen_output, lfo_output, eg_output_0);
+    m_osc.control(m_count, noise_int15, lfo_output, eg_output_0);
 
     int16_t eg_output_1 = m_eg[1].get_output();
     m_amp.control(eg_output_1);
@@ -705,7 +705,7 @@ public:
 
     m_chorus_fx.control(m_count);
 
-    int16_t osc_output = m_osc.process(noise_gen_output);
+    int16_t osc_output = m_osc.process(noise_int15);
     int16_t filter_output = m_filter.process(osc_output);
     int16_t amp_output = m_amp.process(filter_output);
 
