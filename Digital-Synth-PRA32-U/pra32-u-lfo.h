@@ -21,11 +21,11 @@ class PRA32_U_LFO {
   uint16_t m_lfo_rate;
   uint8_t  m_lfo_depth[2];
   uint8_t  m_lfo_waveform;
-  uint8_t  m_lfo_sampled;
   uint8_t  m_lfo_fade_coef;
   uint8_t  m_lfo_fade_cnt;
   uint8_t  m_lfo_fade_level;
-  uint8_t  m_rnd;
+  int16_t  m_noise_input;
+  int16_t  m_noise_sampled;
 
 public:
   PRA32_U_LFO()
@@ -35,20 +35,20 @@ public:
   , m_lfo_rate()
   , m_lfo_depth()
   , m_lfo_waveform()
-  , m_lfo_sampled()
   , m_lfo_fade_coef()
   , m_lfo_fade_cnt()
   , m_lfo_fade_level()
-  , m_rnd()
+  , m_noise_input()
+  , m_noise_sampled()
   {}
 
   INLINE void initialize() {
     m_lfo_waveform = LFO_WAVEFORM_TRI_ASYNC;
-    m_lfo_sampled = 64;
     m_lfo_fade_coef = LFO_FADE_COEF_OFF;
     m_lfo_fade_cnt = m_lfo_fade_coef;
     m_lfo_fade_level = LFO_FADE_LEVEL_MAX;
-    m_rnd = 1;
+    m_noise_input = 0;
+    m_noise_sampled = m_noise_input;
   }
 
   INLINE void set_lfo_waveform(uint8_t controller_value) {
@@ -92,21 +92,15 @@ public:
     return m_lfo_level;
   }
 
-  INLINE uint8_t get_rnd() {
-    return m_rnd;
-  }
+  INLINE void control(uint8_t count, int16_t noise_input) {
+      m_noise_input = noise_input;
 
-  INLINE void control(uint8_t count) {
 #if 1
     if ((count & (OSC_CONTROL_INTERVAL - 1)) == 0) {
       //printf("%d LFO\n", count);
       switch ((count >> OSC_CONTROL_INTERVAL_BITS) & 0x1F) {
       case 0x0E: update_lfo_2nd();
                  update_lfo_3rd();             break;
-      case 0x05: update_rnd();                 break;
-      case 0x0D: update_rnd();                 break;
-      case 0x15: update_rnd();                 break;
-      case 0x1D: update_rnd();                 break;
       }
     }
 #endif
@@ -135,9 +129,9 @@ private:
       break;
     case LFO_WAVEFORM_RANDOM:
       if (phase < m_lfo_rate) {
-        m_lfo_sampled = (m_rnd << 6);
+        m_noise_sampled = m_noise_input;
       }
-      level = (64 << 7) - m_lfo_sampled;
+      level = m_noise_sampled >> 1;
       break;
     case LFO_WAVEFORM_SQUARE:
       if (phase < 0x8000) {
@@ -149,13 +143,6 @@ private:
     }
 
     return level;
-  }
-
-  INLINE void update_rnd() {
-    // TODO
-    m_rnd ^= m_rnd << 1;
-    m_rnd ^= m_rnd >> 1;
-    m_rnd ^= m_rnd << 2;
   }
 
   INLINE void update_lfo_2nd() {

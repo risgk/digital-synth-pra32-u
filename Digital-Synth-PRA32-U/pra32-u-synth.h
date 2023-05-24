@@ -5,6 +5,7 @@
 #include "pra32-u-filter.h"
 #include "pra32-u-amp.h"
 #include "pra32-u-lfo.h"
+#include "pra32-u-noise-gen.h"
 #include "pra32-u-eg.h"
 #include "pra32-u-chorus-fx.h"
 #include "pra32-u-program-table.h"
@@ -13,6 +14,7 @@ class PRA32_U_Synth {
   PRA32_U_Osc      m_osc;
   PRA32_U_Filter   m_filter;
   PRA32_U_Amp      m_amp;
+  PRA32_U_NoiseGen m_noise_gen;
   PRA32_U_LFO      m_lfo;
   PRA32_U_EG       m_eg[2];
   PRA32_U_ChorusFx m_chorus_fx;
@@ -45,6 +47,7 @@ public:
   : m_osc()
   , m_filter()
   , m_amp()
+  , m_noise_gen()
   , m_lfo()
   , m_eg()
   , m_chorus_fx()
@@ -89,6 +92,8 @@ public:
     m_osc.set_mono_mode(m_voice_mode);
     m_filter.initialize();
     m_amp.initialize();
+
+    m_noise_gen.initialize();
 
     m_eg[0].initialize();
     m_eg[1].initialize();
@@ -682,14 +687,15 @@ public:
   INLINE int16_t process(int16_t& right_level) {
     ++m_count;
 
-    m_lfo.control(m_count);
+    int16_t noise_gen_output = m_noise_gen.process();
+
+    m_lfo.control(m_count, noise_gen_output);
     m_eg[0].control(0, m_count);
     m_eg[1].control(1, m_count);
 
     int16_t lfo_output = m_lfo.get_output();
     int16_t eg_output_0 = m_eg[0].get_output();
-    uint8_t rnd = m_lfo.get_rnd();
-    m_osc.control(m_count, rnd, lfo_output, eg_output_0);
+    m_osc.control(m_count, noise_gen_output, lfo_output, eg_output_0);
 
     int16_t eg_output_1 = m_eg[1].get_output();
     m_amp.control(eg_output_1);
@@ -699,7 +705,7 @@ public:
 
     m_chorus_fx.control(m_count);
 
-    int16_t osc_output = m_osc.process();
+    int16_t osc_output = m_osc.process(noise_gen_output);
     int16_t filter_output = m_filter.process(osc_output);
     int16_t amp_output = m_amp.process(filter_output);
 
