@@ -92,7 +92,7 @@ public:
     return m_lfo_level;
   }
 
-  INLINE void control(uint8_t count, int16_t noise_int15) {
+  INLINE void process_at_low_rate(uint8_t count, int16_t noise_int15) {
       m_noise_int15 = noise_int15;
 
 #if 1

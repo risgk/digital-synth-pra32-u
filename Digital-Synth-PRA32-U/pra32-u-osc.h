@@ -303,7 +303,7 @@ public:
     return (60 << 8);
   }
 
-  INLINE void control(uint8_t count, int16_t noise_int15, int16_t lfo_level, int16_t eg_level) {
+  INLINE void process_at_low_rate(uint8_t count, int16_t noise_int15, int16_t lfo_level, int16_t eg_level) {
 #if 1
     if ((count & (OSC_CONTROL_INTERVAL - 1)) == 0) {
       //printf("%d Osc\n", count);

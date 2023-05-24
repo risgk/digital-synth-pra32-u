@@ -114,7 +114,7 @@ public:
     m_cutoff_offset = cutoff_offset;
   }
 
-  INLINE void control(uint8_t count, int16_t eg_input, int16_t lfo_input, uint16_t osc_pitch) {
+  INLINE void process_at_low_rate(uint8_t count, int16_t eg_input, int16_t lfo_input, uint16_t osc_pitch) {
 #if 1
     if ((count & (FILTER_CONTROL_INTERVAL - 1)) == 7) {
       //printf("%d PRA32_U_Filter\n", count);

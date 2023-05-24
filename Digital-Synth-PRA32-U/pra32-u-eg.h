@@ -84,7 +84,7 @@ public:
     return m_level_out;
   }
 
-  INLINE void control(uint8_t id, uint8_t count) {
+  INLINE void process_at_low_rate(uint8_t id, uint8_t count) {
 #if 1
     if ((count & (EG_CONTROL_INTERVAL - 1)) == ((id == 0) ? 3 : 11)) {
       //printf("%d PRA32_U_EG\n", count);

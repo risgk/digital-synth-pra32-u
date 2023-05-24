@@ -22,7 +22,7 @@ PRA32_U_Amp()
     m_gain[N] = (controller_value + 1) >> 1;
   }
 
-  INLINE void control(int16_t gain_mod_input) {
+  INLINE void process_at_low_rate(int16_t gain_mod_input) {
     m_gain_mod_input = gain_mod_input;
   }
 

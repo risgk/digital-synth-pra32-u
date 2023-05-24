@@ -139,7 +139,7 @@ public:
     return m_chorus_delay_time[N];
   }
 
-  INLINE void control(uint8_t count) {
+  INLINE void process_at_low_rate(uint8_t count) {
 #if 1
     if ((count & (OSC_CONTROL_INTERVAL - 1)) == 0) {
       //printf("%d Osc\n", count);
