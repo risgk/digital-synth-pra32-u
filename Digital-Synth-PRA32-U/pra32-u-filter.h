@@ -47,7 +47,7 @@ public:
   {}
 
   INLINE void initialize() {
-    m_cutoff_current = 127;
+    m_cutoff_current = 254;
 
     set_cutoff(127);
     set_resonance(0);
@@ -70,7 +70,7 @@ public:
       value = 124;
     }
 
-    m_cutoff_control = value;
+    m_cutoff_control = value << 1;
   }
 
   INLINE void set_resonance(uint8_t controller_value) {
@@ -158,22 +158,22 @@ public:
 private:
   INLINE void update_coefs_0th(int16_t eg_input) {
     m_cutoff_candidate = m_cutoff_control_effective;
-    m_cutoff_candidate += (m_cutoff_eg_amt * eg_input) >> 14;
+    m_cutoff_candidate += (m_cutoff_eg_amt * eg_input) >> 13;
     m_cutoff_candidate += m_cutoff_offset;
   }
 
   INLINE void update_coefs_1st(int16_t lfo_input, uint16_t osc_pitch) {
-    m_cutoff_candidate += (lfo_input * m_cutoff_lfo_amt) >> 14;
+    m_cutoff_candidate += (lfo_input * m_cutoff_lfo_amt) >> 13;
     if (m_cutoff_pitch_amt == 1) {
-      m_cutoff_candidate += static_cast<int8_t>(high_byte(osc_pitch + 128) - 60);
+      m_cutoff_candidate += static_cast<int8_t>(high_byte(osc_pitch + 128) - 60) << 1;
     } else if (m_cutoff_pitch_amt == 2) {
-      m_cutoff_candidate += static_cast<int8_t>(high_byte((osc_pitch << 1) + 128) - 120);
+      m_cutoff_candidate += static_cast<int8_t>(high_byte((osc_pitch << 1) + 128) - 120) << 1;
     }
   }
 
   INLINE void update_coefs_2nd() {
-    if (m_cutoff_candidate > 127) {
-      m_cutoff_current = 127;
+    if (m_cutoff_candidate > 254) {
+      m_cutoff_current = 254;
     } else if (m_cutoff_candidate < 0) {
       m_cutoff_current = 0;
     } else {
