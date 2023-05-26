@@ -165,9 +165,9 @@ private:
   INLINE void update_coefs_1st(int16_t lfo_input, uint16_t osc_pitch) {
     m_cutoff_candidate += (lfo_input * m_cutoff_lfo_amt) >> 13;
     if (m_cutoff_pitch_amt == 1) {
-      m_cutoff_candidate += static_cast<int8_t>(high_byte(osc_pitch + 128) - 60) << 1;
+      m_cutoff_candidate += static_cast<int8_t>(high_byte(osc_pitch + 128) - 60);
     } else if (m_cutoff_pitch_amt == 2) {
-      m_cutoff_candidate += static_cast<int8_t>(high_byte((osc_pitch << 1) + 128) - 120) << 1;
+      m_cutoff_candidate += static_cast<int8_t>(high_byte((osc_pitch << 1) + 128) - 120);
     }
   }
 
