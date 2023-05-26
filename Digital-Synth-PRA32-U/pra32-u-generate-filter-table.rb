@@ -23,7 +23,7 @@ def generate_filter_lpf_table(res_idx, name, q)
     a_1 = (-2.0) * Math.cos(w_0)
 
     input_gain = 1.0 / (2.0 ** (res_idx / 6.0))
-    b_2_over_a_0_gain = (input_gain * (b_2 / a_0) * (1 << ((FILTER_TABLE_FRACTION_BITS * 2) + 3))).floor.to_i
+    b_2_over_a_0_gain = (input_gain * (b_2 / a_0) * (1 << ((FILTER_TABLE_FRACTION_BITS + 2) * 2))).floor.to_i
     a_1_over_a_0 = ((a_1 / a_0) * (1 <<  FILTER_TABLE_FRACTION_BITS)).floor.to_i
     a_2_over_a_0 = ((b_2 / a_0) * (1 << (FILTER_TABLE_FRACTION_BITS + 3))).floor.to_i -
                    ((a_1 / a_0) * (1 << (FILTER_TABLE_FRACTION_BITS + 1))).floor.to_i -
