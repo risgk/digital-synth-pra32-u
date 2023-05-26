@@ -28,3 +28,9 @@ static INLINE uint8_t hhigh_byte(__uint24 x) {
 static INLINE int8_t hhigh_sbyte(__int24 x) {
   return x >> 16;
 }
+
+static INLINE int32_t mul_32_16_h32(int32_t x, int16_t y) {
+  int32_t  x1 = x >> 16;
+  uint32_t x0 = x & 0xFFFF;
+  return (static_cast<int32_t>(x0 * y) >> 16) + (x1 * y);
+}

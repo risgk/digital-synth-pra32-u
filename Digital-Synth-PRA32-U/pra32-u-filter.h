@@ -6,14 +6,14 @@
 #include "pra32-u-filter-table.h"
 
 class PRA32_U_Filter {
-  const uint16_t* m_lpf_table;
-  uint16_t        m_b_2_over_a_0;
+  const uint32_t* m_lpf_table;
+  int32_t         m_b_2_over_a_0;
   int16_t         m_a_1_over_a_0;
   int16_t         m_a_2_over_a_0;
   int16_t         m_x_1;
   int16_t         m_x_2;
-  int16_t         m_y_1;
-  int16_t         m_y_2;
+  int32_t         m_y_1;
+  int32_t         m_y_2;
   uint8_t         m_cutoff_current;
   int16_t         m_cutoff_candidate;
   uint8_t         m_cutoff_control;
@@ -133,26 +133,26 @@ public:
   INLINE int16_t process(int16_t audio_input) {
 #if 1
     int16_t x_0   = audio_input >> (16 - AUDIO_FRACTION_BITS);
-    int32_t tmp   = ((x_0 + (m_x_1 << 1) + m_x_2) * m_b_2_over_a_0) >> 2;
-    tmp          -= ( m_y_1                       * m_a_1_over_a_0) >> 0;
-    tmp          -= ( m_y_2                       * m_a_2_over_a_0) >> 1;
-    int16_t y_0   = tmp >> FILTER_TABLE_FRACTION_BITS;
+    int32_t tmp   = mul_32_16_h32(m_b_2_over_a_0, x_0 + (m_x_1 << 1) + m_x_2) << 1;
+    tmp          -= mul_32_16_h32(m_y_1, m_a_1_over_a_0) << 2;
+    tmp          -= mul_32_16_h32(m_y_2, m_a_2_over_a_0) << 1;
+    int32_t y_0   = tmp;
 
     m_x_2 = m_x_1;
     m_y_2 = m_y_1;
     m_x_1 = x_0;
     m_y_1 = y_0;
 
-    if        (high_sbyte(y_0) >= high_sbyte(+MAX_ABS_OUTPUT)) {
-      y_0 = +MAX_ABS_OUTPUT;
-    } else if (high_sbyte(y_0) <  high_sbyte(-MAX_ABS_OUTPUT)) {
-      y_0 = -MAX_ABS_OUTPUT;
+    if        (y_0 >= (+MAX_ABS_OUTPUT << 16)) {
+      y_0 = (+MAX_ABS_OUTPUT << 16);
+    } else if (y_0 <  (-MAX_ABS_OUTPUT << 16)) {
+      y_0 = (-MAX_ABS_OUTPUT << 16);
     }
 #else
-    int16_t y_0  = 0;
+    int32_t y_0  = 0;
 #endif
 
-    return y_0 << (16 - AUDIO_FRACTION_BITS);
+    return y_0 >> AUDIO_FRACTION_BITS;
   }
 
 private:
@@ -185,9 +185,10 @@ private:
   }
 
   INLINE void update_coefs_3rd() {
-    size_t index = m_cutoff_current * 3;
-    m_b_2_over_a_0 =                      m_lpf_table[index + 0];
-    m_a_1_over_a_0 = static_cast<int16_t>(m_lpf_table[index + 1]);
-    m_a_2_over_a_0 = static_cast<int16_t>(m_lpf_table[index + 2]);
+    size_t index = m_cutoff_current << 1;
+    m_b_2_over_a_0 = static_cast<int32_t>(m_lpf_table[index + 0]);
+    uint32_t tmp   =                      m_lpf_table[index + 1];
+    m_a_1_over_a_0 = static_cast<int16_t>(tmp >> 16);
+    m_a_2_over_a_0 = static_cast<int16_t>(tmp & 0xFFFF);
   }
 };
