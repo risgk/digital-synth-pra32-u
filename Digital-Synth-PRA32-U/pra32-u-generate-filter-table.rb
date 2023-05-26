@@ -6,12 +6,12 @@ $file = File.open("pra32-u-filter-table.h", "w")
 
 $file.printf("#pragma once\n\n")
 
-OCTAVES = 5
+OCTAVES = 10
 
 def generate_filter_lpf_table(res_idx, name, q)
   $file.printf("uint32_t g_filter_lpf_table_%s[] = {\n  ", name)
   (0..DATA_BYTE_MAX).each do |i|
-    f_idx = [[1, i - 3].max, 121].min
+    f_idx = [[24, i + 8].max, 120].min
     f_0 = (2.0 ** (f_idx / (120.0 / OCTAVES))) * ((FILTER_A4_FREQ * 2.0) * 16.0) * 2.0 / (2.0 ** (OCTAVES.to_f + 1.0))
     f_0_over_f_s = f_0 / SAMPLING_RATE
 
