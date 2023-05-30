@@ -158,12 +158,12 @@ public:
 private:
   INLINE void update_coefs_0th(int16_t eg_input) {
     m_cutoff_candidate = m_cutoff_control_effective;
-    m_cutoff_candidate += (m_cutoff_eg_amt * eg_input) >> 13;
+    m_cutoff_candidate += (m_cutoff_eg_amt * eg_input) >> 14;
     m_cutoff_candidate += m_cutoff_offset;
   }
 
   INLINE void update_coefs_1st(int16_t lfo_input, uint16_t osc_pitch) {
-    m_cutoff_candidate += (lfo_input * m_cutoff_lfo_amt) >> 13;
+    m_cutoff_candidate += (lfo_input * m_cutoff_lfo_amt) >> 14;
     if (m_cutoff_pitch_amt == 1) {
       m_cutoff_candidate += static_cast<int8_t>(high_byte(osc_pitch + 128) - 60);
     } else if (m_cutoff_pitch_amt == 2) {

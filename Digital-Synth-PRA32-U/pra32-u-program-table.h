@@ -13,9 +13,9 @@ uint8_t g_preset_table_OSC_2_COARSE   [] = {71 , 71 , 64 , 76 , 64 , 64 , 64 , 6
 uint8_t g_preset_table_OSC_2_FINE     [] = {72 , 72 , 72 , 72 , 72 , 72 , 72 , 64 ,   72 , 72 , 72 , 72 , 72 , 72 , 72 , 64 };
 uint8_t g_preset_table_MIXER_OSC_MIX  [] = {64 , 64 , 64 , 64 , 64 , 64 , 64 , 0  ,   64 , 64 , 64 , 64 , 64 , 64 , 64 , 0  };
 
-uint8_t g_preset_table_FILTER_CUTOFF  [] = {106, 106, 52 , 112, 52 , 106, 127, 127,   106, 106, 52 , 112, 52 , 106, 127, 127};
+uint8_t g_preset_table_FILTER_CUTOFF  [] = {111, 111, 57 , 117, 57 , 111, 127, 127,   111, 111, 57 , 117, 57 , 111, 127, 127};
 uint8_t g_preset_table_FILTER_RESO    [] = {64 , 64 , 32 , 32 , 32 , 64 , 0  , 0  ,   64 , 64 , 32 , 32 , 32 , 64 , 0  , 0  };
-uint8_t g_preset_table_FILTER_EG_AMT  [] = {64 , 64 , 94 , 34 , 94 , 64 , 64 , 64 ,   64 , 64 , 94 , 34 , 94 , 64 , 64 , 64 };
+uint8_t g_preset_table_FILTER_EG_AMT  [] = {64 , 64 , 124, 4  , 124, 64 , 64 , 64 ,   64 , 64 , 124, 4  , 124, 64 , 64 , 64 };
 uint8_t g_preset_table_FILTER_KEY_TRK [] = {127, 127, 127, 127, 127, 127, 127, 127,   127, 127, 127, 127, 127, 127, 127, 127};
 
 uint8_t g_preset_table_EG_ATTACK      [] = {0  , 0  , 64 , 96 , 0  , 0  , 0  , 0  ,   0  , 0  , 64 , 96 , 0  , 0  , 0  , 0  };
