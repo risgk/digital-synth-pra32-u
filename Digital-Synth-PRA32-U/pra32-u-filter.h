@@ -14,7 +14,7 @@ class PRA32_U_Filter {
   int16_t         m_x_2;
   int32_t         m_y_1;
   int32_t         m_y_2;
-  uint8_t         m_cutoff_current;
+  int16_t         m_cutoff_current;
   int16_t         m_cutoff_candidate;
   uint8_t         m_cutoff_control;
   uint8_t         m_cutoff_control_effective;
@@ -141,16 +141,15 @@ public:
     m_x_1 = x_0;
     m_y_1 = y_0;
 
-    if        (y_0 >= (+MAX_ABS_OUTPUT << 16)) {
-      y_0 = (+MAX_ABS_OUTPUT << 16);
-    } else if (y_0 <  (-MAX_ABS_OUTPUT << 16)) {
-      y_0 = (-MAX_ABS_OUTPUT << 16);
-    }
+    // y = clamp(y_0, (-MAX_ABS_OUTPUT << 16), (+MAX_ABS_OUTPUT << 16))
+    volatile int32_t y = y_0 - (+MAX_ABS_OUTPUT << 16);
+    y = (y < 0) * y + (+MAX_ABS_OUTPUT << 16) - (-MAX_ABS_OUTPUT << 16);
+    y = (y > 0) * y + (-MAX_ABS_OUTPUT << 16);
 #else
-    int32_t y_0  = 0;
+    int32_t y  = 0;
 #endif
 
-    return y_0 >> AUDIO_FRACTION_BITS;
+    return y >> AUDIO_FRACTION_BITS;
   }
 
 private:
@@ -166,13 +165,11 @@ private:
   }
 
   INLINE void update_coefs_2nd() {
-    if (m_cutoff_candidate > 254) {
-      m_cutoff_current = 254;
-    } else if (m_cutoff_candidate < 0) {
-      m_cutoff_current = 0;
-    } else {
-      m_cutoff_current = m_cutoff_candidate;
-    }
+    // cutoff_current = clamp(m_cutoff_candidate, 0, 254)
+    volatile int16_t cutoff_current = m_cutoff_candidate - 254;
+    cutoff_current = (cutoff_current < 0) * cutoff_current + 254;
+    cutoff_current = (cutoff_current > 0) * cutoff_current;
+    m_cutoff_current = cutoff_current;
 
     m_cutoff_control_effective += (m_cutoff_control_effective < m_cutoff_control);
     m_cutoff_control_effective -= (m_cutoff_control_effective > m_cutoff_control);
