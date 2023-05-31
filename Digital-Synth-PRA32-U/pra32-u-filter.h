@@ -63,51 +63,49 @@ public:
   }
 
   INLINE void set_cutoff(uint8_t controller_value) {
-    uint8_t value = controller_value;
-    if (value < 4) {
-      value = 4;
-    } else if (124 < value) {
-      value = 124;
-    }
-
-    m_cutoff_control = value << 1;
+    m_cutoff_control = controller_value << 1;
   }
 
   INLINE void set_resonance(uint8_t controller_value) {
-    uint8_t index = (controller_value + 4) >> 4;
-    m_lpf_table = g_filter_lpf_tables[index];
+    m_lpf_table = g_filter_lpf_tables[(controller_value + 4) >> 4];
   }
 
   INLINE void set_cutoff_eg_amt(uint8_t controller_value) {
-    uint8_t value = controller_value;
-    if (value < 4) {
-      value = 4;
-    } else if (124 < value) {
-      value = 124;
-    }
+    static int8_t cutoff_eg_amt_table[128] = {
+      -120, -120, -120, -120, -120, -118, -116, -114, -112, -110, -108, -106, -104, -102, -100,  -98,
+       -96,  -94,  -92,  -90,  -88,  -86,  -84,  -82,  -80,  -78,  -76,  -74,  -72,  -70,  -68,  -66,
+       -64,  -62,  -60,  -58,  -56,  -54,  -52,  -50,  -48,  -46,  -44,  -42,  -40,  -38,  -36,  -34,
+       -32,  -30,  -28,  -26,  -24,  -22,  -20,  -18,  -16,  -14,  -12,  -10,   -8,   -6,   -4,   -2,
+        +0,   +2,   +4,   +6,   +8,  +10,  +12,  +14,  +16,  +18,  +20,  +22,  +24,  +26,  +28,  +30,
+       +32,  +34,  +36,  +38,  +40,  +42,  +44,  +46,  +48,  +50,  +52,  +54,  +56,  +58,  +60,  +62,
+       +64,  +66,  +68,  +70,  +72,  +74,  +76,  +78,  +80,  +82,  +84,  +86,  +88,  +90,  +92,  +94,
+       +96,  +98, +100, +102, +104, +106, +108, +110, +112, +114, +116, +118, +120, +120, +120, +120,
+    };
 
-    m_cutoff_eg_amt = (value - 64) << 1;
+    m_cutoff_eg_amt = cutoff_eg_amt_table[controller_value];
   }
 
   INLINE void set_cutoff_lfo_amt(uint8_t controller_value) {
-    uint8_t value = controller_value;
-    if (value < 4) {
-      value = 4;
-    } else if (124 < value) {
-      value = 124;
-    }
+    static int8_t cutoff_lfo_amt_table[128] = {
+      -120, -120, -120, -120, -120, -118, -116, -114, -112, -110, -108, -106, -104, -102, -100,  -98,
+       -96,  -94,  -92,  -90,  -88,  -86,  -84,  -82,  -80,  -78,  -76,  -74,  -72,  -70,  -68,  -66,
+       -64,  -62,  -60,  -58,  -56,  -54,  -52,  -50,  -48,  -46,  -44,  -42,  -40,  -38,  -36,  -34,
+       -32,  -30,  -28,  -26,  -24,  -22,  -20,  -18,  -16,  -14,  -12,  -10,   -8,   -6,   -4,   -2,
+        +0,   +2,   +4,   +6,   +8,  +10,  +12,  +14,  +16,  +18,  +20,  +22,  +24,  +26,  +28,  +30,
+       +32,  +34,  +36,  +38,  +40,  +42,  +44,  +46,  +48,  +50,  +52,  +54,  +56,  +58,  +60,  +62,
+       +64,  +66,  +68,  +70,  +72,  +74,  +76,  +78,  +80,  +82,  +84,  +86,  +88,  +90,  +92,  +94,
+       +96,  +98, +100, +102, +104, +106, +108, +110, +112, +114, +116, +118, +120, +120, +120, +120,
+    };
 
-    m_cutoff_lfo_amt = (value - 64) << 1;
+    m_cutoff_lfo_amt = cutoff_lfo_amt_table[controller_value];
   }
 
   INLINE void set_cutoff_pitch_amt(uint8_t controller_value) {
-    if (controller_value < 32) {
-      m_cutoff_pitch_amt = 0;
-    } else if (controller_value < 96) {
-      m_cutoff_pitch_amt = 1;
-    } else {
-      m_cutoff_pitch_amt = 2;
-    }
+    static int8_t cutoff_pitch_amt_table[4] = {
+        +0,   +1,   +1,   +2,
+    };
+
+    m_cutoff_pitch_amt = cutoff_pitch_amt_table[controller_value >> 6];
   }
 
   INLINE void set_cutoff_offset(int8_t cutoff_offset) {
@@ -164,11 +162,7 @@ private:
 
   INLINE void update_coefs_1st(int16_t lfo_input, uint16_t osc_pitch) {
     m_cutoff_candidate += (lfo_input * m_cutoff_lfo_amt) >> 14;
-    if (m_cutoff_pitch_amt == 1) {
-      m_cutoff_candidate += static_cast<int8_t>(high_byte(osc_pitch + 128) - 60);
-    } else if (m_cutoff_pitch_amt == 2) {
-      m_cutoff_candidate += static_cast<int8_t>(high_byte((osc_pitch << 1) + 128) - 120);
-    }
+    m_cutoff_candidate += high_byte((osc_pitch * m_cutoff_pitch_amt) + 128) - (60 * m_cutoff_pitch_amt);
   }
 
   INLINE void update_coefs_2nd() {
