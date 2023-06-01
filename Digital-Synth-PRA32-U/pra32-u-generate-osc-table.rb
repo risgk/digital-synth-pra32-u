@@ -151,7 +151,7 @@ generate_osc_wave_tables_array("pulse")
 
 $file.printf("int16_t g_osc_triangle_wave_table[] = {\n  ")
 (0..(1 << OSC_WAVE_TABLE_SAMPLES_BITS)).each do |n|
-  level = n
+  level = (n + 1) / 2
   level = level - 256 if level >= 128
   if (level < -64)
     level = -64 - (level + 64)

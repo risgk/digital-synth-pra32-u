@@ -412,13 +412,13 @@ private:
   }
 
   INLINE int16_t get_wave_level(const int16_t* wave_table, uint16_t phase) {
-    uint8_t curr_index  = phase >> 8;
-    uint8_t next_weight = phase & 0xFF;
+    uint16_t curr_index  = phase >> (16 - OSC_WAVE_TABLE_SAMPLES_BITS);
+    uint16_t next_weight = phase & ((1 << (16 - OSC_WAVE_TABLE_SAMPLES_BITS)) - 1);
     int16_t curr_data   = wave_table[curr_index + 0];
     int16_t next_data   = wave_table[curr_index + 1];
 
     // lerp
-    int16_t result = curr_data + (((next_data - curr_data) * next_weight) >> 8);
+    int16_t result = curr_data + (((next_data - curr_data) * next_weight) >> (16 - OSC_WAVE_TABLE_SAMPLES_BITS));
 
     return result;
   }
