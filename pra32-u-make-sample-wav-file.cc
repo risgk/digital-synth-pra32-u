@@ -1,6 +1,8 @@
 #define MIDI_CH (0)  // 0-based
 
 
+#define MAKE_SAMPLE_WAV_FILE
+
 #include <stdint.h>
 #include <stdio.h>
 
