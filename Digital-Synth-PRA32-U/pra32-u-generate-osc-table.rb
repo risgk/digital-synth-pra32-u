@@ -57,7 +57,7 @@ end
 $file.printf("};\n\n")
 
 def generate_osc_wave_table(name, last, amp, organ = false)
-  $file.printf("const int16_t g_osc_#{name}_wave_table_h%d[] = {\n  ", last)
+  $file.printf("int16_t g_osc_#{name}_wave_table_h%d[] = {\n  ", last)
   (0..(1 << OSC_WAVE_TABLE_SAMPLES_BITS)).each do |n|
     level = 0
     nn = n
@@ -132,7 +132,7 @@ generate_osc_wave_table_arrays do |last|
 end
 
 def generate_osc_wave_tables_array(name, organ = false, organ_last = 8)
-  $file.printf("const int16_t* g_osc_#{name}_wave_tables[] = {\n  ")
+  $file.printf("int16_t* g_osc_#{name}_wave_tables[] = {\n  ")
   $osc_harmonics_restriction_table.each_with_index do |freq, idx|
     $file.printf("g_osc_#{name}_wave_table_h%-3d,", last_harmonic(freq, organ, organ_last))
     if idx == DATA_BYTE_MAX
@@ -149,7 +149,7 @@ end
 generate_osc_wave_tables_array("saw")
 generate_osc_wave_tables_array("pulse")
 
-$file.printf("const int16_t g_osc_triangle_wave_table[] = {\n  ")
+$file.printf("int16_t g_osc_triangle_wave_table[] = {\n  ")
 (0..(1 << OSC_WAVE_TABLE_SAMPLES_BITS)).each do |n|
   level = (n + 1) / 2
   level = level - 256 if level >= 128
