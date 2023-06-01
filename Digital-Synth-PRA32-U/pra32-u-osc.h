@@ -28,8 +28,8 @@ class PRA32_U_Osc {
   uint16_t       m_pitch_target[4];
   uint16_t       m_pitch_current[4];
   uint16_t       m_pitch_real[4];
-  const int16_t* m_wave_table[4];
-  const int16_t* m_wave_table_temp[4];
+  const int8_t*  m_wave_table[4];
+  const int8_t*  m_wave_table_temp[4];
   uint16_t       m_freq[4];
   uint16_t       m_freq_temp[4];
   uint16_t       m_phase[4];
@@ -398,8 +398,8 @@ public:
   }
 
 private:
-  INLINE const int16_t* get_wave_table(uint8_t waveform, uint8_t note_number) {
-    const int16_t* result;
+  INLINE const int8_t* get_wave_table(uint8_t waveform, uint8_t note_number) {
+    const int8_t* result;
     if ((waveform == WAVEFORM_SAW) ||
         (m_mono_mode && (waveform == WAVEFORM_1_PULSE))) {
       result = g_osc_saw_wave_tables[note_number - NOTE_NUMBER_MIN];
@@ -411,14 +411,14 @@ private:
     return result;
   }
 
-  INLINE int16_t get_wave_level(const int16_t* wave_table, uint16_t phase) {
+  INLINE int16_t get_wave_level(const int8_t* wave_table, uint16_t phase) {
     uint8_t curr_index  = phase >> 8;
     uint8_t next_weight = phase & 0xFF;
-    int16_t curr_data   = wave_table[curr_index + 0];
-    int16_t next_data   = wave_table[curr_index + 1];
+    int8_t  curr_data   = wave_table[curr_index + 0];
+    int8_t  next_data   = wave_table[curr_index + 1];
 
     // lerp
-    int16_t result = curr_data + (((next_data - curr_data) * next_weight) >> 8);
+    int16_t result = (curr_data << 8) + ((next_data - curr_data) * next_weight);
 
     return result;
   }
