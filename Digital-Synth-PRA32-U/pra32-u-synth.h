@@ -703,7 +703,17 @@ public:
     uint16_t osc_pitch = m_osc.get_osc_pitch();
     m_filter.process_at_low_rate(m_count, eg_output_0, lfo_output, osc_pitch);
 
-    m_chorus_fx.process_at_low_rate(m_count);
+    switch (m_count & 0x03) {
+    case 0x0:
+      m_chorus_fx.process_at_low_rate();
+      break;
+    case 0x1:
+      break;
+    case 0x2:
+      break;
+    case 0x3:
+      break;
+    }
 
     int16_t osc_output = m_osc.process(noise_int15);
     int16_t filter_output = m_filter.process(osc_output);
