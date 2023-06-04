@@ -47,11 +47,6 @@
         - A Ruby execution environment is required
 
 
-## Limitations
-
-- Especially when the waveform is square wave, the noise of chorus delay component is noticeable at high frequency
-
-
 ## PRA32-U CTRL
 
 - `"pra32-u-ctrl.html"`: MIDI Controller (Editor) Application for PRA32-U, HTML App (Web App)

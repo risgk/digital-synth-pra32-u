@@ -18,14 +18,14 @@ class PRA32_U_ChorusFx {
   uint8_t  m_gain;
 
   uint8_t  m_chorus_depth_control;
-  uint8_t  m_chorus_rate_control;
+  uint16_t m_chorus_rate_control;
   uint8_t  m_chorus_delay_time_control;
   uint8_t  m_chorus_delay_time_control_effective;
   uint8_t  m_param_chorus_mode;
   boolean  m_param_chorus_bypass;
   uint8_t  m_effective_chorus_mode;
   uint8_t  m_chorus_depth_control_actual;
-  uint16_t m_chorus_lfo_phase;
+  uint32_t m_chorus_lfo_phase;
   int16_t  m_chorus_lfo_wave_level;
   int16_t  m_chorus_lfo_level;
   uint16_t m_chorus_delay_time[2];
@@ -135,20 +135,17 @@ public:
   }
 
   template <uint8_t N>
-  INLINE int16_t get_chorus_delay_time() {
+  INLINE uint16_t get_chorus_delay_time() {
     return m_chorus_delay_time[N];
   }
 
   INLINE void process_at_low_rate(uint8_t count) {
 #if 1
-    if ((count & (OSC_CONTROL_INTERVAL - 1)) == 0) {
-      //printf("%d Osc\n", count);
-      switch ((count >> OSC_CONTROL_INTERVAL_BITS) & 0x1F) {
-      case 0x1F: update_chorus_lfo_0th();
-                 update_chorus_lfo_1st();
-                 update_chorus_lfo_2nd();
-                 update_chorus_lfo_3rd();             break;
-      }
+    if ((count & 0x03) == 0) {
+      update_chorus_lfo_0th();
+      update_chorus_lfo_1st();
+      update_chorus_lfo_2nd();
+      update_chorus_lfo_3rd();
     }
 #endif
   }
@@ -182,8 +179,18 @@ private:
   }
 
   INLINE int16_t delay_buff_get(uint16_t sample_delay) {
-    uint16_t rp = (m_delay_wp - sample_delay) & (DELAY_BUFF_SIZE - 1);
-    return m_delay_buff[rp];
+    uint16_t curr_index  = (m_delay_wp - (sample_delay >> 4)) & (DELAY_BUFF_SIZE - 1);
+    uint16_t next_index  = (curr_index - 1) & (DELAY_BUFF_SIZE - 1);
+    uint16_t next_weight = (sample_delay & 0xF);
+    int16_t  curr_data   = m_delay_buff[curr_index];
+    int16_t  next_data   = m_delay_buff[next_index];
+
+    // lerp
+    int16_t result = curr_data + (((next_data - curr_data) * next_weight) >> 4);
+
+//printf("%d %d %d %d  %d %d %d \n",sample_delay,curr_index,next_index,next_weight,curr_data,next_data,result);
+
+    return result;
   }
 
   INLINE void delay_buff_attenuate() {
@@ -197,6 +204,7 @@ private:
   }
 
   INLINE void update_chorus_lfo_0th() {
+    // todo
     m_chorus_delay_time_control_effective += (m_chorus_delay_time_control_effective < m_chorus_delay_time_control);
     m_chorus_delay_time_control_effective -= (m_chorus_delay_time_control_effective > m_chorus_delay_time_control);
 
@@ -239,29 +247,29 @@ private:
     case CHORUS_MODE_MONO     :
       {
         uint16_t chorus_delay_time_control_mul_4 = m_chorus_delay_time_control_effective * 4;
-        m_chorus_delay_time[0] = chorus_delay_time_control_mul_4 + m_chorus_lfo_level;
+        m_chorus_delay_time[0] = (chorus_delay_time_control_mul_4 << 4) + m_chorus_lfo_level;
         m_chorus_delay_time[1] = m_chorus_delay_time[0];
       }
       break;
     case CHORUS_MODE_STEREO_2 :
       {
         uint16_t chorus_delay_time_control_mul_4 = m_chorus_delay_time_control_effective * 4;
-        m_chorus_delay_time[0] = chorus_delay_time_control_mul_4 - m_chorus_lfo_level;
-        m_chorus_delay_time[1] = chorus_delay_time_control_mul_4 + m_chorus_lfo_level;
+        m_chorus_delay_time[0] = (chorus_delay_time_control_mul_4 << 4) - m_chorus_lfo_level;
+        m_chorus_delay_time[1] = (chorus_delay_time_control_mul_4 << 4) + m_chorus_lfo_level;
       }
       break;
     }
   }
 
-  INLINE int16_t get_chorus_lfo_wave_level(uint16_t phase) {
+  INLINE int16_t get_chorus_lfo_wave_level(uint32_t phase) {
     int16_t triangle_wave_level = 0;
-    phase &= 0x1FFC;
+    phase &= 0x0001FFFC;
     phase = (phase >> 2);
 
-    if (phase < 0x0400) {
-      triangle_wave_level = phase - 512;
+    if (phase < 0x00004000) {
+      triangle_wave_level = phase - (512 << 4);
     } else {
-      triangle_wave_level = 1535 - phase;
+      triangle_wave_level = (1535 << 4) - phase;
     }
 
     return triangle_wave_level;
