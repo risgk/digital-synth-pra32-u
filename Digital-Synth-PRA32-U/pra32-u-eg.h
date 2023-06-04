@@ -48,7 +48,7 @@ public:
   }
 
   INLINE void set_sustain(uint8_t controller_value) {
-    m_sustain = (((controller_value + 1) >> 1) << 1) << 24;
+    m_sustain = ((controller_value + 1) >> 1) << 16;
   }
 
   INLINE void set_release(uint8_t controller_value) {
@@ -72,7 +72,6 @@ public:
     switch (m_state) {
     case STATE_ATTACK:
       m_level = EG_LEVEL_MAX_X_1_5 - mul_u32_u16_h32((EG_LEVEL_MAX_X_1_5 - m_level) << 1, m_attack_coef);
-      // todo
       if (m_level >= EG_LEVEL_MAX) {
         m_level = EG_LEVEL_MAX;
         m_state = STATE_SUSTAIN;
@@ -80,11 +79,12 @@ public:
       break;
 
     case STATE_SUSTAIN:
-      if (m_level > m_sustain) {
-        m_level = m_sustain + mul_u32_u16_h32((m_level - m_sustain) << 1, m_decay_coef);
-        if (m_level < m_sustain) {
-          m_level = m_sustain;
-        }
+      {
+        // effective_sustain = min(effective_sustain, m_level)
+        int32_t effective_sustain = m_sustain - m_level;
+        effective_sustain = (effective_sustain < 0) * effective_sustain + m_level;
+
+        m_level = m_sustain + mul_u32_u16_h32((m_level - effective_sustain) << 1, m_decay_coef);
       }
       break;
 
