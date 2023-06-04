@@ -5,33 +5,30 @@
 #pragma once
 
 #include "pra32-u-common.h"
+#include "pra32-u-eg-table.h"
 
 class PRA32_U_EG {
   static const uint8_t STATE_ATTACK  = 0;
   static const uint8_t STATE_SUSTAIN = 1;
   static const uint8_t STATE_IDLE    = 2;
 
-  static const uint8_t NO_DECAY_UPDATE_COEF = 255;
-
   uint8_t  m_state;
-  uint16_t m_level;
+  uint32_t m_level;
   int16_t  m_level_out;
-  uint8_t  m_attack_update_coef;
-  uint8_t  m_decay_update_coef;
-  uint16_t m_sustain;
-  uint8_t  m_release_update_coef;
-  uint8_t  m_rest;
+  int16_t  m_attack_coef;
+  int16_t  m_decay_coef;
+  uint32_t m_sustain;
+  int16_t  m_release_coef;
 
 public:
   PRA32_U_EG()
   : m_state()
   , m_level()
   , m_level_out()
-  , m_attack_update_coef()
-  , m_decay_update_coef()
+  , m_attack_coef()
+  , m_decay_coef()
   , m_sustain()
-  , m_release_update_coef()
-  , m_rest()
+  , m_release_coef()
   {}
 
   INLINE void initialize() {
@@ -43,103 +40,60 @@ public:
   }
 
   INLINE void set_attack(uint8_t controller_value) {
-    if (controller_value == 127) {
-      m_attack_update_coef = 64;
-    } else {
-      m_attack_update_coef = (controller_value + 3) >> 1;
-    }
+    m_attack_coef = g_eg_attack_release_coef_table[(controller_value + 1) >> 1];
   }
 
   INLINE void set_decay(uint8_t controller_value) {
-    if (controller_value == 127) {
-      m_decay_update_coef = NO_DECAY_UPDATE_COEF;
-    } else {
-      m_decay_update_coef = (controller_value + 3) >> 1;
-    }
+    m_decay_coef = g_eg_decay_coef_table[(controller_value + 1) >> 1];
   }
 
   INLINE void set_sustain(uint8_t controller_value) {
-    m_sustain = (((controller_value + 1) >> 1) << 1) << 8;
+    m_sustain = (((controller_value + 1) >> 1) << 1) << 24;
   }
 
   INLINE void set_release(uint8_t controller_value) {
-    if (controller_value == 127) {
-      m_release_update_coef = 64;
-    } else {
-      m_release_update_coef = (controller_value + 3) >> 1;
-    }
+    m_release_coef = g_eg_attack_release_coef_table[(controller_value + 1) >> 1];
   }
 
   INLINE void note_on() {
     m_state = STATE_ATTACK;
-    m_rest = m_attack_update_coef;
   }
 
   INLINE void note_off() {
     m_state = STATE_IDLE;
-    m_rest = m_release_update_coef;
   }
 
   INLINE int16_t get_output() {
     return m_level_out;
   }
 
-  INLINE void process_at_low_rate(uint8_t id, uint8_t count) {
+  INLINE void process_at_low_rate() {
 #if 1
-    if ((count & (EG_CONTROL_INTERVAL - 1)) == ((id == 0) ? 3 : 11)) {
-      //printf("%d PRA32_U_EG\n", count);
-      switch (m_state) {
-      case STATE_ATTACK:
-        --m_rest;
-        if (m_rest == 0) {
-          m_rest = m_attack_update_coef;
-
-          uint8_t coef;
-          coef = 188 + m_attack_update_coef;
-
-          m_level = EG_LEVEL_MAX_X_1_5 - (((EG_LEVEL_MAX_X_1_5 - m_level) * coef) >> 8);
-          if (m_level >= EG_LEVEL_MAX) {
-            m_level = EG_LEVEL_MAX;
-            m_state = STATE_SUSTAIN;
-            m_rest = m_decay_update_coef;
-          }
-        }
-        break;
-
-      case STATE_SUSTAIN:
-        --m_rest;
-        if (m_rest == 0) {
-          m_rest = m_decay_update_coef;
-
-          if ((m_level > m_sustain) && (m_decay_update_coef != NO_DECAY_UPDATE_COEF)) {
-            uint8_t coef;
-            coef = 188 + m_decay_update_coef;
-
-            m_level = m_sustain + (((m_level - m_sustain) * coef) >> 8);
-            if (m_level < m_sustain) {
-              m_level = m_sustain;
-            }
-          }
-        }
-        break;
-
-      case STATE_IDLE:
-        --m_rest;
-        if (m_rest == 0) {
-          m_rest = m_release_update_coef;
-
-          if (m_level > 0) {
-            uint8_t coef;
-            coef = 188 + m_release_update_coef;
-
-            m_level = (m_level * coef) >> 8;
-          }
-        }
-        break;
+    switch (m_state) {
+    case STATE_ATTACK:
+      m_level = EG_LEVEL_MAX_X_1_5 - mul_u32_u16_h32((EG_LEVEL_MAX_X_1_5 - m_level) << 1, m_attack_coef);
+      // todo
+      if (m_level >= EG_LEVEL_MAX) {
+        m_level = EG_LEVEL_MAX;
+        m_state = STATE_SUSTAIN;
       }
+      break;
 
-      m_level_out = m_level >> 1;
+    case STATE_SUSTAIN:
+      if (m_level > m_sustain) {
+        m_level = m_sustain + mul_u32_u16_h32((m_level - m_sustain) << 1, m_decay_coef);
+        if (m_level < m_sustain) {
+          m_level = m_sustain;
+        }
+      }
+      break;
+
+    case STATE_IDLE:
+      m_level = mul_u32_u16_h32(m_level << 1, m_release_coef);
+      break;
     }
+
+    m_level_out = m_level >> 16;
 #endif
   }
 };

@@ -690,8 +690,20 @@ public:
     int16_t noise_int15 = m_noise_gen.process();
 
     m_lfo.process_at_low_rate(m_count, noise_int15);
-    m_eg[0].process_at_low_rate(0, m_count);
-    m_eg[1].process_at_low_rate(1, m_count);
+
+    switch (m_count & 0x03) {
+    case 0x0:
+      m_chorus_fx.process_at_low_rate();
+      break;
+    case 0x1:
+      m_eg[0].process_at_low_rate();
+      break;
+    case 0x2:
+      break;
+    case 0x3:
+      m_eg[1].process_at_low_rate();
+      break;
+    }
 
     int16_t lfo_output = m_lfo.get_output();
     int16_t eg_output_0 = m_eg[0].get_output();
@@ -702,18 +714,6 @@ public:
 
     uint16_t osc_pitch = m_osc.get_osc_pitch();
     m_filter.process_at_low_rate(m_count, eg_output_0, lfo_output, osc_pitch);
-
-    switch (m_count & 0x03) {
-    case 0x0:
-      m_chorus_fx.process_at_low_rate();
-      break;
-    case 0x1:
-      break;
-    case 0x2:
-      break;
-    case 0x3:
-      break;
-    }
 
     int16_t osc_output = m_osc.process(noise_int15);
     int16_t filter_output = m_filter.process(osc_output);
