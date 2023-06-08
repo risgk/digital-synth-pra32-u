@@ -41,7 +41,7 @@
 - Modify `I2S_DATA_PIN`, `I2S_BCLK_PIN`, and `I2S_SWAP_BCLK_AND_LRCLK_PINS` in `"Digital-Synth-PRA32-U.ino"` to match the hardware configuration
     - The default setting is for Pimoroni [Pico Audio Pack](https://shop.pimoroni.com/products/pico-audio-pack) [PIM544]
 
-### Files
+## Files
 
 - `"digital-synth-pra32-u-0.1.1.uf2"` (in the directory `"bin"`) is a UF2 file for Pimoroni Pico Audio Pack
 - `"Digital-Synth-PRA32-U.ino"` is a Arduino sketch for Raspberry Pi Pico/RP2040 core
