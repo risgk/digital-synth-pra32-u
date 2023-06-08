@@ -17,6 +17,7 @@
 
 #define I2S_DATA_PIN        (9)
 #define I2S_BCLK_PIN        (10)  // I2S_LRCLK_PIN is I2S_BCLK_PIN + 1
+//#define I2S_SWAP_BCLK_AND_LRCLK_PINS
 #define I2S_BITS_PER_SAMPLE (16)  // 16, 24, or 32
 #define I2S_BUFFERS         (3)
 #define I2S_BUFFER_WORDS    (8)
@@ -77,6 +78,9 @@ void __not_in_flash_func(setup1)() {
   g_i2s_output.setBitsPerSample(I2S_BITS_PER_SAMPLE);
   g_i2s_output.setBuffers(I2S_BUFFERS, I2S_BUFFER_WORDS);
   g_i2s_output.setFrequency(SAMPLING_RATE);
+#if defined(I2S_SWAP_BCLK_AND_LRCLK_PINS)
+  g_i2s_output.swapClocks();
+#endif
   g_i2s_output.begin();
 
 #if defined(DEBUG_PRINT)
