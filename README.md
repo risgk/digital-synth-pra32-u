@@ -35,11 +35,13 @@
 - Serial MIDI (31.25 kbps or 38.4 kbps) can also be used instead of USB MIDI
     - Comment out `#define USE_USB_MIDI` and uncomment out `//#define USE_SERIAL1_MIDI` in `"Digital-Synth-PRA32-U.ino"`
 
+
 ### Audio Out
 
 - Use an I2S DAC that does not require MCLK input (e.g. PCM5100A), Sampling Rate: 31.25 kHz, Bit Depth: 16 bit
 - Modify `I2S_DATA_PIN`, `I2S_BCLK_PIN`, and `I2S_SWAP_BCLK_AND_LRCLK_PINS` in `"Digital-Synth-PRA32-U.ino"` to match the hardware configuration
     - The default setting is for Pimoroni [Pico Audio Pack](https://shop.pimoroni.com/products/pico-audio-pack) [PIM544]
+
 
 ## Files
 
