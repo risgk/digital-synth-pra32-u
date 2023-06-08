@@ -13,7 +13,7 @@
     - Controlled by MIDI -- PRA32-U is a MIDI sound module
 - The sound of **PRA32-U v0.1** is very similar to that of **VRA8-U (type-16) v2.2**
     - <https://github.com/risgk/digital-synth-vra8-u>
-- An **I2S DAC** hardware (e.g. Pico Audio Pack) is required
+- An **I2S DAC** hardware (e.g. Pimoroni's Pico Audio Pack [PIM544] and Waveshare's Pico-Audio [WAVESHARE-20167]) is required
     - **NOTE**: Large noise is generated during the sketch upload!
 - **Arduino IDE** and **Raspberry Pi Pico/RP2040** (by Earle F. Philhower, III) core are required
     - Additional Board Manager URL: <https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json>
@@ -35,7 +35,7 @@
         - Comment out `#define USE_USB_MIDI` and uncomment out `//#define USE_SERIAL1_MIDI` in `"Digital-Synth-PRA32-U.ino"`
 - Audio Out
     - I2S DAC (e.g. PCM5100A), Sampling Rate: 31.25 kHz, Bit Depth: 16 bit
-    - The default setting is for Pimoroni's [Pico Audio Pack](https://shop.pimoroni.com/products/pico-audio-pack)
+    - The default setting is for Pimoroni's [Pico Audio Pack](https://shop.pimoroni.com/products/pico-audio-pack) [PIM544]
     - Modify `I2S_DATA_PIN` and `I2S_BCLK_PIN` in `"Digital-Synth-PRA32-U.ino"` to match the hardware configuration
 - Files
     - `"digital-synth-pra32-u-0.1.1.uf2"` (in the directory `"bin"`) is a UF2 file for Pico Audio Pack
