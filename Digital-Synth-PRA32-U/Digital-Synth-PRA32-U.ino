@@ -10,17 +10,17 @@
 #define USE_USB_MIDI      // Select USB Stack "Adafruit TinuUSB" in the Arduino IDE "Tools" menu
 //#define USE_SERIAL1_MIDI
 
-#define SERIAL1_MIDI_SPEED   (31250)
-//#define SERIAL1_MIDI_SPEED   (38400)
+#define SERIAL1_MIDI_SPEED           (31250)
+//#define SERIAL1_MIDI_SPEED           (38400)
 
-#define MIDI_CH             (0)  // 0-based
+#define MIDI_CH                      (0)  // 0-based
 
-#define I2S_DATA_PIN        (9)
-#define I2S_BCLK_PIN        (10)  // I2S_LRCLK_PIN is I2S_BCLK_PIN + 1
-//#define I2S_SWAP_BCLK_AND_LRCLK_PINS
-#define I2S_BITS_PER_SAMPLE (16)  // 16, 24, or 32
-#define I2S_BUFFERS         (3)
-#define I2S_BUFFER_WORDS    (8)
+#define I2S_DATA_PIN                 (9)
+#define I2S_BCLK_PIN                 (10)  // I2S_LRCLK_PIN is I2S_BCLK_PIN + 1
+#define I2S_SWAP_BCLK_AND_LRCLK_PINS (false)
+#define I2S_BITS_PER_SAMPLE          (16)  // 16, 24, or 32
+#define I2S_BUFFERS                  (3)
+#define I2S_BUFFER_WORDS             (8)
 
 ////////////////////////////////////////////////////////////////
 
@@ -78,9 +78,9 @@ void __not_in_flash_func(setup1)() {
   g_i2s_output.setBitsPerSample(I2S_BITS_PER_SAMPLE);
   g_i2s_output.setBuffers(I2S_BUFFERS, I2S_BUFFER_WORDS);
   g_i2s_output.setFrequency(SAMPLING_RATE);
-#if defined(I2S_SWAP_BCLK_AND_LRCLK_PINS)
-  g_i2s_output.swapClocks();
-#endif
+  if (I2S_SWAP_BCLK_AND_LRCLK_PINS) {
+    g_i2s_output.swapClocks();
+  }
   g_i2s_output.begin();
 
 #if defined(DEBUG_PRINT)
