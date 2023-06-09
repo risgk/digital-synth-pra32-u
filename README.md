@@ -13,7 +13,7 @@
     - Controlled by MIDI -- PRA32-U is a MIDI sound module
 - The sound of **PRA32-U v0.1** is very similar to that of **VRA8-U (type-16) v2.2**
     - <https://github.com/risgk/digital-synth-vra8-u>
-- An **I2S DAC** hardware (e.g. Pimoroni Pico Audio Pack) is required
+- An **I2S DAC** hardware (e.g. Pimoroni Pico Audio Pack and Pimoroni Pico VGA Demo Base) is required
     - **NOTE**: Large noise is generated during the sketch upload!
 - **Arduino IDE** and **Raspberry Pi Pico/RP2040** (by Earle F. Philhower, III) core are required
     - Additional Board Manager URL: <https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json>
@@ -40,8 +40,22 @@
 
 - Use an I2S DAC that does not require MCLK input (e.g. PCM5100A), Sampling Rate: 31.25 kHz, Bit Depth: 16 bit
 - Modify `I2S_DAC_MUTE_OFF_PIN`, `I2S_DATA_PIN`, `I2S_BCLK_PIN`, and `I2S_SWAP_BCLK_AND_LRCLK_PINS` in `"Digital-Synth-PRA32-U.ino"` to match the hardware configuration
-    - The default setting is for Pimoroni [Pico Audio Pack](https://shop.pimoroni.com/products/pico-audio-pack) [PIM544]
+- The default setting is for Pimoroni [Pico Audio Pack](https://shop.pimoroni.com/products/pico-audio-pack) [PIM544]
+```
+#define I2S_DAC_MUTE_OFF_PIN         (22)
 
+#define I2S_DATA_PIN                 (9)
+#define I2S_BCLK_PIN                 (10)  // I2S_LRCLK_PIN is I2S_BCLK_PIN + 1
+#define I2S_SWAP_BCLK_AND_LRCLK_PINS (false)
+```
+- The following is setting is for [Pimoroni Pico VGA Demo Base](https://shop.pimoroni.com/products/pimoroni-pico-vga-demo-base) [PIM553]
+```
+//#define I2S_DAC_MUTE_OFF_PIN         (22)
+
+#define I2S_DATA_PIN                 (26)
+#define I2S_BCLK_PIN                 (27)  // I2S_LRCLK_PIN is I2S_BCLK_PIN + 1
+#define I2S_SWAP_BCLK_AND_LRCLK_PINS (false)
+```
 
 ## Files
 
