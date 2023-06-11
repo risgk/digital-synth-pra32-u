@@ -128,14 +128,14 @@ public:
     m_wave_table_temp[1] = g_osc_saw_wave_tables[0];
     m_wave_table_temp[2] = g_osc_saw_wave_tables[0];
     m_wave_table_temp[3] = g_osc_saw_wave_tables[0];
-    m_freq[0] = g_osc_freq_table[0];
-    m_freq[1] = g_osc_freq_table[0];
-    m_freq[2] = g_osc_freq_table[0];
-    m_freq[3] = g_osc_freq_table[0];
-    m_freq_temp[0] = g_osc_freq_table[0];
-    m_freq_temp[1] = g_osc_freq_table[0];
-    m_freq_temp[2] = g_osc_freq_table[0];
-    m_freq_temp[3] = g_osc_freq_table[0];
+    m_freq[0] = g_osc_freq_table[0] >> 8;
+    m_freq[1] = g_osc_freq_table[0] >> 8;
+    m_freq[2] = g_osc_freq_table[0] >> 8;
+    m_freq[3] = g_osc_freq_table[0] >> 8;
+    m_freq_temp[0] = g_osc_freq_table[0] >> 8;
+    m_freq_temp[1] = g_osc_freq_table[0] >> 8;
+    m_freq_temp[2] = g_osc_freq_table[0] >> 8;
+    m_freq_temp[3] = g_osc_freq_table[0] >> 8;
     m_osc_level = 48;
 
     m_osc1_shape = 0x8000;
@@ -479,7 +479,7 @@ private:
 
 
     coarse = high_byte(m_pitch_real[N]);
-    m_freq_temp[N] = g_osc_freq_table[coarse - NOTE_NUMBER_MIN];
+    m_freq_temp[N] = g_osc_freq_table[coarse - NOTE_NUMBER_MIN] >> 8;
     if ((N == 2) && m_mono_mode) {
       m_wave_table_temp[N] = get_wave_table(m_waveform[1], coarse);
     } else {

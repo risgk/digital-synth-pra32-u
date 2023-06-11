@@ -21,11 +21,11 @@ def freq_from_note_number(note_number, pr = false)
   return freq
 end
 
-$file.printf("uint16_t g_osc_freq_table[] = {\n  ")
+$file.printf("uint32_t g_osc_freq_table[] = {\n  ")
 (NOTE_NUMBER_MIN..NOTE_NUMBER_MAX).each do |note_number|
-  freq = freq_from_note_number(note_number, true)
+  freq = freq_from_note_number(note_number, true) << 8
 
-  $file.printf("0x%04X,", freq)
+  $file.printf("0x%08X,", freq)
   if note_number == DATA_BYTE_MAX
     $file.printf("\n")
   elsif note_number % 12 == (12 - 1)
