@@ -165,9 +165,9 @@ private:
   }
 
   INLINE void update_coefs_2nd() {
-    // cutoff_current = clamp(m_cutoff_candidate, 0, 254)
-    volatile int16_t cutoff_current = m_cutoff_candidate - 254;
-    cutoff_current = (cutoff_current < 0) * cutoff_current + 254;
+    // cutoff_current = clamp(m_cutoff_candidate, 0, 255)
+    volatile int16_t cutoff_current = m_cutoff_candidate - 255;
+    cutoff_current = (cutoff_current < 0) * cutoff_current + 255;
     cutoff_current = (cutoff_current > 0) * cutoff_current;
     m_cutoff_current = cutoff_current;
 
