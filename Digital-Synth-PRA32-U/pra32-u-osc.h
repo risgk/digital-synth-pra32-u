@@ -488,8 +488,8 @@ private:
 
 
     uint8_t fine = low_byte(m_pitch_real[N]);
-    uint16_t freq_div_2 = (m_freq_temp[N] >> 1);
-    int8_t freq_offset = high_sbyte(freq_div_2 * g_osc_tune_table[fine >> (8 - OSC_TUNE_TABLE_STEPS_BITS)]);
+    int32_t freq_offset = (m_freq_temp[N] * g_osc_tune_table[fine >> (8 - OSC_TUNE_TABLE_STEPS_BITS)])
+                          >> OSC_TUNE_DENOMINATOR_BITS;
     m_freq_temp[N] += freq_offset;
 
     uint8_t bit = (noise_int15 >= 14336);

@@ -37,13 +37,12 @@ end
 $file.printf("};\n\n")
 
 max_tune_rate = -Float::INFINITY
-$file.printf("int8_t g_osc_tune_table[] = {\n  ")
+$file.printf("int16_t g_osc_tune_table[] = {\n  ")
 (0..(1 << OSC_TUNE_TABLE_STEPS_BITS) - 1).each do |i|
   tune_rate = ((2.0 ** ((i - (1 << (OSC_TUNE_TABLE_STEPS_BITS - 1))) / (12.0 * (1 << OSC_TUNE_TABLE_STEPS_BITS)))) *
                (1 << OSC_TUNE_DENOMINATOR_BITS) / 1.0).round -
               (1 << OSC_TUNE_DENOMINATOR_BITS) / 1.0
   max_tune_rate = tune_rate if max_tune_rate < tune_rate
-  tune_rate = -14 if tune_rate < -14  # special correction
 
   $file.printf("%5d,", tune_rate)
   if i == (1 << OSC_TUNE_TABLE_STEPS_BITS) - 1
