@@ -13,7 +13,7 @@ const uint8_t   PROGRAM_NUMBER_MAX           = 15;
 
 const uint8_t   OSC_CONTROL_INTERVAL_BITS    = 1;
 const uint8_t   OSC_CONTROL_INTERVAL         = 0x01 << OSC_CONTROL_INTERVAL_BITS;
-const uint8_t   OSC_PHASE_RESOLUTION_BITS    = 16;
+const uint8_t   OSC_PHASE_RESOLUTION_BITS    = 24;
 const uint8_t   OSC_TUNE_TABLE_STEPS_BITS    = 8;
 const uint8_t   OSC_TUNE_DENOMINATOR_BITS    = 15;
 const uint8_t   OSC_WAVE_TABLE_AMPLITUDE     = 96;

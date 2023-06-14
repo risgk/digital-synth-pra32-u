@@ -9,23 +9,52 @@ def freq_from_note_number(note_number, pr = false)
   hz = A4_FREQ * (2.0 ** (cent / 1200.0))
   bit = (SAMPLING_RATE.to_f / (1 << OSC_PHASE_RESOLUTION_BITS)) * ((0x100.to_f - 0xF0) / 0xFF)
   hz -= bit  # Correct bit = (m_rnd >= 0xF0) in "osc.h"
-  if note_number < NOTE_NUMBER_MIN + 12
-    freq = (hz * (1 << OSC_PHASE_RESOLUTION_BITS) / SAMPLING_RATE).round.to_i
-  else
-    freq = (hz * (1 << OSC_PHASE_RESOLUTION_BITS) / SAMPLING_RATE).floor.to_i
-    freq = freq + 1 if freq.even?
-  end
+  freq = (hz * (1 << OSC_PHASE_RESOLUTION_BITS) / SAMPLING_RATE).floor.to_i
+  freq = freq + 1 if freq.even?
   if pr
-    printf("%3d, %+f, %d\n",note_number, 1.0 - freq.to_f * SAMPLING_RATE / (hz * (1 << OSC_PHASE_RESOLUTION_BITS)), freq)
+    printf("[0]%3d, %+f, %d\n",note_number, 1.0 - freq.to_f * SAMPLING_RATE / (hz * (1 << OSC_PHASE_RESOLUTION_BITS)), freq)
   end
   return freq
 end
 
 $file.printf("uint32_t g_osc_freq_table[] = {\n  ")
 (NOTE_NUMBER_MIN..NOTE_NUMBER_MAX).each do |note_number|
-  freq = freq_from_note_number(note_number, true) << 8
+  freq = freq_from_note_number(note_number, true)
 
   $file.printf("0x%08X,", freq)
+  if note_number == DATA_BYTE_MAX
+    $file.printf("\n")
+  elsif note_number % 12 == (12 - 1)
+    $file.printf("\n  ")
+  else
+    $file.printf(" ")
+  end
+end
+$file.printf("};\n\n")
+
+def freq_from_note_number_m8(note_number, pr = false)
+  cent = (note_number * 100.0) - 6900.0
+  hz = A4_FREQ * (2.0 ** (cent / 1200.0))
+  bit = (SAMPLING_RATE.to_f / (1 << (OSC_PHASE_RESOLUTION_BITS - 8))) * ((0x100.to_f - 0xF0) / 0xFF)
+  hz -= bit  # Correct bit = (m_rnd >= 0xF0) in "osc.h"
+  if note_number < NOTE_NUMBER_MIN + 12
+    freq = (hz * (1 << (OSC_PHASE_RESOLUTION_BITS - 8)) / SAMPLING_RATE).round.to_i
+  else
+    freq = (hz * (1 << (OSC_PHASE_RESOLUTION_BITS - 8)) / SAMPLING_RATE).floor.to_i
+    freq = freq + 1 if freq.even?
+  end
+  if pr
+    printf("[8]%3d, %+f, %d\n",note_number, 1.0 - freq.to_f * SAMPLING_RATE / (hz * (1 << (OSC_PHASE_RESOLUTION_BITS - 8))), freq << 8)
+  end
+  return freq << 8
+end
+
+$file.printf("int8_t g_osc_freq_detune_table[] = {\n  ")
+(NOTE_NUMBER_MIN..NOTE_NUMBER_MAX).each do |note_number|
+  freq = (Math.log(freq_from_note_number_m8(note_number, true).to_f /
+                   freq_from_note_number(note_number, true).to_f) * (256 * 12)).round.to_i
+
+  $file.printf("%+4d,", freq)
   if note_number == DATA_BYTE_MAX
     $file.printf("\n")
   elsif note_number % 12 == (12 - 1)
