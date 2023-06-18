@@ -11,18 +11,18 @@ const uint8_t   NOTE_NUMBER_INVALID = 255;
 
 const uint8_t   PROGRAM_NUMBER_MAX           = 15;
 
-const uint8_t   OSC_CONTROL_INTERVAL_BITS    = 1;
+const int8_t    OSC_CONTROL_INTERVAL_BITS    = 1;
 const uint8_t   OSC_CONTROL_INTERVAL         = 0x01 << OSC_CONTROL_INTERVAL_BITS;
-const uint8_t   OSC_PHASE_RESOLUTION_BITS    = 24;
-const uint8_t   OSC_TUNE_TABLE_STEPS_BITS    = 8;
-const uint8_t   OSC_TUNE_DENOMINATOR_BITS    = 15;
+const int8_t    OSC_PHASE_RESOLUTION_BITS    = 24;
+const int8_t    OSC_TUNE_TABLE_STEPS_BITS    = 8;
+const int8_t    OSC_TUNE_DENOMINATOR_BITS    = 15;
 const uint8_t   OSC_WAVE_TABLE_AMPLITUDE     = 96;
-const uint8_t   OSC_WAVE_TABLE_SAMPLES_BITS  = 9;
-const uint8_t   OSC_DETUNE_MUL_NUM_BITS      = 4;
-const uint16_t  OSC_DETUNE_FREQ_MAX          = 43;
-const uint8_t   FILTER_CONTROL_INTERVAL_BITS = 3;
+const int8_t    OSC_WAVE_TABLE_SAMPLES_BITS  = 9;
+const int8_t    OSC_DETUNE_MUL_NUM_BITS      = 4;
+const uint16_t  OSC_DETUNE_FREQ_MAX          = 43 << 8;
+const int8_t    FILTER_CONTROL_INTERVAL_BITS = 3;
 const uint8_t   FILTER_CONTROL_INTERVAL      = 0x01 << FILTER_CONTROL_INTERVAL_BITS;
-const uint8_t   FILTER_TABLE_FRACTION_BITS   = 14;
+const int8_t    FILTER_TABLE_FRACTION_BITS   = 14;
 const uint8_t   EG_CONTROL_INTERVAL          = 0x10;
 const uint32_t  EG_LEVEL_MAX                 = 0x40000000;
 const uint32_t  EG_LEVEL_MAX_X_1_5           = EG_LEVEL_MAX + (EG_LEVEL_MAX >> 1);
