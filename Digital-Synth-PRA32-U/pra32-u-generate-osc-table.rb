@@ -32,15 +32,30 @@ $file.printf("uint32_t g_osc_freq_table[] = {\n  ")
 end
 $file.printf("};\n\n")
 
-def freq_from_note_number_m8(note_number, pr = false)
+SAMPLING_RATE_31250 = 31250
+
+def freq_from_note_number_sr31250(note_number, pr = false)
   cent = (note_number * 100.0) - 6900.0
   hz = A4_FREQ * (2.0 ** (cent / 1200.0))
-  bit = (SAMPLING_RATE.to_f / (1 << (OSC_PHASE_RESOLUTION_BITS - 8))) * ((0x100.to_f - 0xF0) / 0xFF)
+  bit = (SAMPLING_RATE_31250.to_f / (1 << OSC_PHASE_RESOLUTION_BITS)) * ((0x100.to_f - 0xF0) / 0xFF)
+  hz -= bit  # Correct bit = (m_rnd >= 0xF0) in "osc.h"
+  freq = (hz * (1 << OSC_PHASE_RESOLUTION_BITS) / SAMPLING_RATE_31250).floor.to_i
+  freq = freq + 1 if freq.even?
+  if pr
+    printf("[0]%3d, %+f, %d\n",note_number, 1.0 - freq.to_f * SAMPLING_RATE_31250 / (hz * (1 << OSC_PHASE_RESOLUTION_BITS)), freq)
+  end
+  return freq
+end
+
+def freq_from_note_number_sr31250_m8(note_number, pr = false)
+  cent = (note_number * 100.0) - 6900.0
+  hz = A4_FREQ * (2.0 ** (cent / 1200.0))
+  bit = (SAMPLING_RATE_31250.to_f / (1 << (OSC_PHASE_RESOLUTION_BITS - 8))) * ((0x100.to_f - 0xF0) / 0xFF)
   hz -= bit  # Correct bit = (m_rnd >= 0xF0) in "osc.h"
   if note_number < NOTE_NUMBER_MIN + 12
-    freq = (hz * (1 << (OSC_PHASE_RESOLUTION_BITS - 8)) / SAMPLING_RATE).round.to_i
+    freq = (hz * (1 << (OSC_PHASE_RESOLUTION_BITS - 8)) / SAMPLING_RATE_31250).round.to_i
   else
-    freq = (hz * (1 << (OSC_PHASE_RESOLUTION_BITS - 8)) / SAMPLING_RATE).floor.to_i
+    freq = (hz * (1 << (OSC_PHASE_RESOLUTION_BITS - 8)) / SAMPLING_RATE_31250).floor.to_i
     freq = freq + 1 if freq.even?
   end
   if pr
@@ -51,8 +66,8 @@ end
 
 $file.printf("int8_t g_osc_freq_detune_table[] = {\n  ")
 (NOTE_NUMBER_MIN..NOTE_NUMBER_MAX).each do |note_number|
-  freq = (Math.log(freq_from_note_number_m8(note_number, true).to_f /
-                   freq_from_note_number(note_number, true).to_f) * (256 * 12)).round.to_i
+  freq = (Math.log(freq_from_note_number_sr31250_m8(note_number, true).to_f /
+                   freq_from_note_number_sr31250(note_number, true).to_f) * (256 * 12)).round.to_i
 
   $file.printf("%+4d,", freq)
   if note_number == DATA_BYTE_MAX
@@ -125,7 +140,6 @@ def last_harmonic(freq, organ = false, organ_last)
   last = (freq != 0) ? ((FREQUENCY_MAX * (1 << OSC_PHASE_RESOLUTION_BITS)) /
                         (((freq * OSC_DETUNE_CORRECRION / 1000) + OSC_DETUNE_FREQ_MAX) * SAMPLING_RATE)) : 0
   last = organ_last if organ && last > organ_last
-  last = 11 if last == 12
   last = 9 if last == 10
   last = 7 if last == 8
   last = 5 if last == 6

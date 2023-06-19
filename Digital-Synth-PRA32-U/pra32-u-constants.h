@@ -2,8 +2,8 @@
 
 const double    A4_FREQ = 440.0;
 
-const uint16_t  SAMPLING_RATE       = 31250;
-const uint16_t  FREQUENCY_MAX       = 15000;
+const uint32_t  SAMPLING_RATE       = 48000;
+const uint32_t  FREQUENCY_MAX       = 22000;
 const uint8_t   BIT_DEPTH           = 8;
 const uint8_t   NOTE_NUMBER_MIN     = 12;
 const uint8_t   NOTE_NUMBER_MAX     = 108;
@@ -19,7 +19,7 @@ const int8_t    OSC_TUNE_DENOMINATOR_BITS    = 15;
 const uint8_t   OSC_WAVE_TABLE_AMPLITUDE     = 96;
 const int8_t    OSC_WAVE_TABLE_SAMPLES_BITS  = 9;
 const int8_t    OSC_DETUNE_MUL_NUM_BITS      = 4;
-const uint16_t  OSC_DETUNE_FREQ_MAX          = 43 << 8;
+const uint16_t  OSC_DETUNE_FREQ_MAX          = (SAMPLING_RATE / 726) << 8;
 const int8_t    FILTER_CONTROL_INTERVAL_BITS = 3;
 const uint8_t   FILTER_CONTROL_INTERVAL      = 0x01 << FILTER_CONTROL_INTERVAL_BITS;
 const int8_t    FILTER_TABLE_FRACTION_BITS   = 14;

@@ -3,11 +3,12 @@
  *
  * - An I2S DAC hardware (e.g. Pico Audio Pack) is required
  * - Raspberry Pi Pico/RP2040 core version 3.2.0 is recommended
+ * - Select CPU Speed: "120 MHz" in the Arduino IDE "Tools" menu
  */
 
 #define DEBUG_PRINT
 
-#define USE_USB_MIDI      // Select USB Stack "Adafruit TinuUSB" in the Arduino IDE "Tools" menu
+#define USE_USB_MIDI      // Select USB Stack: "Adafruit TinuUSB" in the Arduino IDE "Tools" menu
 //#define USE_SERIAL1_MIDI
 
 #define SERIAL1_MIDI_SPEED           (31250)
@@ -93,7 +94,7 @@ void __not_in_flash_func(setup1)() {
 
 #if defined(DEBUG_PRINT)
 #if defined(USE_SERIAL1_MIDI)
-  Serial.begin(0);  // Select USB Stack "Pico SDK" in the Arduino IDE "Tools" menu
+  Serial.begin(0);  // Select USB Stack: "Pico SDK" in the Arduino IDE "Tools" menu
 #else
   Serial1.begin(115200);
 #endif
