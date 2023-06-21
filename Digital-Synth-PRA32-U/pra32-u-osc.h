@@ -364,15 +364,7 @@ public:
         result += wave_3 * m_osc_gain_effective[3];
       } else {
         // Sub Osc (wave_1)
-        if (m_phase[0] < m_freq[0]) {
-          m_phase_high ^= 1;
-        }
-        m_phase[1] = m_phase[0] >> 1;
-        if (m_phase_high) {
-          m_phase[1] += 0x8000;
-        }
-
-        int16_t wave_1 = static_cast<uint16_t>(m_phase[1] >> 9);
+        int16_t wave_1 = static_cast<uint16_t>(m_phase[0] >> 9);
         if (wave_1 < -(64 << 8)) {
           wave_1 = -(64 << 8) - (wave_1 + (64 << 8));
         } else if (wave_1 < (64 << 8)) {
