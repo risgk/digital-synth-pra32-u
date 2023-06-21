@@ -358,22 +358,22 @@ public:
       result += wave_3 * m_osc_gain_effective[3];
     } else {
       if (m_waveform[0] == WAVEFORM_1_PULSE) {
-        // For Shaped Saw Wave or Pulse Wave (wave_3)
+        // For Pulse Wave (wave_3)
         m_phase[3] = m_phase[0] + (m_osc1_shape << 8); // todo
         int16_t wave_3 = get_wave_level(m_wave_table[0], m_phase[3] >> 8);
         result += wave_3 * m_osc_gain_effective[3];
-      } else {
-        // Sub Osc (wave_1)
-        int16_t wave_1 = static_cast<uint16_t>(m_phase[0] >> 9);
-        if (wave_1 < -(64 << 8)) {
-          wave_1 = -(64 << 8) - (wave_1 + (64 << 8));
-        } else if (wave_1 < (64 << 8)) {
-          // do nothing
-        } else {
-          wave_1 = (64 << 8) - (wave_1 - (64 << 8));
-        }
-        result += wave_1 * (m_osc_gain_effective[1] << 1);
       }
+
+      // Sub Osc (wave_1)
+      int16_t wave_1 = static_cast<uint16_t>(m_phase[0] >> 9);
+      if (wave_1 < -(64 << 8)) {
+        wave_1 = -(64 << 8) - (wave_1 + (64 << 8));
+      } else if (wave_1 < (64 << 8)) {
+        // do nothing
+      } else {
+        wave_1 = (64 << 8) - (wave_1 - (64 << 8));
+      }
+      result += wave_1 * (m_osc_gain_effective[1] << 1);
 
       if (m_waveform[1] != WAVEFORM_2_NOISE) {
         m_phase[2] += m_freq[2];
