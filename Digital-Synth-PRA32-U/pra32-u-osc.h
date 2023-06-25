@@ -136,7 +136,7 @@ public:
     m_freq_temp[1] = g_osc_freq_table[0];
     m_freq_temp[2] = g_osc_freq_table[0];
     m_freq_temp[3] = g_osc_freq_table[0];
-    m_osc_level = 48;
+    m_osc_level = 40;
 
     m_osc1_shape = 0x8000;
     for (uint8_t i = 0; i < OSC_MIX_TABLE_LENGTH; ++i) {
@@ -183,14 +183,6 @@ public:
   INLINE void set_mixer_sub_osc_control(uint8_t controller_value) {
     m_mixer_sub_osc_control = (((controller_value + 1) >> 1) *
                               static_cast<uint8_t>(OSC_WAVE_TABLE_AMPLITUDE << 1)) >> 8;
-  }
-
-  INLINE void set_osc_level(uint8_t controller_value) {
-    if (controller_value < 10) {
-      m_osc_level = 4;
-    } else {
-      m_osc_level = ((controller_value - 1) >> 1);
-    }
   }
 
   template <uint8_t N>
