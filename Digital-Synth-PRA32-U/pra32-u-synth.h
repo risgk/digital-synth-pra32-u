@@ -19,7 +19,7 @@ class PRA32_U_Synth {
   PRA32_U_EG       m_eg[2];
   PRA32_U_ChorusFx m_chorus_fx;
 
-  uint8_t          m_count;
+  uint32_t         m_count;
 
   uint8_t          m_note_queue[4];
   uint8_t          m_note_on_number[4];
@@ -690,24 +690,23 @@ public:
     int16_t noise_int15 = m_noise_gen.process();
 
     m_lfo.process_at_low_rate(m_count, noise_int15);
+    int16_t lfo_output = m_lfo.get_output();
+    int16_t eg_output_0 = m_eg[0].get_output();
 
-    switch (m_count & 0x03) {
+    switch (m_count & (0x04 - 1)) {
     case 0x0:
-      m_chorus_fx.process_at_low_rate();
+      m_osc.process_at_low_rate(m_count >> 2, noise_int15, lfo_output, eg_output_0);
       break;
     case 0x1:
       m_eg[0].process_at_low_rate();
       break;
     case 0x2:
-      break;
-    case 0x3:
       m_eg[1].process_at_low_rate();
       break;
+    case 0x3:
+      m_chorus_fx.process_at_low_rate();
+      break;
     }
-
-    int16_t lfo_output = m_lfo.get_output();
-    int16_t eg_output_0 = m_eg[0].get_output();
-    m_osc.process_at_low_rate(m_count, noise_int15, lfo_output, eg_output_0);
 
     int16_t eg_output_1 = m_eg[1].get_output();
     m_amp.process_at_low_rate(eg_output_1);

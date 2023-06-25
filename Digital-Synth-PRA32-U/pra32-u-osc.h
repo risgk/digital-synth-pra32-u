@@ -31,7 +31,7 @@ class PRA32_U_Osc {
   const int16_t* m_wave_table[4];
   const int16_t* m_wave_table_temp[4];
   uint32_t       m_freq[4];
-  uint32_t       m_freq_temp[4];
+  uint32_t       m_freq_offset[4];
   uint32_t       m_phase[4];
   boolean        m_osc_on[4];
   boolean        m_osc_on_temp[4];
@@ -71,7 +71,7 @@ public:
   , m_wave_table()
   , m_wave_table_temp()
   , m_freq()
-  , m_freq_temp()
+  , m_freq_offset()
   , m_phase()
   , m_osc_on()
   , m_osc_on_temp()
@@ -132,10 +132,10 @@ public:
     m_freq[1] = g_osc_freq_table[0];
     m_freq[2] = g_osc_freq_table[0];
     m_freq[3] = g_osc_freq_table[0];
-    m_freq_temp[0] = g_osc_freq_table[0];
-    m_freq_temp[1] = g_osc_freq_table[0];
-    m_freq_temp[2] = g_osc_freq_table[0];
-    m_freq_temp[3] = g_osc_freq_table[0];
+    m_freq_offset[0] = 0;
+    m_freq_offset[1] = 0;
+    m_freq_offset[2] = 0;
+    m_freq_offset[3] = 0;
     m_osc_level = 40;
 
     m_osc1_shape = 0x8000;
@@ -296,28 +296,32 @@ public:
   }
 
   INLINE void process_at_low_rate(uint8_t count, int16_t noise_int15, int16_t lfo_level, int16_t eg_level) {
-#if 1
-    if ((count & (OSC_CONTROL_INTERVAL - 1)) == 0) {
-      //printf("%d Osc\n", count);
-      switch ((count >> OSC_CONTROL_INTERVAL_BITS) & 0x1F) {
-      case 0x03: update_freq<0>(eg_level, noise_int15); break;
-      case 0x04: update_gate<0>();                      break;
-      case 0x0B: update_freq<1>(eg_level, noise_int15); break;
-      case 0x0C: update_gate<1>();                      break;
-      case 0x0F: update_mod(lfo_level, eg_level);       break;
-      case 0x13: update_freq<2>(eg_level, noise_int15); break;
-      case 0x14: update_gate<2>();                      break;
-      case 0x1B: update_freq<3>(eg_level, noise_int15); break;
-      case 0x1C: update_gate<3>();                      break;
-      }
+    switch (count & (0x08 - 1)) {
+    case 0: update_freq<0>(eg_level);
+            update_freq_offset<0>(noise_int15);
+            update_gate<0>();
+            break;
+    case 2: update_freq<1>(eg_level);
+            update_freq_offset<1>(noise_int15);
+            update_gate<1>();
+            break;
+    case 4: update_freq<2>(eg_level);
+            update_freq_offset<2>(noise_int15);
+            update_gate<2>();
+            break;
+    case 6: update_freq<3>(eg_level);
+            update_freq_offset<3>(noise_int15);
+            update_gate<3>();
+            break;
+    case 7: update_mod(lfo_level, eg_level);
+            break;
     }
-#endif
   }
 
   INLINE int16_t process(int16_t noise_int15) {
 #if 1
-    m_phase[0] += m_freq[0];
-    boolean new_period_0 = m_phase[0] < m_freq[0];
+    m_phase[0] += (m_freq[0] + m_freq_offset[0]);
+    boolean new_period_0 = m_phase[0] < (m_freq[0] + m_freq_offset[0]);
     m_wave_table[0] = reinterpret_cast<const int16_t*>((reinterpret_cast<const uintptr_t>(m_wave_table[0]) * (1 - new_period_0)));
     m_wave_table[0] = reinterpret_cast<const int16_t*>( reinterpret_cast<const uint8_t*>( m_wave_table[0]) +
                                                        (reinterpret_cast<const uintptr_t>(m_wave_table_temp[0]) * new_period_0));
@@ -325,24 +329,24 @@ public:
     int32_t result = wave_0 * m_osc_gain_effective[0];
 
     if (m_mono_mode == false) {
-      m_phase[1] += m_freq[1];
-      boolean new_period_1 = m_phase[1] < m_freq[1];
+      m_phase[1] += (m_freq[1] + m_freq_offset[1]);
+      boolean new_period_1 = m_phase[1] < (m_freq[1] + m_freq_offset[1]);
       m_wave_table[1] = reinterpret_cast<const int16_t*>((reinterpret_cast<const uintptr_t>(m_wave_table[1]) * (1 - new_period_1)));
       m_wave_table[1] = reinterpret_cast<const int16_t*>( reinterpret_cast<const uint8_t*>( m_wave_table[1]) +
                                                          (reinterpret_cast<const uintptr_t>(m_wave_table_temp[1]) * new_period_1));
       int16_t wave_1 = get_wave_level(m_wave_table[1], m_phase[1] >> 8);
       result += wave_1 * m_osc_gain_effective[1];
 
-      m_phase[2] += m_freq[2];
-      boolean new_period_2 = m_phase[2] < m_freq[2];
+      m_phase[2] += (m_freq[2] + m_freq_offset[2]);
+      boolean new_period_2 = m_phase[2] < (m_freq[2] + m_freq_offset[2]);
       m_wave_table[2] = reinterpret_cast<const int16_t*>((reinterpret_cast<const uintptr_t>(m_wave_table[2]) * (1 - new_period_2)));
       m_wave_table[2] = reinterpret_cast<const int16_t*>( reinterpret_cast<const uint8_t*>( m_wave_table[2]) +
                                                          (reinterpret_cast<const uintptr_t>(m_wave_table_temp[2]) * new_period_2));
       int16_t wave_2 = get_wave_level(m_wave_table[2], m_phase[2] >> 8);
       result += wave_2 * m_osc_gain_effective[2];
 
-      m_phase[3] += m_freq[3];
-      boolean new_period_3 = m_phase[3] < m_freq[3];
+      m_phase[3] += (m_freq[3] + m_freq_offset[3]);
+      boolean new_period_3 = m_phase[3] < (m_freq[3] + m_freq_offset[3]);
       m_wave_table[3] = reinterpret_cast<const int16_t*>((reinterpret_cast<const uintptr_t>(m_wave_table[3]) * (1 - new_period_3)));
       m_wave_table[3] = reinterpret_cast<const int16_t*>( reinterpret_cast<const uint8_t*>( m_wave_table[3]) +
                                                          (reinterpret_cast<const uintptr_t>(m_wave_table_temp[3]) * new_period_3));
@@ -368,8 +372,8 @@ public:
       result += wave_1 * (m_osc_gain_effective[1] << 1);
 
       if (m_waveform[1] != WAVEFORM_2_NOISE) {
-        m_phase[2] += m_freq[2];
-        boolean new_period_2 = m_phase[2] < m_freq[2];
+        m_phase[2] += (m_freq[2] + m_freq_offset[2]);
+        boolean new_period_2 = m_phase[2] < (m_freq[2] + m_freq_offset[2]);
         m_wave_table[2] = reinterpret_cast<const int16_t*>((reinterpret_cast<const uintptr_t>(m_wave_table[2]) * (1 - new_period_2)));
         m_wave_table[2] = reinterpret_cast<const int16_t*>( reinterpret_cast<const uint8_t*>( m_wave_table[2]) +
                                                            (reinterpret_cast<const uintptr_t>(m_wave_table_temp[2]) * new_period_2));
@@ -416,7 +420,7 @@ private:
   }
 
   template <uint8_t N>
-  INLINE void update_freq(int16_t eg_level, int16_t noise_int15) {
+  INLINE void update_freq(int16_t eg_level) {
     m_osc_on_temp[N] = m_osc_on[N];
 
     if (m_osc_on_temp[N]) {
@@ -463,7 +467,7 @@ private:
 
 
     coarse = high_byte(m_pitch_real[N]);
-    m_freq_temp[N] = g_osc_freq_table[coarse - NOTE_NUMBER_MIN];
+    m_freq[N] = g_osc_freq_table[coarse - NOTE_NUMBER_MIN];
     if ((N == 2) && m_mono_mode) {
       m_wave_table_temp[N] = get_wave_table(m_waveform[1], coarse);
     } else {
@@ -472,21 +476,15 @@ private:
 
 
     uint8_t fine = low_byte(m_pitch_real[N]);
-    int32_t freq_offset =
-      static_cast<int32_t>(m_freq_temp[N] * g_osc_tune_table[fine >> (8 - OSC_TUNE_TABLE_STEPS_BITS)]) >>
+    int32_t offset =
+      static_cast<int32_t>(m_freq[N] * g_osc_tune_table[fine >> (8 - OSC_TUNE_TABLE_STEPS_BITS)]) >>
       OSC_TUNE_DENOMINATOR_BITS;
-    m_freq_temp[N] += freq_offset;
+    m_freq[N] += offset;
+  }
 
-    uint16_t bit = (noise_int15 >= 14336) << 8; // todo
-    uint16_t mono_offset = 0;
-    if (N == 2) {
-      if (m_mono_mode) {
-        if (m_freq_temp[0] == m_freq_temp[2]) {
-          mono_offset = 1 << 8; // todo
-        }
-      }
-    }
-    m_freq[N] = m_freq_temp[N] + bit + mono_offset;
+  template <uint8_t N>
+  INLINE void update_freq_offset(int16_t noise_int15) {
+    m_freq_offset[N] = (noise_int15 >= 14336) << 8;
   }
 
   template <uint8_t N>
