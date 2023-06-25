@@ -265,7 +265,7 @@ public:
 
   template <uint8_t N>
   INLINE void note_on(uint8_t note_number) {
-    m_pitch_target[N] = note_number << 8;
+    m_pitch_target[N] = (note_number << 8) + g_osc_freq_detune_table[note_number - NOTE_NUMBER_MIN];
     m_osc_on[N] = true;
   }
 
