@@ -142,7 +142,7 @@ public:
     m_freq_offset[1] = 0;
     m_freq_offset[2] = 0;
     m_freq_offset[3] = 0;
-    m_osc_level = 40;
+    m_osc_level = 32;
 
     m_osc1_shape = 0x8000;
     for (uint8_t i = 0; i < OSC_MIX_TABLE_LENGTH; ++i) {
@@ -303,24 +303,24 @@ public:
 
   INLINE void process_at_low_rate(uint8_t count, int16_t noise_int15, int16_t lfo_level, int16_t eg_level) {
     switch (count & (0x08 - 1)) {
-    case 0: update_freq_base<0>(eg_level);
-            update_freq_offset<0>(noise_int15);
-            update_gate<0>();
-            break;
-    case 2: update_freq_base<1>(eg_level);
-            update_freq_offset<1>(noise_int15);
-            update_gate<1>();
-            break;
-    case 4: update_freq_base<2>(eg_level);
-            update_freq_offset<2>(noise_int15);
-            update_gate<2>();
-            break;
-    case 6: update_freq_base<3>(eg_level);
-            update_freq_offset<3>(noise_int15);
-            update_gate<3>();
-            break;
-    case 7: update_mod(lfo_level, eg_level);
-            break;
+    case 0x00: update_freq_base<0>(eg_level);
+               update_freq_offset<0>(noise_int15);
+               update_gate<0>();
+               break;
+    case 0x02: update_freq_base<1>(eg_level);
+               update_freq_offset<1>(noise_int15);
+               update_gate<1>();
+               break;
+    case 0x04: update_freq_base<2>(eg_level);
+               update_freq_offset<2>(noise_int15);
+               update_gate<2>();
+               break;
+    case 0x06: update_freq_base<3>(eg_level);
+               update_freq_offset<3>(noise_int15);
+               update_gate<3>();
+               break;
+    case 0x07: update_mod(lfo_level, eg_level);
+               break;
     }
   }
 
