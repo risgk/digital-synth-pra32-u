@@ -18,7 +18,6 @@ class PRA32_U_Osc {
 
   uint8_t        m_portamento_coef[4];
   int8_t         m_pitch_eg_amt[2];
-  int16_t        m_lfo_mod_level[2];
   int8_t         m_pitch_lfo_amt[2];
 
   uint8_t        m_waveform[2];
@@ -35,7 +34,6 @@ class PRA32_U_Osc {
   uint32_t       m_freq_offset[4];
   uint32_t       m_phase[4];
   boolean        m_osc_on[4];
-  boolean        m_osc_on_temp[4];
   int8_t         m_osc_gain_effective[4];
   int8_t         m_osc_gain[4];
   int8_t         m_osc_level;
@@ -59,7 +57,6 @@ public:
   PRA32_U_Osc()
   : m_portamento_coef()
   , m_pitch_eg_amt()
-  , m_lfo_mod_level()
   , m_pitch_lfo_amt()
 
   , m_waveform()
@@ -76,7 +73,6 @@ public:
   , m_freq_offset()
   , m_phase()
   , m_osc_on()
-  , m_osc_on_temp()
   , m_osc_gain_effective()
   , m_osc_gain()
   , m_osc_level()
@@ -302,30 +298,29 @@ public:
   }
 
   INLINE void process_at_low_rate(uint8_t count, int16_t noise_int15, int16_t lfo_level, int16_t eg_level) {
+    update_osc1_shape(lfo_level, eg_level);
+
+    update_freq_base<0>(lfo_level, eg_level);
+    update_freq_base<1>(lfo_level, eg_level);
+    update_freq_base<2>(lfo_level, eg_level);
+    update_freq_base<3>(lfo_level, eg_level);
+
     switch (count & (0x08 - 1)) {
-    case 0x00: update_freq_base<0>(eg_level);
+    case 0x00: update_pitch_current<0>();
                update_freq_offset<0>(noise_int15);
                update_gate<0>();
                break;
-    case 0x01: update_mod(lfo_level, eg_level);
-               break;
-    case 0x02: update_freq_base<1>(eg_level);
+    case 0x02: update_pitch_current<1>();
                update_freq_offset<1>(noise_int15);
                update_gate<1>();
                break;
-    case 0x03: update_mod(lfo_level, eg_level);
-               break;
-    case 0x04: update_freq_base<2>(eg_level);
+    case 0x04: update_pitch_current<2>();
                update_freq_offset<2>(noise_int15);
                update_gate<2>();
                break;
-    case 0x05: update_mod(lfo_level, eg_level);
-               break;
-    case 0x06: update_freq_base<3>(eg_level);
+    case 0x06: update_pitch_current<3>();
                update_freq_offset<3>(noise_int15);
                update_gate<3>();
-               break;
-    case 0x07: update_mod(lfo_level, eg_level);
                break;
     }
   }
@@ -432,18 +427,19 @@ private:
   }
 
   template <uint8_t N>
-  INLINE void update_freq_base(int16_t eg_level) {
-    m_osc_on_temp[N] = m_osc_on[N];
-
-    if (m_osc_on_temp[N]) {
+  INLINE void update_pitch_current() {
+    if (m_osc_on[N]) {
+      // todo
       if ((m_portamento_coef[N] == PORTAMENTO_COEF_OFF) || (m_pitch_current[N] <= m_pitch_target[N])) {
         m_pitch_current[N] = m_pitch_target[N]  - (((m_pitch_target[N] - m_pitch_current[N]) *        m_portamento_coef[N] ) >> 8);
       } else {
         m_pitch_current[N] = m_pitch_current[N] + (((m_pitch_target[N] - m_pitch_current[N]) * (256 - m_portamento_coef[N])) >> 8);
       }
     }
+  }
 
-
+  template <uint8_t N>
+  INLINE void update_freq_base(int16_t lfo_level, int16_t eg_level) {
     int8_t pitch_eg_amt;
     if ((N == 2) && m_mono_mode) {
       pitch_eg_amt = m_pitch_eg_amt[1];
@@ -460,10 +456,10 @@ private:
     }
 
     if (m_mono_mode && (N == 2)) {
-      m_pitch_real[N] += m_lfo_mod_level[1];
+      m_pitch_real[N] += (lfo_level * m_pitch_lfo_amt[1]) >> 7;
       m_pitch_real[N] += (m_mono_osc2_pitch << 8) + m_mono_osc2_detune + m_mono_osc2_detune;
     } else {
-      m_pitch_real[N] += m_lfo_mod_level[0];
+      m_pitch_real[N] += (lfo_level * m_pitch_lfo_amt[0]) >> 7;
     }
 
     coarse = high_byte(m_pitch_real[N]);
@@ -504,7 +500,7 @@ private:
   template <uint8_t N>
   INLINE void update_gate() {
     if (m_mono_mode == false) {
-      if (m_osc_on_temp[N]) {
+      if (m_osc_on[N]) {
         const int8_t half_level = (m_osc_level >> 1) + 1;
 
         if (m_osc_gain[N] >= (m_osc_level - half_level)) {
@@ -538,15 +534,11 @@ private:
     }
   }
 
-  INLINE void update_mod(int16_t lfo_level, int16_t eg_level) {
-    m_lfo_mod_level[0] = (lfo_level * m_pitch_lfo_amt[0]) >> 7;
-    m_lfo_mod_level[1] = (lfo_level * m_pitch_lfo_amt[1]) >> 7;
-
+  INLINE void update_osc1_shape(int16_t lfo_level, int16_t eg_level) {
     m_osc1_shape_control_effective += (m_osc1_shape_control_effective < m_osc1_shape_control) << 1; // todo
-    uint16_t shape_eg_mod  = (eg_level * m_shape_eg_amt) >> 6;
-    uint16_t shape_lfo_mod = -((lfo_level * m_shape_lfo_amt) >> 3);
-    m_osc1_shape = 0x8000u - (m_osc1_shape_control_effective << 8) +
-      + shape_eg_mod + shape_eg_mod + shape_lfo_mod;
+
+    m_osc1_shape = 0x8000u - (m_osc1_shape_control_effective << 8)
+                   + ((eg_level * m_shape_eg_amt) >> 5) - ((lfo_level * m_shape_lfo_amt) >> 3);
   }
 
   INLINE void update_pitch_bend() {
