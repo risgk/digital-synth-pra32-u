@@ -307,13 +307,19 @@ public:
                update_freq_offset<0>(noise_int15);
                update_gate<0>();
                break;
+    case 0x01: update_mod(lfo_level, eg_level);
+               break;
     case 0x02: update_freq_base<1>(eg_level);
                update_freq_offset<1>(noise_int15);
                update_gate<1>();
                break;
+    case 0x03: update_mod(lfo_level, eg_level);
+               break;
     case 0x04: update_freq_base<2>(eg_level);
                update_freq_offset<2>(noise_int15);
                update_gate<2>();
+               break;
+    case 0x05: update_mod(lfo_level, eg_level);
                break;
     case 0x06: update_freq_base<3>(eg_level);
                update_freq_offset<3>(noise_int15);
@@ -534,19 +540,13 @@ private:
 
   INLINE void update_mod(int16_t lfo_level, int16_t eg_level) {
     m_lfo_mod_level[0] = (lfo_level * m_pitch_lfo_amt[0]) >> 7;
+    m_lfo_mod_level[1] = (lfo_level * m_pitch_lfo_amt[1]) >> 7;
 
-    if (m_mono_mode) {
-      m_osc1_shape_control_effective += (m_osc1_shape_control_effective < m_osc1_shape_control) << 1;
-      m_osc1_shape_control_effective -= (m_osc1_shape_control_effective > m_osc1_shape_control) << 1;
-
-      m_lfo_mod_level[1] = ((lfo_level * m_pitch_lfo_amt[1])) >> 7;
-      uint16_t shape_eg_mod  = (eg_level * m_shape_eg_amt) >> 6;
-      uint16_t shape_lfo_mod = -((lfo_level * m_shape_lfo_amt) >> 3);
-      m_osc1_shape = 0x8000u - (m_osc1_shape_control_effective << 8) +
-        + shape_eg_mod + shape_eg_mod + shape_lfo_mod;
-    } else {
-      m_lfo_mod_level[1] = m_lfo_mod_level[0];
-    }
+    m_osc1_shape_control_effective += (m_osc1_shape_control_effective < m_osc1_shape_control) << 1; // todo
+    uint16_t shape_eg_mod  = (eg_level * m_shape_eg_amt) >> 6;
+    uint16_t shape_lfo_mod = -((lfo_level * m_shape_lfo_amt) >> 3);
+    m_osc1_shape = 0x8000u - (m_osc1_shape_control_effective << 8) +
+      + shape_eg_mod + shape_eg_mod + shape_lfo_mod;
   }
 
   INLINE void update_pitch_bend() {

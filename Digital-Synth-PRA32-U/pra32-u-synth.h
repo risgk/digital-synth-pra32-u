@@ -689,21 +689,32 @@ public:
 
     int16_t noise_int15 = m_noise_gen.process();
 
-    m_lfo.process_at_low_rate(m_count, noise_int15);
+    switch (m_count & (0x04 - 1)) {
+    case 0x00:
+      break;
+    case 0x01:
+      break;
+    case 0x02:
+      break;
+    case 0x03:
+      m_lfo.process_at_low_rate(m_count >> 2, noise_int15);
+      break;
+    }
+
     int16_t lfo_output = m_lfo.get_output();
     int16_t eg_output_0 = m_eg[0].get_output();
 
     switch (m_count & (0x04 - 1)) {
-    case 0x0:
+    case 0x00:
       m_osc.process_at_low_rate(m_count >> 2, noise_int15, lfo_output, eg_output_0);
       break;
-    case 0x1:
+    case 0x01:
       m_eg[0].process_at_low_rate();
       break;
-    case 0x2:
+    case 0x02:
       m_eg[1].process_at_low_rate();
       break;
-    case 0x3:
+    case 0x03:
       m_chorus_fx.process_at_low_rate();
       break;
     }

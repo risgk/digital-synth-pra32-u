@@ -10,15 +10,14 @@ class PRA32_U_LFO {
   static const uint8_t LFO_WAVEFORM_RANDOM    = 3;
   static const uint8_t LFO_WAVEFORM_SQUARE    = 4;
 
-  static const uint8_t LFO_FADE_COEF_OFF      = 1;
-  static const uint8_t LFO_FADE_COEF_ON_MIN   = 2;
+  static const uint8_t LFO_FADE_COEF_OFF      = 1 << 4;
 
   static const uint8_t LFO_FADE_LEVEL_MAX     = 128;
 
-  uint16_t m_lfo_phase;
+  uint32_t m_lfo_phase;
   int16_t  m_lfo_wave_level;
   int16_t  m_lfo_level;
-  uint16_t m_lfo_rate;
+  uint32_t m_lfo_rate;
   uint8_t  m_lfo_depth[2];
   uint8_t  m_lfo_waveform;
   uint8_t  m_lfo_fade_coef;
@@ -75,15 +74,15 @@ public:
   }
 
   INLINE void set_lfo_fade_time(uint8_t controller_value) {
-    m_lfo_fade_coef = high_byte(controller_value * controller_value) + LFO_FADE_COEF_OFF;
+    m_lfo_fade_coef = ((controller_value * controller_value) >> 4) + LFO_FADE_COEF_OFF;
   }
 
   INLINE void trigger_lfo() {
     if (m_lfo_waveform != LFO_WAVEFORM_TRI_ASYNC) {
-      m_lfo_phase = 0xFFFF;
+      m_lfo_phase = 0x00FFFFFF;
     }
 
-    if (m_lfo_fade_coef >= LFO_FADE_COEF_ON_MIN) {
+    if (m_lfo_fade_coef > LFO_FADE_COEF_OFF) {
       m_lfo_fade_level = 0;
     }
   }
@@ -93,27 +92,18 @@ public:
   }
 
   INLINE void process_at_low_rate(uint8_t count, int16_t noise_int15) {
-      m_noise_int15 = noise_int15;
-
-#if 1
-    if ((count & (OSC_CONTROL_INTERVAL - 1)) == 0) {
-      //printf("%d LFO\n", count);
-      switch ((count >> OSC_CONTROL_INTERVAL_BITS) & 0x1F) {
-      case 0x0E: update_lfo_2nd();
-                 update_lfo_3rd();             break;
-      }
-    }
-#endif
+    m_noise_int15 = noise_int15;
+    update_lfo_level();
   }
 
 private:
-  INLINE int16_t get_lfo_wave_level(uint16_t phase) {
+  INLINE int16_t get_lfo_wave_level(uint32_t phase) {
     int16_t level = 0;
 
     switch (m_lfo_waveform) {
     case LFO_WAVEFORM_TRI_ASYNC:
     case LFO_WAVEFORM_TRI_SYNC:
-      level = static_cast<int16_t>(phase) >> 1;
+      level = static_cast<int16_t>(phase >> 8) >> 1;
       if (level < -(64 << 7)) {
         level = -(64 << 7) - (level + (64 << 7));
       } else if (level < (64 << 7)) {
@@ -124,7 +114,7 @@ private:
       break;
     case LFO_WAVEFORM_SAW_DOWN:
       {
-        level = (64 << 7) - (phase >> 2);
+        level = (64 << 7) - ((phase >> 8) >> 2);
       }
       break;
     case LFO_WAVEFORM_RANDOM:
@@ -134,7 +124,7 @@ private:
       level = m_sampled_noise_int15 >> 1;
       break;
     case LFO_WAVEFORM_SQUARE:
-      if (phase < 0x8000) {
+      if (phase < 0x008000) {
         level = 128 << 7;
       } else {
         level = 0;
@@ -145,7 +135,7 @@ private:
     return level;
   }
 
-  INLINE void update_lfo_2nd() {
+  INLINE void update_lfo_level() {
     --m_lfo_fade_cnt;
     if (m_lfo_fade_cnt == 0) {
       m_lfo_fade_cnt = m_lfo_fade_coef;
@@ -155,10 +145,10 @@ private:
     }
 
     m_lfo_phase += m_lfo_rate;
+    m_lfo_phase &= 0x00FFFFFF;
     m_lfo_wave_level = get_lfo_wave_level(m_lfo_phase);
-  }
 
-  INLINE void update_lfo_3rd() {
+
     uint8_t lfo_depth = high_byte((m_lfo_depth[0] << 1) * m_lfo_fade_level) + m_lfo_depth[1];
     if (lfo_depth > 64) {
       lfo_depth = 64;
