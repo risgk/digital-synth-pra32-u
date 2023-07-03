@@ -24,8 +24,8 @@ const int8_t    FILTER_CONTROL_INTERVAL_BITS = 3;
 const uint8_t   FILTER_CONTROL_INTERVAL      = 0x01 << FILTER_CONTROL_INTERVAL_BITS;
 const int8_t    FILTER_TABLE_FRACTION_BITS   = 28;
 const uint8_t   EG_CONTROL_INTERVAL          = 0x10;
-const uint32_t  EG_LEVEL_MAX                 = 0x40000000;
-const uint32_t  EG_LEVEL_MAX_X_1_5           = EG_LEVEL_MAX + (EG_LEVEL_MAX >> 1);
+const int32_t   EG_LEVEL_MAX                 = 0x40000000;
+const int32_t   EG_LEVEL_MAX_X_1_5           = EG_LEVEL_MAX + (EG_LEVEL_MAX >> 1);
 
 const uint8_t   DATA_BYTE_MAX         = 0x7F;
 const uint8_t   STATUS_BYTE_INVALID   = 0x7F;

@@ -13,12 +13,12 @@ class PRA32_U_EG {
   static const uint8_t STATE_IDLE    = 2;
 
   uint8_t  m_state;
-  uint32_t m_level;
+  int32_t  m_level;
   int16_t  m_level_out;
-  int16_t  m_attack_coef;
-  int16_t  m_decay_coef;
+  int32_t  m_attack_coef;
+  int32_t  m_decay_coef;
   uint32_t m_sustain;
-  int16_t  m_release_coef;
+  int32_t  m_release_coef;
 
 public:
   PRA32_U_EG()
@@ -71,7 +71,7 @@ public:
 #if 1
     switch (m_state) {
     case STATE_ATTACK:
-      m_level = EG_LEVEL_MAX_X_1_5 - mul_u32_u16_h32((EG_LEVEL_MAX_X_1_5 - m_level) << 1, m_attack_coef);
+      m_level = EG_LEVEL_MAX_X_1_5 - (mul_s32_s32_h32((EG_LEVEL_MAX_X_1_5 - m_level), m_attack_coef) << 2);
       if (m_level >= EG_LEVEL_MAX) {
         m_level = EG_LEVEL_MAX;
         m_state = STATE_SUSTAIN;
@@ -84,12 +84,12 @@ public:
         int32_t effective_sustain = m_sustain - m_level;
         effective_sustain = (effective_sustain < 0) * effective_sustain + m_level;
 
-        m_level = m_sustain + mul_u32_u16_h32((m_level - effective_sustain) << 1, m_decay_coef);
+        m_level = m_sustain + (mul_s32_s32_h32((m_level - effective_sustain), m_decay_coef) << 2);
       }
       break;
 
     case STATE_IDLE:
-      m_level = mul_u32_u16_h32(m_level << 1, m_release_coef);
+      m_level = mul_s32_s32_h32(m_level, m_release_coef) << 2;
       break;
     }
 
