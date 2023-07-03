@@ -46,3 +46,16 @@ static INLINE int32_t mul_u32_u16_h32(uint32_t x, uint16_t y) {
   uint32_t x0 = x & 0xFFFF;
   return (static_cast<uint32_t>(x0 * y) >> 16) + (x1 * y);
 }
+
+// refs https://web.archive.org/web/20190109010921/http://www.hackersdelight.org/hdcodetxt/mulhs.c.txt
+
+static INLINE int32_t mul_s32_s32_h32(int32_t x, int32_t y) {
+  int32_t  x1 = x >> 16;
+  uint32_t x0 = x & 0xFFFF;
+  int32_t  y1 = y >> 16;
+  uint32_t y0 = y & 0xFFFF;
+  int32_t  x0_y1 = x0 * y1;
+  int32_t  z = ((x0 * y0) >> 16) +
+                (x1 * y0) + (x0_y1 & 0xFFFF);
+  return (z >> 16) + (x0_y1 >> 16) + (x1 * y1);
+}

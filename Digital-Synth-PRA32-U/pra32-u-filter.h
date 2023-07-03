@@ -1,15 +1,15 @@
 #pragma once
 
-// refs http://www.musicdsp.org/files/Audio-EQ-Cookbook.txt
+// refs https://webaudio.github.io/Audio-EQ-Cookbook/Audio-EQ-Cookbook.txt
 
 #include "pra32-u-common.h"
 #include "pra32-u-filter-table.h"
 
 class PRA32_U_Filter {
-  const uint32_t* m_lpf_table;
-  uint32_t        m_b_2_over_a_0;
-  int16_t         m_a_1_over_a_0;
-  int16_t         m_a_2_over_a_0;
+  const int32_t*  m_lpf_table;
+  int32_t         m_b_2_over_a_0;
+  int32_t         m_a_1_over_a_0;
+  int32_t         m_a_2_over_a_0;
   int16_t         m_x_1;
   int16_t         m_x_2;
   int32_t         m_y_1;
@@ -131,10 +131,10 @@ public:
   INLINE int16_t process(int16_t audio_input) {
 #if 1
     int16_t x_0   = audio_input >> (16 - AUDIO_FRACTION_BITS);
-    int32_t tmp   = mul_u32_s16_h32(m_b_2_over_a_0, x_0 + (m_x_1 << 1) + m_x_2);
-    tmp          -= mul_s32_s16_h32(m_y_1, m_a_1_over_a_0) << 2;
-    tmp          -= mul_s32_s16_h32(m_y_2, m_a_2_over_a_0) << 1;
-    int32_t y_0   = tmp;
+    int16_t x_3   = x_0 + (m_x_1 << 1) + m_x_2;
+    int32_t y_0   = mul_s32_s16_h32(m_b_2_over_a_0,   x_3) << 4;
+    y_0          -= mul_s32_s32_h32(m_a_1_over_a_0, m_y_1) << 4;
+    y_0          -= mul_s32_s32_h32(m_a_2_over_a_0, m_y_2) << 4;
 
     m_x_2 = m_x_1;
     m_y_2 = m_y_1;
@@ -176,10 +176,9 @@ private:
   }
 
   INLINE void update_coefs_3rd() {
-    size_t index = m_cutoff_current << 1;
+    size_t index = m_cutoff_current * 3;
     m_b_2_over_a_0 = m_lpf_table[index + 0];
-    uint32_t tmp   = m_lpf_table[index + 1];
-    m_a_1_over_a_0 = static_cast<int16_t>(tmp >> 16);
-    m_a_2_over_a_0 = static_cast<int16_t>(tmp & 0xFFFF);
+    m_a_1_over_a_0 = m_lpf_table[index + 1];
+    m_a_2_over_a_0 = m_lpf_table[index + 2];
   }
 };
