@@ -132,9 +132,9 @@ public:
 #if 1
     int16_t x_0   = audio_input >> (16 - AUDIO_FRACTION_BITS);
     int16_t x_3   = x_0 + (m_x_1 << 1) + m_x_2;
-    int32_t y_0   = mul_s32_s16_h32(m_b_2_over_a_0,   x_3) << 4;
-    y_0          -= mul_s32_s32_h32(m_a_1_over_a_0, m_y_1) << 4;
-    y_0          -= mul_s32_s32_h32(m_a_2_over_a_0, m_y_2) << 4;
+    int32_t y_0   = mul_s32_s16_h32(m_b_2_over_a_0,   x_3) << 2;
+    y_0          -= mul_s32_s32_h32(m_a_1_over_a_0, m_y_1) << 2;
+    y_0          -= mul_s32_s32_h32(m_a_2_over_a_0, m_y_2) << 2;
 
     m_x_2 = m_x_1;
     m_y_2 = m_y_1;

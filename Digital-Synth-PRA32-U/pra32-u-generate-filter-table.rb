@@ -31,7 +31,7 @@ def generate_filter_lpf_table(res_idx, name, q)
 
     printf("i: %d, f_idx: %d, f_0_over_f_s: %f, f_0: %f, res_idx: %d, q: %f, g: %f, q_mul_g: %f\n", i, f_idx, f_0_over_f_s, f_0, res_idx, q, input_gain, q * input_gain)
 
-    $file.printf("%+10d, %+10d, %+10d,", b_2_over_a_0_gain, a_1_over_a_0, a_2_over_a_0)
+    $file.printf("%+11d, %+11d, %+11d,", b_2_over_a_0_gain, a_1_over_a_0, a_2_over_a_0)
     if i == DATA_BYTE_MAX * 2 + 1
       $file.printf("\n")
     elsif i % 2 == (2 - 1)
