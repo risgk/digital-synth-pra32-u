@@ -12,13 +12,13 @@ class PRA32_U_EG {
   static const uint8_t STATE_SUSTAIN = 1;
   static const uint8_t STATE_IDLE    = 2;
 
-  uint8_t  m_state;
-  int32_t  m_level;
-  int16_t  m_level_out;
-  int32_t  m_attack_coef;
-  int32_t  m_decay_coef;
-  uint32_t m_sustain;
-  int32_t  m_release_coef;
+  uint8_t m_state;
+  int32_t m_level;
+  int16_t m_level_out;
+  int32_t m_attack_coef;
+  int32_t m_decay_coef;
+  int32_t m_sustain;
+  int32_t m_release_coef;
 
 public:
   PRA32_U_EG()
