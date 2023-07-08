@@ -58,9 +58,10 @@
 #define I2S_SWAP_BCLK_AND_LRCLK_PINS (false)
 ```
 
+
 ## Files
 
-- `"digital-synth-pra32-u-0.1.1.uf2"` (in the directory `"bin"`) is a UF2 file for Pimoroni Pico Audio Pack
+- `"digital-synth-pra32-u-0.1.1-for-pimoroni-pico-audio-pack.uf2"` (in the directory `"bin"`) is a UF2 file for Pimoroni Pico Audio Pack
 - `"Digital-Synth-PRA32-U.ino"` is a Arduino sketch for Raspberry Pi Pico/RP2040 core
 - `"pra32-u-make-sample-wav-file.cc"` is for debugging on PC
     - GCC (g++) for PC is required
