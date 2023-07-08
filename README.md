@@ -1,4 +1,4 @@
-# Digital Synth PRA32-U v0.1.1
+# Digital Synth PRA32-U v0.1.2
 
 - 2023-05-09 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
@@ -13,7 +13,7 @@
     - Controlled by MIDI -- PRA32-U is a MIDI sound module
 - The sound of **PRA32-U v0.1** is very similar to that of **VRA8-U (type-16) v2.2**
     - <https://github.com/risgk/digital-synth-vra8-u>
-- An **I2S DAC** hardware (e.g. Pico Audio Pack) is required
+- An **I2S DAC** hardware (e.g. Pimoroni Pico Audio Pack and Pimoroni Pico VGA Demo Base) is required
     - **NOTE**: Large noise is generated during the sketch upload!
 - **Arduino IDE** and **Raspberry Pi Pico/RP2040** (by Earle F. Philhower, III) core are required
     - Additional Board Manager URL: <https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json>
@@ -22,29 +22,52 @@
 
 ## Change History
 
+- v0.1.2: Add I2S_DAC_MUTE_OFF_PIN and I2S_SWAP_BCLK_AND_LRCLK_PINS configurations
 - v0.1.1: Fix a bug where 0-velocity Note ON is not processed as Note OFF
 - v0.1.0: The first release
 
 
 ## Features
 
-- USB MIDI In
-    - **NOTE**: Select USB Stack "Adafruit TinuUSB" in the Arduino IDE "Tools" menu
-    - MIDI Device Name: "Pico"
-    - Serial MIDI (31.25 kbps or 38.4 kbps) can also be used instead of USB MIDI
-        - Comment out `#define USE_USB_MIDI` and uncomment out `//#define USE_SERIAL1_MIDI` in `"DigitalSynthPRA32U.ino"`
-- Audio Out
-    - I2S DAC (e.g. PCM5100A), Sampling Rate: 31.25 kHz, Bit Depth: 16 bit
-    - The default setting is for Pimoroni's [Pico Audio Pack](https://shop.pimoroni.com/products/pico-audio-pack)
-    - Modify `I2S_DATA_PIN` and `I2S_BCLK_PIN` in `"DigitalSynthPRA32U.ino"` to match the hardware configuration
-- Files
-    - `"digital-synth-pra32-u-0.1.1.uf2"` (in the directory `"bin"`) is a UF2 file for Pico Audio Pack
-    - `"DigitalSynthPRA32U.ino"` is a Arduino sketch for Raspberry Pi Pico/RP2040 core
-    - `"make-sample-wav-file.cc"` is for debugging on PC
-        - GCC (g++) for PC is required
-        - `"make-sample-wav-file-cc.bat"` makes a sample WAV file (working on Windows)
-    - `"generate-*.rb"` generates source or header files
-        - A Ruby execution environment is required
+### USB MIDI In
+
+- **NOTE**: Select USB Stack: "Adafruit TinuUSB" in the Arduino IDE "Tools" menu
+- MIDI Device Name: "Pico"
+- Serial MIDI (31.25 kbps or 38.4 kbps) can also be used instead of USB MIDI
+    - Comment out `#define USE_USB_MIDI` and uncomment out `//#define USE_SERIAL1_MIDI` in `"DigitalSynthPRA32U.ino"`
+
+
+### Audio Out
+
+- Use an I2S DAC that does not require MCLK input (e.g. PCM5100A), Sampling Rate: 31.25 kHz, Bit Depth: 16 bit
+- Modify `I2S_DAC_MUTE_OFF_PIN`, `I2S_DATA_PIN`, `I2S_BCLK_PIN`, and `I2S_SWAP_BCLK_AND_LRCLK_PINS` in `"Digital-Synth-PRA32-U.ino"` to match the hardware configuration
+- The default setting is for Pimoroni [Pico Audio Pack](https://shop.pimoroni.com/products/pico-audio-pack) [PIM544]
+```
+#define I2S_DAC_MUTE_OFF_PIN         (22)
+
+#define I2S_DATA_PIN                 (9)
+#define I2S_BCLK_PIN                 (10)  // I2S_LRCLK_PIN is I2S_BCLK_PIN + 1
+#define I2S_SWAP_BCLK_AND_LRCLK_PINS (false)
+```
+- The following is setting is for [Pimoroni Pico VGA Demo Base](https://shop.pimoroni.com/products/pimoroni-pico-vga-demo-base) [PIM553]
+```
+//#define I2S_DAC_MUTE_OFF_PIN         (22)
+
+#define I2S_DATA_PIN                 (26)
+#define I2S_BCLK_PIN                 (27)  // I2S_LRCLK_PIN is I2S_BCLK_PIN + 1
+#define I2S_SWAP_BCLK_AND_LRCLK_PINS (false)
+```
+
+
+### Files
+
+- `"digital-synth-pra32-u-0.1.1-for-pimoroni-pico-audio-pack.uf2"` (in the directory `"bin"`) is a UF2 file for Pimoroni Pico Audio Pack
+- `"DigitalSynthPRA32U.ino"` is a Arduino sketch for Raspberry Pi Pico/RP2040 core
+- `"make-sample-wav-file.cc"` is for debugging on PC
+    - GCC (g++) for PC is required
+    - `"make-sample-wav-file-cc.bat"` makes a sample WAV file (working on Windows)
+- `"generate-*.rb"` generates source or header files
+    - A Ruby execution environment is required
 
 
 ## Limitations
