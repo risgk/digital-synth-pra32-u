@@ -7,19 +7,23 @@
 
 //#define DEBUG_PRINT
 
-#define USE_USB_MIDI      // Select USB Stack "Adafruit TinuUSB" in the Arduino IDE "Tools" menu
+#define USE_USB_MIDI      // Select USB Stack: "Adafruit TinuUSB" in the Arduino IDE "Tools" menu
 //#define USE_SERIAL1_MIDI
 
-#define SERIAL1_MIDI_SPEED   (31250)
-//#define SERIAL1_MIDI_SPEED   (38400)
+#define SERIAL1_MIDI_SPEED           (31250)
+//#define SERIAL1_MIDI_SPEED           (38400)
 
-#define MIDI_CH             (0)  // 0-based
+#define MIDI_CH                      (0)  // 0-based
 
-#define I2S_DATA_PIN        (9)
-#define I2S_BCLK_PIN        (10)  // I2S_LRCLK_PIN is I2S_BCLK_PIN + 1
-#define I2S_BITS_PER_SAMPLE (16)  // 16, 24, or 32
-#define I2S_BUFFERS         (3)
-#define I2S_BUFFER_WORDS    (8)
+#define I2S_DAC_MUTE_OFF_PIN         (22)
+
+#define I2S_DATA_PIN                 (9)
+#define I2S_BCLK_PIN                 (10)  // I2S_LRCLK_PIN is I2S_BCLK_PIN + 1
+#define I2S_SWAP_BCLK_AND_LRCLK_PINS (false)
+
+#define I2S_BITS_PER_SAMPLE          (16)  // 16, 24, or 32
+#define I2S_BUFFERS                  (3)
+#define I2S_BUFFER_WORDS             (8)
 
 ////////////////////////////////////////////////////////////////
 
@@ -37,7 +41,7 @@ MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
 
 #include <I2S.h>
 
-I2S i2s_output(OUTPUT);
+I2S g_i2s_output(OUTPUT);
 
 void handleNoteOn(byte channel, byte pitch, byte velocity);
 void handleNoteOff(byte channel, byte pitch, byte velocity);
@@ -70,16 +74,24 @@ void __not_in_flash_func(setup1)() {
   Serial1.begin(SERIAL1_MIDI_SPEED);
 #endif
 
-  i2s_output.setDATA(I2S_DATA_PIN);
-  i2s_output.setBCLK(I2S_BCLK_PIN);
-  i2s_output.setBitsPerSample(I2S_BITS_PER_SAMPLE);
-  i2s_output.setBuffers(I2S_BUFFERS, I2S_BUFFER_WORDS);
-  i2s_output.setFrequency(SAMPLING_RATE);
-  i2s_output.begin();
+  g_i2s_output.setDATA(I2S_DATA_PIN);
+  g_i2s_output.setBCLK(I2S_BCLK_PIN);
+  g_i2s_output.setBitsPerSample(I2S_BITS_PER_SAMPLE);
+  g_i2s_output.setBuffers(I2S_BUFFERS, I2S_BUFFER_WORDS);
+  g_i2s_output.setFrequency(SAMPLING_RATE);
+  if (I2S_SWAP_BCLK_AND_LRCLK_PINS) {
+    g_i2s_output.swapClocks();
+  }
+  g_i2s_output.begin();
+
+#if defined(I2S_DAC_MUTE_OFF_PIN)
+  pinMode(I2S_DAC_MUTE_OFF_PIN, OUTPUT);
+  digitalWrite(I2S_DAC_MUTE_OFF_PIN, HIGH);
+#endif
 
 #if defined(DEBUG_PRINT)
 #if defined(USE_SERIAL1_MIDI)
-  Serial.begin(0);  // Select USB Stack "Pico SDK" in the Arduino IDE "Tools" menu
+  Serial.begin(0);  // Select USB Stack: "Pico SDK" in the Arduino IDE "Tools" menu
 #else
   Serial1.begin(115200);
 #endif
@@ -110,11 +122,11 @@ void __not_in_flash_func(loop1)() {
 
   for (uint32_t i = 0; i < I2S_BUFFER_WORDS; i++) {
 #if   (I2S_BITS_PER_SAMPLE == 16)
-    i2s_output.write16(left_buffer[i], right_buffer[i]);
+    g_i2s_output.write16(left_buffer[i], right_buffer[i]);
 #elif (I2S_BITS_PER_SAMPLE == 24)
-    i2s_output.write24(left_buffer[i] << 16, right_buffer[i] << 16);
+    g_i2s_output.write24(left_buffer[i] << 16, right_buffer[i] << 16);
 #elif (I2S_BITS_PER_SAMPLE == 32)
-    i2s_output.write32(left_buffer[i] << 16, right_buffer[i] << 16);
+    g_i2s_output.write32(left_buffer[i] << 16, right_buffer[i] << 16);
 #endif
   }
 
