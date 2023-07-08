@@ -328,7 +328,7 @@ public:
   INLINE int16_t process(int16_t noise_int15) {
 #if 1
     m_phase[0] += m_freq[0];
-    boolean new_period_0 = m_phase[0] < m_freq[0];
+    boolean new_period_0 = (m_phase[0] & 0x00FFFFFF) < m_freq[0];
     m_wave_table[0] = reinterpret_cast<const int16_t*>((reinterpret_cast<const uintptr_t>(m_wave_table[0]) * (1 - new_period_0)));
     m_wave_table[0] = reinterpret_cast<const int16_t*>( reinterpret_cast<const uint8_t*>( m_wave_table[0]) +
                                                        (reinterpret_cast<const uintptr_t>(m_wave_table_temp[0]) * new_period_0));
@@ -337,7 +337,7 @@ public:
 
     if (m_mono_mode == false) {
       m_phase[1] += m_freq[1];
-      boolean new_period_1 = m_phase[1] < m_freq[1];
+      boolean new_period_1 = (m_phase[1] & 0x00FFFFFF) < m_freq[1];
       m_wave_table[1] = reinterpret_cast<const int16_t*>((reinterpret_cast<const uintptr_t>(m_wave_table[1]) * (1 - new_period_1)));
       m_wave_table[1] = reinterpret_cast<const int16_t*>( reinterpret_cast<const uint8_t*>( m_wave_table[1]) +
                                                          (reinterpret_cast<const uintptr_t>(m_wave_table_temp[1]) * new_period_1));
@@ -345,7 +345,7 @@ public:
       result += wave_1 * m_osc_gain_effective[1];
 
       m_phase[2] += m_freq[2];
-      boolean new_period_2 = m_phase[2] < m_freq[2];
+      boolean new_period_2 = (m_phase[2] & 0x00FFFFFF) < m_freq[2];
       m_wave_table[2] = reinterpret_cast<const int16_t*>((reinterpret_cast<const uintptr_t>(m_wave_table[2]) * (1 - new_period_2)));
       m_wave_table[2] = reinterpret_cast<const int16_t*>( reinterpret_cast<const uint8_t*>( m_wave_table[2]) +
                                                          (reinterpret_cast<const uintptr_t>(m_wave_table_temp[2]) * new_period_2));
@@ -353,7 +353,7 @@ public:
       result += wave_2 * m_osc_gain_effective[2];
 
       m_phase[3] += m_freq[3];
-      boolean new_period_3 = m_phase[3] < m_freq[3];
+      boolean new_period_3 = (m_phase[3] & 0x00FFFFFF) < m_freq[3];
       m_wave_table[3] = reinterpret_cast<const int16_t*>((reinterpret_cast<const uintptr_t>(m_wave_table[3]) * (1 - new_period_3)));
       m_wave_table[3] = reinterpret_cast<const int16_t*>( reinterpret_cast<const uint8_t*>( m_wave_table[3]) +
                                                          (reinterpret_cast<const uintptr_t>(m_wave_table_temp[3]) * new_period_3));
@@ -380,7 +380,7 @@ public:
 
       if (m_waveform[1] != WAVEFORM_2_NOISE) {
         m_phase[2] += m_freq[2];
-        boolean new_period_2 = m_phase[2] < m_freq[2];
+        boolean new_period_2 = (m_phase[2] & 0x00FFFFFF) < m_freq[2];
         m_wave_table[2] = reinterpret_cast<const int16_t*>((reinterpret_cast<const uintptr_t>(m_wave_table[2]) * (1 - new_period_2)));
         m_wave_table[2] = reinterpret_cast<const int16_t*>( reinterpret_cast<const uint8_t*>( m_wave_table[2]) +
                                                            (reinterpret_cast<const uintptr_t>(m_wave_table_temp[2]) * new_period_2));
