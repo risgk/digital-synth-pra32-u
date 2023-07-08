@@ -1,6 +1,6 @@
 # Digital Synth PRA32-U v0.1.2
 
-- 2023-05-09 ISGK Instruments
+- 2023-07-08 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
 
 
@@ -23,7 +23,7 @@
 ## Change History
 
 - v0.1.2: Add I2S_DAC_MUTE_OFF_PIN and I2S_SWAP_BCLK_AND_LRCLK_PINS configurations
-- v0.1.1: Fix a bug where 0-velocity Note ON is not processed as Note OFF
+- v0.1.2: Fix a bug where 0-velocity Note ON is not processed as Note OFF
 - v0.1.0: The first release
 
 
@@ -61,7 +61,7 @@
 
 ### Files
 
-- `"digital-synth-pra32-u-0.1.1-for-pimoroni-pico-audio-pack.uf2"` (in the directory `"bin"`) is a UF2 file for Pimoroni Pico Audio Pack
+- `"digital-synth-pra32-u-0.1.2-for-pimoroni-pico-audio-pack.uf2"` (in the directory `"bin"`) is a UF2 file for Pimoroni Pico Audio Pack
 - `"DigitalSynthPRA32U.ino"` is a Arduino sketch for Raspberry Pi Pico/RP2040 core
 - `"make-sample-wav-file.cc"` is for debugging on PC
     - GCC (g++) for PC is required
@@ -138,11 +138,11 @@ graph LR
 
 ![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)
 
-**Digital Synth PRA32-U v0.1.1 by ISGK Instruments (Ryo Ishigaki)**
+**Digital Synth PRA32-U v0.1.2 by ISGK Instruments (Ryo Ishigaki)**
 
 To the extent possible under law, ISGK Instruments (Ryo Ishigaki)
 has waived all copyright and related or neighboring rights
-to Digital Synth PRA32-U v0.1.1.
+to Digital Synth PRA32-U v0.1.2.
 
 You should have received a copy of the CC0 legalcode along with this
 work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
