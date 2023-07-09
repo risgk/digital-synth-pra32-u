@@ -53,17 +53,6 @@ void handleHandleProgramChange(byte channel, byte number);
 void handleHandlePitchBend(byte channel, int bend);
 
 void __not_in_flash_func(setup)() {
-}
-
-void __not_in_flash_func(loop)() {
-}
-
-void __not_in_flash_func(setup1)() {
-  pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, HIGH);
-
-  g_synth.initialize();
-
 #if defined(USE_USB_MIDI)
   TinyUSB_Device_Init(0);
 #endif
@@ -76,6 +65,17 @@ void __not_in_flash_func(setup1)() {
 #if defined(USE_SERIAL1_MIDI)
   Serial1.begin(SERIAL1_MIDI_SPEED);
 #endif
+}
+
+void __not_in_flash_func(loop)() {
+  MIDI.read();
+}
+
+void __not_in_flash_func(setup1)() {
+  delay(1000);
+
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, HIGH);
 
   g_i2s_output.setDATA(I2S_DATA_PIN);
   g_i2s_output.setBCLK(I2S_BCLK_PIN);
@@ -104,15 +104,7 @@ void __not_in_flash_func(setup1)() {
 void __not_in_flash_func(loop1)() {
 
 #if defined(DEBUG_PRINT)
-  uint32_t debug_measurement_start0_us = micros();
-#endif
-
-  for (uint32_t i = 0; i < (I2S_BUFFER_WORDS >> 3); i++) {
-    MIDI.read();
-  }
-
-#if defined(DEBUG_PRINT)
-  uint32_t debug_measurement_start1_us = micros();
+  uint32_t debug_measurement_start_us = micros();
 #endif
 
   int16_t left_buffer[I2S_BUFFER_WORDS];
@@ -136,30 +128,21 @@ void __not_in_flash_func(loop1)() {
   }
 
 #if defined(DEBUG_PRINT)
-  static uint32_t s_debug_measurement_max0_us = 0;
-  uint32_t debug_measurement_elapsed0_us = debug_measurement_end_us - debug_measurement_start0_us;
-  s_debug_measurement_max0_us += (debug_measurement_elapsed0_us > s_debug_measurement_max0_us) *
-                                 (debug_measurement_elapsed0_us - s_debug_measurement_max0_us);
-
-  static uint32_t s_debug_measurement_max1_us = 0;
-  uint32_t debug_measurement_elapsed1_us = debug_measurement_end_us - debug_measurement_start1_us;
-  s_debug_measurement_max1_us += (debug_measurement_elapsed1_us > s_debug_measurement_max1_us) *
-                                 (debug_measurement_elapsed1_us - s_debug_measurement_max1_us);
+  static uint32_t s_debug_measurement_max_us = 0;
+  uint32_t debug_measurement_elapsed_us = debug_measurement_end_us - debug_measurement_start_us;
+  s_debug_measurement_max_us += (debug_measurement_elapsed_us > s_debug_measurement_max_us) *
+                                (debug_measurement_elapsed_us - s_debug_measurement_max_us);
 
   static uint32_t s_debug_loop_counter = 0;
   if (++s_debug_loop_counter == 4000) {
     s_debug_loop_counter = 0;
 #if defined(USE_SERIAL1_MIDI)
-    Serial.println(debug_measurement_elapsed1_us);
-    Serial.println(s_debug_measurement_max1_us);
-    Serial.println(debug_measurement_elapsed0_us);
-    Serial.println(s_debug_measurement_max0_us);
+    Serial.println(debug_measurement_elapsed_us);
+    Serial.println(s_debug_measurement_max_us);
     Serial.println();
 #else
-    Serial1.println(debug_measurement_elapsed1_us);
-    Serial1.println(s_debug_measurement_max1_us);
-    Serial1.println(debug_measurement_elapsed0_us);
-    Serial1.println(s_debug_measurement_max0_us);
+    Serial1.println(debug_measurement_elapsed_us);
+    Serial1.println(s_debug_measurement_max_us);
     Serial1.println();
 #endif
   }

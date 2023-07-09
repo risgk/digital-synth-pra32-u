@@ -10,7 +10,9 @@ class PRA32_U_NoiseGen {
 public:
   PRA32_U_NoiseGen()
   : m_state_a()
-  {}
+  {
+    initialize();
+  }
 
   INLINE void initialize() {
     m_state_a = 1;
