@@ -387,7 +387,7 @@ var specialProgramChangeCCValues = [0, 0, 0, 0, 0, 0, 0, 0];
 var specialRandomControlCCValue = 0;
 
 function afterChangeOsc1WaveOrVoiceMode() {
-  var targetCCNumbers = [102, 103, 26, 55, 20, 21, 25, 86];
+  var targetCCNumbers = [55, 20, 21, 25, 86];
 
   var valueVoiceMode = localStorage.getItem("keyCC87");
   if (valueVoiceMode < 32) {
@@ -398,14 +398,15 @@ function afterChangeOsc1WaveOrVoiceMode() {
     targetCCNumbers.forEach(function(i) {
       document.getElementById("inputCC" + String(i)).disabled = false;
     });
+  }
 
-    var valueOsc1Wave = localStorage.getItem("keyCC24");
-    if ((valueOsc1Wave >= 80) && (valueOsc1Wave < 112)) {
-      ;
-    } else {
-      document.getElementById("inputCC102").disabled = true;
-      document.getElementById("inputCC103").disabled = true;
-    }
+  var valueOsc1Wave = localStorage.getItem("keyCC24");
+  if ((valueOsc1Wave >= 80) && (valueOsc1Wave < 112)) {
+    document.getElementById("inputCC102").disabled = false;
+    document.getElementById("inputCC103").disabled = false;
+  } else {
+    document.getElementById("inputCC102").disabled = true;
+    document.getElementById("inputCC103").disabled = true;
   }
 }
 
@@ -1054,9 +1055,9 @@ function getStoredCCValueString(index, number) {
 </tr>
 <tr>
 <td colspan="2"><b>Osc 1</b> Wave [Saw|-|Tri|Pls|Sqr]  </td>
-<td colspan="2"><b>Osc 1</b> Shape <i>$</i>                   </td>
-<td colspan="2"><b>Osc 1</b> Morph <i>$</i>                   </td>
-<td colspan="2"><b>Mixer</b> Sub Osc <i>$</i>                 </td>
+<td colspan="2"><b>Osc 1</b> Shape                     </td>
+<td colspan="2"><b>Osc 1</b> Morph                     </td>
+<td colspan="2"><b>Mixer</b> Sub Osc                   </td>
 </tr>
 <tr>
 <td><input  id="inputCC24"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_1_WAVE     , value)"></td>

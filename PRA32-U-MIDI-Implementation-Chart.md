@@ -26,9 +26,9 @@
 | Change                     64 | x             | o             | Sustain Pedal [Off|On]           |
 |                               |               |               |                                  |
 |                            24 | x             | o             | Osc 1 Wave [Saw|-|Tri|Pls|Sqr]   |
-|                           102 | x             | o             | Osc 1 Shape $                    |
-|                           103 | x             | o             | Osc 1 Morph $                    |
-|                            26 | x             | o             | Mixer Sub Osc $                  |
+|                           102 | x             | o             | Osc 1 Shape                      |
+|                           103 | x             | o             | Osc 1 Morph                      |
+|                            26 | x             | o             | Mixer Sub Osc                    |
 |                               |               |               |                                  |
 |                            55 | x             | o             | Osc 2 Wave $ [Saw|-|Tri|Nos|Sqr] |
 |                            20 | x             | o             | Osc 2 Coarse $ [-|+]             |

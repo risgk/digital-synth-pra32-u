@@ -12,20 +12,20 @@
     - 64 (48-79): Triangle Wave
     - 96 (80-111): Pulse Wave (Shape adjustable)
     - 127 (112-127): Square Wave
-- Osc 1 Shape $
+- Osc 1 Shape
     - Pulse Wave (= 1st Saw + Phase Shifted 2nd Saw)
         - 0: Pulse Width 50%, or 2nd Saw Phase 50% (min)
         - 64: Pulse Width 25%, or 2nd Saw Phase 25%
         - 96: Pulse Width 12.5%, or 2nd Saw Phase 12.5%
         - 127: Pulse Width 0%, or 2nd Saw Phase 0% (max)
-- Osc 1 Morph $
+- Osc 1 Morph
     - Pulse Wave
         - 0: Pulse 100% = Saw 100% + Reverse Saw 100% (min)
         - 32: Pulse 50% + Saw 50% = Saw 100% + Reverse Saw 50%
         - 64: Saw 100%
         - 96: Saw 100% + Saw 50%
         - 127: Saw 100% + Saw 100% (max)
-- Mixer Sub Osc $
+- Mixer Sub Osc
 - Osc 2 Wave $ [Saw|-|Tri|Nos|Sqr]
     - 0 (0-47): Saw Wave
     - 64 (48-79): Triangle Wave

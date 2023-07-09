@@ -35,7 +35,6 @@ class PRA32_U_Osc {
   uint32_t       m_phase[4];
   boolean        m_osc_on[4];
   int8_t         m_osc_gain_effective[4];
-  int8_t         m_osc_gain[4];
   int8_t         m_osc_level;
 
   boolean        m_mono_mode;
@@ -74,7 +73,6 @@ public:
   , m_phase()
   , m_osc_on()
   , m_osc_gain_effective()
-  , m_osc_gain()
   , m_osc_level()
 
   , m_mono_mode()
@@ -331,21 +329,23 @@ public:
 
   INLINE int16_t process(int16_t noise_int15) {
 #if 1
-    m_phase[0] += m_freq[0];
-    boolean new_period_0 = (m_phase[0] & 0x00FFFFFF) < m_freq[0];
-    m_wave_table[0] = reinterpret_cast<const int16_t*>((reinterpret_cast<const uintptr_t>(m_wave_table[0]) * (1 - new_period_0)));
-    m_wave_table[0] = reinterpret_cast<const int16_t*>( reinterpret_cast<const uint8_t*>( m_wave_table[0]) +
-                                                       (reinterpret_cast<const uintptr_t>(m_wave_table_temp[0]) * new_period_0));
-    int16_t wave_0 = get_wave_level(m_wave_table[0], m_phase[0] >> 8);
-    int32_t result = wave_0 * m_osc_gain_effective[0];
+    int32_t result = 0;
 
     if (m_mono_mode == false) {
+      m_phase[0] += m_freq[0];
+      boolean new_period_0 = (m_phase[0] & 0x00FFFFFF) < m_freq[0];
+      m_wave_table[0] = reinterpret_cast<const int16_t*>((reinterpret_cast<const uintptr_t>(m_wave_table[0]) * (1 - new_period_0)));
+      m_wave_table[0] = reinterpret_cast<const int16_t*>( reinterpret_cast<const uint8_t*>( m_wave_table[0]) +
+                                                         (reinterpret_cast<const uintptr_t>(m_wave_table_temp[0]) * new_period_0));
+      int32_t wave_0 = get_osc1_wave_level(m_wave_table[0], m_phase[0]);
+      result += wave_0 * m_osc_gain_effective[0];
+
       m_phase[1] += m_freq[1];
       boolean new_period_1 = (m_phase[1] & 0x00FFFFFF) < m_freq[1];
       m_wave_table[1] = reinterpret_cast<const int16_t*>((reinterpret_cast<const uintptr_t>(m_wave_table[1]) * (1 - new_period_1)));
       m_wave_table[1] = reinterpret_cast<const int16_t*>( reinterpret_cast<const uint8_t*>( m_wave_table[1]) +
                                                          (reinterpret_cast<const uintptr_t>(m_wave_table_temp[1]) * new_period_1));
-      int16_t wave_1 = get_wave_level(m_wave_table[1], m_phase[1] >> 8);
+      int32_t wave_1 = get_osc1_wave_level(m_wave_table[1], m_phase[1]);
       result += wave_1 * m_osc_gain_effective[1];
 
       m_phase[2] += m_freq[2];
@@ -353,7 +353,7 @@ public:
       m_wave_table[2] = reinterpret_cast<const int16_t*>((reinterpret_cast<const uintptr_t>(m_wave_table[2]) * (1 - new_period_2)));
       m_wave_table[2] = reinterpret_cast<const int16_t*>( reinterpret_cast<const uint8_t*>( m_wave_table[2]) +
                                                          (reinterpret_cast<const uintptr_t>(m_wave_table_temp[2]) * new_period_2));
-      int16_t wave_2 = get_wave_level(m_wave_table[2], m_phase[2] >> 8);
+      int32_t wave_2 = get_osc1_wave_level(m_wave_table[2], m_phase[2]);
       result += wave_2 * m_osc_gain_effective[2];
 
       m_phase[3] += m_freq[3];
@@ -361,26 +361,20 @@ public:
       m_wave_table[3] = reinterpret_cast<const int16_t*>((reinterpret_cast<const uintptr_t>(m_wave_table[3]) * (1 - new_period_3)));
       m_wave_table[3] = reinterpret_cast<const int16_t*>( reinterpret_cast<const uint8_t*>( m_wave_table[3]) +
                                                          (reinterpret_cast<const uintptr_t>(m_wave_table_temp[3]) * new_period_3));
-      int16_t wave_3 = get_wave_level(m_wave_table[3], m_phase[3] >> 8);
+      int32_t wave_3 = get_osc1_wave_level(m_wave_table[3], m_phase[3]);
       result += wave_3 * m_osc_gain_effective[3];
     } else {
-      if (m_waveform[0] == WAVEFORM_1_PULSE) {
-        // For Pulse Wave (wave_3)
-        m_phase[3] = m_phase[0] + (m_osc1_shape << 8); // todo
-        int16_t wave_3 = get_wave_level(m_wave_table[0], m_phase[3] >> 8);
-        result += wave_3 * m_osc_gain_effective[3];
-      }
+      int8_t base_gain  = m_osc_gain_effective[0];
+      int8_t osc1_gain = (m_mix_table[(OSC_MIX_TABLE_LENGTH - 1) - m_mono_osc2_mix] * base_gain) >> 8;
+      int8_t osc2_gain = (m_mix_table[                             m_mono_osc2_mix] * base_gain) >> 8;
 
-      // Sub Osc (wave_1)
-      int16_t wave_1 = static_cast<uint16_t>(m_phase[0] >> 9);
-      if (wave_1 < -(64 << 8)) {
-        wave_1 = -(64 << 8) - (wave_1 + (64 << 8));
-      } else if (wave_1 < (64 << 8)) {
-        // do nothing
-      } else {
-        wave_1 = (64 << 8) - (wave_1 - (64 << 8));
-      }
-      result += wave_1 * (m_osc_gain_effective[1] << 1);
+      m_phase[0] += m_freq[0];
+      boolean new_period_0 = (m_phase[0] & 0x00FFFFFF) < m_freq[0];
+      m_wave_table[0] = reinterpret_cast<const int16_t*>((reinterpret_cast<const uintptr_t>(m_wave_table[0]) * (1 - new_period_0)));
+      m_wave_table[0] = reinterpret_cast<const int16_t*>( reinterpret_cast<const uint8_t*>( m_wave_table[0]) +
+                                                         (reinterpret_cast<const uintptr_t>(m_wave_table_temp[0]) * new_period_0));
+      int32_t wave_0 = get_osc1_wave_level(m_wave_table[0], m_phase[0]);
+      result += wave_0 * osc1_gain;
 
       if (m_waveform[1] != WAVEFORM_2_NOISE) {
         m_phase[2] += m_freq[2];
@@ -388,14 +382,16 @@ public:
         m_wave_table[2] = reinterpret_cast<const int16_t*>((reinterpret_cast<const uintptr_t>(m_wave_table[2]) * (1 - new_period_2)));
         m_wave_table[2] = reinterpret_cast<const int16_t*>( reinterpret_cast<const uint8_t*>( m_wave_table[2]) +
                                                            (reinterpret_cast<const uintptr_t>(m_wave_table_temp[2]) * new_period_2));
-        int16_t wave_2 = get_wave_level(m_wave_table[2], m_phase[2] >> 8);
-        result += wave_2 * m_osc_gain_effective[2];
+        int16_t wave_2 = get_wave_level(m_wave_table[2], m_phase[2]);
+        result += wave_2 * osc2_gain;
       } else {
         // Noise (wave_2)
         int16_t wave_2 = -(OSC_WAVE_TABLE_AMPLITUDE << 8)
                          +(OSC_WAVE_TABLE_AMPLITUDE << 9) * (noise_int15 & 0x1);
-        result += wave_2 * m_osc_gain_effective[2];
+        result += wave_2 * osc2_gain;
       }
+
+      result <<= 1;
     }
 #else
     int32_t result  = 0;
@@ -408,7 +404,7 @@ private:
   INLINE const int16_t* get_wave_table(uint8_t waveform, uint8_t note_number) {
     const int16_t* result;
     if ((waveform == WAVEFORM_SAW) ||
-        (m_mono_mode && (waveform == WAVEFORM_1_PULSE))) {
+        (waveform == WAVEFORM_1_PULSE)) {
       result = g_osc_saw_wave_tables[note_number - NOTE_NUMBER_MIN];
     } else if (waveform == WAVEFORM_TRIANGLE) {
       result = g_osc_triangle_wave_table;
@@ -418,9 +414,11 @@ private:
     return result;
   }
 
-  INLINE int16_t get_wave_level(const int16_t* wave_table, uint16_t phase) {
-    uint16_t curr_index  = phase >> (16 - OSC_WAVE_TABLE_SAMPLES_BITS);
-    uint16_t next_weight = phase & ((1 << (16 - OSC_WAVE_TABLE_SAMPLES_BITS)) - 1);
+  INLINE int16_t get_wave_level(const int16_t* wave_table, uint32_t phase) {
+    uint16_t phase16 = phase >> 8;
+
+    uint16_t curr_index  = phase16 >> (16 - OSC_WAVE_TABLE_SAMPLES_BITS);
+    uint16_t next_weight = phase16 & ((1 << (16 - OSC_WAVE_TABLE_SAMPLES_BITS)) - 1);
     int16_t curr_data   = wave_table[curr_index + 0];
     int16_t next_data   = wave_table[curr_index + 1];
 
@@ -428,6 +426,31 @@ private:
     int16_t result = curr_data + (((next_data - curr_data) * next_weight) >> (16 - OSC_WAVE_TABLE_SAMPLES_BITS));
 
     return result;
+  }
+
+  INLINE int32_t get_osc1_wave_level(const int16_t* wave_table, uint32_t phase) {
+      int32_t result = 0;
+
+      int16_t wave_0 = get_wave_level(wave_table, phase);
+      result += wave_0;
+
+      // For Pulse Wave (wave_3)
+      uint32_t phase_3 = phase + (m_osc1_shape << 8); // todo
+      int16_t wave_3 = get_wave_level(wave_table, phase_3);
+      result += ((wave_3 * -m_osc1_morph_control) >> 6) * (m_waveform[0] == WAVEFORM_1_PULSE);
+
+      // Sub Osc (wave_1)
+      int16_t wave_1 = static_cast<uint16_t>(phase >> 9);
+      if (wave_1 < -(64 << 8)) {
+        wave_1 = -(64 << 8) - (wave_1 + (64 << 8));
+      } else if (wave_1 < (64 << 8)) {
+        // do nothing
+      } else {
+        wave_1 = (64 << 8) - (wave_1 - (64 << 8));
+      }
+      result += (wave_1 * m_mixer_sub_osc_control) >> 6;
+
+      return result;
   }
 
   template <uint8_t N>
@@ -507,33 +530,22 @@ private:
       if (m_osc_on[N]) {
         const int8_t half_level = (m_osc_level >> 1) + 1;
 
-        if (m_osc_gain[N] >= (m_osc_level - half_level)) {
-          m_osc_gain[N] = m_osc_level;
+        if (m_osc_gain_effective[N] >= (m_osc_level - half_level)) {
+          m_osc_gain_effective[N] = m_osc_level;
         } else {
-          m_osc_gain[N] += half_level;
+          m_osc_gain_effective[N] += half_level;
         }
       } else {
         const int8_t one_fourth_level = (m_osc_level >> 2) + 1;
 
-        if (m_osc_gain[N] <= one_fourth_level) {
-          m_osc_gain[N] = 0;
+        if (m_osc_gain_effective[N] <= one_fourth_level) {
+          m_osc_gain_effective[N] = 0;
         } else {
-          m_osc_gain[N] -= one_fourth_level;
+          m_osc_gain_effective[N] -= one_fourth_level;
         }
       }
-      m_osc_gain_effective[N] = m_osc_gain[N];
     } else {
-      if (N == 0) {
-        uint8_t base_gain = m_osc_level << 1;
-        m_osc_gain_effective[0] = high_byte(m_mix_table[(OSC_MIX_TABLE_LENGTH - 1) - m_mono_osc2_mix] * base_gain);
-        m_osc_gain_effective[2] = high_byte(m_mix_table[                             m_mono_osc2_mix] * base_gain);
-        m_osc_gain_effective[1] = (base_gain * m_mixer_sub_osc_control) >> 6;
-        m_osc_gain_effective[3] = 0;
-
-        if (m_waveform[0] == WAVEFORM_1_PULSE) {
-          m_osc_gain_effective[3] = (-m_osc_gain_effective[0] * m_osc1_morph_control) >> 6;
-        }
-      }
+      m_osc_gain_effective[N] = m_osc_level;
     }
   }
 
