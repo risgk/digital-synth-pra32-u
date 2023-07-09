@@ -29,7 +29,9 @@ public:
   , m_decay_coef()
   , m_sustain()
   , m_release_coef()
-  {}
+  {
+    initialize();
+  }
 
   INLINE void initialize() {
     m_state = STATE_IDLE;
