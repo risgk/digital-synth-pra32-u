@@ -44,9 +44,7 @@ public:
   , m_cutoff_lfo_amt()
   , m_cutoff_pitch_amt()
   , m_cutoff_offset()
-  {
-    initialize();
-  }
+  {}
 
   INLINE void initialize() {
     m_cutoff_current = 254;

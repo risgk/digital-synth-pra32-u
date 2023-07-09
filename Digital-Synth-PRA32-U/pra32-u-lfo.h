@@ -39,9 +39,7 @@ public:
   , m_lfo_fade_level()
   , m_noise_int15()
   , m_sampled_noise_int15()
-  {
-    initialize();
-  }
+  {}
 
   INLINE void initialize() {
     m_lfo_waveform = LFO_WAVEFORM_TRI_ASYNC;

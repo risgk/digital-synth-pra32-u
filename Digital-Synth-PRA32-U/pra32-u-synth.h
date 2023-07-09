@@ -73,9 +73,7 @@ public:
   , m_lfo_osc_dst()
 
   , m_sp_prog_chg_cc_values()
-  {
-    initialize();
-  }
+  {}
 
   INLINE void initialize() {
     m_count = 0;

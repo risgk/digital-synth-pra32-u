@@ -89,9 +89,7 @@ public:
   , m_mix_table()
   , m_shape_eg_amt()
   , m_shape_lfo_amt()
-  {
-    initialize();
-  }
+  {}
 
   INLINE void initialize() {
     m_portamento_coef[0] = PORTAMENTO_COEF_OFF;
