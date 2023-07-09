@@ -94,6 +94,8 @@ public:
   }
 
   INLINE void process_at_low_rate(uint8_t count, int16_t noise_int15) {
+    static_cast<void>(count);
+
     m_noise_int15 = noise_int15;
     update_lfo_level();
   }
