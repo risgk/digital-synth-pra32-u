@@ -400,8 +400,12 @@ function afterChangeOsc1WaveOrVoiceMode() {
     });
 
     var valueOsc1Wave = localStorage.getItem("keyCC24");
-    document.getElementById("inputCC102").disabled = true;
-    document.getElementById("inputCC103").disabled = true;
+    if ((valueOsc1Wave >= 80) && (valueOsc1Wave < 112)) {
+      ;
+    } else {
+      document.getElementById("inputCC102").disabled = true;
+      document.getElementById("inputCC103").disabled = true;
+    }
   }
 }
 
