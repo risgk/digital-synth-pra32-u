@@ -138,7 +138,7 @@ public:
     m_freq_offset[1] = 0;
     m_freq_offset[2] = 0;
     m_freq_offset[3] = 0;
-    m_osc_level = 8;
+    m_osc_level = 16;
 
     m_osc1_shape = 0x8000;
     for (uint8_t i = 0; i < OSC_MIX_TABLE_LENGTH; ++i) {
