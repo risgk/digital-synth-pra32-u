@@ -693,8 +693,10 @@ public:
     case 0x00:
       break;
     case 0x01:
+      m_eg[0].process_at_low_rate();
       break;
     case 0x02:
+      m_eg[1].process_at_low_rate();
       break;
     case 0x03:
       m_lfo.process_at_low_rate(m_count >> 2, noise_int15);
@@ -703,27 +705,22 @@ public:
 
     int16_t lfo_output = m_lfo.get_output();
     int16_t eg_output_0 = m_eg[0].get_output();
+    int16_t eg_output_1 = m_eg[1].get_output();
 
     switch (m_count & (0x04 - 1)) {
     case 0x00:
       m_osc.process_at_low_rate(m_count >> 2, noise_int15, lfo_output, eg_output_0);
       break;
     case 0x01:
-      m_eg[0].process_at_low_rate();
+      m_filter.process_at_low_rate(m_count >> 2, eg_output_0, lfo_output, m_osc.get_osc_pitch());
       break;
     case 0x02:
-      m_eg[1].process_at_low_rate();
+      m_amp.process_at_low_rate(eg_output_1);
       break;
     case 0x03:
       m_chorus_fx.process_at_low_rate();
       break;
     }
-
-    int16_t eg_output_1 = m_eg[1].get_output();
-    m_amp.process_at_low_rate(eg_output_1);
-
-    uint16_t osc_pitch = m_osc.get_osc_pitch();
-    m_filter.process_at_low_rate(m_count, eg_output_0, lfo_output, osc_pitch);
 
     int16_t osc_output = m_osc.process(noise_int15);
     int16_t filter_output = m_filter.process(osc_output);

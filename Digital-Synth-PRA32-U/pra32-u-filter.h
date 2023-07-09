@@ -56,10 +56,7 @@ public:
     set_cutoff_pitch_amt(0);
     set_cutoff_offset(0);
 
-    update_coefs_0th(0);
-    update_coefs_1st(0, 60 << 8);
-    update_coefs_2nd();
-    update_coefs_3rd();
+    update_coefs(0, 0, 60 << 8);
   }
 
   INLINE void set_cutoff(uint8_t controller_value) {
@@ -113,28 +110,22 @@ public:
   }
 
   INLINE void process_at_low_rate(uint8_t count, int16_t eg_input, int16_t lfo_input, uint16_t osc_pitch) {
-#if 1
-    if ((count & (FILTER_CONTROL_INTERVAL - 1)) == 7) {
-      //printf("%d PRA32_U_Filter\n", count);
-      if (count & 0x10) {
-        if (count & 0x08) {
-          update_coefs_0th(eg_input);
-          update_coefs_1st(lfo_input, osc_pitch);
-          update_coefs_2nd();
-          update_coefs_3rd();
-        }
-      }
+    switch (count & (0x04 - 1)) {
+    case 0x00:
+      update_cutoff_control_effective();
+      break;
     }
-#endif
+
+    update_coefs(eg_input, lfo_input, osc_pitch);
   }
 
   INLINE int16_t process(int16_t audio_input) {
 #if 1
-    int16_t x_0   = audio_input >> (16 - AUDIO_FRACTION_BITS);
-    int16_t x_3   = x_0 + (m_x_1 << 1) + m_x_2;
-    int32_t y_0   = mul_s32_s16_h32(m_b_2_over_a_0,   x_3) << 2;
-    y_0          -= mul_s32_s32_h32(m_a_1_over_a_0, m_y_1) << 2;
-    y_0          -= mul_s32_s32_h32(m_a_2_over_a_0, m_y_2) << 2;
+    int16_t x_0 = audio_input >> (16 - AUDIO_FRACTION_BITS);
+    int16_t x_3 = x_0 + (m_x_1 << 1) + m_x_2;
+    int32_t y_0 = mul_s32_s16_h32(m_b_2_over_a_0,   x_3) << 2;
+    y_0        -= mul_s32_s32_h32(m_a_1_over_a_0, m_y_1) << 2;
+    y_0        -= mul_s32_s32_h32(m_a_2_over_a_0, m_y_2) << 2;
 
     m_x_2 = m_x_1;
     m_y_2 = m_y_1;
@@ -146,36 +137,32 @@ public:
     y = (y < 0) * y + (+MAX_ABS_OUTPUT << 16) - (-MAX_ABS_OUTPUT << 16);
     y = (y > 0) * y + (-MAX_ABS_OUTPUT << 16);
 #else
-    int32_t y  = 0;
+    volatile int32_t y = 0;
 #endif
 
     return y >> AUDIO_FRACTION_BITS;
   }
 
 private:
-  INLINE void update_coefs_0th(int16_t eg_input) {
+  INLINE void update_cutoff_control_effective() {
+    m_cutoff_control_effective += (m_cutoff_control_effective < m_cutoff_control);
+    m_cutoff_control_effective -= (m_cutoff_control_effective > m_cutoff_control);
+  }
+
+  INLINE void update_coefs(int16_t eg_input, int16_t lfo_input, uint16_t osc_pitch) {
     m_cutoff_candidate = m_cutoff_control_effective;
     m_cutoff_candidate += (m_cutoff_eg_amt * eg_input) >> 14;
     m_cutoff_candidate += m_cutoff_offset;
-  }
 
-  INLINE void update_coefs_1st(int16_t lfo_input, uint16_t osc_pitch) {
     m_cutoff_candidate += (lfo_input * m_cutoff_lfo_amt) >> 14;
     m_cutoff_candidate += high_byte((osc_pitch * m_cutoff_pitch_amt) + 128) - (60 * m_cutoff_pitch_amt);
-  }
 
-  INLINE void update_coefs_2nd() {
     // cutoff_current = clamp(m_cutoff_candidate, 0, 255)
     volatile int16_t cutoff_current = m_cutoff_candidate - 255;
     cutoff_current = (cutoff_current < 0) * cutoff_current + 255;
     cutoff_current = (cutoff_current > 0) * cutoff_current;
     m_cutoff_current = cutoff_current;
 
-    m_cutoff_control_effective += (m_cutoff_control_effective < m_cutoff_control);
-    m_cutoff_control_effective -= (m_cutoff_control_effective > m_cutoff_control);
-  }
-
-  INLINE void update_coefs_3rd() {
     size_t index = m_cutoff_current * 3;
     m_b_2_over_a_0 = m_lpf_table[index + 0];
     m_a_1_over_a_0 = m_lpf_table[index + 1];
