@@ -107,7 +107,9 @@ void __not_in_flash_func(loop1)() {
   uint32_t debug_measurement_start0_us = micros();
 #endif
 
-  MIDI.read();
+  for (uint32_t i = 0; i < (I2S_BUFFER_WORDS >> 3); i++) {
+    MIDI.read();
+  }
 
 #if defined(DEBUG_PRINT)
   uint32_t debug_measurement_start1_us = micros();
