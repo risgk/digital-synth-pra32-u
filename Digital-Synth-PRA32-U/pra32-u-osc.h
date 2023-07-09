@@ -322,6 +322,8 @@ public:
                update_freq_offset<3>(noise_int15);
                update_gate<3>();
                break;
+    case 0x07: update_osc1_shape_control_effective();
+               break;
     }
   }
 
@@ -527,17 +529,18 @@ private:
         m_osc_gain_effective[3] = 0;
 
         if (m_waveform[0] == WAVEFORM_1_PULSE) {
-          int8_t temp = high_sbyte(-m_osc_gain_effective[0] * m_osc1_morph_control);
-          m_osc_gain_effective[3] = temp << 2;
+          m_osc_gain_effective[3] = (-m_osc_gain_effective[0] * m_osc1_morph_control) >> 6;
         }
       }
     }
   }
 
-  INLINE void update_osc1_shape(int16_t lfo_level, int16_t eg_level) {
-    m_osc1_shape_control_effective += (m_osc1_shape_control_effective < m_osc1_shape_control); // todo
-    m_osc1_shape_control_effective -= (m_osc1_shape_control_effective > m_osc1_shape_control); // todo
+  INLINE void update_osc1_shape_control_effective() {
+    m_osc1_shape_control_effective += (m_osc1_shape_control_effective < m_osc1_shape_control);
+    m_osc1_shape_control_effective -= (m_osc1_shape_control_effective > m_osc1_shape_control);
+  }
 
+  INLINE void update_osc1_shape(int16_t lfo_level, int16_t eg_level) {
     m_osc1_shape = 0x8000u - (m_osc1_shape_control_effective << 8)
                    + ((eg_level * m_shape_eg_amt) >> 5) - ((lfo_level * m_shape_lfo_amt) >> 3);
   }
