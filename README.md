@@ -90,19 +90,17 @@
 
 ## Synthesizer Block Diagram
 
-### Monophonic/Legato Mode
+### Monophonic Mode
 
 ```mermaid
 graph LR
-    O1[Osc 1]   --> M[Mixer] --> F[Filter] --> A[Amp] --> C[Chorus FX] --> AO[Audio Out]
-    SO[Sub Osc] --> M
-    O2[Osc 2]   --> M
-    E[EG]      -.-> O1
-    E          -.-> O2
-    E          -.-> F
-    L[LFO]     -.-> O1
-    L          -.-> O2
-    L          -.-> F
+    O1[Osc 1 w/ Sub Osc] --> OM[Osc Mixer]
+    O2[Osc 2] --> OM
+    OM --> F[Filter] --> A[Amp] --> C[Chorus FX] --> AO[Audio Out]
+    N[Noise Gen] --> O2
+    N -.-> L[LFO]
+    L -.-> O1 & O2 & F
+    E[EG] -.-> O1 & O2 & F
     AE[Amp EG] -.-> A
 ```
 
@@ -111,20 +109,17 @@ graph LR
 
 ```mermaid
 graph LR
-    V1O1[Voice 1<br/>Osc 1] --> V1G[Voice 1<br/>Gate] --> M[Mixer] --> F[Filter] --> A[Amp] --> C[Chorus FX] --> AO[Audio Out]
-    V2O1[Voice 2<br/>Osc 1] --> V2G[Voice 2<br/>Gate] --> M
-    V3O1[Voice 3<br/>Osc 1] --> V3G[Voice 3<br/>Gate] --> M
-    V4O1[Voice 4<br/>Osc 1] --> V4G[Voice 4<br/>Gate] --> M
-    E[EG]      -.-> V1O1
-    E          -.-> V2O1
-    E          -.-> V3O1
-    E          -.-> V4O1
-    E          -.-> F
-    L[LFO]     -.-> V1O1
-    L          -.-> V2O1
-    L          -.-> V3O1
-    L          -.-> V4O1
-    L          -.-> F
+    subgraph V1[Voice 1]
+        V1O1[Osc 1 w/ Sub Osc] --> V1OM[Osc Mixer]
+        V1OM --> V1G[Gate]
+    end
+    V1G --> VM[Voice Mixer]
+    V2[Voice 2] & V3[Voice 3] & V4[Voice 4] --> VM
+    VM --> F[Filter] --> A[Amp] --> C[Chorus FX] --> AO[Audio Out]
+    N[Noise Gen]  --> V1O1 & V2 & V3 & V4
+    N -.-> L[LFO]
+    L -.-> V1O1 & V2 & V3 & V4 & F
+    E[EG] -.-> V1O1 & V2 & V3 & V4 & F
     AE[Amp EG] -.-> A
 ```
 
