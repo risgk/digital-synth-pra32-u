@@ -93,7 +93,7 @@ end
 
 sound_off
 
-program_change(5)
+program_change(0)
 play_mono_a(4)
 sound_off
 
