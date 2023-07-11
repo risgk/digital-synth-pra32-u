@@ -231,7 +231,7 @@ var controllersInLocalStorage = [
 var presetControllers = {};
 
 // PRESET                             #0   #1   #2   #3   #4   #5   #6   #7   
-presetControllers[OSC_1_WAVE     ] = [0  , 0  , 0  , 0  , 0  , 96 , 0  , 0  ];
+presetControllers[OSC_1_WAVE     ] = [0  , 0  , 96 , 0  , 0  , 96 , 0  , 0  ];
 presetControllers[OSC_1_SHAPE    ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 presetControllers[OSC_1_MORPH    ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 presetControllers[MIXER_SUB_OSC  ] = [127, 0  , 0  , 0  , 127, 0  , 0  , 0  ];
@@ -239,9 +239,9 @@ presetControllers[MIXER_SUB_OSC  ] = [127, 0  , 0  , 0  , 127, 0  , 0  , 0  ];
 presetControllers[OSC_2_WAVE     ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 presetControllers[OSC_2_COARSE   ] = [71 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
 presetControllers[OSC_2_FINE     ] = [72 , 72 , 72 , 72 , 72 , 72 , 72 , 64 ];
-presetControllers[MIXER_OSC_MIX  ] = [64 , 16 , 16 , 16 , 64 , 64 , 16 , 0  ];
+presetControllers[MIXER_OSC_MIX  ] = [64 , 16 , 64 , 16 , 64 , 64 , 16 , 0  ];
 
-presetControllers[FILTER_CUTOFF  ] = [115, 115, 61 , 121, 61 , 115, 127, 127];
+presetControllers[FILTER_CUTOFF  ] = [115, 115, 67 , 121, 61 , 115, 127, 127];
 presetControllers[FILTER_RESO    ] = [64 , 64 , 32 , 32 , 32 , 64 , 0  , 0  ];
 presetControllers[FILTER_EG_AMT  ] = [64 , 64 , 124, 4  , 124, 64 , 64 , 64 ];
 presetControllers[FILTER_KEY_TRK ] = [127, 127, 127, 127, 127, 127, 127, 127];
@@ -257,14 +257,14 @@ presetControllers[VOICE_MODE     ] = [127, 0  , 0  , 0  , 64 , 127, 0  , 127];
 presetControllers[PORTAMENTO     ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 
 presetControllers[LFO_WAVE       ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
-presetControllers[LFO_RATE       ] = [96 , 96 , 96 , 96 , 96 , 96 , 96 , 96 ];
+presetControllers[LFO_RATE       ] = [96 , 96 , 48 , 96 , 96 , 96 , 96 , 96 ];
 presetControllers[LFO_DEPTH      ] = [8  , 64 , 64 , 64 , 8  , 64 , 64 , 0  ];
-presetControllers[LFO_FADE_TIME  ] = [0  , 64 , 64 , 64 , 0  , 0  , 64 , 0  ];
+presetControllers[LFO_FADE_TIME  ] = [0  , 64 , 0  , 64 , 0  , 0  , 64 , 0  ];
 
-presetControllers[LFO_OSC_AMT    ] = [80 , 80 , 80 , 80 , 80 , 127, 80 , 64 ];
-presetControllers[LFO_OSC_DST    ] = [0  , 0  , 0  , 0  , 0  , 127, 0  , 0  ];
+presetControllers[LFO_OSC_AMT    ] = [80 , 80 , 127, 80 , 80 , 127, 80 , 64 ];
+presetControllers[LFO_OSC_DST    ] = [0  , 0  , 127, 0  , 0  , 127, 0  , 0  ];
 presetControllers[LFO_FILTER_AMT ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
-presetControllers[AMP_LEVEL      ] = [127, 127, 127, 127, 127, 127, 127, 127];
+presetControllers[AMP_LEVEL      ] = [127, 127, 96 , 127, 127, 127, 127, 127];
 
 presetControllers[AMP_ATTACK     ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 presetControllers[AMP_DECAY      ] = [127, 127, 127, 127, 96 , 127, 127, 127];
@@ -966,28 +966,28 @@ function getStoredCCValueString(index, number) {
 <table>
 <tr><td>Preset</td>
     <td></td>
-    <td><input type="button" value="#4 Decay [Mono]"     onclick="preset(4)"></td>
+    <td><input type="button" value="#4 Decay [Mono]"      onclick="preset(4)"></td>
     <td></td>
-    <td><input type="button" value="#5 PWM [Legato]"     onclick="preset(5)"></td>
+    <td><input type="button" value="#5 PWM Lead [Legato]" onclick="preset(5)"></td>
     <td></td>
-    <td><input type="button" value="#6 Saw [Para]"       onclick="preset(6)"></td>
+    <td><input type="button" value="#6 Saw [Para]"        onclick="preset(6)"></td>
     <td></td>
-    <td><input type="button" value="#7 Initial [Legato]" onclick="preset(7)"></td>
+    <td><input type="button" value="#7 Initial [Legato]"  onclick="preset(7)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>Misc</td>
     <td></td>
-    <td><input type="button" value="Random Ctrl"         onclick="setRandom()"></td>
+    <td><input type="button" value="Random Ctrl"          onclick="setRandom()"></td>
     <td></td>
-    <td><input type="button" value="Random FX"           onclick="setRandomChorus()"></td></tr>
+    <td><input type="button" value="Random FX"            onclick="setRandomChorus()"></td></tr>
 <tr><td></td>
     <td></td>
-    <td><input type="button" value="#0 Fifth [Legato] "  onclick="preset(0)"></td>
+    <td><input type="button" value="#0 Fifth [Legato] "   onclick="preset(0)"></td>
     <td></td>
-    <td><input type="button" value="#1 Quad [Para]"      onclick="preset(1)"></td>
+    <td><input type="button" value="#1 Quad PWM [Para]"   onclick="preset(1)"></td>
     <td></td>
-    <td><input type="button" value="#2 Plus [Para]"      onclick="preset(2)"></td>
+    <td><input type="button" value="#2 Plus [Para]"       onclick="preset(2)"></td>
     <td></td>
-    <td><input type="button" value="#3 Minus [Para]"     onclick="preset(3)"></td>
+    <td><input type="button" value="#3 Minus [Para]"      onclick="preset(3)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td></td>
     <td></td>
