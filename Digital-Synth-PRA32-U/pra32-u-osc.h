@@ -325,28 +325,39 @@ public:
     update_freq_base<7>(lfo_level, eg_level);
 
     switch (count & (0x08 - 1)) {
-    case 0x00: update_pitch_current<0>();
-               update_freq_offset<0>(noise_int15);
-               update_freq_offset<4>(noise_int15);
-               update_gate<0>();
-               break;
-    case 0x02: update_pitch_current<1>();
-               update_freq_offset<1>(noise_int15);
-               update_freq_offset<5>(noise_int15);
-               update_gate<1>();
-               break;
-    case 0x04: update_pitch_current<2>();
-               update_freq_offset<2>(noise_int15);
-               update_freq_offset<6>(noise_int15);
-               update_gate<2>();
-               break;
-    case 0x06: update_pitch_current<3>();
-               update_freq_offset<3>(noise_int15);
-               update_freq_offset<7>(noise_int15);
-               update_gate<3>();
-               break;
-    case 0x07: update_osc1_shape_control_effective();
-               break;
+    case 0x00:
+      update_freq_offset<0>(noise_int15);
+      update_pitch_current<0>();
+      update_gate<0>();
+      break;
+    case 0x01:
+      update_freq_offset<4>(noise_int15);
+      break;
+    case 0x02:
+      update_freq_offset<1>(noise_int15);
+      update_pitch_current<1>();
+      update_gate<1>();
+      break;
+    case 0x03:
+      update_freq_offset<5>(noise_int15);
+      break;
+    case 0x04:
+      update_freq_offset<2>(noise_int15);
+      update_pitch_current<2>();
+      update_gate<2>();
+      break;
+    case 0x05:
+      update_freq_offset<6>(noise_int15);
+      break;
+    case 0x06:
+      update_freq_offset<3>(noise_int15);
+      update_pitch_current<3>();
+      update_gate<3>();
+      break;
+    case 0x07:
+      update_freq_offset<7>(noise_int15);
+      update_osc1_shape_control_effective();
+      break;
     }
   }
 
