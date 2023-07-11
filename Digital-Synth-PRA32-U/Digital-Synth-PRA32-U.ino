@@ -24,7 +24,7 @@
 
 #define I2S_BITS_PER_SAMPLE          (16)  // 16, 24, or 32
 #define I2S_BUFFERS                  (3)
-#define I2S_BUFFER_WORDS             (8)
+#define I2S_BUFFER_WORDS             (16)
 
 ////////////////////////////////////////////////////////////////
 
