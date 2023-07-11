@@ -26,8 +26,8 @@
 | Change                     64 | x             | o             | Sustain Pedal [Off|On]           |
 |                               |               |               |                                  |
 |                            24 | x             | o             | Osc 1 Wave [Saw|-|Tri|Pls|Sqr]   |
-|                           102 | x             | o             | Osc 1 Shape                      |
-|                           103 | x             | o             | Osc 1 Morph                      |
+|                           102 | x             | o             | Osc 1 Shape $$                   |
+|                           103 | x             | o             | Osc 1 Morph $$                   |
 |                            26 | x             | o             | Mixer Sub Osc                    |
 |                               |               |               |                                  |
 |                            55 | x             | o             | Osc 2 Wave $ [Saw|-|Tri|Nos|Sqr] |
@@ -98,6 +98,7 @@
 |              : Reset          | x             | x             |                                  |
 +-------------------------------+---------------+---------------+----------------------------------+
 | Notes                         | $ : Disabled in Paraphonic Mode                                  |
+|                               | $$ : Disabled if Osc 1 Wave is not Pls                           |
 +-------------------------------+------------------------------------------------------------------+
   Mode 1: Omni On,  Poly          Mode 2: Omni On,  Mono          o: Yes                            
   Mode 3: Omni Off, Poly          Mode 4: Omni Off, Mono          x: No                             
