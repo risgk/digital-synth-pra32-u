@@ -28,7 +28,7 @@
 |                            24 | x             | o             | Osc 1 Wave [Saw|-|Tri|Pls|Sqr]   |
 |                           102 | x             | o             | Osc 1 Shape $$                   |
 |                           103 | x             | o             | Osc 1 Morph $$                   |
-|                            26 | x             | o             | Mixer Noise/Sub Osc [N|S]        |
+|                            26 | x             | o             | Mixer Noise/Sub Osc $$$ [N|S]    |
 |                               |               |               |                                  |
 |                            55 | x             | o             | Osc 2 Wave [Saw|-|Tri|Nos|Sqr]   |
 |                            20 | x             | o             | Osc 2 Coarse [-|+]               |
@@ -98,7 +98,8 @@
 |              : Reset          | x             | x             |                                  |
 +-------------------------------+---------------+---------------+----------------------------------+
 | Notes                         | $ : Disabled in Paraphonic Mode                                  |
-|                               | $$ : Disabled if Osc 1 Wave is not Pls                           |
+|                               | $$ : Disabled if Osc 1 Wave is not Pls (Pulse)                   |
+|                               | $$$ : Noise is disabled if Osc 2 Wave is Nos (Noise)             |
 +-------------------------------+------------------------------------------------------------------+
   Mode 1: Omni On,  Poly          Mode 2: Omni On,  Mono          o: Yes                            
   Mode 3: Omni Off, Poly          Mode 4: Omni Off, Mono          x: No                             

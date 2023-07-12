@@ -445,7 +445,7 @@ private:
 
       wave_1 = (wave_1 * OSC_WAVE_TABLE_AMPLITUDE) >> 6;
       result += (wave_1 * m_mixer_noise_sub_osc_control * m_osc_gain_effective[N]) >> 6;
-    } else {
+    } else if (m_waveform[1] != WAVEFORM_2_NOISE) {
       // Noise (wave_1)
       int16_t wave_1 = -(OSC_WAVE_TABLE_AMPLITUDE << 8)
                        +(OSC_WAVE_TABLE_AMPLITUDE << 9) * (noise_int15 & 0x1);

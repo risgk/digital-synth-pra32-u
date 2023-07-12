@@ -7,7 +7,8 @@
 
 - Notes
     - $ : Disabled in Paraphonic Mode
-    - $$ : Disabled if Osc 1 Wave is not Pls
+    - $$ : Disabled if Osc 1 Wave is not Pls (Pulse)
+    - $$$ : Noise is disabled if Osc 2 Wave is Nos (Noise)
 - Osc 1 Wave [Saw|-|Tri|Pls|Sqr]
     - 0 (0-47): Saw Wave
     - 64 (48-79): Triangle Wave
@@ -26,7 +27,7 @@
         - 64: Saw 100%
         - 96: Saw 100% + Saw 50%
         - 127: Saw 100% + Saw 100% (max)
-- Mixer Noise/Sub Osc [N|S]
+- Mixer Noise/Sub Osc $$$ [N|S]
     - -64 (0): Noise 100%
     - +0 (64): 0%
     - +63 (127): Sub Osc 100%
