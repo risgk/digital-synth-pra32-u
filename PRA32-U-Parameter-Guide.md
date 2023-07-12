@@ -27,18 +27,18 @@
         - 96: Saw 100% + Saw 50%
         - 127: Saw 100% + Saw 100% (max)
 - Mixer Sub Osc
-- Osc 2 Wave $ [Saw|-|Tri|Nos|Sqr]
+- Osc 2 Wave [Saw|-|Tri|Nos|Sqr]
     - 0 (0-47): Saw Wave
     - 64 (48-79): Triangle Wave
     - 96 (80-111): White Noise
     - 127 (112-127): Square Wave
-- Osc 2 Coarse $ [-|+]
+- Osc 2 Coarse [-|+]
     - -48 (16): -48 semitone (min)
     - +48 (112): +48 semitone (max)
-- Osc 2 Fine $ [-|+]
+- Osc 2 Fine [-|+]
     - -64 (0): -100 cent (min)
     - +63 (127): +98.4375 cent (max)
-- Mixer Osc Mix $ [1|2]
+- Mixer Osc Mix [1|2]
 - Filter Cutoff
     - 4: f = 452.9 Hz (min)
     - 64: f = 2561.9 Hz
