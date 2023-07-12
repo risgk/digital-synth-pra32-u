@@ -94,7 +94,7 @@ end
 sound_off
 
 program_change(0)
-play_mono_a(4)
+play_mono_a(3)
 sound_off
 
 program_change(3)
