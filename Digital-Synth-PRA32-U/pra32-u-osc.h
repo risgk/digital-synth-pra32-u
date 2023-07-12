@@ -46,7 +46,7 @@ class PRA32_U_Osc {
   int8_t         m_osc1_shape_control_effective;
   int8_t         m_osc1_morph_control;
   uint16_t       m_osc1_shape;
-  uint8_t        m_mixer_sub_osc_control;
+  int8_t         m_mixer_noise_sub_osc_control;
   uint8_t        m_mix_table[OSC_MIX_TABLE_LENGTH];
   int8_t         m_shape_eg_amt;
   int8_t         m_shape_lfo_amt;
@@ -83,7 +83,7 @@ public:
   , m_osc1_shape_control_effective()
   , m_osc1_morph_control()
   , m_osc1_shape()
-  , m_mixer_sub_osc_control()
+  , m_mixer_noise_sub_osc_control()
   , m_mix_table()
   , m_shape_eg_amt()
   , m_shape_lfo_amt()
@@ -197,8 +197,11 @@ public:
   }
 
   INLINE void set_mixer_sub_osc_control(uint8_t controller_value) {
-    m_mixer_sub_osc_control = (((controller_value + 1) >> 1) *
-                              static_cast<uint8_t>(OSC_WAVE_TABLE_AMPLITUDE << 1)) >> 7;
+    if (controller_value == 127) {
+      ++controller_value;
+    }
+
+    m_mixer_noise_sub_osc_control = controller_value - 64;
   }
 
   template <uint8_t N>
@@ -429,16 +432,25 @@ private:
     int16_t wave_3 = get_wave_level(m_wave_table[N], phase_3);
     result += ((((wave_3 * osc1_gain * m_osc_gain_effective[N]) >> 8) * -m_osc1_morph_control) >> 6) * (m_waveform[0] == WAVEFORM_1_PULSE);
 
-    // Sub Osc (wave_1)
-    int16_t wave_1 = static_cast<uint16_t>(m_phase[N] >> 9);
-    if (wave_1 < -(64 << 8)) {
-      wave_1 = -(64 << 8) - (wave_1 + (64 << 8));
-    } else if (wave_1 < (64 << 8)) {
-      // do nothing
+    if (m_mixer_noise_sub_osc_control >= 0) {
+      // Sub Osc (wave_1)
+      int16_t wave_1 = static_cast<uint16_t>(m_phase[N] >> 9);
+      if (wave_1 < -(64 << 8)) {
+        wave_1 = -(64 << 8) - (wave_1 + (64 << 8));
+      } else if (wave_1 < (64 << 8)) {
+        // do nothing
+      } else {
+        wave_1 = (64 << 8) - (wave_1 - (64 << 8));
+      }
+
+      wave_1 = (wave_1 * OSC_WAVE_TABLE_AMPLITUDE) >> 6;
+      result += (wave_1 * m_mixer_noise_sub_osc_control * m_osc_gain_effective[N]) >> 6;
     } else {
-      wave_1 = (64 << 8) - (wave_1 - (64 << 8));
+      // Noise (wave_1)
+      int16_t wave_1 = -(OSC_WAVE_TABLE_AMPLITUDE << 8)
+                       +(OSC_WAVE_TABLE_AMPLITUDE << 9) * (noise_int15 & 0x1);
+      result += (wave_1 * -m_mixer_noise_sub_osc_control * m_osc_gain_effective[N]) >> 6;
     }
-    result += (wave_1 * m_mixer_sub_osc_control * m_osc_gain_effective[N]) >> 6;
 
     m_phase[N + 4] += m_freq[N + 4];
     boolean new_period_osc2 = (m_phase[N + 4] & 0x00FFFFFF) < m_freq[N + 4];

@@ -26,7 +26,10 @@
         - 64: Saw 100%
         - 96: Saw 100% + Saw 50%
         - 127: Saw 100% + Saw 100% (max)
-- Mixer Sub Osc
+- Mixer Noise/Sub Osc [N|S]
+    - -64 (0): Noise 100%
+    - +0 (64): 0%
+    - +63 (127): Sub Osc 100%
 - Osc 2 Wave [Saw|-|Tri|Nos|Sqr]
     - 0 (0-47): Saw Wave
     - 64 (48-79): Triangle Wave
