@@ -392,21 +392,21 @@ function afterChangeOsc1WaveOrVoiceMode() {
   var valueVoiceMode = localStorage.getItem("keyCC87");
   if (valueVoiceMode < 32) {
     targetCCNumbers.forEach(function(i) {
-      document.getElementById("inputCC" + String(i)).disabled = true;
+      document.getElementById("spanCC" + String(i)).style.color = 'lightgray';
     });
   } else {
     targetCCNumbers.forEach(function(i) {
-      document.getElementById("inputCC" + String(i)).disabled = false;
+      document.getElementById("spanCC" + String(i)).style.color = 'black';
     });
   }
 
   var valueOsc1Wave = localStorage.getItem("keyCC24");
   if ((valueOsc1Wave >= 80) && (valueOsc1Wave < 112)) {
-    document.getElementById("inputCC102").disabled = false;
-    document.getElementById("inputCC103").disabled = false;
+    document.getElementById("spanCC102").style.color = 'black';
+    document.getElementById("spanCC103").style.color = 'black';
   } else {
-    document.getElementById("inputCC102").disabled = true;
-    document.getElementById("inputCC103").disabled = true;
+    document.getElementById("spanCC102").style.color = 'lightgray';
+    document.getElementById("spanCC103").style.color = 'lightgray';
   }
 }
 
@@ -1069,10 +1069,10 @@ function getStoredCCValueString(index, number) {
 <td><input  id="inputCC26"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(MIXER_SUB_OSC  , value)"></td>
 <td><span    id="spanCC26" >-</span></td>
 <tr>
-<td colspan="2"><b>Osc 2</b> Wave <i>$</i> [Saw|-|Tri|Nos|Sqr]</td>
-<td colspan="2"><b>Osc 2</b> Coarse <i>$</i> [-|+]            </td>
-<td colspan="2"><b>Osc 2</b> Fine <i>$</i> [-|+]              </td>
-<td colspan="2"><b>Mixer</b> Osc Mix <i>$</i> [1|2]           </td>
+<td colspan="2"><b>Osc 2</b> Wave [Saw|-|Tri|Nos|Sqr]  </td>
+<td colspan="2"><b>Osc 2</b> Coarse [-|+]              </td>
+<td colspan="2"><b>Osc 2</b> Fine [-|+]                </td>
+<td colspan="2"><b>Mixer</b> Osc Mix [1|2]             </td>
 </tr>
 <tr>
 <td><input  id="inputCC55"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_2_WAVE     , value)"></td>
