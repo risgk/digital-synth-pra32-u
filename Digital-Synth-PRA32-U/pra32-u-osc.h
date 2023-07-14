@@ -93,10 +93,10 @@ public:
     m_portamento_coef[2] = PORTAMENTO_COEF_OFF;
     m_portamento_coef[3] = PORTAMENTO_COEF_OFF;
 
-    set_mono_mode        (false);
-    set_mono_osc2_mix    (0);
-    set_mono_osc2_pitch  (0);
-    set_mono_osc2_detune (0);
+    set_mono_mode   (false);
+    set_osc2_mix    (0);
+    set_osc2_pitch  (0);
+    set_osc2_detune (0);
 
     m_waveform[0] = WAVEFORM_SAW;
     m_waveform[1] = WAVEFORM_SAW;
@@ -240,11 +240,11 @@ public:
     m_mono_mode = mono_mode;
   }
 
-  INLINE void set_mono_osc2_mix(uint8_t controller_value) {
+  INLINE void set_osc2_mix(uint8_t controller_value) {
     m_osc2_mix = (controller_value + 1) >> 1;
   }
 
-  INLINE void set_mono_osc2_pitch(uint8_t controller_value) {
+  INLINE void set_osc2_pitch(uint8_t controller_value) {
     if (controller_value < 16) {
       m_osc2_pitch = -48;
     } else if (controller_value < 112) {
@@ -254,7 +254,7 @@ public:
     }
   }
 
-  INLINE void set_mono_osc2_detune(uint8_t controller_value) {
+  INLINE void set_osc2_detune(uint8_t controller_value) {
     m_osc2_detune = (controller_value - 64) << 1;
   }
 

@@ -503,15 +503,15 @@ public:
       break;
 
     case MIXER_OSC_MIX  :
-      m_osc.set_mono_osc2_mix(controller_value);
+      m_osc.set_osc2_mix(controller_value);
       break;
 
     case OSC_2_COARSE   :
-      m_osc.set_mono_osc2_pitch(controller_value);
+      m_osc.set_osc2_pitch(controller_value);
       break;
 
     case OSC_2_FINE     :
-      m_osc.set_mono_osc2_detune(controller_value);
+      m_osc.set_osc2_detune(controller_value);
       break;
 
     case EG_OSC_AMT     :
