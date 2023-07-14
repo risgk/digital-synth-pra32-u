@@ -357,12 +357,12 @@ public:
     int32_t result = 0;
 
     if (m_mono_mode == false) {
-      result += get_osc_wave_level<0>(noise_int15);
-      result += get_osc_wave_level<1>(noise_int15);
-      result += get_osc_wave_level<2>(noise_int15);
-      result += get_osc_wave_level<3>(noise_int15);
+      result += process_osc<0>(noise_int15);
+      result += process_osc<1>(noise_int15);
+      result += process_osc<2>(noise_int15);
+      result += process_osc<3>(noise_int15);
     } else {
-      result += get_osc_wave_level<0>(noise_int15);
+      result += process_osc<0>(noise_int15);
       result <<= 1;
     }
 #else
@@ -401,7 +401,7 @@ private:
   }
 
   template <uint8_t N>
-  INLINE int32_t get_osc_wave_level(int16_t noise_int15) {
+  INLINE int32_t process_osc(int16_t noise_int15) {
     int32_t result = 0;
 
     uint8_t osc1_gain = m_mix_table[(OSC_MIX_TABLE_LENGTH - 1) - m_mono_osc2_mix];
