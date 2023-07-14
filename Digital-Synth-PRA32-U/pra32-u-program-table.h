@@ -36,7 +36,7 @@ uint8_t g_preset_table_LFO_FADE_TIME  [] = {0  , 64 , 0  , 64 , 0  , 0  , 64 , 0
 uint8_t g_preset_table_LFO_OSC_AMT    [] = {80 , 80 , 127, 80 , 80 , 127, 80 , 64 ,   80 , 80 , 127, 80 , 80 , 127, 80 , 64 };
 uint8_t g_preset_table_LFO_OSC_DST    [] = {0  , 0  , 127, 0  , 0  , 127, 0  , 0  ,   0  , 0  , 127, 0  , 0  , 127, 0  , 0  };
 uint8_t g_preset_table_LFO_FILTER_AMT [] = {64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ,   64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 };
-uint8_t g_preset_table_AMP_LEVEL      [] = {127, 127, 96 , 127, 127, 127, 127, 127,   127, 127, 96 , 127, 127, 127, 127, 127};
+uint8_t g_preset_table_AMP_LEVEL      [] = {127, 127, 127, 127, 127, 127, 127, 127,   127, 127, 127, 127, 127, 127, 127, 127};
 
 uint8_t g_preset_table_AMP_ATTACK     [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
 uint8_t g_preset_table_AMP_DECAY      [] = {127, 127, 127, 127, 96 , 127, 127, 127,   127, 127, 127, 127, 96 , 127, 127, 127};
