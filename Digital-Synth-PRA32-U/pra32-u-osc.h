@@ -414,16 +414,7 @@ private:
 
     if (m_mixer_noise_sub_osc_control >= 0) {
       // Sub Osc (wave_1)
-      int16_t wave_1 = static_cast<uint16_t>(m_phase[N] >> 9);
-      if (wave_1 < -(64 << 8)) {
-        wave_1 = -(64 << 8) - (wave_1 + (64 << 8));
-      } else if (wave_1 < (64 << 8)) {
-        // do nothing
-      } else {
-        wave_1 = (64 << 8) - (wave_1 - (64 << 8));
-      }
-
-      wave_1 = (wave_1 * OSC_WAVE_TABLE_AMPLITUDE) >> 6;
+      int16_t wave_1 = get_wave_level(g_osc_triangle_wave_table, m_phase[N] >> 1);
       result += (wave_1 * m_mixer_noise_sub_osc_control * m_osc_gain_effective[N]) >> 6;
     } else if (m_waveform[1] != WAVEFORM_2_NOISE) {
       // Noise (wave_1)
