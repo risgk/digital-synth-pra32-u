@@ -525,7 +525,7 @@ private:
 
   template <uint8_t N>
   INLINE void update_freq_offset(int16_t noise_int15) {
-    m_freq_offset[N] = (noise_int15 >= 14336) << 8;
+    m_freq_offset[N] = (noise_int15 >= 14336) << 7;
     m_freq[N] = m_freq_base[N] + m_freq_offset[N];
   }
 
