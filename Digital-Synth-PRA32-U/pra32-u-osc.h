@@ -357,12 +357,12 @@ public:
     int32_t result = 0;
 
     if (m_mono_mode == false) {
-      result += process_osc<0>(noise_int15);
-      result += process_osc<1>(noise_int15);
-      result += process_osc<2>(noise_int15);
-      result += process_osc<3>(noise_int15);
+      result += process_osc<0>(noise_int15, true);
+      result += process_osc<1>(noise_int15, true);
+      result += process_osc<2>(noise_int15, true);
+      result += process_osc<3>(noise_int15, true);
     } else {
-      result += process_osc<0>(noise_int15);
+      result += process_osc<0>(noise_int15, false);
       result <<= 1;
     }
 #else
@@ -401,7 +401,7 @@ private:
   }
 
   template <uint8_t N>
-  INLINE int32_t process_osc(int16_t noise_int15) {
+  INLINE int32_t process_osc(int16_t noise_int15, bool halve_noise_level) {
     int32_t result = 0;
 
     uint8_t osc1_gain = m_mix_table[(OSC_MIX_TABLE_LENGTH - 1) - m_mono_osc2_mix];
@@ -437,7 +437,7 @@ private:
       // Noise (wave_1)
       int16_t wave_1 = -(OSC_WAVE_TABLE_AMPLITUDE << 8)
                        +(OSC_WAVE_TABLE_AMPLITUDE << 9) * (noise_int15 & 0x1);
-      result += (wave_1 * -m_mixer_noise_sub_osc_control * m_osc_gain_effective[N]) >> 6;
+      result += (wave_1 * -m_mixer_noise_sub_osc_control * m_osc_gain_effective[N]) >> (6 + halve_noise_level);
     }
 
     m_phase[N + 4] += m_freq[N + 4];
@@ -452,7 +452,7 @@ private:
       // Noise (wave_2)
       int16_t wave_2 = -(OSC_WAVE_TABLE_AMPLITUDE << 8)
                        +(OSC_WAVE_TABLE_AMPLITUDE << 9) * (noise_int15 & 0x1);
-      result += (wave_2 * osc2_gain * m_osc_gain_effective[N]) >> 8;
+      result += (wave_2 * osc2_gain * m_osc_gain_effective[N]) >> (8 + halve_noise_level);
     }
 
     return result;
