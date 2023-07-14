@@ -6,7 +6,7 @@
 
 
 class PRA32_U_Osc {
-  static const uint8_t OSC_MIX_TABLE_LENGTH   = 31;
+  static const uint8_t OSC_MIX_TABLE_LENGTH   = 65;
 
   static const uint8_t PORTAMENTO_COEF_OFF    = 190;
 
@@ -37,9 +37,9 @@ class PRA32_U_Osc {
   int8_t         m_osc_level;
 
   boolean        m_mono_mode;
-  uint8_t        m_mono_osc2_mix;
-  int8_t         m_mono_osc2_pitch;
-  int8_t         m_mono_osc2_detune;
+  uint8_t        m_osc2_mix;
+  int8_t         m_osc2_pitch;
+  int8_t         m_osc2_detune;
 
   uint8_t        m_phase_high;
   int8_t         m_osc1_shape_control;
@@ -47,7 +47,7 @@ class PRA32_U_Osc {
   int8_t         m_osc1_morph_control;
   uint16_t       m_osc1_shape;
   int8_t         m_mixer_noise_sub_osc_control;
-  uint8_t        m_mix_table[OSC_MIX_TABLE_LENGTH];
+  int16_t        m_mix_table[OSC_MIX_TABLE_LENGTH];
   int8_t         m_shape_eg_amt;
   int8_t         m_shape_lfo_amt;
 
@@ -74,9 +74,9 @@ public:
   , m_osc_level()
 
   , m_mono_mode()
-  , m_mono_osc2_mix()
-  , m_mono_osc2_pitch()
-  , m_mono_osc2_detune()
+  , m_osc2_mix()
+  , m_osc2_pitch()
+  , m_osc2_detune()
 
   , m_phase_high()
   , m_osc1_shape_control()
@@ -144,8 +144,8 @@ public:
 
     m_osc1_shape = 0x8000;
     for (uint8_t i = 0; i < OSC_MIX_TABLE_LENGTH; ++i) {
-      m_mix_table[i] = static_cast<uint8_t>(sqrtf(static_cast<float>(i) /
-                                                  (OSC_MIX_TABLE_LENGTH - 1)) * 255);
+      m_mix_table[i] = static_cast<int16_t>(sqrtf(static_cast<float>(i) /
+                                            (OSC_MIX_TABLE_LENGTH - 1)) * (1 << 12));
     }
 
     set_pitch_bend_range(2);
@@ -241,29 +241,21 @@ public:
   }
 
   INLINE void set_mono_osc2_mix(uint8_t controller_value) {
-    if (controller_value >= 2) {
-      controller_value -= 2;
-    }
-
-    if (controller_value > 123) {
-      controller_value = 123;
-    }
-
-    m_mono_osc2_mix = controller_value >> 2;
+    m_osc2_mix = (controller_value + 1) >> 1;
   }
 
   INLINE void set_mono_osc2_pitch(uint8_t controller_value) {
     if (controller_value < 16) {
-      m_mono_osc2_pitch = -48;
+      m_osc2_pitch = -48;
     } else if (controller_value < 112) {
-      m_mono_osc2_pitch = controller_value - 64;
+      m_osc2_pitch = controller_value - 64;
     } else {
-      m_mono_osc2_pitch = 48;
+      m_osc2_pitch = 48;
     }
   }
 
   INLINE void set_mono_osc2_detune(uint8_t controller_value) {
-    m_mono_osc2_detune = (controller_value - 64) << 1;
+    m_osc2_detune = (controller_value - 64) << 1;
   }
 
   template <uint8_t N>
@@ -404,8 +396,8 @@ private:
   INLINE int32_t process_osc(int16_t noise_int15, bool halve_noise_level) {
     int32_t result = 0;
 
-    uint8_t osc1_gain = m_mix_table[(OSC_MIX_TABLE_LENGTH - 1) - m_mono_osc2_mix];
-    uint8_t osc2_gain = m_mix_table[                             m_mono_osc2_mix];
+    int16_t osc1_gain = m_mix_table[(OSC_MIX_TABLE_LENGTH - 1) - m_osc2_mix];
+    int16_t osc2_gain = m_mix_table[                             m_osc2_mix];
 
     m_phase[N] += m_freq[N];
     boolean new_period_osc1 = (m_phase[N] & 0x00FFFFFF) < m_freq[N];
@@ -413,12 +405,12 @@ private:
     m_wave_table[N] = reinterpret_cast<const int16_t*>( reinterpret_cast<const uint8_t*>( m_wave_table[N]) +
                                                        (reinterpret_cast<const uintptr_t>(m_wave_table_temp[N]) * new_period_osc1));
     int32_t wave_0 = get_wave_level(m_wave_table[N], m_phase[N]);
-    result += (wave_0 * osc1_gain * m_osc_gain_effective[N]) >> 8;
+    result += (wave_0 * osc1_gain * m_osc_gain_effective[N]) >> 12;
 
     // For Pulse Wave (wave_3)
     uint32_t phase_3 = m_phase[N] + (m_osc1_shape << 8); // todo
     int16_t wave_3 = get_wave_level(m_wave_table[N], phase_3);
-    result += ((((wave_3 * osc1_gain * m_osc_gain_effective[N]) >> 8) * -m_osc1_morph_control) >> 6) * (m_waveform[0] == WAVEFORM_1_PULSE);
+    result += ((((wave_3 * osc1_gain * m_osc_gain_effective[N]) >> 12) * -m_osc1_morph_control) >> 6) * (m_waveform[0] == WAVEFORM_1_PULSE);
 
     if (m_mixer_noise_sub_osc_control >= 0) {
       // Sub Osc (wave_1)
@@ -447,12 +439,12 @@ private:
                                                        (reinterpret_cast<const uintptr_t>(m_wave_table_temp[N + 4]) * new_period_osc2));
     if (m_waveform[1] != WAVEFORM_2_NOISE) {
       int16_t wave_2 = get_wave_level(m_wave_table[N + 4], m_phase[N + 4]);
-      result += (wave_2 * osc2_gain * m_osc_gain_effective[N]) >> 8;
+      result += (wave_2 * osc2_gain * m_osc_gain_effective[N]) >> 12;
     } else {
       // Noise (wave_2)
       int16_t wave_2 = -(OSC_WAVE_TABLE_AMPLITUDE << 8)
                        +(OSC_WAVE_TABLE_AMPLITUDE << 9) * (noise_int15 & 0x1);
-      result += (wave_2 * osc2_gain * m_osc_gain_effective[N]) >> (8 + halve_noise_level);
+      result += (wave_2 * osc2_gain * m_osc_gain_effective[N]) >> (12 + halve_noise_level);
     }
 
     return result;
@@ -489,7 +481,7 @@ private:
 
     if (N >= 4) {
       pitch_temp += (lfo_level * m_pitch_lfo_amt[1]) >> 7;
-      pitch_temp += (m_mono_osc2_pitch << 8) + m_mono_osc2_detune + m_mono_osc2_detune;
+      pitch_temp += (m_osc2_pitch << 8) + m_osc2_detune + m_osc2_detune;
     } else {
       pitch_temp += (lfo_level * m_pitch_lfo_amt[0]) >> 7;
     }
