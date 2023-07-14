@@ -30,10 +30,6 @@ public:
   , m_sustain()
   , m_release_coef()
   {
-    initialize();
-  }
-
-  INLINE void initialize() {
     m_state = STATE_IDLE;
     set_attack(0);
     set_decay(0);

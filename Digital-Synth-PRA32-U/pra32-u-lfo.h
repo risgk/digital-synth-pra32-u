@@ -40,10 +40,6 @@ public:
   , m_noise_int15()
   , m_sampled_noise_int15()
   {
-    initialize();
-  }
-
-  INLINE void initialize() {
     m_lfo_waveform = LFO_WAVEFORM_TRI_ASYNC;
     m_lfo_fade_coef = LFO_FADE_COEF_OFF;
     m_lfo_fade_cnt = m_lfo_fade_coef;

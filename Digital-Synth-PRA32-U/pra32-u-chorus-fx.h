@@ -46,10 +46,6 @@ public:
   , m_chorus_lfo_phase()
   , m_chorus_delay_time()
   {
-    initialize();
-  }
-
-  INLINE void initialize() {
     m_delay_wp = DELAY_BUFF_SIZE - 1;
 
     set_chorus_depth     (32 );

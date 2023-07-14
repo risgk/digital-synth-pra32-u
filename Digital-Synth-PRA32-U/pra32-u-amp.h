@@ -11,10 +11,6 @@ PRA32_U_Amp()
   : m_gain()
   , m_gain_mod_input()
   {
-    initialize();
-  }
-
-  INLINE void initialize() {
     set_gain<0>(127);
     set_gain<1>(127);
   }

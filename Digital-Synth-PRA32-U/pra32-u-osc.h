@@ -88,10 +88,6 @@ public:
   , m_shape_eg_amt()
   , m_shape_lfo_amt()
   {
-    initialize();
-  }
-
-  INLINE void initialize() {
     m_portamento_coef[0] = PORTAMENTO_COEF_OFF;
     m_portamento_coef[1] = PORTAMENTO_COEF_OFF;
     m_portamento_coef[2] = PORTAMENTO_COEF_OFF;
@@ -144,14 +140,6 @@ public:
     m_freq_base[5] = g_osc_freq_table[0];
     m_freq_base[6] = g_osc_freq_table[0];
     m_freq_base[7] = g_osc_freq_table[0];
-    m_freq_offset[0] = 0;
-    m_freq_offset[1] = 0;
-    m_freq_offset[2] = 0;
-    m_freq_offset[3] = 0;
-    m_freq_offset[4] = 0;
-    m_freq_offset[5] = 0;
-    m_freq_offset[6] = 0;
-    m_freq_offset[7] = 0;
     m_osc_level = 16;
 
     m_osc1_shape = 0x8000;

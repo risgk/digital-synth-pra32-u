@@ -74,12 +74,6 @@ public:
 
   , m_sp_prog_chg_cc_values()
   {
-    initialize();
-  }
-
-  INLINE void initialize() {
-    m_count = 0;
-
     m_note_queue[0] = 0;
     m_note_queue[1] = 1;
     m_note_queue[2] = 2;
@@ -90,18 +84,9 @@ public:
     m_note_on_number[3] = NOTE_NUMBER_INVALID;
     m_voice_mode = VOICE_PARAPHONIC;
 
-    m_osc.initialize();
     m_osc.set_mono_mode(m_voice_mode);
-    m_filter.initialize();
-    m_amp.initialize();
 
-    m_noise_gen.initialize();
-
-    m_eg[0].initialize();
-    m_eg[1].initialize();
     m_amp.set_gain<1>(127);
-
-    m_chorus_fx.initialize();
 
     m_eg_osc_amt = 64;
     m_lfo_osc_amt = 64;

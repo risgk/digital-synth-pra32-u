@@ -61,8 +61,6 @@ void __not_in_flash_func(setup1)() {
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
 
-  g_synth.initialize();
-
 #if defined(USE_USB_MIDI)
   TinyUSB_Device_Init(0);
 #endif

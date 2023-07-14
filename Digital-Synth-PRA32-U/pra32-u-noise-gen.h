@@ -9,13 +9,8 @@ class PRA32_U_NoiseGen {
 
 public:
   PRA32_U_NoiseGen()
-  : m_state_a()
+  : m_state_a(1)
   {
-    initialize();
-  }
-
-  INLINE void initialize() {
-    m_state_a = 1;
   }
 
   INLINE int16_t process() {
