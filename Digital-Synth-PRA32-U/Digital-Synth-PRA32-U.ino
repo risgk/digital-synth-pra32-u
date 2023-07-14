@@ -22,7 +22,6 @@
 #define I2S_BCLK_PIN                 (10)  // I2S_LRCLK_PIN is I2S_BCLK_PIN + 1
 #define I2S_SWAP_BCLK_AND_LRCLK_PINS (false)
 
-#define I2S_BITS_PER_SAMPLE          (16)  // 16, 24, or 32
 #define I2S_BUFFERS                  (3)
 #define I2S_BUFFER_WORDS             (16)
 
@@ -79,7 +78,7 @@ void __not_in_flash_func(setup1)() {
 
   g_i2s_output.setDATA(I2S_DATA_PIN);
   g_i2s_output.setBCLK(I2S_BCLK_PIN);
-  g_i2s_output.setBitsPerSample(I2S_BITS_PER_SAMPLE);
+  g_i2s_output.setBitsPerSample(16);
   g_i2s_output.setBuffers(I2S_BUFFERS, I2S_BUFFER_WORDS);
   g_i2s_output.setFrequency(SAMPLING_RATE);
   if (I2S_SWAP_BCLK_AND_LRCLK_PINS) {
@@ -126,13 +125,7 @@ void __not_in_flash_func(loop1)() {
 #endif
 
   for (uint32_t i = 0; i < I2S_BUFFER_WORDS; i++) {
-#if   (I2S_BITS_PER_SAMPLE == 16)
     g_i2s_output.write16(left_buffer[i], right_buffer[i]);
-#elif (I2S_BITS_PER_SAMPLE == 24)
-    g_i2s_output.write24(left_buffer[i] << 16, right_buffer[i] << 16);
-#elif (I2S_BITS_PER_SAMPLE == 32)
-    g_i2s_output.write32(left_buffer[i] << 16, right_buffer[i] << 16);
-#endif
   }
 
 #if defined(DEBUG_PRINT)
