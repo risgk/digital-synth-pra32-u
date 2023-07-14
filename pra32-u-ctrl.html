@@ -386,7 +386,7 @@ var midiOutput  = null;
 var specialProgramChangeCCValues = [0, 0, 0, 0, 0, 0, 0, 0];
 var specialRandomControlCCValue = 0;
 
-function afterChangeOsc1WaveOrVoiceMode() {
+function afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceMode() {
   var targetCCNumbers = [86];
 
   var valueVoiceMode = localStorage.getItem("keyCC87");
@@ -408,6 +408,14 @@ function afterChangeOsc1WaveOrVoiceMode() {
     document.getElementById("spanCC102").style.color = 'lightgray';
     document.getElementById("spanCC103").style.color = 'lightgray';
   }
+
+  var valueOsc2Wave = localStorage.getItem("keyCC55");
+  var valueMixerSubOsc = localStorage.getItem("keyCC26");
+  if ((valueOsc2Wave >= 80) && (valueOsc2Wave < 112) && (valueMixerSubOsc < 64)) {
+    document.getElementById("spanCC26").style.color = 'lightgray';
+  } else {
+    document.getElementById("spanCC26").style.color = 'black';
+  }
 }
 
 function onMIDIMessage(event) {
@@ -419,8 +427,8 @@ function onMIDIMessage(event) {
     var value = event.data[2];
     if (controllersInLocalStorage.indexOf(number) >= 0) {
       updateDisplayOfControl(number, value);
-      if ((number == OSC_1_WAVE) || (number == VOICE_MODE)) {
-        afterChangeOsc1WaveOrVoiceMode();
+      if ((number == OSC_1_WAVE) || (number == OSC_2_WAVE) || (number == MIXER_SUB_OSC) || (number == VOICE_MODE)) {
+        afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceMode();
       }
     } else if (number == MODULATION     ) {
       document.getElementById("spanCC1").innerHTML = value;
@@ -646,8 +654,8 @@ function updateDisplayOfControl(number, value) {
 
 function onChangeControlChange(number, value) {
   updateDisplayOfControl(number, value);
-  if ((number == OSC_1_WAVE) || (number == VOICE_MODE)) {
-    afterChangeOsc1WaveOrVoiceMode();
+  if ((number == OSC_1_WAVE) || (number == OSC_2_WAVE) || (number == MIXER_SUB_OSC) || (number == VOICE_MODE)) {
+    afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceMode();
   }
   if (midiOutput) {
     midiOutput.send([(CONTROL_CHANGE | MIDI_CH), number, parseInt(value)]);
@@ -1056,9 +1064,9 @@ function getStoredCCValueString(index, number) {
 </tr>
 <tr>
 <td colspan="2"><b>Osc 1</b> Wave [Saw|-|Tri|Pls|Sqr]  </td>
-<td colspan="2"><b>Osc 1</b> Shape <i>$$</i>                  </td>
-<td colspan="2"><b>Osc 1</b> Morph <i>$$</i>                  </td>
-<td colspan="2"><b>Mixer</b> Noise/Sub Osc <i>$$$</i> [N|S]   </td>
+<td colspan="2"><b>Osc 1</b> Shape                     </td>
+<td colspan="2"><b>Osc 1</b> Morph                     </td>
+<td colspan="2"><b>Mixer</b> Noise/Sub Osc [N|S]       </td>
 </tr>
 <tr>
 <td><input  id="inputCC24"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_1_WAVE     , value)"></td>
@@ -1089,7 +1097,7 @@ function getStoredCCValueString(index, number) {
 <td colspan="2"><b>Filter</b> Cutoff                   </td>
 <td colspan="2"><b>Filter</b> Resonance                </td>
 <td colspan="2"><b>Filter</b> EG Amt [-|+]             </td>
-<td colspan="2"><b>Filter</b> Key Track <i>$</i> [0.0|0.5|1.0]</td>
+<td colspan="2"><b>Filter</b> Key Track [0.0|0.5|1.0]  </td>
 </tr>
 <tr>
 <td><input  id="inputCC16"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(FILTER_CUTOFF  , value)"></td>

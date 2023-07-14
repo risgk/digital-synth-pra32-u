@@ -27,7 +27,7 @@
         - 64: Saw 100%
         - 96: Saw 100% + Saw 50%
         - 127: Saw 100% + Saw 100% (max)
-- Mixer Noise/Sub Osc $$$ [N|S]
+- Mixer Noise/Sub Osc [N|S] $$$
     - -64 (0): Noise 100%
     - -63 (1): Noise 98.4%
     - -62 (2): Noise 96.9%
@@ -66,7 +66,7 @@
 - Filter EG Amt [-|+], LFO Filter Amt [-|+]
     - -60 (4): -120 (min)
     - +60 (124): +120 (max)
-- Filter Key Track $ [0.0|0.5|1.0]
+- Filter Key Track [0.0|0.5|1.0] $
     - 0 (0-31): 0.0
     - 64 (32-95): 0.5
     - 127 (96-127): 1.0
