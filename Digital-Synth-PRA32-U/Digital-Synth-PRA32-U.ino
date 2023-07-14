@@ -22,8 +22,8 @@
 #define I2S_BCLK_PIN                 (10)  // I2S_LRCLK_PIN is I2S_BCLK_PIN + 1
 #define I2S_SWAP_BCLK_AND_LRCLK_PINS (false)
 
-#define I2S_BUFFERS                  (3)
-#define I2S_BUFFER_WORDS             (16)
+#define I2S_BUFFERS                  (4)
+#define I2S_BUFFER_WORDS             (32)
 
 ////////////////////////////////////////////////////////////////
 
@@ -104,7 +104,7 @@ void __not_in_flash_func(loop1)() {
   uint32_t debug_measurement_start0_us = micros();
 #endif
 
-  for (uint32_t i = 0; i < (I2S_BUFFER_WORDS >> 3); i++) {
+  for (uint32_t i = 0; i < (I2S_BUFFER_WORDS >> 4); i++) {
     MIDI.read();
   }
 
