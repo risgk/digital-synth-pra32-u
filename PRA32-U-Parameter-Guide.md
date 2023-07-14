@@ -29,7 +29,12 @@
         - 127: Saw 100% + Saw 100% (max)
 - Mixer Noise/Sub Osc $$$ [N|S]
     - -64 (0): Noise 100%
+    - -63 (1): Noise 98.4%
+    - -62 (2): Noise 96.9%
+    - -1 (63): Noise 1.6%
     - +0 (64): 0%
+    - +1 (65): Sub Osc 1.6%
+    - +62 (126): Sub Osc 96.9%
     - +63 (127): Sub Osc 100%
 - Osc 2 Wave [Saw|-|Tri|Nos|Sqr]
     - 0 (0-47): Saw Wave
@@ -44,9 +49,11 @@
     - +63 (127): +98.4375 cent (max)
 - Mixer Osc Mix [1|2]
 - Filter Cutoff
-    - 4: f = 452.9 Hz (min)
-    - 64: f = 2561.9 Hz
-    - 124: f = 14492.6 Hz (max)
+    - 0: f = 13.0 Hz (min)
+    - 61: f = 440 Hz
+    - 64: f = 523.3 Hz
+    - 121: f = 14080 kHz
+    - 127: f = 19912.1 Hz (max)
 - Filter Resonance
     - 16 (0-23): Q = 0.7 (min)
     - 32 (24-39): Q = 1.0
@@ -54,7 +61,8 @@
     - 64 (56-71): Q = 2.0
     - 80 (72-87): Q = 2.8
     - 96 (88-103): Q = 4.0
-    - 112 (104-127): Q = 5.6 (max)
+    - 112 (104-119): Q = 5.6
+    - 127 (120-127): Q = 8.0 (max)
 - Filter EG Amt [-|+], LFO Filter Amt [-|+]
     - -60 (4): -120 (min)
     - +60 (124): +120 (max)
