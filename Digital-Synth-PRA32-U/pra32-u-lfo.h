@@ -124,7 +124,7 @@ private:
       level = m_sampled_noise_int15 >> 1;
       break;
     case LFO_WAVEFORM_SQUARE:
-      if (phase < 0x008000) {
+      if (phase < 0x800000) {
         level = 128 << 7;
       } else {
         level = 0;

@@ -45,7 +45,8 @@ class PRA32_U_Osc {
   int8_t         m_osc1_shape_control;
   int8_t         m_osc1_shape_control_effective;
   int8_t         m_osc1_morph_control;
-  uint16_t       m_osc1_shape;
+  int32_t        m_osc1_shape;
+  int32_t        m_osc1_shape_effective;
   int8_t         m_mixer_noise_sub_osc_control;
   int16_t        m_mix_table[OSC_MIX_TABLE_LENGTH];
   int8_t         m_shape_eg_amt;
@@ -83,6 +84,7 @@ public:
   , m_osc1_shape_control_effective()
   , m_osc1_morph_control()
   , m_osc1_shape()
+  , m_osc1_shape_effective()
   , m_mixer_noise_sub_osc_control()
   , m_mix_table()
   , m_shape_eg_amt()
@@ -142,7 +144,9 @@ public:
     m_freq_base[7] = g_osc_freq_table[0];
     m_osc_level = 16;
 
-    m_osc1_shape = 0x8000;
+    m_osc1_shape           = 0x8000;
+    m_osc1_shape_effective = 0x8000;
+
     for (uint8_t i = 0; i < OSC_MIX_TABLE_LENGTH; ++i) {
       m_mix_table[i] = static_cast<int16_t>(sqrtf(static_cast<float>(i) /
                                             (OSC_MIX_TABLE_LENGTH - 1)) * (1 << 12));
@@ -177,7 +181,8 @@ public:
   }
 
   INLINE void set_osc1_shape_control(uint8_t controller_value) {
-    m_osc1_shape_control = -(((controller_value + 1) >> 1) << 1);
+    controller_value = (controller_value < 127) ? controller_value : 128;
+    m_osc1_shape_control = -controller_value;
   }
 
   INLINE void set_osc1_morph_control(uint8_t controller_value) {
@@ -185,10 +190,7 @@ public:
   }
 
   INLINE void set_mixer_sub_osc_control(uint8_t controller_value) {
-    if (controller_value == 127) {
-      ++controller_value;
-    }
-
+    controller_value = (controller_value < 127) ? controller_value : 128;
     m_mixer_noise_sub_osc_control = controller_value - 64;
   }
 
@@ -396,6 +398,8 @@ private:
   INLINE int32_t process_osc(int16_t noise_int15, bool halve_noise_level) {
     int32_t result = 0;
 
+    update_osc1_shape_effective();
+
     int16_t osc1_gain = m_mix_table[(OSC_MIX_TABLE_LENGTH - 1) - m_osc2_mix];
     int16_t osc2_gain = m_mix_table[                             m_osc2_mix];
 
@@ -408,7 +412,7 @@ private:
     result += (wave_0 * osc1_gain * m_osc_gain_effective[N]) >> 12;
 
     // For Pulse Wave (wave_3)
-    uint32_t phase_3 = m_phase[N] + (m_osc1_shape << 8); // todo
+    uint32_t phase_3 = m_phase[N] + (m_osc1_shape_effective << 8);
     int16_t wave_3 = get_wave_level(m_wave_table[N], phase_3);
     result += ((((wave_3 * osc1_gain * m_osc_gain_effective[N]) >> 12) * -m_osc1_morph_control) >> 6) * (m_waveform[0] == WAVEFORM_1_PULSE);
 
@@ -543,8 +547,27 @@ private:
   }
 
   INLINE void update_osc1_shape(int16_t lfo_level, int16_t eg_level) {
-    m_osc1_shape = 0x8000u - (m_osc1_shape_control_effective << 8)
-                   + ((eg_level * m_shape_eg_amt) >> 5) - ((lfo_level * m_shape_lfo_amt) >> 3);
+    int32_t osc1_shape = 0x8000u - (m_osc1_shape_control_effective << 8)
+                         + ((eg_level * m_shape_eg_amt) >> 5) - ((lfo_level * m_shape_lfo_amt) >> 3);
+
+#if 0
+    // osc1_shape = clamp(osc1_shape, 0x0, 0x10000)
+    osc1_shape = osc1_shape - 0x10000;
+    osc1_shape = (osc1_shape < 0) * osc1_shape + 0x10000;
+    osc1_shape = (osc1_shape > 0) * osc1_shape;
+#endif
+
+    m_osc1_shape = osc1_shape;
+  }
+
+  INLINE void update_osc1_shape_effective() {
+    if (m_osc1_shape_effective + (1 << 8) < m_osc1_shape) {
+      m_osc1_shape_effective += (1 << 8);
+    } else if (m_osc1_shape_effective > m_osc1_shape + (1 << 8)) {
+      m_osc1_shape_effective -= (1 << 8);
+    } else {
+      m_osc1_shape_effective = m_osc1_shape;
+    }
   }
 
   INLINE void update_pitch_bend() {
