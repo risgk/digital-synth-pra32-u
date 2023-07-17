@@ -181,7 +181,6 @@ public:
   }
 
   INLINE void set_osc1_shape_control(uint8_t controller_value) {
-    controller_value = (controller_value < 127) ? controller_value : 128;
     m_osc1_shape_control = -controller_value;
   }
 
