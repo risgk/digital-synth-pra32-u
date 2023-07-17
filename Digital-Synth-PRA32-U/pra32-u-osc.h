@@ -142,7 +142,7 @@ public:
     m_freq_base[5] = g_osc_freq_table[0];
     m_freq_base[6] = g_osc_freq_table[0];
     m_freq_base[7] = g_osc_freq_table[0];
-    m_osc_level = 16;
+    m_osc_level = 48;
 
     m_osc1_shape           = 0x8000;
     m_osc1_shape_effective = 0x8000;
@@ -347,22 +347,31 @@ public:
 
   INLINE int16_t process(int16_t noise_int15) {
 #if 1
-    int32_t result = 0;
+    int32_t output = 0;
 
     if (m_mono_mode == false) {
-      result += process_osc<0>(noise_int15, true);
-      result += process_osc<1>(noise_int15, true);
-      result += process_osc<2>(noise_int15, true);
-      result += process_osc<3>(noise_int15, true);
+      output += process_osc<0>(noise_int15, true);
+      output += process_osc<1>(noise_int15, true);
+      output += process_osc<2>(noise_int15, true);
+      output += process_osc<3>(noise_int15, true);
     } else {
-      result += process_osc<0>(noise_int15, false);
-      result <<= 1;
+      output += process_osc<0>(noise_int15, false);
+      output <<= 1;
     }
 #else
-    int32_t result  = 0;
+    int32_t output  = 0;
 #endif
 
-    return result >> 8;
+    volatile int32_t result = output;
+#if 0
+    // result = clamp(y_0, (-(INT16_MAX << 8)), (INT16_MAX << 8))
+    result = result - (INT16_MAX << 8);
+    result = (result < 0) * result + (INT16_MAX << 8) - (-(INT16_MAX << 8));
+    result = (result > 0) * result + (-(INT16_MAX << 8));
+#endif
+    result = result >> 8;
+
+    return result;
   }
 
 private:
