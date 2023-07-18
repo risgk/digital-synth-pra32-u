@@ -149,7 +149,7 @@ public:
 
     for (uint8_t i = 0; i < OSC_MIX_TABLE_LENGTH; ++i) {
       m_mix_table[i] = static_cast<int16_t>(sqrtf(static_cast<float>(i) /
-                                            (OSC_MIX_TABLE_LENGTH - 1)) * (1 << 12));
+                                            (OSC_MIX_TABLE_LENGTH - 1)) * (1 << 10));
     }
 
     set_pitch_bend_range(2);
@@ -417,12 +417,12 @@ private:
     m_wave_table[N] = reinterpret_cast<const int16_t*>( reinterpret_cast<const uint8_t*>( m_wave_table[N]) +
                                                        (reinterpret_cast<const uintptr_t>(m_wave_table_temp[N]) * new_period_osc1));
     int32_t wave_0 = get_wave_level(m_wave_table[N], m_phase[N]);
-    result += (wave_0 * osc1_gain * m_osc_gain_effective[N]) >> 12;
+    result += (wave_0 * osc1_gain * m_osc_gain_effective[N]) >> 10;
 
     // For Pulse Wave (wave_3)
     uint32_t phase_3 = m_phase[N] + (m_osc1_shape_effective << 8);
     int16_t wave_3 = get_wave_level(m_wave_table[N], phase_3);
-    result += ((((wave_3 * osc1_gain * m_osc_gain_effective[N]) >> 12) * -m_osc1_morph_control) >> 6) * (m_waveform[0] == WAVEFORM_1_PULSE);
+    result += ((((wave_3 * osc1_gain * m_osc_gain_effective[N]) >> 10) * -m_osc1_morph_control) >> 6) * (m_waveform[0] == WAVEFORM_1_PULSE);
 
     if (m_mixer_noise_sub_osc_control >= 0) {
       // Sub Osc (wave_1)
@@ -442,12 +442,12 @@ private:
                                                        (reinterpret_cast<const uintptr_t>(m_wave_table_temp[N + 4]) * new_period_osc2));
     if (m_waveform[1] != WAVEFORM_2_NOISE) {
       int16_t wave_2 = get_wave_level(m_wave_table[N + 4], m_phase[N + 4]);
-      result += (wave_2 * osc2_gain * m_osc_gain_effective[N]) >> 12;
+      result += (wave_2 * osc2_gain * m_osc_gain_effective[N]) >> 10;
     } else {
       // Noise (wave_2)
       int16_t wave_2 = -(OSC_WAVE_TABLE_AMPLITUDE << 8)
                        +(OSC_WAVE_TABLE_AMPLITUDE << 9) * (noise_int15 & 0x1);
-      result += (wave_2 * osc2_gain * m_osc_gain_effective[N]) >> (12 + halve_noise_level);
+      result += (wave_2 * osc2_gain * m_osc_gain_effective[N]) >> (10 + halve_noise_level);
     }
 
     return result;
