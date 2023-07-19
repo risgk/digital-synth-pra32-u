@@ -142,7 +142,7 @@ public:
     m_freq_base[5] = g_osc_freq_table[0];
     m_freq_base[6] = g_osc_freq_table[0];
     m_freq_base[7] = g_osc_freq_table[0];
-    m_osc_level = 24;
+    m_osc_level = 48;
 
     m_osc1_shape           = 0x8000;
     m_osc1_shape_effective = 0x8000;
@@ -430,8 +430,8 @@ private:
       result += (wave_1 * m_mixer_noise_sub_osc_control * m_osc_gain_effective[N]) >> 6;
     } else if (m_waveform[1] != WAVEFORM_2_NOISE) {
       // Noise (wave_1)
-      int16_t wave_1 = -(OSC_WAVE_TABLE_AMPLITUDE << 8)
-                       +(OSC_WAVE_TABLE_AMPLITUDE << 9) * (noise_int15 & 0x1);
+      int16_t wave_1 =  -OSC_WAVE_TABLE_AMPLITUDE
+                       +(OSC_WAVE_TABLE_AMPLITUDE << 1) * (noise_int15 & 0x1);
       result += (wave_1 * -m_mixer_noise_sub_osc_control * m_osc_gain_effective[N]) >> (6 + halve_noise_level);
     }
 
@@ -445,8 +445,8 @@ private:
       result += (wave_2 * osc2_gain * m_osc_gain_effective[N]) >> 10;
     } else {
       // Noise (wave_2)
-      int16_t wave_2 = -(OSC_WAVE_TABLE_AMPLITUDE << 8)
-                       +(OSC_WAVE_TABLE_AMPLITUDE << 9) * (noise_int15 & 0x1);
+      int16_t wave_2 =  -OSC_WAVE_TABLE_AMPLITUDE
+                       +(OSC_WAVE_TABLE_AMPLITUDE << 1) * (noise_int15 & 0x1);
       result += (wave_2 * osc2_gain * m_osc_gain_effective[N]) >> (10 + halve_noise_level);
     }
 

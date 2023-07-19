@@ -110,7 +110,7 @@ def generate_osc_wave_table(name, last, amp, organ = false)
       level += yield(nn, k)
     end
     level *= amp
-    level = (level * (OSC_WAVE_TABLE_AMPLITUDE << 8)).round.to_i
+    level = (level * OSC_WAVE_TABLE_AMPLITUDE).round.to_i
     $file.printf("%+6d,", level)
     if n == (1 << OSC_WAVE_TABLE_SAMPLES_BITS)
       $file.printf("\n")
@@ -202,7 +202,7 @@ $file.printf("int16_t g_osc_triangle_wave_table[] = {\n  ")
   else
     level = 64 - (level - 64)
   end
-  level = (level * (OSC_WAVE_TABLE_AMPLITUDE << 8) / 64).round.to_i
+  level = (level * OSC_WAVE_TABLE_AMPLITUDE / 64).round.to_i
   $file.printf("%+6d,", level)
   if n == (1 << OSC_WAVE_TABLE_SAMPLES_BITS)
     $file.printf("\n")
