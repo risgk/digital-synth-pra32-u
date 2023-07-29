@@ -32,7 +32,7 @@
 ### USB MIDI In
 
 - **NOTE**: Select USB Stack: "Adafruit TinuUSB" in the Arduino IDE "Tools" menu
-- MIDI Device Name: "Pico"
+- MIDI Device Name: "Digital Synth PRA32-U"
 - Serial MIDI (31.25 kbps or 38.4 kbps) can also be used instead of USB MIDI
     - Comment out `#define USE_USB_MIDI` and uncomment out `//#define USE_SERIAL1_MIDI` in `"Digital-Synth-PRA32-U.ino"`
 

@@ -63,6 +63,8 @@ void __not_in_flash_func(setup1)() {
 
 #if defined(USE_USB_MIDI)
   TinyUSB_Device_Init(0);
+  USBDevice.setManufacturerDescriptor("ISGK Instruments");
+  USBDevice.setProductDescriptor("Digital Synth PRA32-U");
 #endif
   MIDI.setHandleNoteOn(handleNoteOn);
   MIDI.setHandleNoteOff(handleNoteOff);
