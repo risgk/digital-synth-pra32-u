@@ -34,9 +34,10 @@
     - MIDI Device Name: "Digital Synth PRA32-U"
     - **NOTE**: Select USB Stack: "Adafruit TinuUSB" in the Arduino IDE "Tools" menu
     - **KNOWN ISSUE**: When using some USB MIDI host hardware and communicate a lot, this device may miss MIDI messages
-- Serial MIDI (31.25 kbps or 38.4 kbps) can also be used instead of USB MIDI
+- UART MIDI can also be used instead of USB MIDI
     - Comment out `#define USE_USB_MIDI` and uncomment out `//#define USE_SERIAL1_MIDI`
       in "Digital-Synth-PRA32-U.ino" and modify `SERIAL1_MIDI_SPEED`
+    - Speed: 31.25 kbps (default) or 38.4 kbps
     - UART0 TX and RX are used by default
     - DIN/TRS MIDI input and output are available by using and modifying Adafruit MIDI FeatherWing Kit [ADA4740], for example
 
@@ -69,8 +70,11 @@
 
 ## Files
 
-- "Digital-Synth-PRA32-U-0.1.1-for-Pimoroni-Pico-Audio-Pack.uf2" (in the directory "bin") is a UF2 file for Pimoroni Pico Audio Pack
-- "Digital-Synth-PRA32-U-0.1.1-for-Waveshare-Pico-Audio-Rev2.1.uf2" (in the directory "bin") is a UF2 file for Waveshare Pico-Audio Rev2.1
+- "bin"
+    - "Digital-Synth-PRA32-U-0.1.1-USB-MIDI-Pimoroni.uf2": USB MIDI, for Pimoroni Pico Audio Pack
+    - "Digital-Synth-PRA32-U-0.1.1-UART-MIDI-Pimoroni.uf2": UART MIDI, for Pimoroni Pico Audio Pack
+    - "Digital-Synth-PRA32-U-0.1.1-USB-MIDI-Waveshare.uf2": USB MIDI, for Waveshare Pico-Audio Rev2.1
+    - "Digital-Synth-PRA32-U-0.1.1-UART-MIDI-Waveshare.uf2": UART MIDI, for Waveshare Pico-Audio Rev2.1
 - "Digital-Synth-PRA32-U.ino" is a Arduino sketch for Raspberry Pi Pico/RP2040 core
 - "pra32-u-make-sample-wav-file.cc" is for debugging on PC
     - GCC (g++) for PC is required
