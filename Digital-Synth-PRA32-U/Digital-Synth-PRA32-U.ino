@@ -15,12 +15,12 @@
 
 #define MIDI_CH                      (0)  // 0-based
 
-//#define I2S_DAC_MUTE_OFF_PIN         (0)
-#define I2S_DATA_PIN                 (22)
-#define I2S_MCLK_PIN                 (26)
-#define I2S_MCLK_MULT                (256)
-#define I2S_BCLK_PIN                 (27)  // I2S_LRCLK_PIN is I2S_BCLK_PIN + 1
-#define I2S_SWAP_BCLK_AND_LRCLK_PINS (true)
+#define I2S_DAC_MUTE_OFF_PIN         (22)
+#define I2S_DATA_PIN                 (9)
+//#define I2S_MCLK_PIN                 (0)
+//#define I2S_MCLK_MULT                (0)
+#define I2S_BCLK_PIN                 (10)  // I2S_LRCLK_PIN is I2S_BCLK_PIN + 1
+#define I2S_SWAP_BCLK_AND_LRCLK_PINS (false)
 
 #define I2S_BUFFERS                  (4)
 #define I2S_BUFFER_WORDS             (32)
