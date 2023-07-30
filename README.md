@@ -8,7 +8,7 @@
 
 - Monophonic/Paraphonic United Synthesizer for Raspberry Pi Pico
     - Monophonic Mode: 1-Voice, 2-Oscillator (with Sub Oscillator)
-    - Paraphonic Mode: 4-Voice, 1-Oscillator
+    - Paraphonic Mode: 4-Voice, 2-Oscillator (with Sub Oscillator)
     - Built-in Chorus FX
     - Controlled by MIDI -- PRA32-U is a MIDI sound module
 - The sound of **PRA32-U v0.1** is very similar to that of **VRA8-U (type-16) v2.2**
