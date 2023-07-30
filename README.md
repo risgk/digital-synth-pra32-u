@@ -17,7 +17,7 @@
     - **NOTE**: Large noise is generated during the sketch upload!
 - **Arduino IDE** and **Raspberry Pi Pico/RP2040** (by Earle F. Philhower, III) core are required
     - Additional Board Manager URL: <https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json>
-    - Raspberry Pi Pico/RP2040 core **version 4.0.4** is recommended
+    - Raspberry Pi Pico/RP2040 core **version 3.3.1** is recommended
     - Select CPU Speed: "120 MHz" in the Arduino IDE "Tools" menu
 
 
