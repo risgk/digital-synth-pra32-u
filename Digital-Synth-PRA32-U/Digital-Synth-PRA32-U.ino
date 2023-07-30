@@ -58,8 +58,20 @@ void __not_in_flash_func(loop)() {
 }
 
 void __not_in_flash_func(setup1)() {
-  pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, HIGH);
+  g_i2s_output.setSysClk(SAMPLING_RATE);
+  g_i2s_output.setFrequency(SAMPLING_RATE);
+  g_i2s_output.setDATA(I2S_DATA_PIN);
+#if defined(I2S_MCLK_PIN)
+  g_i2s_output.setMCLK(I2S_MCLK_PIN);
+  g_i2s_output.setMCLKmult(I2S_MCLK_MULT);
+#endif
+  g_i2s_output.setBCLK(I2S_BCLK_PIN);
+  if (I2S_SWAP_BCLK_AND_LRCLK_PINS) {
+    g_i2s_output.swapClocks();
+  }
+  g_i2s_output.setBitsPerSample(16);
+  g_i2s_output.setBuffers(I2S_BUFFERS, I2S_BUFFER_WORDS);
+  g_i2s_output.begin();
 
 #if defined(USE_USB_MIDI)
   TinyUSB_Device_Init(0);
@@ -76,32 +88,20 @@ void __not_in_flash_func(setup1)() {
   Serial1.begin(SERIAL1_MIDI_SPEED);
 #endif
 
-  g_i2s_output.setSysClk(SAMPLING_RATE);
-  g_i2s_output.setDATA(I2S_DATA_PIN);
-#if defined(I2S_MCLK_PIN)
-  g_i2s_output.setMCLK(I2S_MCLK_PIN);
-  g_i2s_output.setMCLKmult(I2S_MCLK_MULT);
-#endif
-  g_i2s_output.setBCLK(I2S_BCLK_PIN);
-  g_i2s_output.setBitsPerSample(16);
-  g_i2s_output.setBuffers(I2S_BUFFERS, I2S_BUFFER_WORDS);
-  g_i2s_output.setFrequency(SAMPLING_RATE);
-  if (I2S_SWAP_BCLK_AND_LRCLK_PINS) {
-    g_i2s_output.swapClocks();
-  }
-  g_i2s_output.begin();
-
-#if defined(I2S_DAC_MUTE_OFF_PIN)
-  pinMode(I2S_DAC_MUTE_OFF_PIN, OUTPUT);
-  digitalWrite(I2S_DAC_MUTE_OFF_PIN, HIGH);
-#endif
-
 #if defined(DEBUG_PRINT)
 #if defined(USE_SERIAL1_MIDI)
   Serial.begin(0);  // Select USB Stack: "Pico SDK" in the Arduino IDE "Tools" menu
 #else
   Serial1.begin(115200);
 #endif
+#endif
+
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, HIGH);
+
+#if defined(I2S_DAC_MUTE_OFF_PIN)
+  pinMode(I2S_DAC_MUTE_OFF_PIN, OUTPUT);
+  digitalWrite(I2S_DAC_MUTE_OFF_PIN, HIGH);
 #endif
 }
 
