@@ -33,14 +33,14 @@
 - **NOTE**: Select USB Stack: "Adafruit TinuUSB" in the Arduino IDE "Tools" menu
 - MIDI Device Name: "Digital Synth PRA32-U"
 - Serial MIDI (31.25 kbps or 38.4 kbps) can also be used instead of USB MIDI
-    - Comment out `#define USE_USB_MIDI` and uncomment out `//#define USE_SERIAL1_MIDI` in `"Digital-Synth-PRA32-U.ino"`
+    - Comment out `#define USE_USB_MIDI` and uncomment out `//#define USE_SERIAL1_MIDI` in "Digital-Synth-PRA32-U.ino"
 
 
 ### Audio Out
 
 - Use an I2S DAC (e.g. Texas Instruments PCM5100A and Cirrus Logic CS4344), Sampling Rate: 48 kHz, Bit Depth: 16 bit
 - The RP2040 system clock (sysclk) changes to 147.6 MHz by I2S setSysClk()
-- Modify `I2S_DAC_MUTE_OFF_PIN`, `I2S_DATA_PIN`, `I2S_BCLK_PIN`, and `I2S_SWAP_BCLK_AND_LRCLK_PINS` in `"Digital-Synth-PRA32-U.ino"` to match the hardware configuration
+- Modify `I2S_DAC_MUTE_OFF_PIN`, `I2S_DATA_PIN`, `I2S_BCLK_PIN`, and `I2S_SWAP_BCLK_AND_LRCLK_PINS` in "Digital-Synth-PRA32-U.ino" to match the hardware configuration
 - The default setting is for Pimoroni [Pico Audio Pack](https://shop.pimoroni.com/products/pico-audio-pack) [PIM544]
 ```
 #define I2S_DAC_MUTE_OFF_PIN         (22)
@@ -63,19 +63,19 @@
 
 ## Files
 
-- `"Digital-Synth-PRA32-U-0.1.1-for-Pimoroni-Pico-Audio-Pack.uf2"` (in the directory `"bin"`) is a UF2 file for Pimoroni Pico Audio Pack
-- `"Digital-Synth-PRA32-U-0.1.1-for-Waveshare-Pico-Audio-Rev2.1.uf2"` (in the directory `"bin"`) is a UF2 file for Waveshare Pico-Audio Rev2.1
-- `"Digital-Synth-PRA32-U.ino"` is a Arduino sketch for Raspberry Pi Pico/RP2040 core
-- `"pra32-u-make-sample-wav-file.cc"` is for debugging on PC
+- "Digital-Synth-PRA32-U-0.1.1-for-Pimoroni-Pico-Audio-Pack.uf2" (in the directory "bin") is a UF2 file for Pimoroni Pico Audio Pack
+- "Digital-Synth-PRA32-U-0.1.1-for-Waveshare-Pico-Audio-Rev2.1.uf2" (in the directory "bin") is a UF2 file for Waveshare Pico-Audio Rev2.1
+- "Digital-Synth-PRA32-U.ino" is a Arduino sketch for Raspberry Pi Pico/RP2040 core
+- "pra32-u-make-sample-wav-file.cc" is for debugging on PC
     - GCC (g++) for PC is required
-    - `"pra32-u-make-sample-wav-file-cc.bat"` makes a sample WAV file (working on Windows)
-- `"pra32-u-generate-*.rb"` generates source or header files
+    - "pra32-u-make-sample-wav-file-cc.bat" makes a sample WAV file (working on Windows)
+- "pra32-u-generate-*.rb" generates source or header files
     - A Ruby execution environment is required
 
 
 ## PRA32-U CTRL
 
-- `"pra32-u-ctrl.html"`: MIDI Controller (Editor) Application for PRA32-U, HTML App (Web App)
+- "pra32-u-ctrl.html": MIDI Controller (Editor) Application for PRA32-U, HTML App (Web App)
 - We recommend using Google Chrome, which implements Web MIDI API
 - Select "Digital Synth PRA32-U" in the list "MIDI Out"
 - Functions
