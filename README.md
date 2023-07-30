@@ -6,7 +6,7 @@
 
 ## Overview
 
-- Monophonic/Paraphonic United Synthesizer for Raspberry Pi Pico
+- Monophonic/Paraphonic United Synthesizer for Raspberry Pi Pico/RP2040
     - Monophonic Mode: 1-Voice, 2-Oscillator (with Sub Oscillator)
     - Paraphonic Mode: 4-Voice, 2-Oscillator (with Sub Oscillator)
     - Built-in Chorus FX
@@ -33,14 +33,18 @@
 - USB MIDI is the default
     - MIDI Device Name: "Digital Synth PRA32-U"
     - **NOTE**: Select USB Stack: "Adafruit TinuUSB" in the Arduino IDE "Tools" menu
+    - **KNOWN ISSUE**: When using some USB MIDI host hardware and communicate a lot, this device may miss MIDI messages
 - Serial MIDI (31.25 kbps or 38.4 kbps) can also be used instead of USB MIDI
-    - Comment out `#define USE_USB_MIDI` and uncomment out `//#define USE_SERIAL1_MIDI` in "Digital-Synth-PRA32-U.ino"
-    - Modify `SERIAL1_MIDI_SPEED`
+    - Comment out `#define USE_USB_MIDI` and uncomment out `//#define USE_SERIAL1_MIDI`
+      in "Digital-Synth-PRA32-U.ino" and modify `SERIAL1_MIDI_SPEED`
+    - UART0 TX and RX are used by default
+    - DIN/TRS MIDI input and output are available by modifying and using Adafruit MIDI FeatherWing Kit [ADA4740], for example
+
 
 ### Audio Out
 
 - Use an I2S DAC (e.g. Texas Instruments PCM5100A and Cirrus Logic CS4344), Sampling Rate: 48 kHz, Bit Depth: 16 bit
-- The RP2040 system clock (sysclk) changes to 147.6 MHz by I2S setSysClk()
+- The RP2040 system clock (sysclk) changes to overclocked 147.6 MHz by I2S Audio Library setSysClk()
 - Modify `I2S_DAC_MUTE_OFF_PIN`, `I2S_DATA_PIN`, `I2S_MCLK_PIN`, `I2S_MCLK_MULT`, `I2S_BCLK_PIN`, and `I2S_SWAP_BCLK_AND_LRCLK_PINS`
   in "Digital-Synth-PRA32-U.ino" to match the hardware configuration
 - The default setting is for Pimoroni [Pico Audio Pack](https://shop.pimoroni.com/products/pico-audio-pack) [PIM544]
