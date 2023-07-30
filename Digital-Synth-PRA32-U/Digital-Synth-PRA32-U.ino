@@ -2,7 +2,7 @@
  * Digital Synth PRA32-U
  *
  * - An I2S DAC hardware (e.g. Pico Audio Pack) is required
- * - Raspberry Pi Pico/RP2040 core version 3.2.0 is recommended
+ * - Raspberry Pi Pico/RP2040 core version 3.3.1 is recommended
  * - Select CPU Speed: "120 MHz" in the Arduino IDE "Tools" menu
  */
 
@@ -106,9 +106,7 @@ void __not_in_flash_func(loop1)() {
   uint32_t debug_measurement_start0_us = micros();
 #endif
 
-  for (uint32_t i = 0; i < (I2S_BUFFER_WORDS >> 4); i++) {
-    MIDI.read();
-  }
+  MIDI.read();
 
 #if defined(DEBUG_PRINT)
   uint32_t debug_measurement_start1_us = micros();
