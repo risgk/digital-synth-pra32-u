@@ -17,7 +17,7 @@
     - **NOTE**: Large noise is generated during the sketch upload!
 - **Arduino IDE** and **Raspberry Pi Pico/RP2040** (by Earle F. Philhower, III) core are required
     - Additional Board Manager URL: <https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json>
-    - Raspberry Pi Pico/RP2040 core **version 3.2.0** is recommended
+    - Raspberry Pi Pico/RP2040 core **version 4.0.4** is recommended
     - Select CPU Speed: "120 MHz" in the Arduino IDE "Tools" menu
 
 
@@ -74,7 +74,7 @@
 
 - `"pra32-u-ctrl.html"`: MIDI Controller (Editor) Application for PRA32-U, HTML App (Web App)
 - We recommend using Google Chrome, which implements Web MIDI API
-- Select "Pico" in the list "MIDI Out"
+- Select "Digital Synth PRA32-U" in the list "MIDI Out"
 - Functions
     - PRA32-U CTRL converts Program Changes (#0-7 for PRESET, #8-15 for user programs) into Control Changes
     - When Program Change #127 is entered or Control Change #90 is changed from Off (63 or lower) to On (64 or higher), "Rand Ctrl" is processed
