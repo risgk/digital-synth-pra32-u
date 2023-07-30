@@ -38,7 +38,7 @@
     - Comment out `#define USE_USB_MIDI` and uncomment out `//#define USE_SERIAL1_MIDI`
       in "Digital-Synth-PRA32-U.ino" and modify `SERIAL1_MIDI_SPEED`
     - UART0 TX and RX are used by default
-    - DIN/TRS MIDI input and output are available by modifying and using Adafruit MIDI FeatherWing Kit [ADA4740], for example
+    - DIN/TRS MIDI input and output are available by using and modifying Adafruit MIDI FeatherWing Kit [ADA4740], for example
 
 
 ### Audio Out
