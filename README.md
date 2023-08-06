@@ -38,7 +38,7 @@
     - Comment out `#define USE_USB_MIDI` and uncomment out `//#define USE_SERIAL1_MIDI`
       in "Digital-Synth-PRA32-U.ino" and modify `SERIAL1_MIDI_SPEED`
     - Speed: 31.25 kbps (default) or 38.4 kbps
-    - UART0 TX and RX are used by default
+    - GP0 and GP1 pins are used by UART0 TX and UART0 RX
     - DIN/TRS MIDI is available by using (and modifying) Adafruit MIDI FeatherWing Kit, for example
         - Adafruit [MIDI FeatherWing Kit](https://www.adafruit.com/product/4740)
         - necobit電子 [MIDI Unit for GROVE](https://necobit.com/denshi/grove-midi-unit/) (Shipping to Japan only)
