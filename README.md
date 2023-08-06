@@ -35,7 +35,6 @@
     - **NOTE**: Select USB Stack: "Adafruit TinuUSB" in the Arduino IDE "Tools" menu
     - **KNOWN ISSUE**: When using some USB MIDI host hardware and communicate a lot, this device may miss MIDI messages
 - UART MIDI can also be used instead of USB MIDI
-
     - Comment out `#define USE_USB_MIDI` and uncomment out `//#define USE_SERIAL1_MIDI`
       in "Digital-Synth-PRA32-U.ino" and modify `SERIAL1_MIDI_SPEED`
     - Speed: 31.25 kbps (default) or 38.4 kbps
@@ -44,6 +43,7 @@
         - Adafruit [MIDI FeatherWing Kit](https://www.adafruit.com/product/4740)
         - necobit電子 [MIDI Unit for GROVE](https://necobit.com/denshi/grove-midi-unit/) (Shipping to Japan only)
         - 木下研究所 [MIDI-UARTインターフェースさん キット](https://www.switch-science.com/products/8117) (Shipping to Japan only)
+
 
 ### Audio Out
 
