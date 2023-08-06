@@ -32,7 +32,7 @@
 
 - USB MIDI is the default
     - MIDI Device Name: "Digital Synth PRA32-U"
-    - **NOTE**: Select USB Stack: "Adafruit TinuUSB" in the Arduino IDE "Tools" menu
+    - **NOTE**: Select USB Stack: "Adafruit TinyUSB" in the Arduino IDE "Tools" menu
     - **KNOWN ISSUE**: When using some USB MIDI host hardware and communicate a lot, this device may miss MIDI messages
 - UART MIDI can also be used instead of USB MIDI
     - Comment out `#define USE_USB_MIDI` and uncomment out `//#define USE_SERIAL1_MIDI`

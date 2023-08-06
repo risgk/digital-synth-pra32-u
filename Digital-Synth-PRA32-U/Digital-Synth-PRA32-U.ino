@@ -7,7 +7,7 @@
 
 #define DEBUG_PRINT
 
-#define USE_USB_MIDI      // Select USB Stack: "Adafruit TinuUSB" in the Arduino IDE "Tools" menu
+#define USE_USB_MIDI      // Select USB Stack: "Adafruit TinyUSB" in the Arduino IDE "Tools" menu
 //#define USE_SERIAL1_MIDI
 
 #define SERIAL1_MIDI_SPEED              (31250)
