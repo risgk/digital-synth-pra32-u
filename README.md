@@ -15,7 +15,7 @@
     - <https://github.com/risgk/digital-synth-vra8-u>
 - An **I2S DAC** hardware (e.g. Pimoroni Pico Audio Pack and Waveshare Pico-Audio) is required
     - **NOTE**: Large noise is generated during the sketch upload!
-- **Arduino IDE** and **Raspberry Pi Pico/RP2040** (by Earle F. Philhower, III) core are required
+- **Arduino IDE** and **Arduino-Pico** = **Raspberry Pi Pico/RP2040** (by Earle F. Philhower, III) core are required
     - Additional Board Manager URL: <https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json>
     - Raspberry Pi Pico/RP2040 core **version 3.3.1** is recommended
 
