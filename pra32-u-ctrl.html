@@ -658,8 +658,10 @@ function onChangeControlChange(number, value) {
     afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceMode();
   }
   if (midiOutput) {
-    midiOutput.send([(CONTROL_CHANGE | MIDI_CH), number, parseInt(value)]);
-    sleep(2);
+    if ((number <= 127) && (parseInt(value) <= 127)) {
+      midiOutput.send([(CONTROL_CHANGE | MIDI_CH), number, parseInt(value)]);
+      sleep(2);
+    }
   }
 }
 
