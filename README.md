@@ -6,7 +6,7 @@
 
 ## Overview
 
-- Monophonic/Paraphonic United Synthesizer for Raspberry Pi Pico/RP2040
+- Paraphonic Synthesizer for Raspberry Pi Pico/RP2040
     - Monophonic Mode: 1-Voice, 2-Oscillator (with Sub Oscillator)
     - Paraphonic Mode: 4-Voice, 2-Oscillator (with Sub Oscillator)
     - Built-in Chorus FX
