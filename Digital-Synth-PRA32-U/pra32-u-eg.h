@@ -82,7 +82,7 @@ public:
         int32_t effective_sustain = m_sustain - m_level;
         effective_sustain = (effective_sustain < 0) * effective_sustain + m_level;
 
-        m_level = m_sustain + (mul_s32_s32_h32((m_level - effective_sustain), m_decay_coef) << 2);
+        m_level = effective_sustain + (mul_s32_s32_h32((m_level - effective_sustain), m_decay_coef) << 2);
       }
       break;
 
