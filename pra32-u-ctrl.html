@@ -662,7 +662,7 @@ function onChangeControlChange(number, value) {
   if (midiOutput) {
     if ((number <= 127) && (parseInt(value) <= 127)) {
       midiOutput.send([(CONTROL_CHANGE | MIDI_CH), number, parseInt(value)]);
-      sleep(2);
+      sleep(0);
     }
   }
 }
@@ -729,14 +729,14 @@ function noteOn(noteNumber) {
   if (midiOutput) {
     midiOutput.send([(NOTE_ON | MIDI_CH), noteNumber + transpose, 100]);
     document.getElementById("spanVelocity").innerHTML = 100;
-    sleep(2);
+    sleep(0);
   }
 }
 
 function noteOff(noteNumber) {
   if (midiOutput) {
     midiOutput.send([(NOTE_OFF | MIDI_CH), noteNumber + transpose, 64]);
-    sleep(2);
+    sleep(0);
   }
 }
 
