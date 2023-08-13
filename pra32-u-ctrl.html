@@ -299,6 +299,7 @@ document.addEventListener("touchstart", function(event) {
 
 window.onload = function() {
   document.getElementById("spanAppNameVersion").innerHTML = "<strong>" + APP_NAME_VERSION + "</strong>";
+  document.getElementById("spanMidiCh").innerHTML = MIDI_CH + 1;
 
   if (navigator.requestMIDIAccess) {
     navigator.requestMIDIAccess({sysex: false}).then(onMIDISuccess, onMIDIFailure);
@@ -365,7 +366,6 @@ function restoreControllers() {
 
 function onChangeTranspose(value) {
   document.getElementById("inputTranspose").value = parseInt(value);
-  document.getElementById("spanTranspose").innerHTML = value;
   if (value >= 0) {
     document.getElementById("spanTranspose").innerHTML = "+" + String(value);
   } else {
@@ -963,6 +963,9 @@ function getStoredCCValueString(index, number) {
     <td></td>
     <td><select id="selectOutputPort" size="1" onchange="onChangeOutputPort()"></select></td>
     <td></td>
+    <td>MIDI Ch</td>
+    <td></td>
+    <td><span id="spanMidiCh">-</td>
     </tr>
 <tr><td></td>
     <td></td>
