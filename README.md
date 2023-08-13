@@ -22,6 +22,7 @@
 
 ## Change History
 
+- v0.1.3: Fix Pitch Bend
 - v0.1.2: Add I2S_DAC_MUTE_OFF_PIN and I2S_SWAP_BCLK_AND_LRCLK_PINS configurations
 - v0.1.2: Fix a bug where 0-velocity Note ON is not processed as Note OFF
 - v0.1.0: The first release
