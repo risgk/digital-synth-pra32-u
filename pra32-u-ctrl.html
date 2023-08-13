@@ -407,7 +407,7 @@ var midiOutput  = null;
 var specialProgramChangeCCValues = [0, 0, 0, 0, 0, 0, 0, 0];
 var specialRandomControlCCValue = 0;
 
-function afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceMode() {
+function afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceModeOrEGAmpModOrRelEqDecay() {
   var targetCCNumbers = [86];
 
   var valueVoiceMode = localStorage.getItem("keyVOICE_MODE     ");
@@ -437,6 +437,34 @@ function afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceMode() {
   } else {
     document.getElementById("spanMIXER_SUB_OSC  ").style.color = 'black';
   }
+
+  var valueEGAmpMod = localStorage.getItem("keyEG_AMP_MOD     ");
+  if (valueEGAmpMod >= 64) {
+    document.getElementById("spanAMP_ATTACK     ").style.color = 'lightgray';
+    document.getElementById("spanAMP_DECAY      ").style.color = 'lightgray';
+    document.getElementById("spanAMP_SUSTAIN    ").style.color = 'lightgray';
+    document.getElementById("spanAMP_RELEASE    ").style.color = 'lightgray';
+
+    var valueRelEqDecay = localStorage.getItem("keyREL_EQ_DECAY   ");
+    if (valueRelEqDecay >= 64) {
+      document.getElementById("spanEG_RELEASE     ").style.color = 'lightgray';
+    } else {
+      document.getElementById("spanEG_RELEASE     ").style.color = 'black';
+    }
+  } else {
+    document.getElementById("spanAMP_ATTACK     ").style.color = 'black';
+    document.getElementById("spanAMP_DECAY      ").style.color = 'black';
+    document.getElementById("spanAMP_SUSTAIN    ").style.color = 'black';
+
+    var valueRelEqDecay = localStorage.getItem("keyREL_EQ_DECAY   ");
+    if (valueRelEqDecay >= 64) {
+      document.getElementById("spanEG_RELEASE     ").style.color = 'lightgray';
+      document.getElementById("spanAMP_RELEASE    ").style.color = 'lightgray';
+    } else {
+      document.getElementById("spanEG_RELEASE     ").style.color = 'black';
+      document.getElementById("spanAMP_RELEASE    ").style.color = 'black';
+    }
+  }
 }
 
 function onMIDIMessage(event) {
@@ -448,8 +476,8 @@ function onMIDIMessage(event) {
     var value = event.data[2];
     if (controllersInLocalStorage.indexOf(number) >= 0) {
       updateDisplayOfControl(number, value);
-      if ((number == OSC_1_WAVE) || (number == OSC_2_WAVE) || (number == MIXER_SUB_OSC) || (number == VOICE_MODE)) {
-        afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceMode();
+      if ((number == OSC_1_WAVE) || (number == OSC_2_WAVE) || (number == MIXER_SUB_OSC) || (number == VOICE_MODE) || (number == EG_AMP_MOD) || (number == REL_EQ_DECAY)) {
+        afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceModeOrEGAmpModOrRelEqDecay();
       }
     } else if (number == MODULATION     ) {
       document.getElementById("spanMODULATION     ").innerHTML = value;
@@ -674,8 +702,8 @@ function updateDisplayOfControl(number, value) {
 
 function onChangeControlChange(number, value) {
   updateDisplayOfControl(number, value);
-  if ((number == OSC_1_WAVE) || (number == OSC_2_WAVE) || (number == MIXER_SUB_OSC) || (number == VOICE_MODE)) {
-    afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceMode();
+  if ((number == OSC_1_WAVE) || (number == OSC_2_WAVE) || (number == MIXER_SUB_OSC) || (number == VOICE_MODE) || (number == EG_AMP_MOD) || (number == REL_EQ_DECAY)) {
+    afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceModeOrEGAmpModOrRelEqDecay();
   }
   if (midiOutput) {
     if ((number <= 127) && (parseInt(value) <= 127)) {
