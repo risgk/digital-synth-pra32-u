@@ -46,7 +46,7 @@ public:
   }
 
   INLINE void set_sustain(uint8_t controller_value) {
-    m_sustain = ((controller_value + 1) >> 1) << 16;
+    m_sustain = ((controller_value + 1) >> 1) << 24;
   }
 
   INLINE void set_release(uint8_t controller_value) {
