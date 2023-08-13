@@ -74,7 +74,9 @@
     - 127: No Decay
 - EG Osc Amt [-|+], LFO Osc Amt [-|+]
     - Pitch
-        - -39 (25): -24 semitone (min)
+        - -63 (1): -48 semitone (min)
+        - -51 (13): -36 semitone
+        - -39 (25): -24 semitone
         - -27 (37): -12 semitone
         - -16 (48): -1 semitone
         - -12 (52): -75 cent
@@ -86,7 +88,9 @@
         - +12 (76): +75 cent
         - +16 (80): +1 semitone
         - +27 (91): +12 semitone
-        - +39 (103): +24 semitone (max)
+        - +39 (103): +24 semitone
+        - +51 (115): +36 semitone
+        - +63 (127): +48 semitone (max)
     - Shape
         - -63 (1): Shape -252 (min)
         - +63 (127): Shape +252 (max)

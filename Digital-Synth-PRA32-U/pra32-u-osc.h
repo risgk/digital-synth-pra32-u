@@ -17,8 +17,8 @@ class PRA32_U_Osc {
   static const uint8_t WAVEFORM_2_NOISE       = 5;
 
   uint8_t        m_portamento_coef[4];
-  int8_t         m_pitch_eg_amt[2];
-  int8_t         m_pitch_lfo_amt[2];
+  int16_t        m_pitch_eg_amt[2];
+  int16_t        m_pitch_lfo_amt[2];
 
   uint8_t        m_waveform[2];
   int16_t        m_pitch_bend;
@@ -195,16 +195,16 @@ public:
 
   template <uint8_t N>
   INLINE void set_pitch_eg_amt(uint8_t controller_value) {
-    if (controller_value < 25) {
-      m_pitch_eg_amt[N] = -96;
+    if (controller_value < 1) {
+      m_pitch_eg_amt[N] = -192;
     } else if (controller_value < 48) {
       m_pitch_eg_amt[N] = (controller_value - 49) << 2;
     } else if (controller_value < 80) {
       m_pitch_eg_amt[N] = (controller_value - 62) >> 2;
-    } else if (controller_value < 103) {
+    } else if (controller_value < 127) {
       m_pitch_eg_amt[N] = (controller_value - 79) << 2;
     } else {
-      m_pitch_eg_amt[N] = 96;
+      m_pitch_eg_amt[N] = 192;
     }
   }
 
@@ -217,16 +217,16 @@ public:
 
   template <uint8_t N>
   INLINE void set_pitch_lfo_amt(uint8_t controller_value) {
-    if (controller_value < 25) {
-      m_pitch_lfo_amt[N] = -96;
+    if (controller_value < 1) {
+      m_pitch_lfo_amt[N] = -192;
     } else if (controller_value < 48) {
       m_pitch_lfo_amt[N] = (controller_value - 49) << 2;
     } else if (controller_value < 80) {
       m_pitch_lfo_amt[N] = (controller_value - 62) >> 2;
-    } else if (controller_value < 103) {
+    } else if (controller_value < 127) {
       m_pitch_lfo_amt[N] = (controller_value - 79) << 2;
     } else {
-      m_pitch_lfo_amt[N] = 96;
+      m_pitch_lfo_amt[N] = 192;
     }
   }
 
@@ -467,7 +467,7 @@ private:
 
   template <uint8_t N>
   INLINE void update_freq_base(int16_t lfo_level, int16_t eg_level) {
-    int8_t pitch_eg_amt;
+    int16_t pitch_eg_amt;
     if (N >= 4) {
       pitch_eg_amt = m_pitch_eg_amt[1];
     } else {
