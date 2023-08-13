@@ -358,17 +358,16 @@ function panic() {
   }
 
   document.getElementById("spanPB").innerHTML = "+0";
-  document.getElementById("spanCC1").innerHTML = "0";
-  //document.getElementById("spanCC11").innerHTML = "127";
+  document.getElementById("spanMODULATION     ").innerHTML = "0";
   document.getElementById("spanVelocity").innerHTML = "0";
-  document.getElementById("spanCC64").innerHTML = "0";
+  document.getElementById("spanSUSTAIN_PEDAL  ").innerHTML = "0";
 }
 
 function restoreControllers() {
   var value;
 
   controllersInLocalStorage.forEach(function(i) {
-    value = localStorage.getItem("keyCC" + String(i));
+    value = localStorage.getItem("key" + controlNumberToStringMap.get(i));
     if (!value) {
       value = presetControllers[i][PRESET_NUMBER_INITIAL];
     }
@@ -411,32 +410,32 @@ var specialRandomControlCCValue = 0;
 function afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceMode() {
   var targetCCNumbers = [86];
 
-  var valueVoiceMode = localStorage.getItem("keyCC87");
+  var valueVoiceMode = localStorage.getItem("keyVOICE_MODE     ");
   if (valueVoiceMode < 32) {
     targetCCNumbers.forEach(function(i) {
-      document.getElementById("spanCC" + String(i)).style.color = 'lightgray';
+      document.getElementById("span" + controlNumberToStringMap.get(i)).style.color = 'lightgray';
     });
   } else {
     targetCCNumbers.forEach(function(i) {
-      document.getElementById("spanCC" + String(i)).style.color = 'black';
+      document.getElementById("span" + controlNumberToStringMap.get(i)).style.color = 'black';
     });
   }
 
-  var valueOsc1Wave = localStorage.getItem("keyCC24");
+  var valueOsc1Wave = localStorage.getItem("keyOSC_1_WAVE     ");
   if ((valueOsc1Wave >= 80) && (valueOsc1Wave < 112)) {
-    document.getElementById("spanCC102").style.color = 'black';
-    document.getElementById("spanCC103").style.color = 'black';
+    document.getElementById("spanOSC_1_SHAPE    ").style.color = 'black';
+    document.getElementById("spanOSC_1_MORPH    ").style.color = 'black';
   } else {
-    document.getElementById("spanCC102").style.color = 'lightgray';
-    document.getElementById("spanCC103").style.color = 'lightgray';
+    document.getElementById("spanOSC_1_SHAPE    ").style.color = 'lightgray';
+    document.getElementById("spanOSC_1_MORPH    ").style.color = 'lightgray';
   }
 
-  var valueOsc2Wave = localStorage.getItem("keyCC55");
-  var valueMixerSubOsc = localStorage.getItem("keyCC26");
+  var valueOsc2Wave = localStorage.getItem("keyOSC_2_WAVE     ");
+  var valueMixerSubOsc = localStorage.getItem("keyMIXER_SUB_OSC  ");
   if ((valueOsc2Wave >= 80) && (valueOsc2Wave < 112) && (valueMixerSubOsc < 64)) {
-    document.getElementById("spanCC26").style.color = 'lightgray';
+    document.getElementById("spanMIXER_SUB_OSC  ").style.color = 'lightgray';
   } else {
-    document.getElementById("spanCC26").style.color = 'black';
+    document.getElementById("spanMIXER_SUB_OSC  ").style.color = 'black';
   }
 }
 
@@ -453,14 +452,13 @@ function onMIDIMessage(event) {
         afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceMode();
       }
     } else if (number == MODULATION     ) {
-      document.getElementById("spanCC1").innerHTML = value;
+      document.getElementById("spanMODULATION     ").innerHTML = value;
     } else if (number == SUSTAIN_PEDAL  ) {
-      document.getElementById("spanCC64").innerHTML = value;
+      document.getElementById("spanSUSTAIN_PEDAL  ").innerHTML = value;
     } else if (number == RESET_ALL_CTRLS) {
       document.getElementById("spanPB").innerHTML = "+0";
-      document.getElementById("spanCC1").innerHTML = "0";
-      //document.getElementById("spanCC11").innerHTML = "127";
-      document.getElementById("spanCC64").innerHTML = "0";
+      document.getElementById("spanMODULATION     ").innerHTML = "0";
+      document.getElementById("spanSUSTAIN_PEDAL  ").innerHTML = "0";
     } else if (number == P_BEND_BY_CC) {
       var pb = (value - 64) * 128;
       if (pb == 8064) {
@@ -650,7 +648,7 @@ function onChangeOutputPort() {
 }
 
 function updateDisplayOfControl(number, value) {
-  document.getElementById("inputCC" + String(number)).value = parseInt(value);
+  document.getElementById("input" + controlNumberToStringMap.get(number)).value = parseInt(value);
 
   switch (number) {
   case MIXER_SUB_OSC   :
@@ -661,17 +659,17 @@ function updateDisplayOfControl(number, value) {
   case LFO_OSC_AMT     :
   case LFO_FILTER_AMT  :
     if (value >= 64) {
-      document.getElementById("spanCC" + String(number)).innerHTML = "+" + String(value - 64);
+      document.getElementById("span" + controlNumberToStringMap.get(number)).innerHTML = "+" + String(value - 64);
     } else {
-      document.getElementById("spanCC" + String(number)).innerHTML = value - 64;
+      document.getElementById("span" + controlNumberToStringMap.get(number)).innerHTML = value - 64;
     }
     break;
   default:
-    document.getElementById("spanCC" + String(number)).innerHTML = value;
+    document.getElementById("span" + controlNumberToStringMap.get(number)).innerHTML = value;
     break;
   }
 
-  localStorage.setItem("keyCC" + String(number), value);
+  localStorage.setItem("key" + controlNumberToStringMap.get(number), value);
 }
 
 function onChangeControlChange(number, value) {
@@ -728,7 +726,7 @@ function rand(n) {
 function loadControllers(number) {
   var value;
   controllersInLocalStorage.forEach(function(i) {
-    value = localStorage.getItem("keyMemory" + String(number) + "CC" + String(i));
+    value = localStorage.getItem("keyMemory" + String(number) + controlNumberToStringMap.get(i));
     if (!value) {
       value = presetControllers[i][PRESET_NUMBER_INITIAL];
     }
@@ -743,8 +741,8 @@ function saveControllers(number) {
   }
 
   controllersInLocalStorage.forEach(function(i) {
-    var value = document.getElementById("inputCC" + String(i)).value;
-    localStorage.setItem("keyMemory" + String(number) + "CC" + String(i), value);
+    var value = document.getElementById("input" + controlNumberToStringMap.get(i)).value;
+    localStorage.setItem("keyMemory" + String(number) + controlNumberToStringMap.get(i), value);
   });
 }
 
@@ -794,7 +792,7 @@ function fileReaderImportAllLoad(event) {
       if (line != null) {
         var value = line[1][number - 8];
         if (value != null) {
-          localStorage.setItem("keyMemory" + String(number) + "CC" + String(i), value);
+          localStorage.setItem("keyMemory" + String(number) + controlNumberToStringMap.get(i), value);
         }
       }
     });
@@ -805,7 +803,7 @@ function fileReaderImportAllLoad(event) {
     if (line != null) {
       var value = line[0];
       if (value != null) {
-        localStorage.setItem("keyCC" + String(i), value);
+        localStorage.setItem("key" + controlNumberToStringMap.get(i), value);
       }
     }
   });
@@ -833,7 +831,7 @@ function fileReaderImportCurrentLoad(event) {
     if (line != null) {
       var value = line[0];
       if (value != null) {
-        localStorage.setItem("keyCC" + String(i), value);
+        localStorage.setItem("key" + controlNumberToStringMap.get(i), value);
       }
     }
   });
@@ -932,13 +930,13 @@ function fileExportOneLine(number) {
 }
 
 function getCCValueString(number) {
-  var value = document.getElementById("inputCC" + String(number)).value;
+  var value = document.getElementById("input" + controlNumberToStringMap.get(number)).value;
   var str = (value + "   ").slice(0, 3);
   return str;
 }
 
 function getStoredCCValueString(index, number) {
-  var value = localStorage.getItem("keyMemory" + String(index) + "CC" + String(number));
+  var value = localStorage.getItem("keyMemory" + String(index) + controlNumberToStringMap.get(number));
   if (!value) {
     value = presetControllers[number][PRESET_NUMBER_INITIAL];
   }
@@ -969,7 +967,7 @@ function getStoredCCValueString(index, number) {
     <td></td>
     <td>Modulation</td>
     <td></td>
-    <td><span id="spanCC1">-</span></td>
+    <td><span id="spanMODULATION     ">-</span></td>
     </tr>
 <tr><td>MIDI In 3</td>
     <td></td>
@@ -977,7 +975,7 @@ function getStoredCCValueString(index, number) {
     <td></td>
     <td>Sustain Pedal</td>
     <td></td>
-    <td><span id="spanCC64">-</span></td>
+    <td><span id="spanSUSTAIN_PEDAL  ">-</span></td>
     </tr>
 <tr><td>MIDI In 4</td>
     <td></td>
@@ -1104,14 +1102,14 @@ function getStoredCCValueString(index, number) {
 <td colspan="2"><b>Mixer</b> Noise/Sub Osc [N|S]       </td>
 </tr>
 <tr>
-<td><input  id="inputCC24"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_1_WAVE     , value)"></td>
-<td><span    id="spanCC24" >-</span></td>
-<td><input  id="inputCC102" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_1_SHAPE    , value)"></td>
-<td><span    id="spanCC102">-</span></td>
-<td><input  id="inputCC103" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_1_MORPH    , value)"></td>
-<td><span    id="spanCC103">-</span></td>
-<td><input  id="inputCC26"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(MIXER_SUB_OSC  , value)"></td>
-<td><span    id="spanCC26" >-</span></td>
+<td><input  id="inputOSC_1_WAVE     "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_1_WAVE     , value)"></td>
+<td><span    id="spanOSC_1_WAVE     " >-</span></td>
+<td><input  id="inputOSC_1_SHAPE    "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_1_SHAPE    , value)"></td>
+<td><span    id="spanOSC_1_SHAPE    " >-</span></td>
+<td><input  id="inputOSC_1_MORPH    "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_1_MORPH    , value)"></td>
+<td><span    id="spanOSC_1_MORPH    " >-</span></td>
+<td><input  id="inputMIXER_SUB_OSC  "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(MIXER_SUB_OSC  , value)"></td>
+<td><span    id="spanMIXER_SUB_OSC  " >-</span></td>
 <tr>
 <td colspan="2"><b>Osc 2</b> Wave [Saw|-|Tri|Nos|Sqr]  </td>
 <td colspan="2"><b>Osc 2</b> Coarse [-|+]              </td>
@@ -1119,14 +1117,14 @@ function getStoredCCValueString(index, number) {
 <td colspan="2"><b>Mixer</b> Osc Mix [1|2]             </td>
 </tr>
 <tr>
-<td><input  id="inputCC55"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_2_WAVE     , value)"></td>
-<td><span    id="spanCC55" >-</span></td>
-<td><input  id="inputCC20"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_2_COARSE   , value)"></td>
-<td><span    id="spanCC20" >-</span></td>
-<td><input  id="inputCC21"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_2_FINE     , value)"></td>
-<td><span    id="spanCC21" >-</span></td>
-<td><input  id="inputCC25"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(MIXER_OSC_MIX  , value)"></td>
-<td><span    id="spanCC25" >-</span></td>
+<td><input  id="inputOSC_2_WAVE     "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_2_WAVE     , value)"></td>
+<td><span    id="spanOSC_2_WAVE     " >-</span></td>
+<td><input  id="inputOSC_2_COARSE   "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_2_COARSE   , value)"></td>
+<td><span    id="spanOSC_2_COARSE   " >-</span></td>
+<td><input  id="inputOSC_2_FINE     "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_2_FINE     , value)"></td>
+<td><span    id="spanOSC_2_FINE     " >-</span></td>
+<td><input  id="inputMIXER_OSC_MIX  "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(MIXER_OSC_MIX  , value)"></td>
+<td><span    id="spanMIXER_OSC_MIX  " >-</span></td>
 </tr>
 <tr>
 <td colspan="2"><b>Filter</b> Cutoff                   </td>
@@ -1135,14 +1133,14 @@ function getStoredCCValueString(index, number) {
 <td colspan="2"><b>Filter</b> Key Track [0.0|0.5|1.0]  </td>
 </tr>
 <tr>
-<td><input  id="inputCC16"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(FILTER_CUTOFF  , value)"></td>
-<td><span    id="spanCC16" >-</span></td>
-<td><input  id="inputCC17"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(FILTER_RESO    , value)"></td>
-<td><span    id="spanCC17" >-</span></td>
-<td><input  id="inputCC18"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(FILTER_EG_AMT  , value)"></td>
-<td><span    id="spanCC18" >-</span></td>
-<td><input  id="inputCC86"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(FILTER_KEY_TRK , value)"></td>
-<td><span    id="spanCC86" >-</span></td>
+<td><input  id="inputFILTER_CUTOFF  "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(FILTER_CUTOFF  , value)"></td>
+<td><span    id="spanFILTER_CUTOFF  " >-</span></td>
+<td><input  id="inputFILTER_RESO    "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(FILTER_RESO    , value)"></td>
+<td><span    id="spanFILTER_RESO    " >-</span></td>
+<td><input  id="inputFILTER_EG_AMT  "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(FILTER_EG_AMT  , value)"></td>
+<td><span    id="spanFILTER_EG_AMT  " >-</span></td>
+<td><input  id="inputFILTER_KEY_TRK "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(FILTER_KEY_TRK , value)"></td>
+<td><span    id="spanFILTER_KEY_TRK " >-</span></td>
 </tr>
 <tr>
 <td colspan="2"><b>EG</b> Attack                       </td>
@@ -1151,14 +1149,14 @@ function getStoredCCValueString(index, number) {
 <td colspan="2"><b>EG</b> Release                      </td>
 </tr>
 <tr>
-<td><input  id="inputCC23"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_ATTACK      , value)"></td>
-<td><span    id="spanCC23" >-</span></td>
-<td><input  id="inputCC19"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_DECAY       , value)"></td>
-<td><span    id="spanCC19" >-</span></td>
-<td><input  id="inputCC27"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_SUSTAIN     , value)"></td>
-<td><span    id="spanCC27" >-</span></td>
-<td><input  id="inputCC28"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_RELEASE     , value)"></td>
-<td><span    id="spanCC28" >-</span></td>
+<td><input  id="inputEG_ATTACK      "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_ATTACK      , value)"></td>
+<td><span    id="spanEG_ATTACK      " >-</span></td>
+<td><input  id="inputEG_DECAY       "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_DECAY       , value)"></td>
+<td><span    id="spanEG_DECAY       " >-</span></td>
+<td><input  id="inputEG_SUSTAIN     "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_SUSTAIN     , value)"></td>
+<td><span    id="spanEG_SUSTAIN     " >-</span></td>
+<td><input  id="inputEG_RELEASE     "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_RELEASE     , value)"></td>
+<td><span    id="spanEG_RELEASE     " >-</span></td>
 </tr>
 <tr>
 <td colspan="8"><hr></td>
@@ -1170,14 +1168,14 @@ function getStoredCCValueString(index, number) {
 <td colspan="2">Portamento                        </td>
 </tr>
 <tr>
-<td><input  id="inputCC104" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_OSC_AMT     , value)"></td>
-<td><span    id="spanCC104">-</span></td>
-<td><input  id="inputCC105" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_OSC_DST     , value)"></td>
-<td><span    id="spanCC105">-</span></td>
-<td><input  id="inputCC87"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(VOICE_MODE     , value)"></td>
-<td><span    id="spanCC87" >-</span></td>
-<td><input  id="inputCC22"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(PORTAMENTO     , value)"></td>
-<td><span    id="spanCC22" >-</span></td>
+<td><input  id="inputEG_OSC_AMT     "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_OSC_AMT     , value)"></td>
+<td><span    id="spanEG_OSC_AMT     " >-</span></td>
+<td><input  id="inputEG_OSC_DST     "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_OSC_DST     , value)"></td>
+<td><span    id="spanEG_OSC_DST     " >-</span></td>
+<td><input  id="inputVOICE_MODE     "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(VOICE_MODE     , value)"></td>
+<td><span    id="spanVOICE_MODE     " >-</span></td>
+<td><input  id="inputPORTAMENTO     "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(PORTAMENTO     , value)"></td>
+<td><span    id="spanPORTAMENTO     " >-</span></td>
 </tr>
 <tr>
 <td colspan="2"><b>LFO</b> Wave [T1|T2|Saw|SH|Sqr]     </td>
@@ -1186,14 +1184,14 @@ function getStoredCCValueString(index, number) {
 <td colspan="2"><b>LFO</b> Fade Time                   </td>
 </tr>
 <tr>
-<td><input  id="inputCC14"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_WAVE       , value)"></td>
-<td><span    id="spanCC14" >-</span></td>
-<td><input  id="inputCC80"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_RATE       , value)"></td>
-<td><span    id="spanCC80" >-</span></td>
-<td><input  id="inputCC81"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_DEPTH      , value)"></td>
-<td><span    id="spanCC81" >-</span></td>
-<td><input  id="inputCC15"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_FADE_TIME  , value)"></td>
-<td><span    id="spanCC15" >-</span></td>
+<td><input  id="inputLFO_WAVE       "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_WAVE       , value)"></td>
+<td><span    id="spanLFO_WAVE       " >-</span></td>
+<td><input  id="inputLFO_RATE       "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_RATE       , value)"></td>
+<td><span    id="spanLFO_RATE       " >-</span></td>
+<td><input  id="inputLFO_DEPTH      "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_DEPTH      , value)"></td>
+<td><span    id="spanLFO_DEPTH      " >-</span></td>
+<td><input  id="inputLFO_FADE_TIME  "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_FADE_TIME  , value)"></td>
+<td><span    id="spanLFO_FADE_TIME  " >-</span></td>
 </tr>
 <tr>
 <td colspan="2"><b>LFO</b> Osc Amt [-|+]               </td>
@@ -1202,14 +1200,14 @@ function getStoredCCValueString(index, number) {
 <td colspan="2"><b>Amp</b> Level                       </td>
 </tr>
 <tr>
-<td><input  id="inputCC82"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_OSC_AMT    , value)"></td>
-<td><span    id="spanCC82" >-</span></td>
-<td><input  id="inputCC9"   type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_OSC_DST    , value)"></td>
-<td><span    id="spanCC9"  >-</span></td>
-<td><input  id="inputCC83"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_FILTER_AMT , value)"></td>
-<td><span    id="spanCC83" >-</span></td>
-<td><input  id="inputCC110" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(AMP_LEVEL      , value)"></td>
-<td><span    id="spanCC110">-</span></td>
+<td><input  id="inputLFO_OSC_AMT    "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_OSC_AMT    , value)"></td>
+<td><span    id="spanLFO_OSC_AMT    " >-</span></td>
+<td><input  id="inputLFO_OSC_DST    "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_OSC_DST    , value)"></td>
+<td><span    id="spanLFO_OSC_DST    " >-</span></td>
+<td><input  id="inputLFO_FILTER_AMT "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_FILTER_AMT , value)"></td>
+<td><span    id="spanLFO_FILTER_AMT " >-</span></td>
+<td><input  id="inputAMP_LEVEL      "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(AMP_LEVEL      , value)"></td>
+<td><span    id="spanAMP_LEVEL      " >-</span></td>
 </tr>
 <tr>
 <td colspan="2"><b>Amp</b> Attack                      </td>
@@ -1218,14 +1216,14 @@ function getStoredCCValueString(index, number) {
 <td colspan="2"><b>Amp</b> Release                     </td>
 </tr>
 <tr>
-<td><input  id="inputCC56"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(AMP_ATTACK     , value)"></td>
-<td><span    id="spanCC56" >-</span></td>
-<td><input  id="inputCC57"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(AMP_DECAY      , value)"></td>
-<td><span    id="spanCC57" >-</span></td>
-<td><input  id="inputCC58"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(AMP_SUSTAIN    , value)"></td>
-<td><span    id="spanCC58" >-</span></td>
-<td><input  id="inputCC59"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(AMP_RELEASE    , value)"></td>
-<td><span    id="spanCC59" >-</span></td>
+<td><input  id="inputAMP_ATTACK     "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(AMP_ATTACK     , value)"></td>
+<td><span    id="spanAMP_ATTACK     " >-</span></td>
+<td><input  id="inputAMP_DECAY      "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(AMP_DECAY      , value)"></td>
+<td><span    id="spanAMP_DECAY      " >-</span></td>
+<td><input  id="inputAMP_SUSTAIN    "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(AMP_SUSTAIN    , value)"></td>
+<td><span    id="spanAMP_SUSTAIN    " >-</span></td>
+<td><input  id="inputAMP_RELEASE    "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(AMP_RELEASE    , value)"></td>
+<td><span    id="spanAMP_RELEASE    " >-</span></td>
 </tr>
 <tr>
 <td colspan="8"><hr></td>
@@ -1237,14 +1235,14 @@ function getStoredCCValueString(index, number) {
 <td colspan="2"><b>Chorus</b> Delay Time               </td>
 </tr>
 <tr>
-<td><input  id="inputCC63"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_MODE    , value)"></td>
-<td><span    id="spanCC63" >-</span></td>
-<td><input  id="inputCC61"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_RATE    , value)"></td>
-<td><span    id="spanCC61" >-</span></td>
-<td><input  id="inputCC60"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_DEPTH   , value)"></td>
-<td><span    id="spanCC60" >-</span></td>
-<td><input  id="inputCC62"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_DLY_TIME, value)"></td>
-<td><span    id="spanCC62" >-</span></td>
+<td><input  id="inputCHORUS_MODE    "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_MODE    , value)"></td>
+<td><span    id="spanCHORUS_MODE    " >-</span></td>
+<td><input  id="inputCHORUS_RATE    "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_RATE    , value)"></td>
+<td><span    id="spanCHORUS_RATE    " >-</span></td>
+<td><input  id="inputCHORUS_DEPTH   "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_DEPTH   , value)"></td>
+<td><span    id="spanCHORUS_DEPTH   " >-</span></td>
+<td><input  id="inputCHORUS_DLY_TIME"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_DLY_TIME, value)"></td>
+<td><span    id="spanCHORUS_DLY_TIME" >-</span></td>
 </tr>
 <tr>
 <td colspan="2">Pitch Bend Range                </td>
@@ -1253,14 +1251,14 @@ function getStoredCCValueString(index, number) {
 <td colspan="2">Release = Decay [Off|On]        </td>
 </tr>
 <tr>
-<td><input  id="inputCC85"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(P_BEND_RANGE   , value)"></td>
-<td><span    id="spanCC85" >-</span></td>
-<td><input  id="inputCC111" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_BYPASS  , value)"></td>
-<td><span    id="spanCC111">-</span></td>
-<td><input  id="inputCC31"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_AMP_MOD     , value)"></td>
-<td><span    id="spanCC31" >-</span></td>
-<td><input  id="inputCC89"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(REL_EQ_DECAY   , value)"></td>
-<td><span    id="spanCC89" >-</span></td>
+<td><input  id="inputP_BEND_RANGE   "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(P_BEND_RANGE   , value)"></td>
+<td><span    id="spanP_BEND_RANGE   " >-</span></td>
+<td><input  id="inputCHORUS_BYPASS  "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_BYPASS  , value)"></td>
+<td><span    id="spanCHORUS_BYPASS  " >-</span></td>
+<td><input  id="inputEG_AMP_MOD     "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_AMP_MOD     , value)"></td>
+<td><span    id="spanEG_AMP_MOD     " >-</span></td>
+<td><input  id="inputREL_EQ_DECAY   "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(REL_EQ_DECAY   , value)"></td>
+<td><span    id="spanREL_EQ_DECAY   " >-</span></td>
 </tr>
 <tr>
 <td colspan="2"><b>Filter</b> Mode [LP|LC]             </td>
@@ -1269,8 +1267,8 @@ function getStoredCCValueString(index, number) {
 <td colspan="2">                                </td>
 </tr>
 <tr>
-<td><input  id="inputCC109" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(FILTER_MODE    , value)"></td>
-<td><span    id="spanCC109">-</span></td>
+<td><input  id="inputFILTER_MODE    "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(FILTER_MODE    , value)"></td>
+<td><span    id="spanFILTER_MODE    " >-</span></td>
 <td></td>
 <td></td>
 <td></td>
