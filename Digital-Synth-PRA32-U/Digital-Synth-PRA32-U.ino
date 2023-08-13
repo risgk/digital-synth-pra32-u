@@ -1,8 +1,5 @@
 /*
  * Digital Synth PRA32-U
- *
- * - An I2S DAC hardware (e.g. Pico Audio Pack and Waveshare Pico-Audio Rev2.1) is required
- * - Raspberry Pi Pico/RP2040 core version 3.3.1 is recommended
  */
 
 #define DEBUG_PRINT
