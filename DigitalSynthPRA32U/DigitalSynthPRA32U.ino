@@ -2,7 +2,7 @@
  * Digital Synth PRA32-U
  *
  * - An I2S DAC hardware (e.g. Pico Audio Pack) is required
- * - Raspberry Pi Pico/RP2040 core version 3.2.0 is recommended
+ * - Raspberry Pi Pico/RP2040 core version 3.3.2 is recommended
  */
 
 //#define DEBUG_PRINT
@@ -189,6 +189,6 @@ void __not_in_flash_func(handleHandleProgramChange)(byte channel, byte number)
 void __not_in_flash_func(handleHandlePitchBend)(byte channel, int bend)
 {
   if ((channel - 1) == MIDI_CH) {
-    Synth<0>::pitch_bend(bend & 0x7F, bend >> 7);
+    Synth<0>::pitch_bend((bend + 8192) & 0x7F, (bend + 8192) >> 7);
   }
 }
