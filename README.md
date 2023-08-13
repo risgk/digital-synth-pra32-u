@@ -17,12 +17,13 @@
     - **NOTE**: Large noise is generated during the sketch upload!
 - **Arduino IDE** and **Arduino-Pico** = **Raspberry Pi Pico/RP2040** (by Earle F. Philhower, III) core are required
     - Additional Board Manager URL: <https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json>
-    - Raspberry Pi Pico/RP2040 core **version 3.3.1** is recommended
+    - Raspberry Pi Pico/RP2040 core **version 3.3.2** is recommended
 
 
 ## Change History
 
-- v0.1.1: Fix a bug where 0-velocity Note ON is not processed as Note OFF
+- v0.2.0: Change Sampling Rate to 48000; Support MCLK for I2S; Change Mixer Sub Osc to Mixer Noise/Sub Osc;
+  Enable Osc 1 Shape, Morph, Noise/Sub Osc, and Osc 2 in Paraphonic Mode; Other changes
 - v0.1.0: The first release
 
 
