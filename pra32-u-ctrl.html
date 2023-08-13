@@ -338,7 +338,7 @@ function panic() {
 
   document.getElementById("spanPB").innerHTML = "+0";
   document.getElementById("spanCC1").innerHTML = "0";
-  document.getElementById("spanCC11").innerHTML = "127";
+  //document.getElementById("spanCC11").innerHTML = "127";
   document.getElementById("spanVelocity").innerHTML = "0";
   document.getElementById("spanCC64").innerHTML = "0";
 }
@@ -439,7 +439,7 @@ function onMIDIMessage(event) {
     } else if (number == RESET_ALL_CTRLS) {
       document.getElementById("spanPB").innerHTML = "+0";
       document.getElementById("spanCC1").innerHTML = "0";
-      document.getElementById("spanCC11").innerHTML = "127";
+      //document.getElementById("spanCC11").innerHTML = "127";
       document.getElementById("spanCC64").innerHTML = "0";
     } else if (number == P_BEND_BY_CC) {
       var pb = (value - 64) * 128;
