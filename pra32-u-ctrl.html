@@ -105,24 +105,26 @@ const CHORUS_BYPASS   = 111;
 
 
 
+const PC_BY_CC_8      = 112;
+const PC_BY_CC_9      = 113;
+const PC_BY_CC_10     = 114;
+const PC_BY_CC_11     = 115;
+const PC_BY_CC_12     = 116;
+const PC_BY_CC_13     = 117;
+const PC_BY_CC_14     = 118;
+const PC_BY_CC_15     = 119;
 
 const ALL_SOUND_OFF   = 120;
 const RESET_ALL_CTRLS = 121;
 const ALL_NOTES_OFF   = 123;
 
+const OMNI_MODE_OFF   = 124;
+const OMNI_MODE_ON    = 125;
+const MONO_MODE_ON    = 126;
+const POLY_MODE_ON    = 127;
+
 // Special Random Control (for PRA32-U CTRL)
 const SP_RAND_CTRL    = 90;
-
-// Special Program Change (for PRA32-U CTRL)
-const SP_PROG_CHG_0   = 112;
-const SP_PROG_CHG_1   = 113;
-const SP_PROG_CHG_2   = 114;
-const SP_PROG_CHG_3   = 115;
-
-const SP_PROG_CHG_4   = 116;
-const SP_PROG_CHG_5   = 117;
-const SP_PROG_CHG_6   = 118;
-const SP_PROG_CHG_7   = 119;
 
 var controlNumberToStringMap = new Map([
   [ OSC_1_WAVE     , "OSC_1_WAVE     " ],
@@ -450,9 +452,9 @@ function onMIDIMessage(event) {
       } else {
         document.getElementById("spanPB").innerHTML = pb;
       }
-    } else if (number >= SP_PROG_CHG_0 && number <= SP_PROG_CHG_7) {
-      // Special Program Change (only for PRA32-U CTRL)
-      var programIndex = number - SP_PROG_CHG_0;
+    } else if (number >= PC_BY_CC_8 && number <= PC_BY_CC_15) {
+      // Program Change by CC
+      var programIndex = number - PC_BY_CC_8;
       var oldValue = specialProgramChangeCCValues[programIndex];
       specialProgramChangeCCValues[programIndex] = value;
       if (oldValue <= 63 && value >= 64) {

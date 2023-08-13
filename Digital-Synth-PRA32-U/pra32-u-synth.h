@@ -589,21 +589,21 @@ public:
       reset_all_controllers();
       break;
 
-    // Special Program Change
-    case SP_PROG_CHG_0  :
-    case SP_PROG_CHG_1  :
-    case SP_PROG_CHG_2  :
-    case SP_PROG_CHG_3  :
-    case SP_PROG_CHG_4  :
-    case SP_PROG_CHG_5  :
-    case SP_PROG_CHG_6  :
-    case SP_PROG_CHG_7  :
+    // Program Change by CC
+    case PC_BY_CC_8     :
+    case PC_BY_CC_9     :
+    case PC_BY_CC_10    :
+    case PC_BY_CC_11    :
+    case PC_BY_CC_12    :
+    case PC_BY_CC_13    :
+    case PC_BY_CC_14    :
+    case PC_BY_CC_15    :
       {
-        uint8_t program_number = controller_number - SP_PROG_CHG_0;
-        uint8_t old_value = m_sp_prog_chg_cc_values[program_number];
-        m_sp_prog_chg_cc_values[program_number] = controller_value;
+        uint8_t program_index = controller_number - PC_BY_CC_8;
+        uint8_t old_value = m_sp_prog_chg_cc_values[program_index];
+        m_sp_prog_chg_cc_values[program_index] = controller_value;
         if ((old_value <= 63) && (controller_value >= 64)) {
-          program_change(program_number);
+          program_change(program_index + 8);
         }
       }
       break;
