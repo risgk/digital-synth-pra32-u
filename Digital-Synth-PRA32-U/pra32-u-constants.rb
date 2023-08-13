@@ -97,8 +97,8 @@ CHORUS_DLY_TIME = 62
 
 P_BEND_RANGE    = 85
 CHORUS_BYPASS   = 111
-
-
+EG_AMP_MOD      = 31
+REL_EQ_DECAY    = 89
 
 PC_BY_CC_8      = 112
 PC_BY_CC_9      = 113

@@ -72,6 +72,8 @@
 |                               |               |               |                                  |
 |                            85 | x             | o             | Pitch Bend Range                 |
 |                           111 | x             | o             | Chorus Bypass [Off|On]           |
+|                            31 | x             | o             | EG Amp Mod [Off|On]              |
+|                            89 | x             | o             | Release = Decay [Off|On]         |
 |                               |               |               |                                  |
 |                            35 | x             | o             | Pitch Bend by CC [-|+]           |
 |                       112-119 |               |               | Program Change #8-15 by CC       |

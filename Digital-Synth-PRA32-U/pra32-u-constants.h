@@ -97,8 +97,8 @@ const uint8_t   CHORUS_DLY_TIME = 62;
 
 const uint8_t   P_BEND_RANGE    = 85;
 const uint8_t   CHORUS_BYPASS   = 111;
-
-
+const uint8_t   EG_AMP_MOD      = 31;
+const uint8_t   REL_EQ_DECAY    = 89;
 
 const uint8_t   PC_BY_CC_8      = 112;
 const uint8_t   PC_BY_CC_9      = 113;

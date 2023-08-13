@@ -140,6 +140,13 @@
 - Pitch Bend Range
     - 0: 0 semitone (min)
     - 24: 24 semitone (max)
+- EG Amp Mod [Off|On]
+    - 0 (0-63): Off
+    - 127 (64-127): On, Amp ADSR = EG ADSR
+- Release = Decay [Off|On]
+    - 0 (0-63): Off
+    - 127 (64-127): On, EG Release = EG Decay and Amp Release = Amp Decay
+
 
 ## Sample Chorus Settings
 

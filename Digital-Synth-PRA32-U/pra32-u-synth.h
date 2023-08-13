@@ -39,6 +39,17 @@ class PRA32_U_Synth {
   uint8_t          m_lfo_osc_amt;
   uint8_t          m_lfo_osc_dst;
 
+  uint8_t          m_controller_value_eg_attack;
+  uint8_t          m_controller_value_eg_decay;
+  uint8_t          m_controller_value_eg_sustain;
+  uint8_t          m_controller_value_eg_release;
+  uint8_t          m_controller_value_amp_attack;
+  uint8_t          m_controller_value_amp_decay;
+  uint8_t          m_controller_value_amp_sustain;
+  uint8_t          m_controller_value_amp_release;
+  uint8_t          m_controller_value_eg_amp_mod;
+  uint8_t          m_controller_value_rel_eq_decay;
+
   uint8_t          m_sp_prog_chg_cc_values[8];
 
 public:
@@ -71,6 +82,17 @@ public:
   , m_eg_osc_dst()
   , m_lfo_osc_amt()
   , m_lfo_osc_dst()
+
+  , m_controller_value_eg_attack(0)
+  , m_controller_value_eg_decay(127)
+  , m_controller_value_eg_sustain(0)
+  , m_controller_value_eg_release(0)
+  , m_controller_value_amp_attack(0)
+  , m_controller_value_amp_decay(127)
+  , m_controller_value_amp_sustain(0)
+  , m_controller_value_amp_release(0)
+  , m_controller_value_eg_amp_mod(0)
+  , m_controller_value_rel_eq_decay(0)
 
   , m_sp_prog_chg_cc_values()
   {
@@ -440,29 +462,37 @@ public:
       break;
 
     case EG_ATTACK      :
-      m_eg[0].set_attack(controller_value);
+      m_controller_value_eg_attack   = controller_value;
+      update_eg_and_amp_eg();
       break;
     case EG_DECAY       :
-      m_eg[0].set_decay(controller_value);
+      m_controller_value_eg_decay    = controller_value;
+      update_eg_and_amp_eg();
       break;
     case EG_SUSTAIN     :
-      m_eg[0].set_sustain(controller_value);
+      m_controller_value_eg_sustain  = controller_value;
+      update_eg_and_amp_eg();
       break;
     case EG_RELEASE     :
-      m_eg[0].set_release(controller_value);
+      m_controller_value_eg_release  = controller_value;
+      update_eg_and_amp_eg();
       break;
 
     case AMP_ATTACK     :
-      m_eg[1].set_attack(controller_value);
+      m_controller_value_amp_attack  = controller_value;
+      update_eg_and_amp_eg();
       break;
     case AMP_DECAY      :
-      m_eg[1].set_decay(controller_value);
+      m_controller_value_amp_decay   = controller_value;
+      update_eg_and_amp_eg();
       break;
     case AMP_SUSTAIN    :
-      m_eg[1].set_sustain(controller_value);
+      m_controller_value_amp_sustain = controller_value;
+      update_eg_and_amp_eg();
       break;
     case AMP_RELEASE    :
-      m_eg[1].set_release(controller_value);
+      m_controller_value_amp_release = controller_value;
+      update_eg_and_amp_eg();
       break;
 
     case CHORUS_DEPTH   :
@@ -541,6 +571,16 @@ public:
 
     case CHORUS_BYPASS  :
       m_chorus_fx.set_chorus_bypass(controller_value);
+      break;
+
+    case EG_AMP_MOD  :
+      m_controller_value_eg_amp_mod   = controller_value;
+      update_eg_and_amp_eg();
+      break;
+
+    case REL_EQ_DECAY  :
+      m_controller_value_rel_eq_decay = controller_value;
+      update_eg_and_amp_eg();
       break;
 
 #if 0
@@ -667,8 +707,8 @@ public:
 
     control_change(P_BEND_RANGE   , g_preset_table_P_BEND_RANGE   [program_number]);
     control_change(CHORUS_BYPASS  , g_preset_table_CHORUS_BYPASS  [program_number]);
-
-
+    control_change(EG_AMP_MOD     , g_preset_table_EG_AMP_MOD     [program_number]);
+    control_change(REL_EQ_DECAY   , g_preset_table_REL_EQ_DECAY   [program_number]);
   }
 
   INLINE int16_t process(int16_t& right_level) {
@@ -837,6 +877,45 @@ private:
       m_osc.set_pitch_lfo_amt<0>(64);
       m_osc.set_pitch_lfo_amt<1>(64);
       m_osc.set_shape_lfo_amt(m_lfo_osc_amt);
+    }
+  }
+
+  INLINE void update_eg_and_amp_eg() {
+    if (m_controller_value_eg_amp_mod < 64) {
+      m_eg[0].set_attack  (m_controller_value_eg_attack);
+      m_eg[1].set_attack  (m_controller_value_amp_attack);
+
+      m_eg[0].set_decay   (m_controller_value_eg_decay);
+      m_eg[1].set_decay   (m_controller_value_amp_decay);
+
+      m_eg[0].set_sustain (m_controller_value_eg_sustain);
+      m_eg[1].set_sustain (m_controller_value_amp_sustain);
+
+      if (m_controller_value_rel_eq_decay < 64) {
+        m_eg[0].set_release (m_controller_value_eg_release);
+        m_eg[1].set_release (m_controller_value_amp_release);
+      } else {
+        m_eg[0].set_release (m_controller_value_eg_decay);
+        m_eg[1].set_release (m_controller_value_amp_decay);
+      }
+
+    } else {
+      m_eg[0].set_attack  (m_controller_value_eg_attack);
+      m_eg[1].set_attack  (m_controller_value_eg_attack);
+
+      m_eg[0].set_decay   (m_controller_value_eg_decay);
+      m_eg[1].set_decay   (m_controller_value_eg_decay);
+
+      m_eg[0].set_sustain (m_controller_value_eg_sustain);
+      m_eg[1].set_sustain (m_controller_value_eg_sustain);
+
+      if (m_controller_value_rel_eq_decay < 64) {
+        m_eg[0].set_release (m_controller_value_eg_release);
+        m_eg[1].set_release (m_controller_value_eg_release);
+      } else {
+        m_eg[0].set_release (m_controller_value_eg_decay);
+        m_eg[1].set_release (m_controller_value_eg_decay);
+      }
     }
   }
 };

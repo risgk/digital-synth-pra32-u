@@ -102,8 +102,8 @@ const CHORUS_DLY_TIME = 62;
 
 const P_BEND_RANGE    = 85;
 const CHORUS_BYPASS   = 111;
-
-
+const EG_AMP_MOD      = 31;
+const REL_EQ_DECAY    = 89;
 
 const PC_BY_CC_8      = 112;
 const PC_BY_CC_9      = 113;
@@ -174,8 +174,8 @@ var controlNumberToStringMap = new Map([
 
   [ P_BEND_RANGE   , "P_BEND_RANGE   " ],
   [ CHORUS_BYPASS  , "CHORUS_BYPASS  " ],
-
-
+  [ EG_AMP_MOD     , "EG_AMP_MOD     " ],
+  [ REL_EQ_DECAY   , "REL_EQ_DECAY   " ],
 ]);
 
 var controllersInLocalStorage = [
@@ -226,8 +226,8 @@ var controllersInLocalStorage = [
 
   P_BEND_RANGE   ,
   CHORUS_BYPASS  ,
-
-
+  EG_AMP_MOD     ,
+  REL_EQ_DECAY   ,
 ];
 
 var presetControllers = {};
@@ -280,8 +280,8 @@ presetControllers[CHORUS_DLY_TIME] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
 
 presetControllers[P_BEND_RANGE   ] = [2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  ];
 presetControllers[CHORUS_BYPASS  ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
-
-
+presetControllers[EG_AMP_MOD     ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
+presetControllers[REL_EQ_DECAY   ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 
 const PRESET_NUMBER_INITIAL = 7;
 </script>
@@ -675,13 +675,15 @@ function preset(number) {
 
 function setRandom() {
   controllersInLocalStorage.forEach(function(i) {
-    if((i != CHORUS_DEPTH   ) &&
-       (i != CHORUS_RATE    ) &&
-       (i != CHORUS_DLY_TIME) &&
-       (i != CHORUS_MODE    ) &&
-       (i != CHORUS_BYPASS  ) &&
-       (i != AMP_LEVEL      ) &&
-       (i != VOICE_MODE     )) {
+    if ((i != VOICE_MODE     ) &&
+        (i != AMP_LEVEL      ) &&
+        (i != CHORUS_MODE    ) &&
+        (i != CHORUS_RATE    ) &&
+        (i != CHORUS_DEPTH   ) &&
+        (i != CHORUS_DLY_TIME) &&
+        (i != CHORUS_BYPASS  ) &&
+        (i != EG_AMP_MOD     ) &&
+        (i != REL_EQ_DECAY   )) {
       onChangeControlChange(i, rand(128));
     }
   });
@@ -689,10 +691,10 @@ function setRandom() {
 
 function setRandomChorus() {
   controllersInLocalStorage.forEach(function(i) {
-    if((i == CHORUS_DEPTH   ) ||
-       (i == CHORUS_RATE    ) ||
-       (i == CHORUS_DLY_TIME) ||
-       (i == CHORUS_MODE    )) {
+    if ((i == CHORUS_MODE    ) ||
+        (i == CHORUS_RATE    ) ||
+        (i == CHORUS_DEPTH   ) ||
+        (i == CHORUS_DLY_TIME)) {
       onChangeControlChange(i, rand(128));
     }
   });
@@ -876,8 +878,8 @@ function fileExport() {
   str += "\n";
   str += fileExportOneLine(P_BEND_RANGE   );
   str += fileExportOneLine(CHORUS_BYPASS  );
-  str += "\n";
-  str += "\n";
+  str += fileExportOneLine(EG_AMP_MOD     );
+  str += fileExportOneLine(REL_EQ_DECAY   );
   str += "  \"_end         \" : \"\"\n";
   str += "}\n";
 
@@ -1221,18 +1223,18 @@ function getStoredCCValueString(index, number) {
 <tr>
 <td colspan="2">Pitch Bend Range                </td>
 <td colspan="2"><b>Chorus</b> Bypass [Off|On]          </td>
-<td colspan="2"></td>
-<td colspan="2"></td>
+<td colspan="2">EG Amp Mod [Off|On]             </td>
+<td colspan="2">Release = Decay [Off|On]        </td>
 </tr>
 <tr>
 <td><input  id="inputCC85"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(P_BEND_RANGE   , value)"></td>
 <td><span    id="spanCC85" >-</span></td>
 <td><input  id="inputCC111" type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_BYPASS  , value)"></td>
 <td><span    id="spanCC111">-</span></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td><input  id="inputCC31"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_AMP_MOD     , value)"></td>
+<td><span    id="spanCC31" >-</span></td>
+<td><input  id="inputCC89"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(REL_EQ_DECAY   , value)"></td>
+<td><span    id="spanCC89" >-</span></td>
 </tr>
 <tr>
 <td colspan="8"><hr></td>
