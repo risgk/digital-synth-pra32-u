@@ -22,6 +22,7 @@ class PRA32_U_Filter {
   int8_t          m_cutoff_lfo_amt;
   int8_t          m_cutoff_pitch_amt;
   int8_t          m_cutoff_offset;
+  uint8_t         m_filter_mode;
 
   const uint8_t AUDIO_FRACTION_BITS = 14;
   const int16_t MAX_ABS_OUTPUT = ((124 << (AUDIO_FRACTION_BITS - 8)) >> 8) << 8;
@@ -44,6 +45,7 @@ public:
   , m_cutoff_lfo_amt()
   , m_cutoff_pitch_amt()
   , m_cutoff_offset()
+  , m_filter_mode()
   {
     m_cutoff_current = 254;
 
@@ -92,6 +94,10 @@ public:
     m_cutoff_pitch_amt = cutoff_pitch_amt_table[controller_value >> 6];
   }
 
+  INLINE void set_filter_mode(uint8_t controller_value) {
+    m_filter_mode = controller_value;
+  }
+
   INLINE void set_cutoff_offset(int8_t cutoff_offset) {
     m_cutoff_offset = cutoff_offset;
   }
@@ -118,6 +124,11 @@ public:
     m_y_2 = m_y_1;
     m_x_1 = x_0;
     m_y_1 = y_0;
+
+    if (m_filter_mode >= 64) {
+      // low cut
+      y_0 = (audio_input << AUDIO_FRACTION_BITS) - y_0;
+    }
 
     // y = clamp(y_0, (-MAX_ABS_OUTPUT << 16), (+MAX_ABS_OUTPUT << 16))
     volatile int32_t y = y_0 - (+MAX_ABS_OUTPUT << 16);

@@ -573,14 +573,18 @@ public:
       m_chorus_fx.set_chorus_bypass(controller_value);
       break;
 
-    case EG_AMP_MOD  :
+    case EG_AMP_MOD     :
       m_controller_value_eg_amp_mod   = controller_value;
       update_eg_and_amp_eg();
       break;
 
-    case REL_EQ_DECAY  :
+    case REL_EQ_DECAY   :
       m_controller_value_rel_eq_decay = controller_value;
       update_eg_and_amp_eg();
+      break;
+
+    case FILTER_MODE    :
+      m_filter.set_filter_mode(controller_value);
       break;
 
 #if 0
@@ -709,6 +713,8 @@ public:
     control_change(CHORUS_BYPASS  , g_preset_table_CHORUS_BYPASS  [program_number]);
     control_change(EG_AMP_MOD     , g_preset_table_EG_AMP_MOD     [program_number]);
     control_change(REL_EQ_DECAY   , g_preset_table_REL_EQ_DECAY   [program_number]);
+
+    control_change(FILTER_MODE    , g_preset_table_FILTER_MODE    [program_number]);
   }
 
   INLINE int16_t process(int16_t& right_level) {

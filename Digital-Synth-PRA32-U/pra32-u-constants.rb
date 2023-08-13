@@ -100,6 +100,11 @@ CHORUS_BYPASS   = 111
 EG_AMP_MOD      = 31
 REL_EQ_DECAY    = 89
 
+FILTER_MODE     = 109
+
+
+
+
 PC_BY_CC_8      = 112
 PC_BY_CC_9      = 113
 PC_BY_CC_10     = 114

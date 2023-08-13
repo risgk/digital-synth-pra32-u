@@ -23,7 +23,7 @@
 ## Change History
 
 - v0.2.0: Change Sampling Rate to 48000; Support MCLK for I2S;
-  Change "Mixer Sub Osc" to "Mixer Noise/Sub Osc"; Add "EG Amp Mod" and "Release = Decay";
+  Change "Mixer Sub Osc" to "Mixer Noise/Sub Osc"; Add "EG Amp Mod", "Release = Decay", and "Filter Mode";
   Enable Osc 1 Shape, Morph, Noise/Sub Osc, and Osc 2 in Paraphonic Mode; Other changes
 - v0.1.0: The first release
 
