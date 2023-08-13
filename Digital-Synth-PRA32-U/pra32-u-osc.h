@@ -193,19 +193,28 @@ public:
     m_mixer_noise_sub_osc_control = controller_value - 64;
   }
 
+  static constexpr int16_t m_pitch_mod_amt_table[128] = {
+    -768, -768, -752, -736, -720, -704, -688, -672,
+    -656, -640, -624, -608, -592, -576, -560, -544,
+    -528, -512, -496, -480, -464, -448, -432, -416,
+    -400, -384, -368, -352, -336, -320, -304, -288,
+    -272, -256, -240, -224, -208, -192, -176, -160,
+    -144, -128, -112,  -96,  -80,  -64,  -48,  -32,
+     -16,  -15,  -14,  -13,  -12,  -11,  -10,   -9,
+      -8,   -7,   -6,   -5,   -4,   -3,   -2,   -1,
+      +0,   +1,   +2,   +3,   +4,   +5,   +6,   +7,
+      +8,   +9,  +10,  +11,  +12,  +13,  +14,  +15,
+     +16,  +32,  +48,  +64,  +80,  +96, +112, +128,
+    +144, +160, +176, +192, +208, +224, +240, +256,
+    +272, +288, +304, +320, +336, +352, +368, +384,
+    +400, +416, +432, +448, +464, +480, +496, +512,
+    +528, +544, +560, +576, +592, +608, +624, +640,
+    +656, +672, +688, +704, +720, +736, +752, +768,
+  };
+
   template <uint8_t N>
   INLINE void set_pitch_eg_amt(uint8_t controller_value) {
-    if (controller_value < 1) {
-      m_pitch_eg_amt[N] = -192;
-    } else if (controller_value < 48) {
-      m_pitch_eg_amt[N] = (controller_value - 49) << 2;
-    } else if (controller_value < 80) {
-      m_pitch_eg_amt[N] = (controller_value - 62) >> 2;
-    } else if (controller_value < 127) {
-      m_pitch_eg_amt[N] = (controller_value - 79) << 2;
-    } else {
-      m_pitch_eg_amt[N] = 192;
-    }
+    m_pitch_eg_amt[N] = m_pitch_mod_amt_table[controller_value];
   }
 
   INLINE void set_shape_eg_amt(uint8_t controller_value) {
@@ -217,17 +226,7 @@ public:
 
   template <uint8_t N>
   INLINE void set_pitch_lfo_amt(uint8_t controller_value) {
-    if (controller_value < 1) {
-      m_pitch_lfo_amt[N] = -192;
-    } else if (controller_value < 48) {
-      m_pitch_lfo_amt[N] = (controller_value - 49) << 2;
-    } else if (controller_value < 80) {
-      m_pitch_lfo_amt[N] = (controller_value - 62) >> 2;
-    } else if (controller_value < 127) {
-      m_pitch_lfo_amt[N] = (controller_value - 79) << 2;
-    } else {
-      m_pitch_lfo_amt[N] = 192;
-    }
+    m_pitch_lfo_amt[N] = m_pitch_mod_amt_table[controller_value];
   }
 
   INLINE void set_shape_lfo_amt(uint8_t controller_value) {
@@ -473,7 +472,7 @@ private:
     } else {
       pitch_eg_amt = m_pitch_eg_amt[0];
     }
-    uint16_t pitch_temp =  (64 << 8) + m_pitch_current[N & 0x03] + m_pitch_bend_normalized + ((pitch_eg_amt * eg_level) >> 8);
+    uint16_t pitch_temp =  (64 << 8) + m_pitch_current[N & 0x03] + m_pitch_bend_normalized + ((pitch_eg_amt * eg_level) >> 10);
 
     uint8_t coarse = high_byte(pitch_temp);
     if (coarse < (NOTE_NUMBER_MIN + 64)) {
@@ -483,10 +482,10 @@ private:
     }
 
     if (N >= 4) {
-      pitch_temp += (lfo_level * m_pitch_lfo_amt[1]) >> 7;
+      pitch_temp += (lfo_level * m_pitch_lfo_amt[1]) >> 9;
       pitch_temp += (m_osc2_pitch << 8) + m_osc2_detune + m_osc2_detune;
     } else {
-      pitch_temp += (lfo_level * m_pitch_lfo_amt[0]) >> 7;
+      pitch_temp += (lfo_level * m_pitch_lfo_amt[0]) >> 9;
     }
 
     coarse = high_byte(pitch_temp);
