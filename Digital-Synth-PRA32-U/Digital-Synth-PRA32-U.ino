@@ -207,6 +207,6 @@ void __not_in_flash_func(handleHandleProgramChange)(byte channel, byte number)
 void __not_in_flash_func(handleHandlePitchBend)(byte channel, int bend)
 {
   if ((channel - 1) == MIDI_CH) {
-    g_synth.pitch_bend(bend & 0x7F, bend >> 7);
+    g_synth.pitch_bend((bend + 8192) & 0x7F, (bend + 8192) >> 7);
   }
 }
