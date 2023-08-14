@@ -91,7 +91,7 @@ public:
         +0,   +1,   +1,   +2,
     };
 
-    m_cutoff_pitch_amt = cutoff_pitch_amt_table[controller_value >> 6];
+    m_cutoff_pitch_amt = cutoff_pitch_amt_table[controller_value >> 5];
   }
 
   INLINE void set_filter_mode(uint8_t controller_value) {
