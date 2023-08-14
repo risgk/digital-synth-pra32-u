@@ -269,7 +269,16 @@ public:
 
   template <uint8_t N>
   INLINE void note_on(uint8_t note_number) {
-    m_pitch_target[N] = (note_number << 8) + g_osc_freq_detune_table[note_number - NOTE_NUMBER_MIN];
+    uint8_t n;
+    if (note_number < NOTE_NUMBER_MIN) {
+      n = NOTE_NUMBER_MIN;
+    } else if (note_number > NOTE_NUMBER_MAX) {
+      n = NOTE_NUMBER_MAX;
+    } else {
+      n = note_number;
+    }
+
+    m_pitch_target[N] = (n << 8) + g_osc_freq_detune_table[n - NOTE_NUMBER_MIN];
     m_osc_on[N] = true;
   }
 
