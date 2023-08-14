@@ -26,7 +26,7 @@ class PRA32_U_Osc {
   int16_t        m_pitch_bend_normalized;
   uint16_t       m_pitch_target[4];
   uint16_t       m_pitch_current[4];
-  const int16_t* m_wave_table[4 * 2];
+  const int16_t* m_wave_table[4 * 3];
   const int16_t* m_wave_table_temp[4 * 2];
   uint32_t       m_freq[4 * 2];
   uint32_t       m_freq_base[4 * 2];
@@ -118,6 +118,10 @@ public:
     m_wave_table[5] = g_osc_saw_wave_tables[0];
     m_wave_table[6] = g_osc_saw_wave_tables[0];
     m_wave_table[7] = g_osc_saw_wave_tables[0];
+    m_wave_table[8] = g_osc_saw_wave_tables[0];
+    m_wave_table[9] = g_osc_saw_wave_tables[0];
+    m_wave_table[10] = g_osc_saw_wave_tables[0];
+    m_wave_table[11] = g_osc_saw_wave_tables[0];
     m_wave_table_temp[0] = g_osc_saw_wave_tables[0];
     m_wave_table_temp[1] = g_osc_saw_wave_tables[0];
     m_wave_table_temp[2] = g_osc_saw_wave_tables[0];
@@ -420,7 +424,11 @@ private:
 
     // For Pulse Wave (wave_3)
     uint32_t phase_3 = m_phase[N] + (m_osc1_shape_effective << 8);
-    int16_t wave_3 = get_wave_level(m_wave_table[N], phase_3);
+    boolean new_period_osc1_add = ((phase_3 + 0x00800000) & 0x00FFFFFF) < (m_freq[N] + 0x00010000); // crossing the middle of a saw wave
+    m_wave_table[N + 8] = reinterpret_cast<const int16_t*>((reinterpret_cast<const uintptr_t>(m_wave_table[N + 8]) * (1 - new_period_osc1_add)));
+    m_wave_table[N + 8] = reinterpret_cast<const int16_t*>( reinterpret_cast<const uint8_t*>( m_wave_table[N + 8]) +
+                                                           (reinterpret_cast<const uintptr_t>(m_wave_table_temp[N]) * new_period_osc1_add));
+    int16_t wave_3 = get_wave_level(m_wave_table[N + 8], phase_3);
     result += ((((wave_3 * osc1_gain * m_osc_gain_effective[N]) >> 10) * -m_osc1_morph_control) >> 6) * (m_waveform[0] == WAVEFORM_1_PULSE);
 
     if (m_mixer_noise_sub_osc_control >= 0) {
