@@ -14,7 +14,7 @@ uint8_t g_preset_table_OSC_2_FINE     [] = {70 , 70 , 70 , 70 , 70 , 70 , 70 , 6
 uint8_t g_preset_table_MIXER_OSC_MIX  [] = {64 , 64 , 64 , 64 , 64 , 64 , 32 , 0  ,   64 , 64 , 64 , 64 , 64 , 64 , 32 , 0  };
 
 uint8_t g_preset_table_FILTER_CUTOFF  [] = {115, 115, 67 , 115, 67 , 115, 127, 127,   115, 115, 67 , 115, 67 , 115, 127, 127};
-uint8_t g_preset_table_FILTER_RESO    [] = {64 , 32 , 32 , 32 , 64 , 64 , 0  , 0  ,   64 , 32 , 32 , 32 , 64 , 64 , 0  , 0  };
+uint8_t g_preset_table_FILTER_RESO    [] = {64 , 64 , 32 , 32 , 64 , 64 , 0  , 0  ,   64 , 64 , 32 , 32 , 64 , 64 , 0  , 0  };
 uint8_t g_preset_table_FILTER_EG_AMT  [] = {64 , 64 , 112, 4  , 112, 64 , 64 , 64 ,   64 , 64 , 112, 4  , 112, 64 , 64 , 64 };
 uint8_t g_preset_table_FILTER_KEY_TRK [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
 
@@ -29,7 +29,7 @@ uint8_t g_preset_table_VOICE_MODE     [] = {127, 0  , 0  , 0  , 64 , 127, 0  , 1
 uint8_t g_preset_table_PORTAMENTO     [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
 
 uint8_t g_preset_table_LFO_WAVE       [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
-uint8_t g_preset_table_LFO_RATE       [] = {96 , 96 , 96 , 96 , 96 , 80 , 96 , 96 ,   96 , 96 , 96 , 96 , 96 , 80 , 96 , 96 };
+uint8_t g_preset_table_LFO_RATE       [] = {96 , 96 , 96 , 96 , 96 , 64 , 96 , 96 ,   96 , 96 , 96 , 96 , 96 , 64 , 96 , 96 };
 uint8_t g_preset_table_LFO_DEPTH      [] = {0  , 0  , 0  , 0  , 0  , 127, 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 127, 0  , 0  };
 uint8_t g_preset_table_LFO_FADE_TIME  [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
 
