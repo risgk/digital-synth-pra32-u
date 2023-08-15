@@ -274,7 +274,7 @@ public:
       n = note_number;
     }
 
-    m_pitch_target[N] = (n << 8) + g_osc_freq_detune_table[n - NOTE_NUMBER_MIN];
+    m_pitch_target[N] = (n << 8);
     m_osc_on[N] = true;
   }
 

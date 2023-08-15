@@ -64,22 +64,6 @@ def freq_from_note_number_sr31250_m8(note_number, pr = false)
   return freq << 8
 end
 
-$file.printf("int8_t g_osc_freq_detune_table[] = {\n  ")
-(NOTE_NUMBER_MIN..NOTE_NUMBER_MAX).each do |note_number|
-  freq = (Math.log(freq_from_note_number_sr31250_m8(note_number, true).to_f /
-                   freq_from_note_number_sr31250(note_number, true).to_f) * (256 * 12)).round.to_i
-
-  $file.printf("%+4d,", freq)
-  if note_number == DATA_BYTE_MAX
-    $file.printf("\n")
-  elsif note_number % 12 == (12 - 1)
-    $file.printf("\n  ")
-  else
-    $file.printf(" ")
-  end
-end
-$file.printf("};\n\n")
-
 max_tune_rate = -Float::INFINITY
 $file.printf("int16_t g_osc_tune_table[] = {\n  ")
 (0..(1 << OSC_TUNE_TABLE_STEPS_BITS) - 1).each do |i|
