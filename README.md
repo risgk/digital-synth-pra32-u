@@ -19,7 +19,7 @@
 
 ## Change History
 
-- v0.2.0: Change Sampling Rate to 48000; Support MCLK for I2S;
+- v0.2.0: Change Sampling Rate to 48000; Support MCLK for I2S; Support Polyphonic Mode;
   Change "Mixer Sub Osc" to "Mixer Noise/Sub Osc"; Add "EG Amp Mod", "Release = Decay", and "Filter Mode";
   Enable Osc 1 Shape, Morph, Noise/Sub Osc, and Osc 2 in Paraphonic Mode; Other changes
 - v0.1.0: The first release
@@ -105,20 +105,24 @@
 
 ## Synthesizer Block Diagram
 
-### Monophonic Mode
+### Polyphonic Mode
 
 ```mermaid
 graph LR
     subgraph V1[Voice 1]
-        O1[Osc 1 w/ Sub Osc] --> OM[Osc Mixer]
-        O2[Osc 2] --> OM
+        V1O1[Osc 1 w/ Sub Osc] --> V1OM[Osc Mixer]
+        V1O2[Osc 2] --> V1OM
+        V1OM --> V1F[Filter]
+        V1F --> V1A[Amp]
+        E[EG] -.-> V1O1 & V1O2 & V1F
+        V1AE[Amp EG] -.-> V1A
     end
-    OM --> F[Filter] --> A[Amp] --> C[Chorus FX] --> AO[Audio Out]
-    N[Noise Gen] --> O2 & OM
+    V1A --> VM[Voice Mixer]
+    V2[Voice 2] & V3[Voice 3] & V4[Voice 4] --> VM
+    VM --> C[Chorus FX] --> AO[Audio Out]
+    N[Noise Gen]  --> V1O2 & V1OM & V2 & V3 & V4
     N -.-> L[LFO w/ S/H]
-    L -.-> O1 & O2 & F
-    E[EG] -.-> O1 & O2 & F
-    AE[Amp EG] -.-> A
+    L -.-> V1O1 & V1O2 & V1F & V2 & V3 & V4
 ```
 
 
@@ -138,6 +142,23 @@ graph LR
     N -.-> L[LFO w/ S/H]
     L -.-> V1O1 & V1O2 & V2 & V3 & V4 & F
     E[EG] -.-> V1O1 & V1O2 & V2 & V3 & V4 & F
+    AE[Amp EG] -.-> A
+```
+
+
+### Monophonic Mode
+
+```mermaid
+graph LR
+    subgraph V1[Voice 1]
+        O1[Osc 1 w/ Sub Osc] --> OM[Osc Mixer]
+        O2[Osc 2] --> OM
+    end
+    OM --> F[Filter] --> A[Amp] --> C[Chorus FX] --> AO[Audio Out]
+    N[Noise Gen] --> O2 & OM
+    N -.-> L[LFO w/ S/H]
+    L -.-> O1 & O2 & F
+    E[EG] -.-> O1 & O2 & F
     AE[Amp EG] -.-> A
 ```
 

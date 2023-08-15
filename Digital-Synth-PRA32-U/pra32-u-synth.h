@@ -898,15 +898,17 @@ private:
   }
 
   INLINE void set_voice_mode(uint8_t controller_value) {
-    uint8_t new_voice_mode = VOICE_PARAPHONIC;
-    if (controller_value >= 112) {
-      new_voice_mode = VOICE_LEGATO_PORTA;
-    } else if (controller_value >= 80) {
-      new_voice_mode = VOICE_LEGATO;
-    } else if (controller_value >= 48) {
-      new_voice_mode = VOICE_MONOPHONIC;
-    } else if (controller_value >= 16) {
+    uint8_t new_voice_mode;
+    if (controller_value < 16) {
       new_voice_mode = VOICE_POLYPHONIC;
+    } else if (controller_value < 48) {
+      new_voice_mode = VOICE_PARAPHONIC;
+    } else if (controller_value < 80) {
+      new_voice_mode = VOICE_MONOPHONIC;
+    } else if (controller_value < 112) {
+      new_voice_mode = VOICE_LEGATO_PORTA;
+    } else {
+      new_voice_mode = VOICE_LEGATO;
     }
 
     if (m_voice_mode != new_voice_mode) {
