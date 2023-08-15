@@ -69,11 +69,7 @@ public:
   }
 
   INLINE void set_chorus_rate(uint8_t controller_value) {
-    if (controller_value < 2) {
-      m_chorus_rate_control = 1;
-    } else {
-      m_chorus_rate_control = (controller_value + 2) >> 2;
-    }
+    m_chorus_rate_control = (controller_value + 1) * 3;
   }
 
   INLINE void set_chorus_delay_time(uint8_t controller_value) {
@@ -154,13 +150,11 @@ public:
     }
 
     m_chorus_lfo_phase += m_chorus_rate_control;
-
+    m_chorus_lfo_phase &= 0x0001FFFFF;
 
     int16_t chorus_lfo_wave_level = get_chorus_lfo_wave_level(m_chorus_lfo_phase);
 
-
     int16_t chorus_lfo_level = (chorus_lfo_wave_level * m_chorus_depth_control_actual) >> 8;
-
 
     switch (m_effective_chorus_mode) {
     case CHORUS_MODE_BYPASS   :
@@ -243,8 +237,7 @@ private:
 
   INLINE int16_t get_chorus_lfo_wave_level(uint32_t phase) {
     int16_t triangle_wave_level = 0;
-    phase &= 0x0001FFFC;
-    phase = (phase >> 2);
+    phase = (phase >> 6);
 
     if (phase < 0x00004000) {
       triangle_wave_level = phase - (512 << 4);

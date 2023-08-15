@@ -118,20 +118,19 @@
     - 96 (80-111): Stereo Chorus
     - 127 (112-127): Stereo 2-phase Chorus
 - Chorus Rate
-    - 4: LFO Frequency 0.06 Hz (min)
-    - 32: LFO Frequency 0.48 Hz
-    - 64: LFO Frequency 0.95 Hz
-    - 127: LFO Frequency 1.9 Hz (max)
+    - 4: LFO Frequency 0.02 Hz (min)
+    - 32: LFO Frequency 0.6 Hz
+    - 64: LFO Frequency 1.1 Hz
+    - 127: LFO Frequency 2.2 Hz (max)
 - Chorus Depth
     - 0: Delay Time +/- 0.0 ms (min)
-    - 32: Delay Time +/- 2.0 ms
-    - 64: Delay Time +/- 4.1 ms
-    - 126: Delay Time +/- 8.1 ms (max)
+    - 32: Delay Time +/- 1.3 ms
+    - 64: Delay Time +/- 2.7 ms
+    - 126: Delay Time +/- 5.3 ms (max)
 - Chorus Delay Time
     - 0: 0.03 ms (min)
-    - 64: 8.2 ms
-    - 80: 10.3 ms
-    - 127: 16.3 ms (max)
+    - 64: 5.4 ms
+    - 127: 10.6 ms (max)
 - Pitch Bend Range
     - 0: 0 semitone (min)
     - 24: 24 semitone (max)
@@ -144,15 +143,3 @@
 - Filter Mode [LP|LC]
     - 0 (0-63): Low Pass
     - 127 (64-127): Low Cut
-
-
-## Sample Chorus Settings
-
-- Setting C0 -- Chorus Mode: 127, Chorus Rate: 32, Chorus Depth: 32, Chorus Delay Time: 64
-- Setting C1 -- Chorus Mode: 127, Chorus Rate: 16, Chorus Depth: 32, Chorus Delay Time: 64
-- Setting C2 -- Chorus Mode: 127, Chorus Rate: 48, Chorus Depth: 32, Chorus Delay Time: 64
-- Setting D1 -- Chorus Mode: 127, Chorus Rate: 16, Chorus Depth: 32, Chorus Delay Time: 80
-- Setting D2 -- Chorus Mode: 127, Chorus Rate: 16, Chorus Depth: 40, Chorus Delay Time: 60
-- Setting D3 -- Chorus Mode: 127, Chorus Rate: 32, Chorus Depth: 24, Chorus Delay Time: 60
-- Setting J1 -- Chorus Mode: 127, Chorus Rate: 32, Chorus Depth: 32, Chorus Delay Time: 20
-- Setting J2 -- Chorus Mode: 127, Chorus Rate: 48, Chorus Depth: 32, Chorus Delay Time: 20
