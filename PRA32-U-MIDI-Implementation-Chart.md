@@ -47,7 +47,7 @@
 |                               |               |               |                                  |
 |                           104 | x             | o             | EG Osc Amt [-|+]                 |
 |                           105 | x             | o             | EG Osc Dst [P|2P|1S]             |
-|                            87 | x             | o             | Voice Mode [Par|-|Mon|Lgt|LP]    |
+|                            87 | x             | o             | Voice Mode [Par|Pol|Mon|Lgt|LP]  |
 |                            22 | x             | o             | Portamento                       |
 |                               |               |               |                                  |
 |                            14 | x             | o             | LFO Wave [T1|T2|Saw|SH|Sqr]      |

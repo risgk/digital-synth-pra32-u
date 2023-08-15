@@ -6,10 +6,7 @@
 
 ## Overview
 
-- Paraphonic Synthesizer for Raspberry Pi Pico/RP2040
-    - Monophonic Mode: 1-Voice, 2-Oscillator (with Sub Oscillator)
-    - Paraphonic Mode: 4-Voice, 2-Oscillator (with Sub Oscillator)
-    - Built-in Chorus FX
+- 4-Voice Polyphonic/Paraphonic Synthesizer with built-in Chorus FX for Raspberry Pi Pico/RP2040
     - Controlled by MIDI -- PRA32-U is a MIDI sound module
 - The sound of **PRA32-U v0.1** is very similar to that of **VRA8-U (type-16) v2.2**
     - <https://github.com/risgk/digital-synth-vra8-u>

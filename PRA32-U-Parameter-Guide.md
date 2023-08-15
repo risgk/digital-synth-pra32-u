@@ -92,9 +92,10 @@
     - 0 (0-31): Osc 1 & 2 Pitch
     - 64 (32-95): Osc 2 Pitch
     - 127 (96-127): Osc 1 Shape
-- Voice Mode [Par|-|Mon|Lgt|LP]
-    - 0 (0-31): Paraphonic (LFO Single Trigger)
-    - 64 (32-79): Monophonic (EG & LFO Multi Trigger)
+- Voice Mode [[Par|Pol|Mon|Lgt|LP]]
+    - 0 (0-15): Paraphonic (LFO Single Trigger)
+    - 32 (16-47): Polyphonic (LFO Single Trigger)
+    - 64 (48-79): Monophonic (EG & LFO Multi Trigger)
     - 96 (80-111): Legato (Monophonic, EG & LFO Single Trigger)
     - 127 (112-127): Legato Portamento (Monophonic, EG & LFO Single Trigger, Auto Portamento)
 - LFO Wave [T1|T2|Saw|SH|Sqr]

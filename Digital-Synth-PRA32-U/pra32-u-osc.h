@@ -37,6 +37,7 @@ class PRA32_U_Osc {
   int8_t         m_osc_level;
 
   boolean        m_mono_mode;
+  boolean        m_gate_enabled;
   uint8_t        m_osc2_mix;
   int8_t         m_osc2_pitch;
   int8_t         m_osc2_detune;
@@ -51,6 +52,8 @@ class PRA32_U_Osc {
   int16_t        m_mix_table[OSC_MIX_TABLE_LENGTH];
   int8_t         m_shape_eg_amt;
   int8_t         m_shape_lfo_amt;
+
+  static const int16_t m_pitch_mod_amt_table[128];
 
 public:
   PRA32_U_Osc()
@@ -75,6 +78,7 @@ public:
   , m_osc_level()
 
   , m_mono_mode()
+  , m_gate_enabled()
   , m_osc2_mix()
   , m_osc2_pitch()
   , m_osc2_detune()
@@ -96,6 +100,7 @@ public:
     m_portamento_coef[3] = PORTAMENTO_COEF_OFF;
 
     set_mono_mode   (false);
+    set_gate_enabled(false);
     set_osc2_mix    (0);
     set_osc2_pitch  (0);
     set_osc2_detune (0);
@@ -197,25 +202,6 @@ public:
     m_mixer_noise_sub_osc_control = controller_value - 64;
   }
 
-  static constexpr int16_t m_pitch_mod_amt_table[128] = {
-    -384, -384, -384, -384, -384, -384, -384, -384,
-    -384, -384, -384, -368, -352, -336, -320, -304,
-    -288, -272, -256, -240, -224, -208, -192, -176,
-    -160, -144, -128, -112,  -96,  -80,  -64,  -48,
-     -32,  -31,  -30,  -29,  -28,  -27,  -26,  -25,
-     -24,  -23,  -22,  -21,  -20,  -19,  -18,  -17,
-     -16,  -15,  -14,  -13,  -12,  -11,  -10,   -9,
-      -8,   -7,   -6,   -5,   -4,   -3,   -2,   -1,
-      +0,   +1,   +2,   +3,   +4,   +5,   +6,   +7,
-      +8,   +9,  +10,  +11,  +12,  +13,  +14,  +15,
-     +16,  +17,  +18,  +19,  +20,  +21,  +22,  +23,
-     +24,  +25,  +26,  +27,  +28,  +29,  +30,  +31,
-     +32,  +48,  +64,  +80,  +96, +112, +128, +144,
-    +160, +176, +192, +208, +224, +240, +256, +272,
-    +288, +304, +320, +336, +352, +368, +384, +384,
-    +384, +384, +384, +384, +384, +384, +384, +384,
-  };
-
   template <uint8_t N>
   INLINE void set_pitch_eg_amt(uint8_t controller_value) {
     m_pitch_eg_amt[N] = m_pitch_mod_amt_table[controller_value];
@@ -242,6 +228,10 @@ public:
 
   INLINE void set_mono_mode(boolean mono_mode) {
     m_mono_mode = mono_mode;
+  }
+
+  INLINE void set_gate_enabled(boolean gate_enabled) {
+    m_gate_enabled = gate_enabled;
   }
 
   INLINE void set_osc2_mix(uint8_t controller_value) {
@@ -357,33 +347,25 @@ public:
     }
   }
 
-  INLINE int16_t process(int16_t noise_int15) {
+  INLINE void process(int16_t noise_int15, int16_t output[4]) {
 #if 1
-    int32_t output = 0;
-
     if (m_mono_mode == false) {
-      output += process_osc<0>(noise_int15, true);
-      output += process_osc<1>(noise_int15, true);
-      output += process_osc<2>(noise_int15, true);
-      output += process_osc<3>(noise_int15, true);
+      output[0] = process_osc<0>(noise_int15, true) >> 8;
+      output[1] = process_osc<1>(noise_int15, true) >> 8;
+      output[2] = process_osc<2>(noise_int15, true) >> 8;
+      output[3] = process_osc<3>(noise_int15, true) >> 8;
     } else {
-      output += process_osc<0>(noise_int15, false);
-      output <<= 1;
+      output[0] = process_osc<0>(noise_int15, false) >> 7;
+      output[1] = 0;
+      output[2] = 0;
+      output[3] = 0;
     }
 #else
-    int32_t output  = 0;
+    output[1] = 0;
+    output[2] = 0;
+    output[3] = 0;
+    output[4] = 0;
 #endif
-
-    volatile int32_t result = output;
-#if 0
-    // result = clamp(y_0, (-(INT16_MAX << 8)), (INT16_MAX << 8))
-    result = result - (INT16_MAX << 8);
-    result = (result < 0) * result + (INT16_MAX << 8) - (-(INT16_MAX << 8));
-    result = (result > 0) * result + (-(INT16_MAX << 8));
-#endif
-    result = result >> 8;
-
-    return result;
   }
 
 private:
@@ -542,7 +524,7 @@ private:
 
   template <uint8_t N>
   INLINE void update_gate() {
-    if (m_mono_mode == false) {
+    if (m_gate_enabled) {
       if (m_osc_on[N]) {
         const int8_t half_level = (m_osc_level >> 1) + 1;
 
@@ -599,4 +581,23 @@ private:
     b >>= 3;
     m_pitch_bend_normalized = (b * m_pitch_bend_range) >> 2;
   }
+};
+
+const int16_t PRA32_U_Osc::m_pitch_mod_amt_table[128] = {
+  -384, -384, -384, -384, -384, -384, -384, -384,
+  -384, -384, -384, -368, -352, -336, -320, -304,
+  -288, -272, -256, -240, -224, -208, -192, -176,
+  -160, -144, -128, -112,  -96,  -80,  -64,  -48,
+   -32,  -31,  -30,  -29,  -28,  -27,  -26,  -25,
+   -24,  -23,  -22,  -21,  -20,  -19,  -18,  -17,
+   -16,  -15,  -14,  -13,  -12,  -11,  -10,   -9,
+    -8,   -7,   -6,   -5,   -4,   -3,   -2,   -1,
+    +0,   +1,   +2,   +3,   +4,   +5,   +6,   +7,
+    +8,   +9,  +10,  +11,  +12,  +13,  +14,  +15,
+   +16,  +17,  +18,  +19,  +20,  +21,  +22,  +23,
+   +24,  +25,  +26,  +27,  +28,  +29,  +30,  +31,
+   +32,  +48,  +64,  +80,  +96, +112, +128, +144,
+  +160, +176, +192, +208, +224, +240, +256, +272,
+  +288, +304, +320, +336, +352, +368, +384, +384,
+  +384, +384, +384, +384, +384, +384, +384, +384,
 };
