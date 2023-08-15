@@ -832,16 +832,16 @@ public:
     if (m_voice_mode == VOICE_POLYPHONIC) {
       m_osc.process(noise_int15, osc_output);
 
-      filter_output[0] = m_filter[0].process(osc_output   [0]);
+      filter_output[0] = m_filter[0].process(osc_output   [0] << 2);
       amp_output   [0] = m_amp   [0].process(filter_output[0]);
 
-      filter_output[1] = m_filter[1].process(osc_output   [1]);
+      filter_output[1] = m_filter[1].process(osc_output   [1] << 2);
       amp_output   [1] = m_amp   [1].process(filter_output[1]);
 
-      filter_output[2] = m_filter[2].process(osc_output   [2]);
+      filter_output[2] = m_filter[2].process(osc_output   [2] << 2);
       amp_output   [2] = m_amp   [2].process(filter_output[2]);
 
-      filter_output[3] = m_filter[3].process(osc_output   [3]);
+      filter_output[3] = m_filter[3].process(osc_output   [3] << 2);
       amp_output   [3] = m_amp   [3].process(filter_output[3]);
 
       voice_mixer_output =
@@ -849,7 +849,7 @@ public:
     } else {
       m_osc.process(noise_int15, osc_output);
       int16_t osc_mixer_output =
-        (osc_output[0] + osc_output[1] + osc_output[2] + osc_output[3]) >> 2;
+        (osc_output[0] + osc_output[1] + osc_output[2] + osc_output[3]);
 
       filter_output[0] = m_filter[0].process(osc_mixer_output);
       amp_output   [0] = m_amp   [0].process(filter_output[0]);

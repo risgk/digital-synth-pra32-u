@@ -15,13 +15,13 @@ uint8_t g_preset_table_MIXER_OSC_MIX  [] = {64 , 64 , 64 , 64 , 64 , 64 , 64 , 0
 
 uint8_t g_preset_table_FILTER_CUTOFF  [] = {115, 115, 67 , 115, 67 , 115, 127, 127,   115, 115, 67 , 115, 67 , 115, 127, 127};
 uint8_t g_preset_table_FILTER_RESO    [] = {64 , 64 , 32 , 32 , 64 , 64 , 0  , 0  ,   64 , 64 , 32 , 32 , 64 , 64 , 0  , 0  };
-uint8_t g_preset_table_FILTER_EG_AMT  [] = {64 , 64 , 112, 4  , 112, 64 , 64 , 64 ,   64 , 64 , 112, 4  , 112, 64 , 64 , 64 };
-uint8_t g_preset_table_FILTER_KEY_TRK [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
+uint8_t g_preset_table_FILTER_EG_AMT  [] = {64 , 64 , 112, 16 , 112, 64 , 64 , 64 ,   64 , 64 , 112, 16 , 112, 64 , 64 , 64 };
+uint8_t g_preset_table_FILTER_KEY_TRK [] = {127, 127, 127, 127, 127, 127, 127, 127,   127, 127, 127, 127, 127, 127, 127, 127};
 
-uint8_t g_preset_table_EG_ATTACK      [] = {0  , 0  , 0  , 96 , 0  , 0  , 0  , 0  ,   0  , 0  , 0  , 96 , 0  , 0  , 0  , 0  };
+uint8_t g_preset_table_EG_ATTACK      [] = {0  , 64 , 0  , 96 , 0  , 0  , 0  , 0  ,   0  , 64 , 0  , 96 , 0  , 0  , 0  , 0  };
 uint8_t g_preset_table_EG_DECAY       [] = {0  , 0  , 96 , 96 , 96 , 0  , 0  , 0  ,   0  , 0  , 96 , 96 , 96 , 0  , 0  , 0  };
 uint8_t g_preset_table_EG_SUSTAIN     [] = {127, 127, 0  , 0  , 0  , 127, 127, 127,   127, 127, 0  , 0  , 0  , 127, 127, 127};
-uint8_t g_preset_table_EG_RELEASE     [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
+uint8_t g_preset_table_EG_RELEASE     [] = {0  , 64 , 0  , 0  , 0  , 0  , 0  , 0  ,   0  , 64 , 0  , 0  , 0  , 0  , 0  , 0  };
 
 uint8_t g_preset_table_EG_OSC_AMT     [] = {64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ,   64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 };
 uint8_t g_preset_table_EG_OSC_DST     [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
@@ -38,10 +38,10 @@ uint8_t g_preset_table_LFO_OSC_DST    [] = {0  , 0  , 0  , 0  , 0  , 127, 0  , 0
 uint8_t g_preset_table_LFO_FILTER_AMT [] = {64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ,   64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 };
 uint8_t g_preset_table_AMP_LEVEL      [] = {127, 127, 127, 127, 127, 127, 127, 127,   127, 127, 127, 127, 127, 127, 127, 127};
 
-uint8_t g_preset_table_AMP_ATTACK     [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
+uint8_t g_preset_table_AMP_ATTACK     [] = {0  , 64 , 0  , 0  , 0  , 0  , 0  , 0  ,   0  , 64 , 0  , 0  , 0  , 0  , 0  , 0  };
 uint8_t g_preset_table_AMP_DECAY      [] = {0  , 0  , 0  , 0  , 96 , 0  , 0  , 0  ,   0  , 0  , 0  , 0  , 96 , 0  , 0  , 0  };
 uint8_t g_preset_table_AMP_SUSTAIN    [] = {127, 127, 127, 127, 0  , 127, 127, 127,   127, 127, 127, 127, 0  , 127, 127, 127};
-uint8_t g_preset_table_AMP_RELEASE    [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
+uint8_t g_preset_table_AMP_RELEASE    [] = {0  , 64 , 0  , 0  , 0  , 0  , 0  , 0  ,   0  , 64 , 0  , 0  , 0  , 0  , 0  , 0  };
 
 uint8_t g_preset_table_CHORUS_MODE    [] = {127, 127, 127, 127, 127, 127, 127, 0  ,   127, 127, 127, 127, 127, 127, 127, 0  };
 uint8_t g_preset_table_CHORUS_RATE    [] = {48 , 48 , 48 , 48 , 48 , 48 , 48 , 48 ,   48 , 48 , 48 , 48 , 48 , 48 , 48 , 48 };

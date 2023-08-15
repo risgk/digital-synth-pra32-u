@@ -260,13 +260,13 @@ presetControllers[MIXER_OSC_MIX  ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 0  ];
 
 presetControllers[FILTER_CUTOFF  ] = [115, 115, 67 , 115, 67 , 115, 127, 127];
 presetControllers[FILTER_RESO    ] = [64 , 64 , 32 , 32 , 64 , 64 , 0  , 0  ];
-presetControllers[FILTER_EG_AMT  ] = [64 , 64 , 112, 4  , 112, 64 , 64 , 64 ];
-presetControllers[FILTER_KEY_TRK ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
+presetControllers[FILTER_EG_AMT  ] = [64 , 64 , 112, 16 , 112, 64 , 64 , 64 ];
+presetControllers[FILTER_KEY_TRK ] = [127, 127, 127, 127, 127, 127, 127, 127];
 
-presetControllers[EG_ATTACK      ] = [0  , 0  , 0  , 96 , 0  , 0  , 0  , 0  ];
+presetControllers[EG_ATTACK      ] = [0  , 64 , 0  , 96 , 0  , 0  , 0  , 0  ];
 presetControllers[EG_DECAY       ] = [0  , 0  , 96 , 96 , 96 , 0  , 0  , 0  ];
 presetControllers[EG_SUSTAIN     ] = [127, 127, 0  , 0  , 0  , 127, 127, 127];
-presetControllers[EG_RELEASE     ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
+presetControllers[EG_RELEASE     ] = [0  , 64 , 0  , 0  , 0  , 0  , 0  , 0  ];
 
 presetControllers[EG_OSC_AMT     ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
 presetControllers[EG_OSC_DST     ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
@@ -283,10 +283,10 @@ presetControllers[LFO_OSC_DST    ] = [0  , 0  , 0  , 0  , 0  , 127, 0  , 0  ];
 presetControllers[LFO_FILTER_AMT ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
 presetControllers[AMP_LEVEL      ] = [127, 127, 127, 127, 127, 127, 127, 127];
 
-presetControllers[AMP_ATTACK     ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
+presetControllers[AMP_ATTACK     ] = [0  , 64 , 0  , 0  , 0  , 0  , 0  , 0  ];
 presetControllers[AMP_DECAY      ] = [0  , 0  , 0  , 0  , 96 , 0  , 0  , 0  ];
 presetControllers[AMP_SUSTAIN    ] = [127, 127, 127, 127, 0  , 127, 127, 127];
-presetControllers[AMP_RELEASE    ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
+presetControllers[AMP_RELEASE    ] = [0  , 64 , 0  , 0  , 0  , 0  , 0  , 0  ];
 
 presetControllers[CHORUS_MODE    ] = [127, 127, 127, 127, 127, 127, 127, 0  ];
 presetControllers[CHORUS_RATE    ] = [48 , 48 , 48 , 48 , 48 , 48 , 48 , 48 ];
@@ -408,10 +408,10 @@ var specialProgramChangeCCValues = [0, 0, 0, 0, 0, 0, 0, 0];
 var specialRandomControlCCValue = 0;
 
 function afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceModeOrEGAmpModOrRelEqDecay() {
-  var targetCCNumbers = [86];
+  var targetCCNumbers = [FILTER_KEY_TRK];
 
   var valueVoiceMode = localStorage.getItem("keyVOICE_MODE     ");
-  if (valueVoiceMode < 32) {
+  if ((16 <= valueVoiceMode) && (valueVoiceMode < 48)) {
     targetCCNumbers.forEach(function(i) {
       document.getElementById("span" + controlNumberToStringMap.get(i)).style.color = 'lightgray';
     });
@@ -1052,7 +1052,7 @@ function getStoredCCValueString(index, number) {
     <td></td>
     <td><input type="button" value="#0 Fifth [Legato] "   onclick="preset(0)"></td>
     <td></td>
-    <td><input type="button" value="#1 Quad [Poly]"       onclick="preset(1)"></td>
+    <td><input type="button" value="#1 Pad [Poly]"        onclick="preset(1)"></td>
     <td></td>
     <td><input type="button" value="#2 Plus [Poly]"       onclick="preset(2)"></td>
     <td></td>
