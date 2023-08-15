@@ -572,13 +572,7 @@ private:
 
   template <uint8_t N>
   INLINE void update_osc1_shape_effective() {
-    if (m_osc1_shape_effective[N] + (1 << 8) < m_osc1_shape[N]) {
-      m_osc1_shape_effective[N] += (1 << 8);
-    } else if (m_osc1_shape_effective[N] > m_osc1_shape[N] + (1 << 8)) {
-      m_osc1_shape_effective[N] -= (1 << 8);
-    } else {
-      m_osc1_shape_effective[N] = m_osc1_shape[N];
-    }
+    m_osc1_shape_effective[N] = m_osc1_shape[N];
   }
 
   INLINE void update_pitch_bend() {
