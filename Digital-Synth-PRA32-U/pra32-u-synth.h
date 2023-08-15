@@ -806,20 +806,30 @@ public:
 
     switch (m_count & (0x04 - 1)) {
     case 0x00:
-      m_osc.process_at_low_rate(m_count >> 2, noise_int15, lfo_output, m_eg[0].get_output()); // TODO
-      m_filter[0].process_at_low_rate(m_count >> 2, m_eg[0].get_output(), lfo_output, m_osc.get_osc_pitch());
-      m_amp[0].process_at_low_rate(m_eg[1].get_output());
+      {
+        m_osc.process_at_low_rate_a<0>(lfo_output, m_eg[0].get_output());
+        m_osc.process_at_low_rate_b(m_count >> 2, noise_int15);
+        int16_t osc_pitch_0 = (60 << 8);
+        if (m_voice_mode != VOICE_PARAPHONIC) {
+          osc_pitch_0 = m_osc.get_osc_pitch(0);
+        }
+        m_filter[0].process_at_low_rate(m_count >> 2, m_eg[0].get_output(), lfo_output, osc_pitch_0);
+        m_amp[0].process_at_low_rate(m_eg[1].get_output());
+      }
       break;
     case 0x01:
-      m_filter[1].process_at_low_rate(m_count >> 2, m_eg[2].get_output(), lfo_output, m_osc.get_osc_pitch());
+      m_osc.process_at_low_rate_a<1>(lfo_output, m_eg[2].get_output());
+      m_filter[1].process_at_low_rate(m_count >> 2, m_eg[2].get_output(), lfo_output, m_osc.get_osc_pitch(1));
       m_amp[1].process_at_low_rate(m_eg[3].get_output());
       break;
     case 0x02:
-      m_filter[2].process_at_low_rate(m_count >> 2, m_eg[4].get_output(), lfo_output, m_osc.get_osc_pitch());
+      m_osc.process_at_low_rate_a<2>(lfo_output, m_eg[4].get_output());
+      m_filter[2].process_at_low_rate(m_count >> 2, m_eg[4].get_output(), lfo_output, m_osc.get_osc_pitch(2));
       m_amp[2].process_at_low_rate(m_eg[5].get_output());
       break;
     case 0x03:
-      m_filter[3].process_at_low_rate(m_count >> 2, m_eg[6].get_output(), lfo_output, m_osc.get_osc_pitch());
+      m_osc.process_at_low_rate_a<3>(lfo_output, m_eg[6].get_output());
+      m_filter[3].process_at_low_rate(m_count >> 2, m_eg[6].get_output(), lfo_output, m_osc.get_osc_pitch(3));
       m_amp[3].process_at_low_rate(m_eg[7].get_output());
       m_chorus_fx.process_at_low_rate();
       break;
@@ -898,19 +908,18 @@ private:
   }
 
   INLINE void set_voice_mode(uint8_t controller_value) {
-    uint8_t new_voice_mode;
-    if (controller_value < 16) {
-      new_voice_mode = VOICE_POLYPHONIC;
-    } else if (controller_value < 48) {
-      new_voice_mode = VOICE_PARAPHONIC;
-    } else if (controller_value < 80) {
-      new_voice_mode = VOICE_MONOPHONIC;
-    } else if (controller_value < 112) {
-      new_voice_mode = VOICE_LEGATO_PORTA;
-    } else {
-      new_voice_mode = VOICE_LEGATO;
-    }
+    static const uint8_t voice_mode_table[8] = {
+      VOICE_POLYPHONIC,
+      VOICE_PARAPHONIC,
+      VOICE_PARAPHONIC,
+      VOICE_MONOPHONIC,
+      VOICE_MONOPHONIC,
+      VOICE_LEGATO_PORTA,
+      VOICE_LEGATO_PORTA,
+      VOICE_LEGATO
+    };
 
+    uint8_t new_voice_mode = voice_mode_table[controller_value >> 4];
     if (m_voice_mode != new_voice_mode) {
       m_voice_mode = new_voice_mode;
       all_sound_off();

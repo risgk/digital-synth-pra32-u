@@ -25,7 +25,7 @@ uint8_t g_preset_table_EG_RELEASE     [] = {0  , 64 , 0  , 0  , 0  , 0  , 0  , 0
 
 uint8_t g_preset_table_EG_OSC_AMT     [] = {64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ,   64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 };
 uint8_t g_preset_table_EG_OSC_DST     [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
-uint8_t g_preset_table_VOICE_MODE     [] = {127, 0  , 0  , 0  , 64 , 127, 0  , 127,   127, 0  , 0  , 0  , 64 , 127, 0  , 127};
+uint8_t g_preset_table_VOICE_MODE     [] = {127, 0  , 0  , 0  , 64 , 127, 0  , 0  ,   127, 0  , 0  , 0  , 64 , 127, 0  , 0  };
 uint8_t g_preset_table_PORTAMENTO     [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
 
 uint8_t g_preset_table_LFO_WAVE       [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };

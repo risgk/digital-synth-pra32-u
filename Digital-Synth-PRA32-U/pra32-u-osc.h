@@ -46,8 +46,8 @@ class PRA32_U_Osc {
   int8_t         m_osc1_shape_control;
   int8_t         m_osc1_shape_control_effective;
   int8_t         m_osc1_morph_control;
-  int32_t        m_osc1_shape;
-  int32_t        m_osc1_shape_effective;
+  int32_t        m_osc1_shape[4];
+  int32_t        m_osc1_shape_effective[4];
   int8_t         m_mixer_noise_sub_osc_control;
   int16_t        m_mix_table[OSC_MIX_TABLE_LENGTH];
   int8_t         m_shape_eg_amt;
@@ -153,8 +153,14 @@ public:
     m_freq_base[7] = g_osc_freq_table[0];
     m_osc_level = 72;
 
-    m_osc1_shape           = 0x8000;
-    m_osc1_shape_effective = 0x8000;
+    m_osc1_shape[0]           = 0x8000;
+    m_osc1_shape[1]           = 0x8000;
+    m_osc1_shape[2]           = 0x8000;
+    m_osc1_shape[3]           = 0x8000;
+    m_osc1_shape_effective[0] = 0x8000;
+    m_osc1_shape_effective[1] = 0x8000;
+    m_osc1_shape_effective[2] = 0x8000;
+    m_osc1_shape_effective[3] = 0x8000;
 
     for (uint8_t i = 0; i < OSC_MIX_TABLE_LENGTH; ++i) {
       m_mix_table[i] = static_cast<int16_t>(sqrtf(static_cast<float>(i) /
@@ -291,25 +297,24 @@ public:
     update_pitch_bend();
   }
 
-  INLINE uint16_t get_osc_pitch() {
-    if (m_mono_mode) {
-      return m_pitch_current[0] + m_pitch_bend_normalized;
+  INLINE int16_t get_osc_pitch(uint8_t index) {
+    if ((m_mono_mode == false) && m_gate_enabled) {
+      // Paraphonic Mode
+      return (60 << 8);
     }
-    return (60 << 8);
+
+    return + m_pitch_current[index] + m_pitch_bend_normalized;
   }
 
-  INLINE void process_at_low_rate(uint8_t count, int16_t noise_int15, int16_t lfo_level, int16_t eg_level) {
-    update_osc1_shape(lfo_level, eg_level);
+  template <uint8_t N>
+  INLINE void process_at_low_rate_a(int16_t lfo_level, int16_t eg_level) {
+    update_osc1_shape<N>(lfo_level, eg_level);
+    update_osc1_shape_effective<N>();
+    update_freq_base<N + 0>(lfo_level, eg_level);
+    update_freq_base<N + 4>(lfo_level, eg_level);
+  }
 
-    update_freq_base<0>(lfo_level, eg_level);
-    update_freq_base<1>(lfo_level, eg_level);
-    update_freq_base<2>(lfo_level, eg_level);
-    update_freq_base<3>(lfo_level, eg_level);
-    update_freq_base<4>(lfo_level, eg_level);
-    update_freq_base<5>(lfo_level, eg_level);
-    update_freq_base<6>(lfo_level, eg_level);
-    update_freq_base<7>(lfo_level, eg_level);
-
+  INLINE void process_at_low_rate_b(uint8_t count, int16_t noise_int15) {
     switch (count & (0x08 - 1)) {
     case 0x00:
       update_freq_offset<0>(noise_int15);
@@ -400,8 +405,6 @@ private:
   INLINE int32_t process_osc(int16_t noise_int15, bool halve_noise_level) {
     int32_t result = 0;
 
-    update_osc1_shape_effective();
-
     int16_t osc1_gain = m_mix_table[(OSC_MIX_TABLE_LENGTH - 1) - m_osc2_mix];
     int16_t osc2_gain = m_mix_table[                             m_osc2_mix];
 
@@ -414,7 +417,7 @@ private:
     result += (wave_0 * osc1_gain * m_osc_gain_effective[N]) >> 10;
 
     // For Pulse Wave (wave_3)
-    uint32_t phase_3 = m_phase[N] + (m_osc1_shape_effective << 8);
+    uint32_t phase_3 = m_phase[N] + (m_osc1_shape_effective[N] << 8);
     boolean new_period_osc1_add = ((phase_3 + 0x00800000) & 0x00FFFFFF) < (m_freq[N] + 0x00010000); // crossing the middle of a saw wave
     m_wave_table[N + 8] = reinterpret_cast<const int16_t*>((reinterpret_cast<const uintptr_t>(m_wave_table[N + 8]) * (1 - new_period_osc1_add)));
     m_wave_table[N + 8] = reinterpret_cast<const int16_t*>( reinterpret_cast<const uint8_t*>( m_wave_table[N + 8]) +
@@ -552,6 +555,7 @@ private:
     m_osc1_shape_control_effective -= (m_osc1_shape_control_effective > m_osc1_shape_control);
   }
 
+  template <uint8_t N>
   INLINE void update_osc1_shape(int16_t lfo_level, int16_t eg_level) {
     int32_t osc1_shape = 0x8000u - (m_osc1_shape_control_effective << 8)
                          + ((eg_level * m_shape_eg_amt) >> 5) - ((lfo_level * m_shape_lfo_amt) >> 3);
@@ -563,16 +567,17 @@ private:
     osc1_shape = (osc1_shape > 0) * osc1_shape;
 #endif
 
-    m_osc1_shape = osc1_shape;
+    m_osc1_shape[N] = osc1_shape;
   }
 
+  template <uint8_t N>
   INLINE void update_osc1_shape_effective() {
-    if (m_osc1_shape_effective + (1 << 8) < m_osc1_shape) {
-      m_osc1_shape_effective += (1 << 8);
-    } else if (m_osc1_shape_effective > m_osc1_shape + (1 << 8)) {
-      m_osc1_shape_effective -= (1 << 8);
+    if (m_osc1_shape_effective[N] + (1 << 8) < m_osc1_shape[N]) {
+      m_osc1_shape_effective[N] += (1 << 8);
+    } else if (m_osc1_shape_effective[N] > m_osc1_shape[N] + (1 << 8)) {
+      m_osc1_shape_effective[N] -= (1 << 8);
     } else {
-      m_osc1_shape_effective = m_osc1_shape;
+      m_osc1_shape_effective[N] = m_osc1_shape[N];
     }
   }
 
