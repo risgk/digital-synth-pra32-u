@@ -144,7 +144,7 @@ private:
     m_cutoff_candidate += m_cutoff_offset;
 
     m_cutoff_candidate += (lfo_input * m_cutoff_lfo_amt) >> 14;
-    m_cutoff_candidate += ((osc_pitch - (60 << 8)) * m_cutoff_pitch_amt) >> 8;
+    m_cutoff_candidate += (((osc_pitch - (60 << 8)) * m_cutoff_pitch_amt) + 128) >> 8;
 
     // cutoff_current = clamp(m_cutoff_candidate, 0, 255)
     volatile int16_t cutoff_current = m_cutoff_candidate - 255;
