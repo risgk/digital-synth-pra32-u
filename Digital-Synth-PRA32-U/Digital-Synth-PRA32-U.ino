@@ -2,7 +2,7 @@
  * Digital Synth PRA32-U
  */
 
-#define DEBUG_PRINT
+//#define DEBUG_PRINT
 
 #define USE_USB_MIDI      // Select USB Stack: "Adafruit TinyUSB" in the Arduino IDE "Tools" menu
 //#define USE_SERIAL1_MIDI
