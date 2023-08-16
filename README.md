@@ -74,10 +74,8 @@
 ## Files
 
 - "bin"
-    - "Digital-Synth-PRA32-U-0.1.1-USB-MIDI-Pimoroni.uf2": USB MIDI, for Pimoroni Pico Audio Pack
-    - "Digital-Synth-PRA32-U-0.1.1-UART-MIDI-Pimoroni.uf2": UART MIDI, for Pimoroni Pico Audio Pack
-    - "Digital-Synth-PRA32-U-0.1.1-USB-MIDI-Waveshare.uf2": USB MIDI, for Waveshare Pico-Audio Rev2.1
-    - "Digital-Synth-PRA32-U-0.1.1-UART-MIDI-Waveshare.uf2": UART MIDI, for Waveshare Pico-Audio Rev2.1
+    - "Digital-Synth-PRA32-U-0.2.0-Pimoroni-Pico-Audio-Pack.uf2": USB MIDI, for Pimoroni Pico Audio Pack
+    - "Digital-Synth-PRA32-U-0.2.0-Waveshare-Pico-Audio-Rev2.1.uf2": USB MIDI, for Waveshare Pico-Audio Rev2.1
 - "Digital-Synth-PRA32-U.ino" is a Arduino sketch for Raspberry Pi Pico/RP2040 core
 - "pra32-u-make-sample-wav-file.cc" is for debugging on PC
     - GCC (g++) for PC is required
