@@ -1,6 +1,6 @@
 ```
-  [United Synthesizer]                                            Date: 2023-05-09                  
-  Model: Digital Synth PRA32-U    MIDI Implementation Chart       Version: 0.1.1                    
+  [Polyphonic/Paraphonic Synthesizer]                             Date: 2023-08-16                  
+  Model: Digital Synth PRA32-U    MIDI Implementation Chart       Version: 0.2.0                    
 +-------------------------------+---------------+---------------+----------------------------------+
 | Function...                   | Transmitted   | Recognized    | Remarks                          |
 +-------------------------------+---------------+---------------+----------------------------------+
@@ -28,17 +28,17 @@
 |                            24 | x             | o             | Osc 1 Wave [Saw|-|Tri|Pls|Sqr]   |
 |                           102 | x             | o             | Osc 1 Shape $$                   |
 |                           103 | x             | o             | Osc 1 Morph $$                   |
-|                            26 | x             | o             | Mixer Sub Osc $$$                |
+|                            26 | x             | o             | Mixer Noise/Sub Osc [N|S] $$$    |
 |                               |               |               |                                  |
-|                            55 | x             | o             | Osc 2 Wave $ [Saw|-|Tri|Nos|Sqr] |
-|                            20 | x             | o             | Osc 2 Coarse $ [-|+]             |
-|                            21 | x             | o             | Osc 2 Fine $ [-|+]               |
-|                            25 | x             | o             | Mixer Osc Mix $ [1|2]            |
+|                            55 | x             | o             | Osc 2 Wave [Saw|-|Tri|Nos|Sqr]   |
+|                            20 | x             | o             | Osc 2 Coarse [-|+]               |
+|                            21 | x             | o             | Osc 2 Fine [-|+]                 |
+|                            25 | x             | o             | Mixer Osc Mix [1|2]              |
 |                               |               |               |                                  |
 |                            16 | x             | o             | Filter Cutoff                    |
 |                            17 | x             | o             | Filter Resonance                 |
 |                            18 | x             | o             | Filter EG Amt [-|+]              |
-|                            86 | x             | o             | Filter Key Track $ [0.0|0.5|1.0] |
+|                            86 | x             | o             | Filter Key Track [0.0|0.5|1.0] $ |
 |                               |               |               |                                  |
 |                            23 | x             | o             | EG Attack                        |
 |                            19 | x             | o             | EG Decay                         |
@@ -47,7 +47,7 @@
 |                               |               |               |                                  |
 |                           104 | x             | o             | EG Osc Amt [-|+]                 |
 |                           105 | x             | o             | EG Osc Dst [P|2P|1S]             |
-|                            87 | x             | o             | Voice Mode [Par|-|Mon|Lgt|LP]    |
+|                            87 | x             | o             | Voice Mode [Pol|Par|Mon|LP|Lgt]  |
 |                            22 | x             | o             | Portamento                       |
 |                               |               |               |                                  |
 |                            14 | x             | o             | LFO Wave [T1|T2|Saw|SH|Sqr]      |
@@ -72,9 +72,13 @@
 |                               |               |               |                                  |
 |                            85 | x             | o             | Pitch Bend Range                 |
 |                           111 | x             | o             | Chorus Bypass [Off|On]           |
+|                            31 | x             | o             | EG Amp Mod [Off|On]              |
+|                            89 | x             | o             | Release = Decay [Off|On]         |
+|                               |               |               |                                  |
+|                           109 | x             | o             | Filter Mode [LP|LC]              |
 |                               |               |               |                                  |
 |                            35 | x             | o             | Pitch Bend by CC [-|+]           |
-|                       112-119 |               |               | Program Change #0-7 by CC        |
+|                       112-119 |               |               | Program Change #8-15 by CC       |
 |                            90 | x             | x             | [Reserved]                       |
 +-------------------------------+---------------+---------------+----------------------------------+
 | Program                       | x             | o             |                                  |
@@ -98,8 +102,8 @@
 |              : Reset          | x             | x             |                                  |
 +-------------------------------+---------------+---------------+----------------------------------+
 | Notes                         | $ : Disabled in Paraphonic Mode                                  |
-|                               | $$ : Disabled in Paraphonic or if Osc 1 Wave is not Pls          |
-|                               | $$$ : Disabled in Paraphonic or if Osc 1 Wave is Pls             |
+|                               | $$ : Disabled if Osc 1 Wave is not Pls (Pulse)                   |
+|                               | $$$ : Noise is disabled if Osc 2 Wave is Nos (Noise)             |
 +-------------------------------+------------------------------------------------------------------+
   Mode 1: Omni On,  Poly          Mode 2: Omni On,  Mono          o: Yes                            
   Mode 3: Omni Off, Poly          Mode 4: Omni Off, Mono          x: No                             

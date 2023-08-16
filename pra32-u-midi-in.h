@@ -3,23 +3,33 @@
 
 #pragma once
 
-#include "./DigitalSynthPRA32U/common.h"
-#include "./DigitalSynthPRA32U/synth.h"
+#include "./Digital-Synth-PRA32-U/pra32-u-common.h"
+#include "./Digital-Synth-PRA32-U/pra32-u-synth.h"
 
-template <uint8_t T>
-class MIDIIn {
-  static uint8_t m_system_exclusive;
-  static uint8_t m_system_data_remaining;
-  static uint8_t m_running_status;
-  static uint8_t m_first_data;
+class PRA32_U_MIDIIn {
+  PRA32_U_Synth* m_synth;
+
+  uint8_t        m_system_exclusive;
+  uint8_t        m_system_data_remaining;
+  uint8_t        m_running_status;
+  uint8_t        m_first_data;
 
 public:
-  INLINE static void open() {
+  PRA32_U_MIDIIn()
+  : m_synth()
+  , m_system_exclusive()
+  , m_system_data_remaining()
+  , m_running_status()
+  , m_first_data()
+  {}
+
+  INLINE void open(PRA32_U_Synth& synth) {
+    m_synth = &synth;
     m_running_status = STATUS_BYTE_INVALID;
     m_first_data = DATA_BYTE_INVALID;
   }
 
-  INLINE static void receive_midi_byte(uint8_t b) {
+  INLINE void receive_midi_byte(uint8_t b) {
     if (is_data_byte(b)) {
       if (m_system_exclusive) {
         // do nothing
@@ -29,35 +39,35 @@ public:
         if (!is_data_byte(m_first_data)) {
           m_first_data = b;
         } else if (b == 0) {
-          Synth<0>::note_off(m_first_data);
+          m_synth->note_off(m_first_data);
           m_first_data = DATA_BYTE_INVALID;
         } else {
-          Synth<0>::note_on(m_first_data, b);
+          m_synth->note_on(m_first_data, b);
           m_first_data = DATA_BYTE_INVALID;
         }
       } else if (m_running_status == (NOTE_OFF | MIDI_CH)) {
         if (!is_data_byte(m_first_data)) {
           m_first_data = b;
         } else {
-          Synth<0>::note_off(m_first_data);
+          m_synth->note_off(m_first_data);
           m_first_data = DATA_BYTE_INVALID;
         }
       } else if (m_running_status == (CONTROL_CHANGE | MIDI_CH)) {
         if (!is_data_byte(m_first_data)) {
           m_first_data = b;
         } else {
-          Synth<0>::control_change(m_first_data, b);
+          m_synth->control_change(m_first_data, b);
           m_first_data = DATA_BYTE_INVALID;
         }
       } else if (m_running_status == (PITCH_BEND | MIDI_CH)) {
         if (!is_data_byte(m_first_data)) {
           m_first_data = b;
         } else {
-          Synth<0>::pitch_bend(m_first_data, b);
+          m_synth->pitch_bend(m_first_data, b);
           m_first_data = DATA_BYTE_INVALID;
         }
       } else if (m_running_status == (PROGRAM_CHANGE | MIDI_CH)) {
-        Synth<0>::program_change(b);
+        m_synth->program_change(b);
       }
     } else if (is_system_message(b)) {
       switch (b) {
@@ -93,25 +103,19 @@ public:
   }
 
 private:
-  INLINE static boolean is_real_time_message(uint8_t b) {
+  INLINE boolean is_real_time_message(uint8_t b) {
     return b >= REAL_TIME_MESSAGE_MIN;
   }
 
-  INLINE static boolean is_system_message(uint8_t b) {
+  INLINE boolean is_system_message(uint8_t b) {
     return b >= SYSTEM_MESSAGE_MIN;
   }
 
-  INLINE static boolean is_status_byte(uint8_t b) {
+  INLINE boolean is_status_byte(uint8_t b) {
     return b >= STATUS_BYTE_MIN;
   }
 
-  INLINE static boolean is_data_byte(uint8_t b) {
+  INLINE boolean is_data_byte(uint8_t b) {
     return b <= DATA_BYTE_MAX;
   }
-
 };
-
-template <uint8_t T> uint8_t MIDIIn<T>::m_system_exclusive;
-template <uint8_t T> uint8_t MIDIIn<T>::m_system_data_remaining;
-template <uint8_t T> uint8_t MIDIIn<T>::m_running_status;
-template <uint8_t T> uint8_t MIDIIn<T>::m_first_data;

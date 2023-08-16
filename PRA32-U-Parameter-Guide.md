@@ -1,14 +1,14 @@
-# Digital Synth PRA32-U Parameter Guide v0.1.1
+# Digital Synth PRA32-U Parameter Guide v0.2.0
 
-- 2023-05-09 ISGK Instruments
+- 2023-08-16 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
 
 ## Control Change Parameters
 
 - Notes
     - $ : Disabled in Paraphonic Mode
-    - $$ : Disabled in Paraphonic or if Osc 1 Wave is not Pls
-    - $$$ : Disabled in Paraphonic or if Osc 1 Wave is Pls
+    - $$ : Disabled if Osc 1 Wave is not Pls (Pulse)
+    - $$$ : Noise is disabled if Osc 2 Wave is Nos (Noise)
 - Osc 1 Wave [Saw|-|Tri|Pls|Sqr]
     - 0 (0-47): Saw Wave
     - 64 (48-79): Triangle Wave
@@ -27,23 +27,33 @@
         - 64: Saw 100%
         - 96: Saw 100% + Saw 50%
         - 127: Saw 100% + Saw 100% (max)
-- Mixer Sub Osc $$$
-- Osc 2 Wave $ [Saw|-|Tri|Nos|Sqr]
+- Mixer Noise/Sub Osc [N|S] $$$
+    - -64 (0): Noise 100%
+    - -63 (1): Noise 98.4%
+    - -62 (2): Noise 96.9%
+    - -1 (63): Noise 1.6%
+    - +0 (64): 0%
+    - +1 (65): Sub Osc 1.6%
+    - +62 (126): Sub Osc 96.9%
+    - +63 (127): Sub Osc 100%
+- Osc 2 Wave [Saw|-|Tri|Nos|Sqr]
     - 0 (0-47): Saw Wave
     - 64 (48-79): Triangle Wave
     - 96 (80-111): White Noise
     - 127 (112-127): Square Wave
-- Osc 2 Coarse $ [-|+]
+- Osc 2 Coarse [-|+]
     - -48 (16): -48 semitone (min)
     - +48 (112): +48 semitone (max)
-- Osc 2 Fine $ [-|+]
+- Osc 2 Fine [-|+]
     - -64 (0): -100 cent (min)
     - +63 (127): +98.4375 cent (max)
-- Mixer Osc Mix $ [1|2]
+- Mixer Osc Mix [1|2]
 - Filter Cutoff
-    - 4: f = 452.9 Hz (min)
-    - 64: f = 2561.9 Hz
-    - 124: f = 14492.6 Hz (max)
+    - 0: f = 13.0 Hz (min)
+    - 61: f = 440 Hz
+    - 64: f = 523.3 Hz
+    - 121: f = 14080 kHz
+    - 127: f = 19912.1 Hz (max)
 - Filter Resonance
     - 16 (0-23): Q = 0.7 (min)
     - 32 (24-39): Q = 1.0
@@ -51,11 +61,12 @@
     - 64 (56-71): Q = 2.0
     - 80 (72-87): Q = 2.8
     - 96 (88-103): Q = 4.0
-    - 112 (104-127): Q = 5.6 (max)
+    - 112 (104-119): Q = 5.6
+    - 127 (120-127): Q = 8.0 (max)
 - Filter EG Amt [-|+], LFO Filter Amt [-|+]
-    - -60 (4): -120 (min)
-    - +60 (124): +120 (max)
-- Filter Key Track $ [0.0|0.5|1.0]
+    - -60 (4): -60 (min)
+    - +60 (124): +60 (max)
+- Filter Key Track [0.0|0.5|1.0] $
     - 0 (0-31): 0.0
     - 64 (32-95): 0.5
     - 127 (96-127): 1.0
@@ -63,19 +74,17 @@
     - 127: No Decay
 - EG Osc Amt [-|+], LFO Osc Amt [-|+]
     - Pitch
-        - -39 (25): -24 semitone (min)
-        - -27 (37): -12 semitone
-        - -16 (48): -1 semitone
-        - -12 (52): -75 cent
-        - -8 (56): -50 cent
-        - -4 (60): -25 cent
+        - -54 (10): -24 semitone (min)
+        - -42 (22): -12 semitone
+        - -32 (32): -200 cent
+        - -16 (48): -100 cent
+        - -1 (63): -6.25 cent
         - +0 (64): +0 cent
-        - +4 (68): +25 cent
-        - +8 (72): +50 cent
-        - +12 (76): +75 cent
-        - +16 (80): +1 semitone
-        - +27 (91): +12 semitone
-        - +39 (103): +24 semitone (max)
+        - +1 (65): +6.25 cent
+        - +16 (80): +100 cent
+        - +32 (96): +200 cent
+        - +42 (106): +12 semitone
+        - +54 (118): +24 semitone (max)
     - Shape
         - -63 (1): Shape -252 (min)
         - +63 (127): Shape +252 (max)
@@ -83,11 +92,12 @@
     - 0 (0-31): Osc 1 & 2 Pitch
     - 64 (32-95): Osc 2 Pitch
     - 127 (96-127): Osc 1 Shape
-- Voice Mode [Par|-|Mon|Lgt|LP]
-    - 0 (0-31): Paraphonic (LFO Single Trigger)
-    - 64 (32-79): Monophonic (EG & LFO Multi Trigger)
-    - 96 (80-111): Legato (Monophonic, EG & LFO Single Trigger)
-    - 127 (112-127): Legato Portamento (Monophonic, EG & LFO Single Trigger, Auto Portamento)
+- Voice Mode [Pol|Par|Mon|LP|Lgt]
+    - 0 (0-15): Polyphonic (LFO Single Trigger)
+    - 32 (16-47): Paraphonic (LFO Single Trigger)
+    - 64 (48-79): Monophonic (EG & LFO Multi Trigger)
+    - 96 (80-111): Legato Portamento (Monophonic, EG & LFO Single Trigger, Auto Portamento)
+    - 127 (112-127): Legato (Monophonic, EG & LFO Single Trigger)
 - LFO Wave [T1|T2|Saw|SH|Sqr]
     - 0 (0-15): Triangle Wave (-0.5 to +0.5)
     - 32 (16-47): Triangle Wave 2 (Key Sync, -0.5 to +0.5)
@@ -101,6 +111,11 @@
     - 127: 20 Hz (max)
 - LFO Depth
     - The actual LFO depth is the "LFO Depth" value plus the "Modulation" value
+- LFO Fade Time
+    - 3: 0 ms (min)
+    - 4: 10.7 ms
+    - 64: 1.4 s
+    - 127: 5.4 s (max)
 - Chorus Mode [Off|M|PS|S|S2]
     - 0 (0-15): Chorus Off
     - 32 (16-47): Mono Chorus
@@ -108,31 +123,28 @@
     - 96 (80-111): Stereo Chorus
     - 127 (112-127): Stereo 2-phase Chorus
 - Chorus Rate
-    - 4: LFO Frequency 0.06 Hz (min)
-    - 32: LFO Frequency 0.48 Hz
-    - 64: LFO Frequency 0.95 Hz
-    - 127: LFO Frequency 1.9 Hz (max)
+    - 4: LFO Frequency 0.02 Hz (min)
+    - 32: LFO Frequency 0.6 Hz
+    - 64: LFO Frequency 1.1 Hz
+    - 127: LFO Frequency 2.2 Hz (max)
 - Chorus Depth
     - 0: Delay Time +/- 0.0 ms (min)
-    - 32: Delay Time +/- 2.0 ms
-    - 64: Delay Time +/- 4.1 ms
-    - 126: Delay Time +/- 8.1 ms (max)
+    - 32: Delay Time +/- 1.3 ms
+    - 64: Delay Time +/- 2.7 ms
+    - 126: Delay Time +/- 5.3 ms (max)
 - Chorus Delay Time
     - 0: 0.03 ms (min)
-    - 64: 8.2 ms
-    - 80: 10.3 ms
-    - 127: 16.3 ms (max)
+    - 64: 5.4 ms
+    - 127: 10.6 ms (max)
 - Pitch Bend Range
     - 0: 0 semitone (min)
     - 24: 24 semitone (max)
-
-## Sample Chorus Settings
-
-- Setting C0 -- Chorus Mode: 127, Chorus Rate: 32, Chorus Depth: 32, Chorus Delay Time: 64
-- Setting C1 -- Chorus Mode: 127, Chorus Rate: 16, Chorus Depth: 32, Chorus Delay Time: 64
-- Setting C2 -- Chorus Mode: 127, Chorus Rate: 48, Chorus Depth: 32, Chorus Delay Time: 64
-- Setting D1 -- Chorus Mode: 127, Chorus Rate: 16, Chorus Depth: 32, Chorus Delay Time: 80
-- Setting D2 -- Chorus Mode: 127, Chorus Rate: 16, Chorus Depth: 40, Chorus Delay Time: 60
-- Setting D3 -- Chorus Mode: 127, Chorus Rate: 32, Chorus Depth: 24, Chorus Delay Time: 60
-- Setting J1 -- Chorus Mode: 127, Chorus Rate: 32, Chorus Depth: 32, Chorus Delay Time: 20
-- Setting J2 -- Chorus Mode: 127, Chorus Rate: 48, Chorus Depth: 32, Chorus Delay Time: 20
+- EG Amp Mod [Off|On]
+    - 0 (0-63): Off
+    - 127 (64-127): On, Amp ADSR = EG ADSR
+- Release = Decay [Off|On]
+    - 0 (0-63): Off
+    - 127 (64-127): On, EG Release = EG Decay and Amp Release = Amp Decay
+- Filter Mode [LP|LC]
+    - 0 (0-63): Low Pass
+    - 127 (64-127): Low Cut

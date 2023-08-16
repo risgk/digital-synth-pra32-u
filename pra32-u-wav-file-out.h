@@ -1,17 +1,23 @@
 #pragma once
 
 #include <stdio.h>
-#include "./DigitalSynthPRA32U/common.h"
+#include "./Digital-Synth-PRA32-U/pra32-u-common.h"
 
-template <uint8_t T>
-class WAVFileOut {
-  static FILE*    m_file;
-  static uint32_t m_max_size;
-  static uint32_t m_data_size;
-  static boolean  m_closed;
+class PRA32_U_WAVFileOut {
+  FILE*    m_file;
+  uint32_t m_max_size;
+  uint32_t m_data_size;
+  boolean  m_closed;
 
 public:
-  INLINE static void open(const char* path, uint16_t sec) {
+  PRA32_U_WAVFileOut()
+  : m_file()
+  , m_max_size()
+  , m_data_size()
+  , m_closed()
+  {}
+
+  INLINE void open(const char* path, uint16_t sec) {
     m_file = fopen(path, "wb");
     fwrite("RIFF", 1, 4, m_file);
     fwrite("\x00\x00\x00\x00", 1, 4, m_file);
@@ -31,7 +37,7 @@ public:
     m_closed = false;
   }
 
-  INLINE static void write(int16_t left, int16_t right) {
+  INLINE void write(int16_t left, int16_t right) {
     if (m_data_size < m_max_size) {
       int16_t l[1] = {left};
       int16_t r[1] = {right};
@@ -45,7 +51,7 @@ public:
     }
   }
 
-  INLINE static void close() {
+  INLINE void close() {
     if (!m_closed) {
       fseek(m_file, 0, SEEK_END);
       long file_size = ftell(m_file);
@@ -60,8 +66,3 @@ public:
     }
   }
 };
-
-template <uint8_t T> FILE*    WAVFileOut<T>::m_file;
-template <uint8_t T> uint32_t WAVFileOut<T>::m_max_size;
-template <uint8_t T> uint32_t WAVFileOut<T>::m_data_size;
-template <uint8_t T> boolean  WAVFileOut<T>::m_closed;

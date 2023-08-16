@@ -8,35 +8,38 @@ typedef signed char boolean;
 
 #define __not_in_flash_func(func) (func)
 
-#include "./DigitalSynthPRA32U/common.h"
-#include "./DigitalSynthPRA32U/synth.h"
-#include "./midi-in.h"
-#include "./wav-file-out.h"
+#include "./Digital-Synth-PRA32-U/pra32-u-common.h"
+#include "./Digital-Synth-PRA32-U/pra32-u-synth.h"
+#include "./pra32-u-midi-in.h"
+#include "./pra32-u-wav-file-out.h"
+
+PRA32_U_Synth      g_synth;
+PRA32_U_MIDIIn     g_midi_in;
+PRA32_U_WAVFileOut g_wav_file_out;
 
 const uint16_t RECORDING_SEC = 60;
 const uint16_t SERIAL_SPEED_38400 = 38400;
 
 int main(int argc, char *argv[]) {
   // setup
-  Synth<0>::initialize();
-  MIDIIn<0>::open();
+  g_midi_in.open(g_synth);
   FILE* bin_file = ::fopen(argv[1], "rb");
-  WAVFileOut<0>::open(argv[2], RECORDING_SEC);
+  g_wav_file_out.open(argv[2], RECORDING_SEC);
 
   // loop
   int c;
   while ((c = ::fgetc(bin_file)) != EOF) {
-    MIDIIn<0>::receive_midi_byte(c);
+    g_midi_in.receive_midi_byte(c);
     uint16_t r = SAMPLING_RATE / (SERIAL_SPEED_38400 / 10);
     for (uint16_t i = 0; i < r; i++) {
       int16_t right_level;
-      int16_t left_level = Synth<0>::process(right_level);
-      WAVFileOut<0>::write(left_level, right_level);
+      int16_t left_level = g_synth.process(right_level);
+      g_wav_file_out.write(left_level, right_level);
     }
   }
 
   // teardown
-  WAVFileOut<0>::close();
+  g_wav_file_out.close();
   ::fclose(bin_file);
 
   return 0;
