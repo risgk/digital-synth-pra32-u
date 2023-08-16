@@ -20,8 +20,8 @@ class PRA32_U_LFO {
   uint32_t m_lfo_rate;
   uint8_t  m_lfo_depth[2];
   uint8_t  m_lfo_waveform;
-  uint8_t  m_lfo_fade_coef;
-  uint8_t  m_lfo_fade_cnt;
+  uint16_t m_lfo_fade_coef;
+  uint16_t m_lfo_fade_cnt;
   uint8_t  m_lfo_fade_level;
   int16_t  m_noise_int15;
   int16_t  m_sampled_noise_int15;
