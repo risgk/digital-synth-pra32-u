@@ -19,7 +19,7 @@
 ## Change History
 
 - v0.2.0 (Prototype): Change Sampling Rate to 48000 Hz; Support MCLK for I2S; Support Polyphonic Mode;
-  Extend Filter Cutoff change range to 10+ octaves;
+  Extend Filter Cutoff frequency change range to 10+ octaves;
   Change "Mixer Sub Osc" to "Mixer Noise/Sub Osc"; Add "EG Amp Mod", "Release = Decay", and "Filter Mode";
   Enable Osc 1 Shape, Morph, Noise/Sub Osc, and Osc 2 in Paraphonic and Polyphonic Modes; Other changes
 - v0.1.0 (Prototype): The first release
