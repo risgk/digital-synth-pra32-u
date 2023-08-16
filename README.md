@@ -1,6 +1,6 @@
-# Digital Synth PRA32-U v0.1.1
+# Digital Synth PRA32-U v0.2.0 (Prototype)
 
-- 2023-05-09 ISGK Instruments
+- 2023-08-16 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
 
 
@@ -9,8 +9,6 @@
 - 4 Voice Polyphonic/Paraphonic Synthesizer for Raspberry Pi Pico/RP2040
     - Built-in Chorus FX
     - Controlled by MIDI -- PRA32-U is a MIDI sound module
-- The sound of **PRA32-U v0.1** is very similar to that of **VRA8-U (type-16) v2.2**
-    - <https://github.com/risgk/digital-synth-vra8-u>
 - An **I2S DAC** hardware (e.g. Pimoroni Pico Audio Pack and Waveshare Pico-Audio) is required
     - **NOTE**: Large noise is generated during the sketch upload!
 - **Arduino IDE** and **Arduino-Pico** = **Raspberry Pi Pico/RP2040** (by Earle F. Philhower, III) core are required
@@ -20,10 +18,10 @@
 
 ## Change History
 
-- v0.2.0: Change Sampling Rate to 48000; Support MCLK for I2S; Support Polyphonic Mode;
+- v0.2.0 (Prototype): Change Sampling Rate to 48000 Hz; Support MCLK for I2S; Support Polyphonic Mode;
   Change "Mixer Sub Osc" to "Mixer Noise/Sub Osc"; Add "EG Amp Mod", "Release = Decay", and "Filter Mode";
-  Enable Osc 1 Shape, Morph, Noise/Sub Osc, and Osc 2 in Paraphonic Mode; Other changes
-- v0.1.0: The first release
+  Enable Osc 1 Shape, Morph, Noise/Sub Osc, and Osc 2 in Paraphonic and Polyphonic Modes; Other changes
+- v0.1.0 (Prototype): The first release
 
 
 ## Features
@@ -164,11 +162,11 @@ graph LR
 
 ![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)
 
-**Digital Synth PRA32-U v0.1.1 by ISGK Instruments (Ryo Ishigaki)**
+**Digital Synth PRA32-U v0.2.0 by ISGK Instruments (Ryo Ishigaki)**
 
 To the extent possible under law, ISGK Instruments (Ryo Ishigaki)
 has waived all copyright and related or neighboring rights
-to Digital Synth PRA32-U v0.1.1.
+to Digital Synth PRA32-U v0.2.0.
 
 You should have received a copy of the CC0 legalcode along with this
 work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
