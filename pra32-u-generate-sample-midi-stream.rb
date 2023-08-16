@@ -97,7 +97,7 @@ program_change(0)
 play_mono_a(3)
 sound_off
 
-program_change(3)
+program_change(6)
 play_b(3)
 sound_off
 
