@@ -18,6 +18,7 @@
 
 ## Change History
 
+- v1.0.0: Fix Filter Key Track
 - v0.2.0 (Prototype): Change Sampling Rate to 48000 Hz; Support MCLK for I2S; Support Polyphonic Mode;
   Extend Filter Cutoff frequency change range to 10+ octaves;
   Change "Mixer Sub Osc" to "Mixer Noise/Sub Osc"; Add "EG Amp Mod", "Release = Decay", and "Filter Mode";
