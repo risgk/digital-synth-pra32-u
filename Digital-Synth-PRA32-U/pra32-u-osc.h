@@ -297,13 +297,17 @@ public:
     update_pitch_bend();
   }
 
-  INLINE int16_t get_osc_pitch(uint8_t index) {
-    if ((m_mono_mode == false) && m_gate_enabled) {
-      // Paraphonic Mode
-      return (60 << 8);
+  INLINE uint16_t get_osc_pitch(uint8_t index) {
+    uint16_t shifted_pitch = (64 << 8) + m_pitch_current[index] + m_pitch_bend_normalized;
+    uint16_t osc_pitch;
+    if (shifted_pitch > (64 << 8) + (NOTE_NUMBER_MAX << 8)) {
+      osc_pitch = (NOTE_NUMBER_MAX << 8);
+    } else if (shifted_pitch < (64 << 8) + (NOTE_NUMBER_MIN << 8)) {
+      osc_pitch = (NOTE_NUMBER_MIN << 8);
+    } else {
+      osc_pitch = m_pitch_current[index] + m_pitch_bend_normalized;
     }
-
-    return + m_pitch_current[index] + m_pitch_bend_normalized;
+    return osc_pitch;
   }
 
   template <uint8_t N>

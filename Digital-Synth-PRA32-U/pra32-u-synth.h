@@ -809,7 +809,7 @@ public:
       {
         m_osc.process_at_low_rate_a<0>(lfo_output, m_eg[0].get_output());
         m_osc.process_at_low_rate_b(m_count >> 2, noise_int15);
-        int16_t osc_pitch_0 = (60 << 8);
+        uint16_t osc_pitch_0 = (60 << 8);
         if (m_voice_mode != VOICE_PARAPHONIC) {
           osc_pitch_0 = m_osc.get_osc_pitch(0);
         }

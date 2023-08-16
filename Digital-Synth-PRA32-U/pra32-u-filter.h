@@ -93,7 +93,7 @@ public:
     m_cutoff_offset = cutoff_offset;
   }
 
-  INLINE void process_at_low_rate(uint8_t count, int16_t eg_input, int16_t lfo_input, int16_t osc_pitch) {
+  INLINE void process_at_low_rate(uint8_t count, int16_t eg_input, int16_t lfo_input, uint16_t osc_pitch) {
     switch (count & (0x08 - 1)) {
     case 0x00:
       update_cutoff_control_effective();
@@ -138,7 +138,7 @@ private:
     m_cutoff_control_effective -= (m_cutoff_control_effective > m_cutoff_control);
   }
 
-  INLINE void update_coefs(int16_t eg_input, int16_t lfo_input, int16_t osc_pitch) {
+  INLINE void update_coefs(int16_t eg_input, int16_t lfo_input, uint16_t osc_pitch) {
     m_cutoff_candidate = m_cutoff_control_effective;
     m_cutoff_candidate += (m_cutoff_eg_amt * eg_input) >> 14;
     m_cutoff_candidate += m_cutoff_offset;
