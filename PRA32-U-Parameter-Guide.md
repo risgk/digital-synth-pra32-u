@@ -76,12 +76,12 @@
     - 126: 6 s
 - EG Decay, Amp Decay
     - 0: 2 ms
-    - 64: 160 ms
+    - 64: 180 ms
     - 126: 15 s
     - 127: No Decay
 - EG Release, Amp Release
     - 0: 2 ms
-    - 64: 160 ms
+    - 64: 180 ms
     - 127: 16 s
 - EG Osc Amt [-|+], LFO Osc Amt [-|+]
     - Pitch
