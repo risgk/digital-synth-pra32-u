@@ -18,7 +18,7 @@
 
 ## Change History
 
-- v0.3.0 (Prototype): Change EG curve; Extend LFO Rate change range; Change LFO Fade Time;
+- v0.3.0 (Prototype): Remove drift of Oscillators; Change EG curve; Extend LFO Rate change range; Change LFO Fade Time;
   Fix Filter Key Track (Fix problem with strange sound when pitch is outside of note number range);
   Fix behavior when Portamento is 0 (Off); Update Presets
 - v0.2.0 (Prototype): Change Sampling Rate to 48000 Hz; Support MCLK for I2S; Support Polyphonic Mode;

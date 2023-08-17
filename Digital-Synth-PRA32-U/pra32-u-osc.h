@@ -30,7 +30,7 @@ class PRA32_U_Osc {
   const int16_t* m_wave_table_temp[4 * 2];
   uint32_t       m_freq[4 * 2];
   uint32_t       m_freq_base[4 * 2];
-  uint32_t       m_freq_offset[4 * 2];
+  int16_t        m_freq_offset[4 * 2];
   uint32_t       m_phase[4 * 2];
   boolean        m_osc_on[4];
   int8_t         m_osc_gain_effective[4];
@@ -531,7 +531,19 @@ private:
 
   template <uint8_t N>
   INLINE void update_freq_offset(int16_t noise_int15) {
-    m_freq_offset[N] = (noise_int15 >= 14336) << 7;
+    static_cast<void>(noise_int15);
+
+    switch (N) {
+    case 0: m_freq_offset[N] = +0; break;
+    case 1: m_freq_offset[N] = +3; break;
+    case 2: m_freq_offset[N] = -3; break;
+    case 3: m_freq_offset[N] = +2; break;
+    case 4: m_freq_offset[N] = -2; break;
+    case 5: m_freq_offset[N] = +5; break;
+    case 6: m_freq_offset[N] = -1; break;
+    case 7: m_freq_offset[N] = +1; break;
+    }
+
     m_freq[N] = m_freq_base[N] + m_freq_offset[N];
   }
 
