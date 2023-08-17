@@ -8,7 +8,7 @@
 class PRA32_U_Osc {
   static const uint8_t OSC_MIX_TABLE_LENGTH   = 65;
 
-  static const uint8_t PORTAMENTO_COEF_OFF    = 190;
+  static const uint8_t PORTAMENTO_COEF_BASE   = 190;
 
   static const uint8_t WAVEFORM_SAW           = 0;
   static const uint8_t WAVEFORM_SQUARE        = 1;
@@ -94,10 +94,10 @@ public:
   , m_shape_eg_amt()
   , m_shape_lfo_amt()
   {
-    m_portamento_coef[0] = PORTAMENTO_COEF_OFF;
-    m_portamento_coef[1] = PORTAMENTO_COEF_OFF;
-    m_portamento_coef[2] = PORTAMENTO_COEF_OFF;
-    m_portamento_coef[3] = PORTAMENTO_COEF_OFF;
+    m_portamento_coef[0] = 0;
+    m_portamento_coef[1] = 0;
+    m_portamento_coef[2] = 0;
+    m_portamento_coef[3] = 0;
 
     set_mono_mode   (false);
     set_gate_enabled(false);
@@ -260,7 +260,11 @@ public:
 
   template <uint8_t N>
   INLINE void set_portamento(uint8_t controller_value) {
-    m_portamento_coef[N] = ((controller_value + 1) >> 1) + PORTAMENTO_COEF_OFF;
+    if (controller_value == 0) {
+      m_portamento_coef[N] = 0;
+    } else {
+      m_portamento_coef[N] = ((controller_value + 1) >> 1) + PORTAMENTO_COEF_BASE;
+    }
   }
 
   template <uint8_t N>
@@ -275,6 +279,9 @@ public:
     }
 
     m_pitch_target[N] = (n << 8);
+    if (m_portamento_coef[N] == 0) {
+      m_pitch_current[N] = m_pitch_target[N];
+    }
     m_osc_on[N] = true;
   }
 
@@ -461,8 +468,7 @@ private:
   template <uint8_t N>
   INLINE void update_pitch_current() {
     if (m_osc_on[N]) {
-      // todo
-      if ((m_portamento_coef[N] == PORTAMENTO_COEF_OFF) || (m_pitch_current[N] <= m_pitch_target[N])) {
+      if ((m_portamento_coef[N] == 0) || (m_pitch_current[N] <= m_pitch_target[N])) {
         m_pitch_current[N] = m_pitch_target[N]  - (((m_pitch_target[N] - m_pitch_current[N]) *        m_portamento_coef[N] ) >> 8);
       } else {
         m_pitch_current[N] = m_pitch_current[N] + (((m_pitch_target[N] - m_pitch_current[N]) * (256 - m_portamento_coef[N])) >> 8);
