@@ -71,18 +71,18 @@
     - 64 (32-95): 0.5
     - 127 (96-127): 1.0
 - EG Attack, Amp Attack
-    - 0: 1 ms
-    - 64: 63 ms
-    - 126: 6 s
+    - 0: 0.7 ms
+    - 64: 63.2 ms
+    - 127: 5.9 s
 - EG Decay, Amp Decay
     - 0: 2 ms
-    - 64: 180 ms
-    - 126: 15 s
+    - 64: 200 ms
+    - 126: 17.3 s
     - 127: No Decay
 - EG Release, Amp Release
     - 0: 2 ms
-    - 64: 180 ms
-    - 127: 16 s
+    - 64: 200 ms
+    - 127: 18.6 s
 - EG Osc Amt [-|+], LFO Osc Amt [-|+]
     - Pitch
         - -54 (10): -24 semitone (min)
