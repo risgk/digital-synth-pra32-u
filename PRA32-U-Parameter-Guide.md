@@ -123,10 +123,10 @@
 - LFO Depth
     - The actual LFO depth is the "LFO Depth" value plus the "Modulation" value
 - LFO Fade Time
-    - 3: 0 ms (min)
-    - 4: 10.7 ms
-    - 64: 1.4 s
-    - 127: 5.4 s (max)
+    - 0: 0 ms (min)
+    - 1: 9.6 ms
+    - 64: 1.0 s
+    - 127: 9.6 s (max)
 - Chorus Mode [Off|M|PS|S|S2]
     - 0 (0-15): Chorus Off
     - 32 (16-47): Mono Chorus
@@ -139,7 +139,7 @@
     - 64: LFO Frequency 1.1 Hz
     - 127: LFO Frequency 2.2 Hz (max)
 - Chorus Depth
-    - 0: Delay Time +/- 0.0 ms (min)
+    - 0: Delay Time +/- 0 ms (min)
     - 32: Delay Time +/- 1.3 ms
     - 64: Delay Time +/- 2.7 ms
     - 126: Delay Time +/- 5.3 ms (max)
