@@ -18,7 +18,8 @@
 
 ## Change History
 
-- v1.0.0: Fix Filter Key Track (Fix problem with strange sound when pitch is outside of note number range);
+- v0.3.0 (Prototype): Change EG curve;
+  Fix Filter Key Track (Fix problem with strange sound when pitch is outside of note number range);
   Fix behavior when Portamento is 0 (Off)
 - v0.2.0 (Prototype): Change Sampling Rate to 48000 Hz; Support MCLK for I2S; Support Polyphonic Mode;
   Extend Filter Cutoff frequency change range to 10+ octaves;
