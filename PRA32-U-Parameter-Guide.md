@@ -116,10 +116,10 @@
     - 96 (80-111): Sample & Hold (Key Sync, -0.49 to +0.5)
     - 127 (112-127): Square Wave (Key Sync, 0.0 to 1.0)
 - LFO Rate
-    - 0: 0.2 Hz (min)
-    - 64: 2 Hz
-    - 96: 6.3 Hz
-    - 127: 20 Hz (max)
+    - 0: 0.068 Hz (min)
+    - 64: 2.7 Hz
+    - 80: 6.9 Hz
+    - 127: 103.8Hz (max)
 - LFO Depth
     - The actual LFO depth is the "LFO Depth" value plus the "Modulation" value
 - LFO Fade Time

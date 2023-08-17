@@ -5,10 +5,11 @@ $file = File.open("pra32-u-lfo-table.h", "w")
 $file.printf("#pragma once\n\n")
 
 $file.printf("uint32_t g_lfo_rate_table[] = {\n  ")
-(0..64).each do |i|
-  lfo_rate = (10.0 ** ((i - 32) / 32.0)) * (2.0 * (1 << 16) * 64 * 16 / SAMPLING_RATE)
+(0..127).each do |i|
+  lfo_rate = (2.0 ** ((i - 64) / 12.0)) *
+             (A4_FREQ * (2.0 ** ((-19 - 69) / 12.0))) * (1 << 24) / (SAMPLING_RATE / 4.0)
 
-  $file.printf("%5d,", lfo_rate.floor)
+  $file.printf("%6d,", lfo_rate.floor)
   if i == DATA_BYTE_MAX
     $file.printf("\n")
   elsif i % 16 == (16 - 1)
