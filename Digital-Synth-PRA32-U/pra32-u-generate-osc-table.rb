@@ -32,38 +32,6 @@ $file.printf("uint32_t g_osc_freq_table[] = {\n  ")
 end
 $file.printf("};\n\n")
 
-SAMPLING_RATE_31250 = 31250
-
-def freq_from_note_number_sr31250(note_number, pr = false)
-  cent = (note_number * 100.0) - 6900.0
-  hz = A4_FREQ * (2.0 ** (cent / 1200.0))
-  bit = (SAMPLING_RATE_31250.to_f / (1 << OSC_PHASE_RESOLUTION_BITS)) * ((0x100.to_f - 0xF0) / 0xFF)
-  hz -= bit  # Correct bit = (m_rnd >= 0xF0) in "osc.h"
-  freq = (hz * (1 << OSC_PHASE_RESOLUTION_BITS) / SAMPLING_RATE_31250).floor.to_i
-  freq = freq + 1 if freq.even?
-  if pr
-    printf("[0]%3d, %+f, %d\n",note_number, 1.0 - freq.to_f * SAMPLING_RATE_31250 / (hz * (1 << OSC_PHASE_RESOLUTION_BITS)), freq)
-  end
-  return freq
-end
-
-def freq_from_note_number_sr31250_m8(note_number, pr = false)
-  cent = (note_number * 100.0) - 6900.0
-  hz = A4_FREQ * (2.0 ** (cent / 1200.0))
-  bit = (SAMPLING_RATE_31250.to_f / (1 << (OSC_PHASE_RESOLUTION_BITS - 8))) * ((0x100.to_f - 0xF0) / 0xFF)
-  hz -= bit  # Correct bit = (m_rnd >= 0xF0) in "osc.h"
-  if note_number < NOTE_NUMBER_MIN + 12
-    freq = (hz * (1 << (OSC_PHASE_RESOLUTION_BITS - 8)) / SAMPLING_RATE_31250).round.to_i
-  else
-    freq = (hz * (1 << (OSC_PHASE_RESOLUTION_BITS - 8)) / SAMPLING_RATE_31250).floor.to_i
-    freq = freq + 1 if freq.even?
-  end
-  if pr
-    printf("[8]%3d, %+f, %d\n",note_number, 1.0 - freq.to_f * SAMPLING_RATE / (hz * (1 << (OSC_PHASE_RESOLUTION_BITS - 8))), freq << 8)
-  end
-  return freq << 8
-end
-
 max_tune_rate = -Float::INFINITY
 $file.printf("int16_t g_osc_tune_table[] = {\n  ")
 (0..(1 << OSC_TUNE_TABLE_STEPS_BITS) - 1).each do |i|
