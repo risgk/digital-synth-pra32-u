@@ -10,7 +10,7 @@ $file.printf("int32_t g_eg_attack_release_coef_table[] = {\n  ")
   eg_coef = (0.5 ** (1.0 / ((0.2 / 10.0) * (SAMPLING_RATE / 4) * (10.0 ** ((time - 64.0) / 32.0)))) * 0x40000000).round
 
   $file.printf("%10d,", eg_coef)
-  if i == 127 + 32
+  if i == 127 + 16
     $file.printf("\n")
   elsif i % 8 == (8 - 1)
     $file.printf("\n  ")
