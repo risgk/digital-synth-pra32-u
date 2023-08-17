@@ -468,7 +468,7 @@ private:
   template <uint8_t N>
   INLINE void update_pitch_current() {
     if (m_osc_on[N]) {
-      if ((m_portamento_coef[N] == 0) || (m_pitch_current[N] <= m_pitch_target[N])) {
+      if (m_pitch_current[N] <= m_pitch_target[N]) {
         m_pitch_current[N] = m_pitch_target[N]  - (((m_pitch_target[N] - m_pitch_current[N]) *        m_portamento_coef[N] ) >> 8);
       } else {
         m_pitch_current[N] = m_pitch_current[N] + (((m_pitch_target[N] - m_pitch_current[N]) * (256 - m_portamento_coef[N])) >> 8);
