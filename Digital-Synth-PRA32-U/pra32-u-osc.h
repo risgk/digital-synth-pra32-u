@@ -552,7 +552,12 @@ private:
       m_wave_table_temp[N]     = get_wave_table(m_waveform[1], coarse);
     } else {
       m_wave_table_temp[N]     = get_wave_table(m_waveform[0], coarse);
-      m_wave_table_temp[N + 8] = get_wave_table(WAVEFORM_TRIANGLE, coarse);
+
+      // coarse_sub = max((coarse - 12), NOTE_NUMBER_MIN)
+      volatile int32_t coarse_sub = (coarse - 12) - NOTE_NUMBER_MIN;
+      coarse_sub = (coarse_sub > 0) * coarse_sub + NOTE_NUMBER_MIN;
+
+      m_wave_table_temp[N + 8] = get_wave_table(WAVEFORM_TRIANGLE, coarse_sub);
     }
 
 
