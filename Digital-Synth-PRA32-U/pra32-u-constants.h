@@ -132,9 +132,6 @@ const uint8_t   OSC_DST_PITCH      = 0;
 const uint8_t   OSC_DST_PITCH_2    = 64;
 const uint8_t   OSC_DST_SHAPE_1    = 127;
 
-const uint8_t   FILTER_MODE_LP     = 0;
-const uint8_t   FILTER_MODE_HP     = 127;
-
 const uint8_t   LFO_WAVE_TRI_ASYNC = 0;
 const uint8_t   LFO_WAVE_TRI_SYNC  = 32;
 const uint8_t   LFO_WAVE_SAW_DOWN  = 64;

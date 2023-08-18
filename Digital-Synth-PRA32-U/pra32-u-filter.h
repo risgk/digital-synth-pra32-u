@@ -6,11 +6,7 @@
 #include "pra32-u-filter-table.h"
 
 class PRA32_U_Filter {
-  static const uint8_t MODE_LP = 0;
-  static const uint8_t MODE_HP = 1;
-
   const int32_t*  m_lpf_table;
-  const int32_t*  m_hpf_table;
   int32_t         m_b_2_over_a_0;
   int32_t         m_a_1_over_a_0;
   int32_t         m_a_2_over_a_0;
@@ -34,7 +30,6 @@ class PRA32_U_Filter {
 public:
   PRA32_U_Filter()
   : m_lpf_table()
-  , m_hpf_table()
   , m_b_2_over_a_0()
   , m_a_1_over_a_0()
   , m_a_2_over_a_0()
@@ -70,7 +65,6 @@ public:
 
   INLINE void set_resonance(uint8_t controller_value) {
     m_lpf_table = g_filter_lpf_tables[(controller_value + 4) >> 4];
-    m_hpf_table = g_filter_hpf_tables[(controller_value + 4) >> 4];
   }
 
   INLINE int8_t get_cutoff_eg_amt(uint8_t controller_value) {
@@ -113,7 +107,7 @@ public:
   }
 
   INLINE void set_filter_mode(uint8_t controller_value) {
-    m_filter_mode = (controller_value < 64) ? MODE_LP : MODE_HP;
+    m_filter_mode = controller_value;
   }
 
   INLINE void set_cutoff_offset(int8_t cutoff_offset) {
@@ -133,13 +127,7 @@ public:
   INLINE int16_t process(int16_t audio_input) {
 #if 1
     int16_t x_0 = audio_input >> (16 - AUDIO_FRACTION_BITS);
-    int16_t x_3;
-    if (m_filter_mode == MODE_LP) {
-      x_3 = x_0 + (m_x_1 << 1) + m_x_2;
-    } else {
-      x_3 = x_0 - (m_x_1 << 1) + m_x_2;
-    }
-
+    int16_t x_3 = x_0 + (m_x_1 << 1) + m_x_2;
     int32_t y_0 = mul_s32_s16_h32(m_b_2_over_a_0,   x_3) << 2;
     y_0        -= mul_s32_s32_h32(m_a_1_over_a_0, m_y_1) << 2;
     y_0        -= mul_s32_s32_h32(m_a_2_over_a_0, m_y_2) << 2;
@@ -148,6 +136,11 @@ public:
     m_y_2 = m_y_1;
     m_x_1 = x_0;
     m_y_1 = y_0;
+
+    if (m_filter_mode >= 64) {
+      // low cut
+      y_0 = (audio_input << AUDIO_FRACTION_BITS) - y_0;
+    }
 
     // y = clamp(y_0, (-MAX_ABS_OUTPUT << 16), (+MAX_ABS_OUTPUT << 16))
     volatile int32_t y = y_0 - (+MAX_ABS_OUTPUT << 16);
@@ -180,11 +173,9 @@ private:
     cutoff_current = (cutoff_current > 0) * cutoff_current;
     m_cutoff_current = cutoff_current;
 
-    const int32_t* filter_tables[] = { m_lpf_table, m_hpf_table };
-    const int32_t* filter_table = filter_tables[m_filter_mode];
     size_t index = m_cutoff_current * 3;
-    m_b_2_over_a_0 = filter_table[index + 0];
-    m_a_1_over_a_0 = filter_table[index + 1];
-    m_a_2_over_a_0 = filter_table[index + 2];
+    m_b_2_over_a_0 = m_lpf_table[index + 0];
+    m_a_1_over_a_0 = m_lpf_table[index + 1];
+    m_a_2_over_a_0 = m_lpf_table[index + 2];
   }
 };
