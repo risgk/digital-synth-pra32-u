@@ -130,9 +130,9 @@ public:
 #if 1
     int16_t x_0 = audio_input >> (16 - AUDIO_FRACTION_BITS);
     int16_t x_3 = x_0 + (m_x_1 << 1) + m_x_2;
-    int32_t y_0 = mul_s32_s16_h32(m_b_2_over_a_0,   x_3) << 2;
-    y_0        -= mul_s32_s32_h32(m_a_1_over_a_0, m_y_1) << 2;
-    y_0        -= mul_s32_s32_h32(m_a_2_over_a_0, m_y_2) << 2;
+    int32_t y_0 = mul_s32_s16_h32(m_b_2_over_a_0,   x_3) << (32 - FILTER_TABLE_FRACTION_BITS);
+    y_0        -= mul_s32_s32_h32(m_a_1_over_a_0, m_y_1) << (32 - FILTER_TABLE_FRACTION_BITS);
+    y_0        -= mul_s32_s32_h32(m_a_2_over_a_0, m_y_2) << (32 - FILTER_TABLE_FRACTION_BITS);
 
     m_x_2 = m_x_1;
     m_y_2 = m_y_1;
@@ -141,10 +141,8 @@ public:
 
     if (m_filter_mode >= 64) {
       // low cut
-      y_0 = (audio_input << AUDIO_FRACTION_BITS) - y_0;
+      y_0 = ((audio_input * m_filter_gain) << (AUDIO_FRACTION_BITS - (FILTER_TABLE_FRACTION_BITS - 16))) - y_0;
     }
-
-    y_0 = mul_s32_u16_h32(y_0, m_filter_gain);
 
     // y = clamp(y_0, (-MAX_ABS_OUTPUT << 16), (+MAX_ABS_OUTPUT << 16))
     volatile int32_t y = y_0 - (+MAX_ABS_OUTPUT << 16);

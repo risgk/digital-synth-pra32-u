@@ -21,7 +21,7 @@ def generate_filter_lpf_table(res_idx, name, q)
     a_1 = (-2.0) * Math.cos(w_0)
     a_2 = 1.0 - alpha
 
-    input_gain = 1.0
+    input_gain = 1.0 / (2.0 ** (res_idx / 6.0))
     b_2_over_a_0_gain = (input_gain * (b_2 / a_0) * (1 << FILTER_TABLE_FRACTION_BITS)).floor.to_i
     a_1_over_a_0 = ((a_1 / a_0) * (1 << FILTER_TABLE_FRACTION_BITS)).floor.to_i
     a_2_over_a_0 = ((a_2 / a_0) * (1 << FILTER_TABLE_FRACTION_BITS)).floor.to_i
@@ -60,13 +60,12 @@ $file.printf("int32_t* g_filter_lpf_tables[] = {\n  ")
 end
 $file.printf("};\n\n")
 
-$file.printf("uint16_t g_filter_gain_tables[] = {\n  ")
+$file.printf("int16_t g_filter_gain_tables[] = {\n  ")
 (0..8).each do |res_idx|
   i = [[res_idx - 1, 0].max, MAX_RES_IDX].min
-  gain = ((1 << 16) * 1.0 / (2.0 ** (res_idx / 6.0))).floor
-  gain = 65535 if gain == 65536
+  gain = ((1 << (FILTER_TABLE_FRACTION_BITS - 16)) * 1.0 / (2.0 ** (i / 6.0))).floor
 
-  $file.printf("%5d,", gain)
+  $file.printf("%+6d,", gain)
   if res_idx == DATA_BYTE_MAX
     $file.printf("\n")
   elsif res_idx % 4 == 3
