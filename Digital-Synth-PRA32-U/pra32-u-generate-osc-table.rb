@@ -116,10 +116,10 @@ generate_osc_wave_table_arrays do |last|
   generate_osc_wave_table("triangle", last, 1.0) do |n, k|
     if k % 4 == 1
       +(8.0 / (Math::PI * Math::PI)) * Math.sin((2.0 * Math::PI) *
-                                                (n.to_f / (1 << OSC_WAVE_TABLE_SAMPLES_BITS)) * k) / k
+                                                (n.to_f / (1 << OSC_WAVE_TABLE_SAMPLES_BITS)) * k) / (k * k)
     elsif k % 4 == 3
       -(8.0 / (Math::PI * Math::PI)) * Math.sin((2.0 * Math::PI) *
-                                                (n.to_f / (1 << OSC_WAVE_TABLE_SAMPLES_BITS)) * k) / k
+                                                (n.to_f / (1 << OSC_WAVE_TABLE_SAMPLES_BITS)) * k) / (k * k)
     else
       0.0
     end
