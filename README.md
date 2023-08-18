@@ -10,10 +10,22 @@
     - Built-in Chorus FX
     - Controlled by MIDI -- PRA32-U is a MIDI sound module
 - An **I2S DAC** hardware (e.g. Pimoroni Pico Audio Pack and Waveshare Pico-Audio) is required
+- Prebuilt UF2 files ("bin")
+    - "Digital-Synth-PRA32-U-0.2.0-Pimoroni-Pico-Audio-Pack.uf2" is for Raspberry Pi Pico and Pimoroni Pico Audio Pack
+    - "Digital-Synth-PRA32-U-0.2.0-Waveshare-Pico-Audio-Rev2.1.uf2" is for Raspberry Pi Pico and Waveshare Pico-Audio Rev2.1
+
+
+## Preparation for modification
+
+- Please install **Arduino IDE**
     - **NOTE**: Large noise is generated during the sketch upload!
-- **Arduino IDE** and **Arduino-Pico** = **Raspberry Pi Pico/RP2040** (by Earle F. Philhower, III) core are required
+    - Info: <https://www.arduino.cc/en/software>
+- Please install **Arduino-Pico** = **Raspberry Pi Pico/RP2040** (by Earle F. Philhower, III) core
     - Additional Board Manager URL: <https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json>
     - Raspberry Pi Pico/RP2040 core **version 3.3.2** is recommended
+- Please install **MIDI Library** (by Francois Best, lathoub)
+    - Info: <https://github.com/FortySevenEffects/arduino_midi_library>
+    - MIDI Library **version 5.0.2** is recommended
 
 
 ## Change History
@@ -75,9 +87,6 @@
 
 ## Files
 
-- "bin"
-    - "Digital-Synth-PRA32-U-0.2.0-Pimoroni-Pico-Audio-Pack.uf2": USB MIDI, for Pimoroni Pico Audio Pack
-    - "Digital-Synth-PRA32-U-0.2.0-Waveshare-Pico-Audio-Rev2.1.uf2": USB MIDI, for Waveshare Pico-Audio Rev2.1
 - "Digital-Synth-PRA32-U.ino" is a Arduino sketch for Raspberry Pi Pico/RP2040 core
 - "pra32-u-make-sample-wav-file.cc" is for debugging on PC
     - GCC (g++) for PC is required
