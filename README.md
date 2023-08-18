@@ -9,23 +9,11 @@
 - 4 Voice Polyphonic/Paraphonic Synthesizer for Raspberry Pi Pico/RP2040
     - Built-in Chorus FX
     - Controlled by MIDI -- PRA32-U is a MIDI sound module
+- Modifiable with Arduino IDE and Arduino-Pico (by Earle F. Philhower, III)
 - An **I2S DAC** hardware (e.g. Pimoroni Pico Audio Pack and Waveshare Pico-Audio) is required
 - Prebuilt UF2 files ("bin")
     - "Digital-Synth-PRA32-U-0.2.0-Pimoroni-Pico-Audio-Pack.uf2" is for Raspberry Pi Pico and Pimoroni Pico Audio Pack
     - "Digital-Synth-PRA32-U-0.2.0-Waveshare-Pico-Audio-Rev2.1.uf2" is for Raspberry Pi Pico and Waveshare Pico-Audio Rev2.1
-
-
-## Preparation for modification
-
-- Please install **Arduino IDE**
-    - **NOTE**: Large noise is generated during the sketch upload!
-    - Info: <https://www.arduino.cc/en/software>
-- Please install **Arduino-Pico** = **Raspberry Pi Pico/RP2040** (by Earle F. Philhower, III) core
-    - Additional Board Manager URL: <https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json>
-    - Raspberry Pi Pico/RP2040 core **version 3.3.2** is recommended
-- Please install **MIDI Library** (by Francois Best, lathoub)
-    - Info: <https://github.com/FortySevenEffects/arduino_midi_library>
-    - MIDI Library **version 5.0.2** is recommended
 
 
 ## Change History
@@ -39,6 +27,20 @@
   Change "Mixer Sub Osc" to "Mixer Noise/Sub Osc"; Add "EG Amp Mod", "Release = Decay", and "Filter Mode";
   Enable Osc 1 Shape, Morph, Noise/Sub Osc, and Osc 2 in Paraphonic and Polyphonic Modes; Other changes
 - v0.1.0 (Prototype): The first release
+
+
+## Preparation for modification
+
+- Please install **Arduino IDE**
+    - **NOTE**: Large noise is generated during the sketch upload!
+    - Info: <https://www.arduino.cc/en/software>
+- Please install Arduino-Pico = **Raspberry Pi Pico/RP2040** (by Earle F. Philhower, III) core
+    - Additional Board Manager URL: <https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json>
+    - Info: <https://github.com/earlephilhower/arduino-pico>
+    - Raspberry Pi Pico/RP2040 core **version 3.3.2** is recommended
+- Please install **MIDI Library** (by Francois Best, lathoub)
+    - Info: <https://github.com/FortySevenEffects/arduino_midi_library>
+    - MIDI Library **version 5.0.2** is recommended
 
 
 ## Features
@@ -89,6 +91,7 @@
 ## Files
 
 - "Digital-Synth-PRA32-U.ino" is a Arduino sketch for Raspberry Pi Pico/RP2040 core
+    - Modify `MIDI_CH` to change the MIDI Channel
 - "pra32-u-make-sample-wav-file.cc" is for debugging on PC
     - GCC (g++) for PC is required
     - "pra32-u-make-sample-wav-file-cc.bat" makes a sample WAV file (working on Windows)
@@ -99,6 +102,7 @@
 ## PRA32-U CTRL
 
 - "pra32-u-ctrl.html": MIDI Controller (Editor) Application for PRA32-U, HTML App (Web App)
+    - Modify `MIDI_CH` to change the MIDI Channel
 - We recommend using Google Chrome, which implements Web MIDI API
 - Select "Digital Synth PRA32-U" in the list "MIDI Out"
 - Functions
