@@ -103,7 +103,8 @@
 +-------------------------------+---------------+---------------+----------------------------------+
 | Notes                         | $ : Disabled in Paraphonic Mode                                  |
 |                               | $$ : Disabled if Osc 1 Wave is not Pls (Pulse)                   |
-|                               | $$$ : Noise is disabled if Osc 2 Wave is Nos (Noise)             |
+|                               | $$$ : Noise is disabled if Osc 2 Wave is Nos (Noise) and         |
+|                               |       Noise level is halved in Polyphonic/Paraphonic Mode        |
 +-------------------------------+------------------------------------------------------------------+
   Mode 1: Omni On,  Poly          Mode 2: Omni On,  Mono          o: Yes                            
   Mode 3: Omni Off, Poly          Mode 4: Omni Off, Mono          x: No                             

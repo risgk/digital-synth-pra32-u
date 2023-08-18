@@ -8,7 +8,8 @@
 - Notes
     - $ : Disabled in Paraphonic Mode
     - $$ : Disabled if Osc 1 Wave is not Pls (Pulse)
-    - $$$ : Noise is disabled if Osc 2 Wave is Nos (Noise)
+    - $$$ : Noise is disabled if Osc 2 Wave is Nos (Noise) and
+            Noise level is halved in Polyphonic/Paraphonic Mode
 - Osc 1 Wave [Saw|-|Tri|Pls|Sqr]
     - 0 (0-47): Saw Wave
     - 64 (48-79): Triangle Wave
