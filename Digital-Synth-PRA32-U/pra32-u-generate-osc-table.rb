@@ -156,4 +156,21 @@ generate_osc_wave_tables_array("saw")
 generate_osc_wave_tables_array("triangle")
 generate_osc_wave_tables_array("square")
 
+$file.printf("int32_t g_portamento_coef_table[] = {\n  ")
+(0..127).each do |i|
+  time = i
+  portamento_coef = (0.5 ** (1.0 / ((0.1 / 10.0) * (SAMPLING_RATE / 4) * (10.0 ** ((time - 64.0) / 32.0)))) * 0x40000000).round
+  portamento_coef = 0 if time == 0
+  
+  $file.printf("%10d,", portamento_coef)
+  if i == 127
+    $file.printf("\n")
+  elsif i % 8 == (8 - 1)
+    $file.printf("\n  ")
+  else
+    $file.printf(" ")
+  end
+end
+$file.printf("};\n\n")
+
 $file.close

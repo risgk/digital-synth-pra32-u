@@ -16,7 +16,7 @@ class PRA32_U_Osc {
   static const uint8_t WAVEFORM_1_PULSE       = 3;
   static const uint8_t WAVEFORM_2_NOISE       = 4;
 
-  uint8_t        m_portamento_coef[4];
+  uint32_t       m_portamento_coef[4];
   int16_t        m_pitch_eg_amt[2];
   int16_t        m_pitch_lfo_amt[2];
 
@@ -24,8 +24,8 @@ class PRA32_U_Osc {
   int16_t        m_pitch_bend;
   uint8_t        m_pitch_bend_range;
   int16_t        m_pitch_bend_normalized;
-  uint16_t       m_pitch_target[4];
-  uint16_t       m_pitch_current[4];
+  uint32_t       m_pitch_target[4];
+  uint32_t       m_pitch_current[4];
   const int16_t* m_wave_table[4 * 4];
   const int16_t* m_wave_table_temp[4 * 3];
   uint32_t       m_freq[4 * 2];
@@ -105,10 +105,10 @@ public:
 
     m_waveform[0] = WAVEFORM_SAW;
     m_waveform[1] = WAVEFORM_SAW;
-    m_pitch_target[0] = 60 << 8;
-    m_pitch_target[1] = 60 << 8;
-    m_pitch_target[2] = 60 << 8;
-    m_pitch_target[3] = 60 << 8;
+    m_pitch_target[0] = 60 << 24;
+    m_pitch_target[1] = 60 << 24;
+    m_pitch_target[2] = 60 << 24;
+    m_pitch_target[3] = 60 << 24;
     m_pitch_current[0] = m_pitch_target[0];
     m_pitch_current[1] = m_pitch_target[1];
     m_pitch_current[2] = m_pitch_target[2];
@@ -292,11 +292,7 @@ public:
 
   template <uint8_t N>
   INLINE void set_portamento(uint8_t controller_value) {
-    if (controller_value == 0) {
-      m_portamento_coef[N] = 0;
-    } else {
-      m_portamento_coef[N] = ((controller_value + 1) >> 1) + PORTAMENTO_COEF_BASE;
-    }
+    m_portamento_coef[N] = g_portamento_coef_table[controller_value];
   }
 
   template <uint8_t N>
@@ -310,7 +306,7 @@ public:
       n = note_number;
     }
 
-    m_pitch_target[N] = (n << 8);
+    m_pitch_target[N] = (n << 24);
     if (m_portamento_coef[N] == 0) {
       m_pitch_current[N] = m_pitch_target[N];
     }
@@ -337,20 +333,21 @@ public:
   }
 
   INLINE uint16_t get_osc_pitch(uint8_t index) {
-    uint16_t shifted_pitch = (64 << 8) + m_pitch_current[index] + m_pitch_bend_normalized;
+    uint16_t shifted_pitch = (64 << 8) + (m_pitch_current[index] >> 16) + m_pitch_bend_normalized;
     uint16_t osc_pitch;
     if (shifted_pitch > (64 << 8) + (NOTE_NUMBER_MAX << 8)) {
       osc_pitch = (NOTE_NUMBER_MAX << 8);
     } else if (shifted_pitch < (64 << 8) + (NOTE_NUMBER_MIN << 8)) {
       osc_pitch = (NOTE_NUMBER_MIN << 8);
     } else {
-      osc_pitch = m_pitch_current[index] + m_pitch_bend_normalized;
+      osc_pitch = (m_pitch_current[index] >> 16) + m_pitch_bend_normalized;
     }
     return osc_pitch;
   }
 
   template <uint8_t N>
   INLINE void process_at_low_rate_a(int16_t lfo_level, int16_t eg_level) {
+    update_pitch_current<N>();
     update_osc1_shape<N>(lfo_level, eg_level);
     update_osc1_shape_effective<N>();
     update_freq_base<N + 0>(lfo_level, eg_level);
@@ -361,7 +358,6 @@ public:
     switch (count & (0x08 - 1)) {
     case 0x00:
       update_freq_offset<0>(noise_int15);
-      update_pitch_current<0>();
       update_gate<0>();
       break;
     case 0x01:
@@ -369,7 +365,6 @@ public:
       break;
     case 0x02:
       update_freq_offset<1>(noise_int15);
-      update_pitch_current<1>();
       update_gate<1>();
       break;
     case 0x03:
@@ -377,7 +372,6 @@ public:
       break;
     case 0x04:
       update_freq_offset<2>(noise_int15);
-      update_pitch_current<2>();
       update_gate<2>();
       break;
     case 0x05:
@@ -385,7 +379,6 @@ public:
       break;
     case 0x06:
       update_freq_offset<3>(noise_int15);
-      update_pitch_current<3>();
       update_gate<3>();
       break;
     case 0x07:
@@ -503,9 +496,9 @@ private:
   INLINE void update_pitch_current() {
     if (m_osc_on[N]) {
       if (m_pitch_current[N] <= m_pitch_target[N]) {
-        m_pitch_current[N] = m_pitch_target[N]  - (((m_pitch_target[N] - m_pitch_current[N]) *        m_portamento_coef[N] ) >> 8);
+        m_pitch_current[N] = m_pitch_target[N]  - mul_s32_s32_h32((m_pitch_target[N] - m_pitch_current[N]) << 2,             m_portamento_coef[N]);
       } else {
-        m_pitch_current[N] = m_pitch_current[N] + (((m_pitch_target[N] - m_pitch_current[N]) * (256 - m_portamento_coef[N])) >> 8);
+        m_pitch_current[N] = m_pitch_current[N] + mul_s32_s32_h32((m_pitch_target[N] - m_pitch_current[N]) << 2, (1 << 30) - m_portamento_coef[N]);
       }
     }
   }
@@ -518,7 +511,7 @@ private:
     } else {
       pitch_eg_amt = m_pitch_eg_amt[0];
     }
-    uint16_t pitch_temp =  (64 << 8) + m_pitch_current[N & 0x03] + m_pitch_bend_normalized + ((pitch_eg_amt * eg_level) >> 10);
+    uint16_t pitch_temp =  (64 << 8) + (m_pitch_current[N & 0x03] >> 16) + m_pitch_bend_normalized + ((pitch_eg_amt * eg_level) >> 10);
 
     uint8_t coarse = high_byte(pitch_temp);
     if (coarse < (NOTE_NUMBER_MIN + 64)) {

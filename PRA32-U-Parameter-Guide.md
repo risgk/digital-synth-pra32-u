@@ -110,6 +110,11 @@
     - 64 (48-79): Monophonic (EG & LFO Multi Trigger)
     - 96 (80-111): Legato Portamento (Monophonic, EG & LFO Single Trigger, Auto Portamento)
     - 127 (112-127): Legato (Monophonic, EG & LFO Single Trigger)
+- Portamento
+    - 0: Portamento Time 0 ms
+    - 1: Portamento Time 1.1 ms
+    - 64: Portamento Time 100 ms
+    - 127: Portamento Time 9.3 s
 - LFO Wave [T1|T2|Saw|SH|Sqr]
     - 0 (0-15): Triangle Wave (-0.5 to +0.5)
     - 32 (16-47): Triangle Wave 2 (Key Sync, -0.5 to +0.5)
