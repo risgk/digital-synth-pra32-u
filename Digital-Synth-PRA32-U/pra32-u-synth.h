@@ -908,7 +908,7 @@ private:
   }
 
   INLINE void set_voice_mode(uint8_t controller_value) {
-    static const uint8_t voice_mode_table[8] = {
+    static uint8_t voice_mode_table[8] = {
       VOICE_POLYPHONIC,
       VOICE_PARAPHONIC,
       VOICE_PARAPHONIC,

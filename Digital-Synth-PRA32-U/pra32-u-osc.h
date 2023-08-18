@@ -53,8 +53,6 @@ class PRA32_U_Osc {
   int8_t         m_shape_eg_amt;
   int8_t         m_shape_lfo_amt;
 
-  static const int16_t m_pitch_mod_amt_table[128];
-
 public:
   PRA32_U_Osc()
   : m_portamento_coef()
@@ -208,9 +206,32 @@ public:
     m_mixer_noise_sub_osc_control = controller_value - 64;
   }
 
+  INLINE int16_t get_pitch_mod_amt_table(uint8_t controller_value) {
+    static int16_t pitch_mod_amt_table[128] = {
+      -384, -384, -384, -384, -384, -384, -384, -384,
+      -384, -384, -384, -368, -352, -336, -320, -304,
+      -288, -272, -256, -240, -224, -208, -192, -176,
+      -160, -144, -128, -112,  -96,  -80,  -64,  -48,
+       -32,  -31,  -30,  -29,  -28,  -27,  -26,  -25,
+       -24,  -23,  -22,  -21,  -20,  -19,  -18,  -17,
+       -16,  -15,  -14,  -13,  -12,  -11,  -10,   -9,
+        -8,   -7,   -6,   -5,   -4,   -3,   -2,   -1,
+        +0,   +1,   +2,   +3,   +4,   +5,   +6,   +7,
+        +8,   +9,  +10,  +11,  +12,  +13,  +14,  +15,
+       +16,  +17,  +18,  +19,  +20,  +21,  +22,  +23,
+       +24,  +25,  +26,  +27,  +28,  +29,  +30,  +31,
+       +32,  +48,  +64,  +80,  +96, +112, +128, +144,
+      +160, +176, +192, +208, +224, +240, +256, +272,
+      +288, +304, +320, +336, +352, +368, +384, +384,
+      +384, +384, +384, +384, +384, +384, +384, +384,
+    };
+
+    return pitch_mod_amt_table[controller_value];
+  }
+
   template <uint8_t N>
   INLINE void set_pitch_eg_amt(uint8_t controller_value) {
-    m_pitch_eg_amt[N] = m_pitch_mod_amt_table[controller_value];
+    m_pitch_eg_amt[N] = get_pitch_mod_amt_table(controller_value);
   }
 
   INLINE void set_shape_eg_amt(uint8_t controller_value) {
@@ -222,7 +243,7 @@ public:
 
   template <uint8_t N>
   INLINE void set_pitch_lfo_amt(uint8_t controller_value) {
-    m_pitch_lfo_amt[N] = m_pitch_mod_amt_table[controller_value];
+    m_pitch_lfo_amt[N] = get_pitch_mod_amt_table(controller_value);
   }
 
   INLINE void set_shape_lfo_amt(uint8_t controller_value) {
@@ -591,23 +612,4 @@ private:
     b >>= 3;
     m_pitch_bend_normalized = (b * m_pitch_bend_range) >> 2;
   }
-};
-
-const int16_t PRA32_U_Osc::m_pitch_mod_amt_table[128] = {
-  -384, -384, -384, -384, -384, -384, -384, -384,
-  -384, -384, -384, -368, -352, -336, -320, -304,
-  -288, -272, -256, -240, -224, -208, -192, -176,
-  -160, -144, -128, -112,  -96,  -80,  -64,  -48,
-   -32,  -31,  -30,  -29,  -28,  -27,  -26,  -25,
-   -24,  -23,  -22,  -21,  -20,  -19,  -18,  -17,
-   -16,  -15,  -14,  -13,  -12,  -11,  -10,   -9,
-    -8,   -7,   -6,   -5,   -4,   -3,   -2,   -1,
-    +0,   +1,   +2,   +3,   +4,   +5,   +6,   +7,
-    +8,   +9,  +10,  +11,  +12,  +13,  +14,  +15,
-   +16,  +17,  +18,  +19,  +20,  +21,  +22,  +23,
-   +24,  +25,  +26,  +27,  +28,  +29,  +30,  +31,
-   +32,  +48,  +64,  +80,  +96, +112, +128, +144,
-  +160, +176, +192, +208, +224, +240, +256, +272,
-  +288, +304, +320, +336, +352, +368, +384, +384,
-  +384, +384, +384, +384, +384, +384, +384, +384,
 };
