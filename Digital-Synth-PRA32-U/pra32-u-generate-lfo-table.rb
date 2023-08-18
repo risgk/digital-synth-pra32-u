@@ -36,4 +36,20 @@ $file.printf("uint16_t g_lfo_fade_coef_table[] = {\n  ")
 end
 $file.printf("};\n\n")
 
+$file.printf("uint32_t g_chorus_rate_table[] = {\n  ")
+(0..127).each do |i|
+  lfo_rate = ((2.0 ** ((i - 64) / 12.0)) *
+              (A4_FREQ * (2.0 ** ((-49 - 69) / 12.0))) * (1 << 24) / (SAMPLING_RATE / 4.0)).floor
+
+  $file.printf("%6d,", lfo_rate)
+  if i == DATA_BYTE_MAX
+    $file.printf("\n")
+  elsif i % 16 == (16 - 1)
+    $file.printf("\n  ")
+  else
+    $file.printf(" ")
+  end
+end
+$file.printf("};\n\n")
+
 $file.close

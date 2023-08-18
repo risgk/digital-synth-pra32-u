@@ -33,7 +33,7 @@
 - v0.3.0 (Prototype): Remove drift of Oscillators; Improve Triangle Wave;
   Change EG curve; Extend LFO Rate change range; Change LFO Fade Time;
   Fix Filter Key Track (Fix problem with strange sound when pitch is outside of note number range);
-  Fix behavior when Portamento is 0 (Off); Update Presets; Other changes
+  Fix behavior when Portamento is 0 (Off); Change Chorue Rate curve; Update Presets; Other changes
 - v0.2.0 (Prototype): Change Sampling Rate to 48000 Hz; Support MCLK for I2S; Support Polyphonic Mode;
   Extend Filter Cutoff frequency change range to 10+ octaves;
   Change "Mixer Sub Osc" to "Mixer Noise/Sub Osc"; Add "EG Amp Mod", "Release = Decay", and "Filter Mode";

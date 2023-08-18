@@ -18,7 +18,7 @@ class PRA32_U_ChorusFx {
   uint8_t  m_gain;
 
   uint8_t  m_chorus_depth_control;
-  uint16_t m_chorus_rate_control;
+  uint32_t m_chorus_rate;
   uint8_t  m_chorus_delay_time_control;
   uint8_t  m_chorus_delay_time_control_effective;
   uint8_t  m_param_chorus_mode;
@@ -36,7 +36,7 @@ public:
   , m_gain()
 
   , m_chorus_depth_control()
-  , m_chorus_rate_control()
+  , m_chorus_rate()
   , m_chorus_delay_time_control()
   , m_chorus_delay_time_control_effective()
   , m_param_chorus_mode()
@@ -69,7 +69,7 @@ public:
   }
 
   INLINE void set_chorus_rate(uint8_t controller_value) {
-    m_chorus_rate_control = (controller_value + 1) * 3;
+    m_chorus_rate = g_chorus_rate_table[controller_value];
   }
 
   INLINE void set_chorus_delay_time(uint8_t controller_value) {
@@ -149,8 +149,8 @@ public:
       }
     }
 
-    m_chorus_lfo_phase += m_chorus_rate_control;
-    m_chorus_lfo_phase &= 0x0001FFFFF;
+    m_chorus_lfo_phase += m_chorus_rate;
+    m_chorus_lfo_phase &= 0x00FFFFFF;
 
     int16_t chorus_lfo_wave_level = get_chorus_lfo_wave_level(m_chorus_lfo_phase);
 
@@ -237,7 +237,7 @@ private:
 
   INLINE int16_t get_chorus_lfo_wave_level(uint32_t phase) {
     int16_t triangle_wave_level = 0;
-    phase = (phase >> 6);
+    phase = (phase >> 9);
 
     if (phase < 0x00004000) {
       triangle_wave_level = phase - (512 << 4);

@@ -135,10 +135,9 @@
     - 96 (80-111): Stereo Chorus
     - 127 (112-127): Stereo 2-phase Chorus
 - Chorus Rate
-    - 4: LFO Frequency 0.02 Hz (min)
-    - 32: LFO Frequency 0.6 Hz
-    - 64: LFO Frequency 1.1 Hz
-    - 127: LFO Frequency 2.2 Hz (max)
+    - 0: LFO Frequency 0.012 Hz (min)
+    - 64: LFO Frequency 0.48 Hz
+    - 127: LFO Frequency 18.4 Hz (max)
 - Chorus Depth
     - 0: Delay Time +/- 0 ms (min)
     - 32: Delay Time +/- 1.3 ms
