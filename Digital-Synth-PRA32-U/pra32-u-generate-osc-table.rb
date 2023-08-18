@@ -113,7 +113,21 @@ generate_osc_wave_table_arrays do |last|
 end
 
 generate_osc_wave_table_arrays do |last|
-  generate_osc_wave_table("pulse", last, 1.0) do |n, k|
+  generate_osc_wave_table("triangle", last, 1.0) do |n, k|
+    if k % 4 == 1
+      +(8.0 / (Math::PI * Math::PI)) * Math.sin((2.0 * Math::PI) *
+                                                (n.to_f / (1 << OSC_WAVE_TABLE_SAMPLES_BITS)) * k) / k
+    elsif k % 4 == 3
+      -(8.0 / (Math::PI * Math::PI)) * Math.sin((2.0 * Math::PI) *
+                                                (n.to_f / (1 << OSC_WAVE_TABLE_SAMPLES_BITS)) * k) / k
+    else
+      0.0
+    end
+  end
+end
+
+generate_osc_wave_table_arrays do |last|
+  generate_osc_wave_table("square", last, 1.0) do |n, k|
     if k % 2 == 1
       (4.0 / Math::PI) * Math.sin((2.0 * Math::PI) *
                                   (n.to_f / (1 << OSC_WAVE_TABLE_SAMPLES_BITS)) * k) / k
@@ -139,7 +153,8 @@ def generate_osc_wave_tables_array(name, organ = false, organ_last = 8)
 end
 
 generate_osc_wave_tables_array("saw")
-generate_osc_wave_tables_array("pulse")
+generate_osc_wave_tables_array("triangle")
+generate_osc_wave_tables_array("square")
 
 $file.printf("int16_t g_osc_triangle_wave_table[] = {\n  ")
 (0..(1 << OSC_WAVE_TABLE_SAMPLES_BITS)).each do |n|

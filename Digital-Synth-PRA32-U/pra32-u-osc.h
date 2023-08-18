@@ -13,8 +13,8 @@ class PRA32_U_Osc {
   static const uint8_t WAVEFORM_SAW           = 0;
   static const uint8_t WAVEFORM_SQUARE        = 1;
   static const uint8_t WAVEFORM_TRIANGLE      = 2;
-  static const uint8_t WAVEFORM_1_PULSE       = 4;
-  static const uint8_t WAVEFORM_2_NOISE       = 5;
+  static const uint8_t WAVEFORM_1_PULSE       = 3;
+  static const uint8_t WAVEFORM_2_NOISE       = 4;
 
   uint8_t        m_portamento_coef[4];
   int16_t        m_pitch_eg_amt[2];
@@ -171,25 +171,31 @@ public:
   template <uint8_t N>
   INLINE void set_osc_waveform(uint8_t controller_value) {
     if (N == 0) {
-      if (controller_value < 48) {
-        m_waveform[0] = WAVEFORM_SAW;
-      } else if (controller_value < 80) {
-        m_waveform[0] = WAVEFORM_TRIANGLE;
-      } else if (controller_value < 112) {
-        m_waveform[0] = WAVEFORM_1_PULSE;
-      } else {
-        m_waveform[0] = WAVEFORM_SQUARE;
-      }
+      static uint8_t waveform_0_table[8] = {
+        WAVEFORM_SAW,
+        WAVEFORM_SAW,
+        WAVEFORM_SAW,
+        WAVEFORM_TRIANGLE,
+        WAVEFORM_TRIANGLE,
+        WAVEFORM_1_PULSE,
+        WAVEFORM_1_PULSE,
+        WAVEFORM_SQUARE
+      };
+
+      m_waveform[0] = waveform_0_table[controller_value >> 4];
     } else {
-      if (controller_value < 48) {
-        m_waveform[1] = WAVEFORM_SAW;
-      } else if (controller_value < 80) {
-        m_waveform[1] = WAVEFORM_TRIANGLE;
-      } else if (controller_value < 112) {
-        m_waveform[1] = WAVEFORM_2_NOISE;
-      } else {
-        m_waveform[1] = WAVEFORM_SQUARE;
-      }
+      static uint8_t waveform_1_table[8] = {
+        WAVEFORM_SAW,
+        WAVEFORM_SAW,
+        WAVEFORM_SAW,
+        WAVEFORM_TRIANGLE,
+        WAVEFORM_TRIANGLE,
+        WAVEFORM_2_NOISE,
+        WAVEFORM_2_NOISE,
+        WAVEFORM_SQUARE
+      };
+
+      m_waveform[1] = waveform_1_table[controller_value >> 4];
     }
   }
 
@@ -407,16 +413,15 @@ public:
 
 private:
   INLINE const int16_t* get_wave_table(uint8_t waveform, uint8_t note_number) {
-    const int16_t* result;
-    if ((waveform == WAVEFORM_SAW) ||
-        (waveform == WAVEFORM_1_PULSE)) {
-      result = g_osc_saw_wave_tables[note_number - NOTE_NUMBER_MIN];
-    } else if (waveform == WAVEFORM_TRIANGLE) {
-      result = g_osc_triangle_wave_table;
-    } else {     // WAVEFORM_SQUARE
-      result = g_osc_pulse_wave_tables[note_number - NOTE_NUMBER_MIN];
-    }
-    return result;
+    static int16_t** wave_table_table[5] = {
+      g_osc_saw_wave_tables,
+      g_osc_square_wave_tables,
+      g_osc_triangle_wave_tables,
+      g_osc_saw_wave_tables,       // Pulse Wave
+      g_osc_square_wave_tables,    // Noise
+    };
+
+    return wave_table_table[waveform][note_number - NOTE_NUMBER_MIN];
   }
 
   INLINE int16_t get_wave_level(const int16_t* wave_table, uint32_t phase) {
