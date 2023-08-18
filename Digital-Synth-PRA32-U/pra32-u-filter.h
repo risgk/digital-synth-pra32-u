@@ -6,14 +6,15 @@
 #include "pra32-u-filter-table.h"
 
 class PRA32_U_Filter {
-  const int32_t*  m_lpf_table;
   int32_t         m_b_2_over_a_0;
   int32_t         m_a_1_over_a_0;
   int32_t         m_a_2_over_a_0;
+  int16_t         m_filter_gain;
   int16_t         m_x_1;
   int16_t         m_x_2;
   int32_t         m_y_1;
   int32_t         m_y_2;
+  int32_t         m_resonance_index;
   int16_t         m_cutoff_current;
   int16_t         m_cutoff_candidate;
   uint8_t         m_cutoff_control;
@@ -29,14 +30,15 @@ class PRA32_U_Filter {
 
 public:
   PRA32_U_Filter()
-  : m_lpf_table()
-  , m_b_2_over_a_0()
+  : m_b_2_over_a_0()
   , m_a_1_over_a_0()
   , m_a_2_over_a_0()
+  , m_filter_gain()
   , m_x_1()
   , m_x_2()
   , m_y_1()
   , m_y_2()
+  , m_resonance_index()
   , m_cutoff_current()
   , m_cutoff_candidate()
   , m_cutoff_control()
@@ -64,7 +66,7 @@ public:
   }
 
   INLINE void set_resonance(uint8_t controller_value) {
-    m_lpf_table = g_filter_lpf_tables[(controller_value + 4) >> 4];
+    m_resonance_index = (controller_value + 4) >> 4;
   }
 
   INLINE int8_t get_cutoff_eg_amt(uint8_t controller_value) {
@@ -142,6 +144,8 @@ public:
       y_0 = (audio_input << AUDIO_FRACTION_BITS) - y_0;
     }
 
+    y_0 = mul_s32_u16_h32(y_0, m_filter_gain);
+
     // y = clamp(y_0, (-MAX_ABS_OUTPUT << 16), (+MAX_ABS_OUTPUT << 16))
     volatile int32_t y = y_0 - (+MAX_ABS_OUTPUT << 16);
     y = (y < 0) * y + (+MAX_ABS_OUTPUT << 16) - (-MAX_ABS_OUTPUT << 16);
@@ -173,9 +177,12 @@ private:
     cutoff_current = (cutoff_current > 0) * cutoff_current;
     m_cutoff_current = cutoff_current;
 
+    const int32_t* lpf_table = g_filter_lpf_tables[m_resonance_index];
     size_t index = m_cutoff_current * 3;
-    m_b_2_over_a_0 = m_lpf_table[index + 0];
-    m_a_1_over_a_0 = m_lpf_table[index + 1];
-    m_a_2_over_a_0 = m_lpf_table[index + 2];
+    m_b_2_over_a_0 = lpf_table[index + 0];
+    m_a_1_over_a_0 = lpf_table[index + 1];
+    m_a_2_over_a_0 = lpf_table[index + 2];
+
+    m_filter_gain = g_filter_gain_tables[m_resonance_index];
   }
 };
