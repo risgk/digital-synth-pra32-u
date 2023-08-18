@@ -5,8 +5,8 @@ const double    A4_FREQ = 440.0;
 const uint32_t  SAMPLING_RATE       = 48000;
 const uint32_t  FREQUENCY_MAX       = 23000;
 const uint8_t   BIT_DEPTH           = 8;
-const uint8_t   NOTE_NUMBER_MIN     = 0;
-const uint8_t   NOTE_NUMBER_MAX     = 127;
+const uint8_t   NOTE_NUMBER_MIN     = 12;
+const uint8_t   NOTE_NUMBER_MAX     = 108;
 const uint8_t   NOTE_NUMBER_INVALID = 255;
 
 const uint8_t   PROGRAM_NUMBER_MAX           = 15;
