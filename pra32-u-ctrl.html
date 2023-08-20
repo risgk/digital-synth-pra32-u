@@ -356,11 +356,6 @@ function panic() {
     midiOutput.send([(CONTROL_CHANGE | MIDI_CH), RESET_ALL_CTRLS, 0]);
     sleep(10);
   }
-
-  document.getElementById("spanPB").innerHTML = "+0";
-  document.getElementById("spanMODULATION     ").innerHTML = "0";
-  document.getElementById("spanVelocity").innerHTML = "0";
-  document.getElementById("spanSUSTAIN_PEDAL  ").innerHTML = "0";
 }
 
 function restoreControllers() {
@@ -479,25 +474,6 @@ function onMIDIMessage(event) {
       if ((number == OSC_1_WAVE) || (number == OSC_2_WAVE) || (number == MIXER_SUB_OSC) || (number == VOICE_MODE) || (number == EG_AMP_MOD) || (number == REL_EQ_DECAY)) {
         afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceModeOrEGAmpModOrRelEqDecay();
       }
-    } else if (number == MODULATION     ) {
-      document.getElementById("spanMODULATION     ").innerHTML = value;
-    } else if (number == SUSTAIN_PEDAL  ) {
-      document.getElementById("spanSUSTAIN_PEDAL  ").innerHTML = value;
-    } else if (number == RESET_ALL_CTRLS) {
-      document.getElementById("spanPB").innerHTML = "+0";
-      document.getElementById("spanMODULATION     ").innerHTML = "0";
-      document.getElementById("spanSUSTAIN_PEDAL  ").innerHTML = "0";
-    } else if (number == P_BEND_BY_CC) {
-      var pb = (value - 64) * 128;
-      if (pb == 8064) {
-        pb = 8191;
-      }
-      document.getElementById("spanPB").innerHTML = value;
-      if (pb >= 0) {
-        document.getElementById("spanPB").innerHTML = "+" + String(pb);
-      } else {
-        document.getElementById("spanPB").innerHTML = pb;
-      }
     } else if (number >= PC_BY_CC_8 && number <= PC_BY_CC_15) {
       // Program Change by CC
       var programIndex = number - PC_BY_CC_8;
@@ -515,19 +491,6 @@ function onMIDIMessage(event) {
         setRandom();
         return;
       }
-    }
-  } else if (event.data[0] == (PITCH_BEND | MIDI_CH)) {
-    var value = event.data[1] + (event.data[2] * 128) - 8192;
-    document.getElementById("spanPB").innerHTML = value;
-    if (value >= 0) {
-      document.getElementById("spanPB").innerHTML = "+" + String(value);
-    } else {
-      document.getElementById("spanPB").innerHTML = value;
-    }
-  } else if (event.data[0] == (NOTE_ON | MIDI_CH)) {
-    var velocity = event.data[2];
-    if (velocity > 0) {
-      document.getElementById("spanVelocity").innerHTML = velocity;
     }
   }
 
@@ -776,7 +739,6 @@ function saveControllers(number) {
 function noteOn(noteNumber) {
   if (midiOutput) {
     midiOutput.send([(NOTE_ON | MIDI_CH), noteNumber + transpose, 100]);
-    document.getElementById("spanVelocity").innerHTML = 100;
     sleep(0);
   }
 }
@@ -980,55 +942,31 @@ function getStoredCCValueString(index, number) {
 </table>
 
 <table>
+<tr><td>MIDI Ch</td>
+    <td></td>
+    <td><span id="spanMidiCh">-</span></td>
+    </tr>
 <tr><td>MIDI In 1</td>
     <td></td>
     <td><select id="selectInputPort1" size="1" onchange="onChangeInputPort1()"></select></td>
-    <td></td>
-    <td>Pitch Bend</td>
-    <td></td>
-    <td><span id="spanPB">-</span></td>
     </tr>
 <tr><td>MIDI In 2</td>
     <td></td>
     <td><select id="selectInputPort2" size="1" onchange="onChangeInputPort2()"></select></td>
-    <td></td>
-    <td>Modulation</td>
-    <td></td>
-    <td><span id="spanMODULATION     ">-</span></td>
     </tr>
 <tr><td>MIDI In 3</td>
     <td></td>
     <td><select id="selectInputPort3" size="1" onchange="onChangeInputPort3()"></select></td>
-    <td></td>
-    <td>Sustain Pedal</td>
-    <td></td>
-    <td><span id="spanSUSTAIN_PEDAL  ">-</span></td>
     </tr>
 <tr><td>MIDI In 4</td>
     <td></td>
     <td><select id="selectInputPort4" size="1" onchange="onChangeInputPort4()"></select></td>
-    <td></td>
-    <td style="visibility:hidden">Velocity</td>
-    <td></td>
-    <td style="visibility:hidden"><span id="spanVelocity">-</span></td>
     </tr>
 <tr><td>MIDI Out</td>
     <td></td>
     <td><select id="selectOutputPort" size="1" onchange="onChangeOutputPort()"></select></td>
-    <td></td>
-    <td>MIDI Ch</td>
-    <td></td>
-    <td><span id="spanMidiCh">-</td>
     </tr>
-<tr><td></td>
-    <td></td>
-    <td></td>
-    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-    <td></td>
-    <td>&nbsp;</td>
-    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-    <td></td>
-    <td>&nbsp;</td>
+<tr><td>&nbsp;</td>
     </tr>
 </table>
 
