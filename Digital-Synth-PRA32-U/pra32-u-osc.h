@@ -556,8 +556,8 @@ private:
 
     uint8_t fine = low_byte(pitch_temp);
     int32_t offset =
-      ((static_cast<int32_t>(m_freq_base[N] * g_osc_tune_table[fine >> (8 - OSC_TUNE_TABLE_STEPS_BITS)]) >>
-        OSC_TUNE_DENOMINATOR_BITS) >> 1) << 1;
+      ((static_cast<int32_t>((m_freq_base[N] >> 1) * g_osc_tune_table[fine >> (8 - OSC_TUNE_TABLE_STEPS_BITS)]) >>
+        OSC_TUNE_DENOMINATOR_BITS) >> 0) << 1;
     m_freq_base[N] += offset;
     m_freq[N] = m_freq_base[N] + m_freq_offset[N];
   }
