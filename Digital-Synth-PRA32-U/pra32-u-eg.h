@@ -38,7 +38,7 @@ public:
   }
 
   INLINE void set_attack(uint8_t controller_value) {
-    m_attack_coef = g_eg_attack_release_coef_table[controller_value];
+    m_attack_coef = g_eg_attack_release_coef_table[controller_value + 16];
   }
 
   INLINE void set_decay(uint8_t controller_value) {
@@ -69,7 +69,7 @@ public:
 #if 1
     switch (m_state) {
     case STATE_ATTACK:
-      m_level = EG_LEVEL_MAX_X_1_5 - (mul_s32_s32_h32((EG_LEVEL_MAX_X_1_5 - m_level), m_attack_coef) << 2);
+      m_level = EG_LEVEL_MAX_2 - (mul_s32_s32_h32((EG_LEVEL_MAX_2 - m_level), m_attack_coef) << 2);
       if (m_level >= EG_LEVEL_MAX) {
         m_level = EG_LEVEL_MAX;
         m_state = STATE_SUSTAIN;

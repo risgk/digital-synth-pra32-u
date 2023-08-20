@@ -10,7 +10,7 @@ class PRA32_U_LFO {
   static const uint8_t LFO_WAVEFORM_RANDOM    = 3;
   static const uint8_t LFO_WAVEFORM_SQUARE    = 4;
 
-  static const uint8_t LFO_FADE_COEF_OFF      = 1 << 4;
+  static const uint8_t LFO_FADE_COEF_OFF      = 1;
 
   static const uint8_t LFO_FADE_LEVEL_MAX     = 128;
 
@@ -63,7 +63,7 @@ public:
   }
 
   INLINE void set_lfo_rate(uint8_t controller_value) {
-    m_lfo_rate = g_lfo_rate_table[(controller_value + 1) >> 1];
+    m_lfo_rate = g_lfo_rate_table[controller_value];
   }
 
   template <uint8_t N>
@@ -72,7 +72,7 @@ public:
   }
 
   INLINE void set_lfo_fade_time(uint8_t controller_value) {
-    m_lfo_fade_coef = ((controller_value * controller_value) >> 4) + LFO_FADE_COEF_OFF;
+    m_lfo_fade_coef = g_lfo_fade_coef_table[controller_value];
   }
 
   INLINE void trigger_lfo() {
@@ -140,7 +140,7 @@ private:
     if (m_lfo_fade_cnt == 0) {
       m_lfo_fade_cnt = m_lfo_fade_coef;
       if (m_lfo_fade_level < LFO_FADE_LEVEL_MAX) {
-        m_lfo_fade_level += 2;
+        m_lfo_fade_level += 1;
       }
     }
 

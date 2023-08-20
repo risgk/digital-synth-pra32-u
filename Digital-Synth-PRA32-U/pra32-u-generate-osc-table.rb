@@ -7,8 +7,6 @@ $file.printf("#pragma once\n\n")
 def freq_from_note_number(note_number, pr = false)
   cent = (note_number * 100.0) - 6900.0
   hz = A4_FREQ * (2.0 ** (cent / 1200.0))
-  bit = (SAMPLING_RATE.to_f / (1 << OSC_PHASE_RESOLUTION_BITS)) * ((0x100.to_f - 0xF0) / 0xFF)
-  hz -= bit  # Correct bit = (m_rnd >= 0xF0) in "osc.h"
   freq = (hz * (1 << OSC_PHASE_RESOLUTION_BITS) / SAMPLING_RATE).floor.to_i
   freq = freq + 1 if freq.even?
   if pr
@@ -31,38 +29,6 @@ $file.printf("uint32_t g_osc_freq_table[] = {\n  ")
   end
 end
 $file.printf("};\n\n")
-
-SAMPLING_RATE_31250 = 31250
-
-def freq_from_note_number_sr31250(note_number, pr = false)
-  cent = (note_number * 100.0) - 6900.0
-  hz = A4_FREQ * (2.0 ** (cent / 1200.0))
-  bit = (SAMPLING_RATE_31250.to_f / (1 << OSC_PHASE_RESOLUTION_BITS)) * ((0x100.to_f - 0xF0) / 0xFF)
-  hz -= bit  # Correct bit = (m_rnd >= 0xF0) in "osc.h"
-  freq = (hz * (1 << OSC_PHASE_RESOLUTION_BITS) / SAMPLING_RATE_31250).floor.to_i
-  freq = freq + 1 if freq.even?
-  if pr
-    printf("[0]%3d, %+f, %d\n",note_number, 1.0 - freq.to_f * SAMPLING_RATE_31250 / (hz * (1 << OSC_PHASE_RESOLUTION_BITS)), freq)
-  end
-  return freq
-end
-
-def freq_from_note_number_sr31250_m8(note_number, pr = false)
-  cent = (note_number * 100.0) - 6900.0
-  hz = A4_FREQ * (2.0 ** (cent / 1200.0))
-  bit = (SAMPLING_RATE_31250.to_f / (1 << (OSC_PHASE_RESOLUTION_BITS - 8))) * ((0x100.to_f - 0xF0) / 0xFF)
-  hz -= bit  # Correct bit = (m_rnd >= 0xF0) in "osc.h"
-  if note_number < NOTE_NUMBER_MIN + 12
-    freq = (hz * (1 << (OSC_PHASE_RESOLUTION_BITS - 8)) / SAMPLING_RATE_31250).round.to_i
-  else
-    freq = (hz * (1 << (OSC_PHASE_RESOLUTION_BITS - 8)) / SAMPLING_RATE_31250).floor.to_i
-    freq = freq + 1 if freq.even?
-  end
-  if pr
-    printf("[8]%3d, %+f, %d\n",note_number, 1.0 - freq.to_f * SAMPLING_RATE / (hz * (1 << (OSC_PHASE_RESOLUTION_BITS - 8))), freq << 8)
-  end
-  return freq << 8
-end
 
 max_tune_rate = -Float::INFINITY
 $file.printf("int16_t g_osc_tune_table[] = {\n  ")
@@ -147,7 +113,21 @@ generate_osc_wave_table_arrays do |last|
 end
 
 generate_osc_wave_table_arrays do |last|
-  generate_osc_wave_table("pulse", last, 1.0) do |n, k|
+  generate_osc_wave_table("triangle", last, 1.0) do |n, k|
+    if k % 4 == 1
+      +(8.0 / (Math::PI * Math::PI)) * Math.sin((2.0 * Math::PI) *
+                                                (n.to_f / (1 << OSC_WAVE_TABLE_SAMPLES_BITS)) * k) / (k * k)
+    elsif k % 4 == 3
+      -(8.0 / (Math::PI * Math::PI)) * Math.sin((2.0 * Math::PI) *
+                                                (n.to_f / (1 << OSC_WAVE_TABLE_SAMPLES_BITS)) * k) / (k * k)
+    else
+      0.0
+    end
+  end
+end
+
+generate_osc_wave_table_arrays do |last|
+  generate_osc_wave_table("square", last, 1.0) do |n, k|
     if k % 2 == 1
       (4.0 / Math::PI) * Math.sin((2.0 * Math::PI) *
                                   (n.to_f / (1 << OSC_WAVE_TABLE_SAMPLES_BITS)) * k) / k
@@ -173,24 +153,19 @@ def generate_osc_wave_tables_array(name, organ = false, organ_last = 8)
 end
 
 generate_osc_wave_tables_array("saw")
-generate_osc_wave_tables_array("pulse")
+generate_osc_wave_tables_array("triangle")
+generate_osc_wave_tables_array("square")
 
-$file.printf("int16_t g_osc_triangle_wave_table[] = {\n  ")
-(0..(1 << OSC_WAVE_TABLE_SAMPLES_BITS)).each do |n|
-  level = (n + 1) / 2
-  level = level - 256 if level >= 128
-  if (level < -64)
-    level = -64 - (level + 64)
-  elsif (level < 64)
-    # do nothing
-  else
-    level = 64 - (level - 64)
-  end
-  level = (level * OSC_WAVE_TABLE_AMPLITUDE / 64).round.to_i
-  $file.printf("%+6d,", level)
-  if n == (1 << OSC_WAVE_TABLE_SAMPLES_BITS)
+$file.printf("int32_t g_portamento_coef_table[] = {\n  ")
+(0..127).each do |i|
+  time = i
+  portamento_coef = (0.5 ** (1.0 / ((0.1 / 10.0) * (SAMPLING_RATE / 4) * (10.0 ** ((time - 64.0) / 32.0)))) * 0x40000000).round
+  portamento_coef = 0 if time == 0
+  
+  $file.printf("%10d,", portamento_coef)
+  if i == 127
     $file.printf("\n")
-  elsif n % 16 == 15
+  elsif i % 8 == (8 - 1)
     $file.printf("\n  ")
   else
     $file.printf(" ")

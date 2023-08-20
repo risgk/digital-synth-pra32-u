@@ -1,6 +1,6 @@
-# Digital Synth PRA32-U Parameter Guide v0.2.0
+# Digital Synth PRA32-U Parameter Guide v0.3.0
 
-- 2023-08-16 ISGK Instruments
+- 2023-08-20 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
 
 ## Control Change Parameters
@@ -8,7 +8,8 @@
 - Notes
     - $ : Disabled in Paraphonic Mode
     - $$ : Disabled if Osc 1 Wave is not Pls (Pulse)
-    - $$$ : Noise is disabled if Osc 2 Wave is Nos (Noise)
+    - $$$ : Noise is disabled if Osc 2 Wave is Nos (Noise) and
+            Noise level is halved in Polyphonic/Paraphonic Mode
 - Osc 1 Wave [Saw|-|Tri|Pls|Sqr]
     - 0 (0-47): Saw Wave
     - 64 (48-79): Triangle Wave
@@ -70,8 +71,19 @@
     - 0 (0-31): 0.0
     - 64 (32-95): 0.5
     - 127 (96-127): 1.0
+- EG Attack, Amp Attack
+    - 0: 0.7 ms
+    - 64: 63.2 ms
+    - 127: 5.9 s
 - EG Decay, Amp Decay
+    - 0: 2 ms
+    - 64: 200 ms
+    - 126: 17.3 s
     - 127: No Decay
+- EG Release, Amp Release
+    - 0: 2 ms
+    - 64: 200 ms
+    - 127: 18.6 s
 - EG Osc Amt [-|+], LFO Osc Amt [-|+]
     - Pitch
         - -54 (10): -24 semitone (min)
@@ -98,6 +110,11 @@
     - 64 (48-79): Monophonic (EG & LFO Multi Trigger)
     - 96 (80-111): Legato Portamento (Monophonic, EG & LFO Single Trigger, Auto Portamento)
     - 127 (112-127): Legato (Monophonic, EG & LFO Single Trigger)
+- Portamento
+    - 0: Portamento Time 0 ms
+    - 1: Portamento Time 1.1 ms
+    - 64: Portamento Time 100 ms
+    - 127: Portamento Time 9.3 s
 - LFO Wave [T1|T2|Saw|SH|Sqr]
     - 0 (0-15): Triangle Wave (-0.5 to +0.5)
     - 32 (16-47): Triangle Wave 2 (Key Sync, -0.5 to +0.5)
@@ -105,17 +122,17 @@
     - 96 (80-111): Sample & Hold (Key Sync, -0.49 to +0.5)
     - 127 (112-127): Square Wave (Key Sync, 0.0 to 1.0)
 - LFO Rate
-    - 0: 0.2 Hz (min)
-    - 64: 2 Hz
-    - 96: 6.3 Hz
-    - 127: 20 Hz (max)
+    - 0: 0.068 Hz (min)
+    - 64: 2.7 Hz
+    - 80: 6.9 Hz
+    - 127: 103.8Hz (max)
 - LFO Depth
     - The actual LFO depth is the "LFO Depth" value plus the "Modulation" value
 - LFO Fade Time
-    - 3: 0 ms (min)
-    - 4: 10.7 ms
-    - 64: 1.4 s
-    - 127: 5.4 s (max)
+    - 0: 0 ms (min)
+    - 1: 9.6 ms
+    - 64: 1.0 s
+    - 127: 9.6 s (max)
 - Chorus Mode [Off|M|PS|S|S2]
     - 0 (0-15): Chorus Off
     - 32 (16-47): Mono Chorus
@@ -123,12 +140,11 @@
     - 96 (80-111): Stereo Chorus
     - 127 (112-127): Stereo 2-phase Chorus
 - Chorus Rate
-    - 4: LFO Frequency 0.02 Hz (min)
-    - 32: LFO Frequency 0.6 Hz
-    - 64: LFO Frequency 1.1 Hz
-    - 127: LFO Frequency 2.2 Hz (max)
+    - 0: LFO Frequency 0.012 Hz (min)
+    - 64: LFO Frequency 0.48 Hz
+    - 127: LFO Frequency 18.4 Hz (max)
 - Chorus Depth
-    - 0: Delay Time +/- 0.0 ms (min)
+    - 0: Delay Time +/- 0 ms (min)
     - 32: Delay Time +/- 1.3 ms
     - 64: Delay Time +/- 2.7 ms
     - 126: Delay Time +/- 5.3 ms (max)
@@ -145,6 +161,6 @@
 - Release = Decay [Off|On]
     - 0 (0-63): Off
     - 127 (64-127): On, EG Release = EG Decay and Amp Release = Amp Decay
-- Filter Mode [LP|LC]
+- Filter Mode [LP|HP]
     - 0 (0-63): Low Pass
-    - 127 (64-127): Low Cut
+    - 127 (64-127): High Pass

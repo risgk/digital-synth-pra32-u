@@ -1,6 +1,6 @@
 ```
-  [Polyphonic/Paraphonic Synthesizer]                             Date: 2023-08-16                  
-  Model: Digital Synth PRA32-U    MIDI Implementation Chart       Version: 0.2.0                    
+  [Polyphonic/Paraphonic Synthesizer]                             Date: 2023-08-20                  
+  Model: Digital Synth PRA32-U    MIDI Implementation Chart       Version: 0.3.0                    
 +-------------------------------+---------------+---------------+----------------------------------+
 | Function...                   | Transmitted   | Recognized    | Remarks                          |
 +-------------------------------+---------------+---------------+----------------------------------+
@@ -12,7 +12,7 @@
 |              Altered          | ************* |               |                                  |
 +-------------------------------+---------------+---------------+----------------------------------+
 | Note                          | x             | 0-127         |                                  |
-| Number       : True Voice     | ************* | 12-108        |                                  |
+| Number       : True Voice     | ************* | 0-127         |                                  |
 +-------------------------------+---------------+---------------+----------------------------------+
 | Velocity     Note ON          | x             | x             |                                  |
 |              Note OFF         | x             | x             |                                  |
@@ -75,7 +75,7 @@
 |                            31 | x             | o             | EG Amp Mod [Off|On]              |
 |                            89 | x             | o             | Release = Decay [Off|On]         |
 |                               |               |               |                                  |
-|                           109 | x             | o             | Filter Mode [LP|LC]              |
+|                           109 | x             | o             | Filter Mode [LP|HP]              |
 |                               |               |               |                                  |
 |                            35 | x             | o             | Pitch Bend by CC [-|+]           |
 |                       112-119 |               |               | Program Change #8-15 by CC       |
@@ -103,7 +103,8 @@
 +-------------------------------+---------------+---------------+----------------------------------+
 | Notes                         | $ : Disabled in Paraphonic Mode                                  |
 |                               | $$ : Disabled if Osc 1 Wave is not Pls (Pulse)                   |
-|                               | $$$ : Noise is disabled if Osc 2 Wave is Nos (Noise)             |
+|                               | $$$ : Noise is disabled if Osc 2 Wave is Nos (Noise) and         |
+|                               |       Noise level is halved in Polyphonic/Paraphonic Mode        |
 +-------------------------------+------------------------------------------------------------------+
   Mode 1: Omni On,  Poly          Mode 2: Omni On,  Mono          o: Yes                            
   Mode 3: Omni Off, Poly          Mode 4: Omni Off, Mono          x: No                             

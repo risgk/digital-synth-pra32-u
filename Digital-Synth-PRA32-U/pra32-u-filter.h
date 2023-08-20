@@ -6,14 +6,15 @@
 #include "pra32-u-filter-table.h"
 
 class PRA32_U_Filter {
-  const int32_t*  m_lpf_table;
   int32_t         m_b_2_over_a_0;
   int32_t         m_a_1_over_a_0;
   int32_t         m_a_2_over_a_0;
+  int16_t         m_filter_gain;
   int16_t         m_x_1;
   int16_t         m_x_2;
   int32_t         m_y_1;
   int32_t         m_y_2;
+  int32_t         m_resonance_index;
   int16_t         m_cutoff_current;
   int16_t         m_cutoff_candidate;
   uint8_t         m_cutoff_control;
@@ -27,18 +28,17 @@ class PRA32_U_Filter {
   const uint8_t AUDIO_FRACTION_BITS = 14;
   const int16_t MAX_ABS_OUTPUT = ((124 << (AUDIO_FRACTION_BITS - 8)) >> 8) << 8;
 
-  static const int8_t m_cutoff_mod_amt_table[128];
-
 public:
   PRA32_U_Filter()
-  : m_lpf_table()
-  , m_b_2_over_a_0()
+  : m_b_2_over_a_0()
   , m_a_1_over_a_0()
   , m_a_2_over_a_0()
+  , m_filter_gain()
   , m_x_1()
   , m_x_2()
   , m_y_1()
   , m_y_2()
+  , m_resonance_index()
   , m_cutoff_current()
   , m_cutoff_candidate()
   , m_cutoff_control()
@@ -66,15 +66,38 @@ public:
   }
 
   INLINE void set_resonance(uint8_t controller_value) {
-    m_lpf_table = g_filter_lpf_tables[(controller_value + 4) >> 4];
+    m_resonance_index = (controller_value + 4) >> 4;
+  }
+
+  INLINE int8_t get_cutoff_eg_amt(uint8_t controller_value) {
+    static int8_t cutoff_mod_amt_table[128] = {
+      -120, -120, -120, -120, -120, -118, -116, -114,
+      -112, -110, -108, -106, -104, -102, -100,  -98,
+       -96,  -94,  -92,  -90,  -88,  -86,  -84,  -82,
+       -80,  -78,  -76,  -74,  -72,  -70,  -68,  -66,
+       -64,  -62,  -60,  -58,  -56,  -54,  -52,  -50,
+       -48,  -46,  -44,  -42,  -40,  -38,  -36,  -34,
+       -32,  -30,  -28,  -26,  -24,  -22,  -20,  -18,
+       -16,  -14,  -12,  -10,   -8,   -6,   -4,   -2,
+        +0,   +2,   +4,   +6,   +8,  +10,  +12,  +14,
+       +16,  +18,  +20,  +22,  +24,  +26,  +28,  +30,
+       +32,  +34,  +36,  +38,  +40,  +42,  +44,  +46,
+       +48,  +50,  +52,  +54,  +56,  +58,  +60,  +62,
+       +64,  +66,  +68,  +70,  +72,  +74,  +76,  +78,
+       +80,  +82,  +84,  +86,  +88,  +90,  +92,  +94,
+       +96,  +98, +100, +102, +104, +106, +108, +110,
+      +112, +114, +116, +118, +120, +120, +120, +120,
+    };
+
+    return cutoff_mod_amt_table[controller_value];
   }
 
   INLINE void set_cutoff_eg_amt(uint8_t controller_value) {
-    m_cutoff_eg_amt = m_cutoff_mod_amt_table[controller_value];
+    m_cutoff_eg_amt = get_cutoff_eg_amt(controller_value);
   }
 
   INLINE void set_cutoff_lfo_amt(uint8_t controller_value) {
-    m_cutoff_lfo_amt = m_cutoff_mod_amt_table[controller_value];
+    m_cutoff_lfo_amt = get_cutoff_eg_amt(controller_value);
   }
 
   INLINE void set_cutoff_pitch_amt(uint8_t controller_value) {
@@ -93,7 +116,7 @@ public:
     m_cutoff_offset = cutoff_offset;
   }
 
-  INLINE void process_at_low_rate(uint8_t count, int16_t eg_input, int16_t lfo_input, int16_t osc_pitch) {
+  INLINE void process_at_low_rate(uint8_t count, int16_t eg_input, int16_t lfo_input, uint16_t osc_pitch) {
     switch (count & (0x08 - 1)) {
     case 0x00:
       update_cutoff_control_effective();
@@ -107,9 +130,9 @@ public:
 #if 1
     int16_t x_0 = audio_input >> (16 - AUDIO_FRACTION_BITS);
     int16_t x_3 = x_0 + (m_x_1 << 1) + m_x_2;
-    int32_t y_0 = mul_s32_s16_h32(m_b_2_over_a_0,   x_3) << 2;
-    y_0        -= mul_s32_s32_h32(m_a_1_over_a_0, m_y_1) << 2;
-    y_0        -= mul_s32_s32_h32(m_a_2_over_a_0, m_y_2) << 2;
+    int32_t y_0 = mul_s32_s16_h32(m_b_2_over_a_0,   x_3) << (32 - FILTER_TABLE_FRACTION_BITS);
+    y_0        -= mul_s32_s32_h32(m_a_1_over_a_0, m_y_1) << (32 - FILTER_TABLE_FRACTION_BITS);
+    y_0        -= mul_s32_s32_h32(m_a_2_over_a_0, m_y_2) << (32 - FILTER_TABLE_FRACTION_BITS);
 
     m_x_2 = m_x_1;
     m_y_2 = m_y_1;
@@ -118,7 +141,7 @@ public:
 
     if (m_filter_mode >= 64) {
       // low cut
-      y_0 = (audio_input << AUDIO_FRACTION_BITS) - y_0;
+      y_0 = ((audio_input * m_filter_gain) << (AUDIO_FRACTION_BITS - (FILTER_TABLE_FRACTION_BITS - 16))) - y_0;
     }
 
     // y = clamp(y_0, (-MAX_ABS_OUTPUT << 16), (+MAX_ABS_OUTPUT << 16))
@@ -138,13 +161,13 @@ private:
     m_cutoff_control_effective -= (m_cutoff_control_effective > m_cutoff_control);
   }
 
-  INLINE void update_coefs(int16_t eg_input, int16_t lfo_input, int16_t osc_pitch) {
+  INLINE void update_coefs(int16_t eg_input, int16_t lfo_input, uint16_t osc_pitch) {
     m_cutoff_candidate = m_cutoff_control_effective;
     m_cutoff_candidate += (m_cutoff_eg_amt * eg_input) >> 14;
     m_cutoff_candidate += m_cutoff_offset;
 
     m_cutoff_candidate += (lfo_input * m_cutoff_lfo_amt) >> 14;
-    m_cutoff_candidate += ((osc_pitch - (60 << 8)) * m_cutoff_pitch_amt) >> 8;
+    m_cutoff_candidate += (((osc_pitch - (60 << 8)) * m_cutoff_pitch_amt) + 128) >> 8;
 
     // cutoff_current = clamp(m_cutoff_candidate, 0, 255)
     volatile int16_t cutoff_current = m_cutoff_candidate - 255;
@@ -152,20 +175,12 @@ private:
     cutoff_current = (cutoff_current > 0) * cutoff_current;
     m_cutoff_current = cutoff_current;
 
+    const int32_t* lpf_table = g_filter_lpf_tables[m_resonance_index];
     size_t index = m_cutoff_current * 3;
-    m_b_2_over_a_0 = m_lpf_table[index + 0];
-    m_a_1_over_a_0 = m_lpf_table[index + 1];
-    m_a_2_over_a_0 = m_lpf_table[index + 2];
-  }
-};
+    m_b_2_over_a_0 = lpf_table[index + 0];
+    m_a_1_over_a_0 = lpf_table[index + 1];
+    m_a_2_over_a_0 = lpf_table[index + 2];
 
-const int8_t PRA32_U_Filter::m_cutoff_mod_amt_table[128] = {
-  -120, -120, -120, -120, -120, -118, -116, -114, -112, -110, -108, -106, -104, -102, -100,  -98,
-   -96,  -94,  -92,  -90,  -88,  -86,  -84,  -82,  -80,  -78,  -76,  -74,  -72,  -70,  -68,  -66,
-   -64,  -62,  -60,  -58,  -56,  -54,  -52,  -50,  -48,  -46,  -44,  -42,  -40,  -38,  -36,  -34,
-   -32,  -30,  -28,  -26,  -24,  -22,  -20,  -18,  -16,  -14,  -12,  -10,   -8,   -6,   -4,   -2,
-    +0,   +2,   +4,   +6,   +8,  +10,  +12,  +14,  +16,  +18,  +20,  +22,  +24,  +26,  +28,  +30,
-   +32,  +34,  +36,  +38,  +40,  +42,  +44,  +46,  +48,  +50,  +52,  +54,  +56,  +58,  +60,  +62,
-   +64,  +66,  +68,  +70,  +72,  +74,  +76,  +78,  +80,  +82,  +84,  +86,  +88,  +90,  +92,  +94,
-   +96,  +98, +100, +102, +104, +106, +108, +110, +112, +114, +116, +118, +120, +120, +120, +120,
+    m_filter_gain = g_filter_gain_tables[m_resonance_index];
+  }
 };

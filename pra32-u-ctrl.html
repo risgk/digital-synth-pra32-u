@@ -41,7 +41,7 @@ td.keyh {
 }
 </style>
 <script>
-const APP_NAME_VERSION = "PRA32-U CTRL v0.2.0";
+const APP_NAME_VERSION = "PRA32-U CTRL v0.3.0";
 
 const MIDI_CH        = 0;       // 0-based
 
@@ -263,10 +263,10 @@ presetControllers[FILTER_RESO    ] = [64 , 64 , 32 , 32 , 64 , 64 , 32 , 0  ];
 presetControllers[FILTER_EG_AMT  ] = [64 , 64 , 100, 16 , 112, 64 , 76 , 64 ];
 presetControllers[FILTER_KEY_TRK ] = [127, 127, 127, 127, 127, 127, 127, 127];
 
-presetControllers[EG_ATTACK      ] = [0  , 32 , 16 , 96 , 0  , 0  , 0  , 0  ];
-presetControllers[EG_DECAY       ] = [0  , 0  , 64 , 96 , 96 , 0  , 112, 0  ];
+presetControllers[EG_ATTACK      ] = [0  , 64 , 48 , 96 , 0  , 0  , 0  , 0  ];
+presetControllers[EG_DECAY       ] = [0  , 0  , 80 , 96 , 96 , 0  , 104, 0  ];
 presetControllers[EG_SUSTAIN     ] = [127, 127, 0  , 0  , 0  , 127, 0  , 127];
-presetControllers[EG_RELEASE     ] = [0  , 32 , 0  , 0  , 96 , 0  , 0  , 0  ];
+presetControllers[EG_RELEASE     ] = [0  , 64 , 0  , 0  , 96 , 0  , 0  , 0  ];
 
 presetControllers[EG_OSC_AMT     ] = [64 , 64 , 70 , 64 , 64 , 64 , 96 , 64 ];
 presetControllers[EG_OSC_DST     ] = [0  , 0  , 64 , 0  , 0  , 0  , 127, 0  ];
@@ -274,7 +274,7 @@ presetControllers[VOICE_MODE     ] = [127, 0  , 0  , 0  , 64 , 127, 0  , 0  ];
 presetControllers[PORTAMENTO     ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 
 presetControllers[LFO_WAVE       ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
-presetControllers[LFO_RATE       ] = [96 , 96 , 96 , 96 , 96 , 96 , 96 , 96 ];
+presetControllers[LFO_RATE       ] = [80 , 80 , 80 , 80 , 80 , 80 , 80 , 80 ];
 presetControllers[LFO_DEPTH      ] = [0  , 0  , 0  , 0  , 0  , 127, 0  , 0  ];
 presetControllers[LFO_FADE_TIME  ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 
@@ -283,13 +283,13 @@ presetControllers[LFO_OSC_DST    ] = [0  , 0  , 0  , 0  , 0  , 127, 0  , 0  ];
 presetControllers[LFO_FILTER_AMT ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
 presetControllers[AMP_LEVEL      ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
 
-presetControllers[AMP_ATTACK     ] = [0  , 32 , 0  , 0  , 0  , 0  , 0  , 0  ];
-presetControllers[AMP_DECAY      ] = [0  , 0  , 0  , 0  , 96 , 0  , 112, 0  ];
+presetControllers[AMP_ATTACK     ] = [0  , 64 , 0  , 0  , 0  , 0  , 0  , 0  ];
+presetControllers[AMP_DECAY      ] = [0  , 0  , 0  , 0  , 96 , 0  , 104, 0  ];
 presetControllers[AMP_SUSTAIN    ] = [127, 127, 127, 127, 0  , 127, 0  , 127];
-presetControllers[AMP_RELEASE    ] = [0  , 32 , 0  , 0  , 96 , 0  , 0  , 0  ];
+presetControllers[AMP_RELEASE    ] = [0  , 64 , 0  , 0  , 96 , 0  , 0  , 0  ];
 
 presetControllers[CHORUS_MODE    ] = [127, 127, 127, 127, 127, 127, 127, 0  ];
-presetControllers[CHORUS_RATE    ] = [32 , 32 , 32 , 32 , 32 , 32 , 32 , 32 ];
+presetControllers[CHORUS_RATE    ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
 presetControllers[CHORUS_DEPTH   ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
 presetControllers[CHORUS_DLY_TIME] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
 
@@ -356,11 +356,6 @@ function panic() {
     midiOutput.send([(CONTROL_CHANGE | MIDI_CH), RESET_ALL_CTRLS, 0]);
     sleep(10);
   }
-
-  document.getElementById("spanPB").innerHTML = "+0";
-  document.getElementById("spanMODULATION     ").innerHTML = "0";
-  document.getElementById("spanVelocity").innerHTML = "0";
-  document.getElementById("spanSUSTAIN_PEDAL  ").innerHTML = "0";
 }
 
 function restoreControllers() {
@@ -479,25 +474,6 @@ function onMIDIMessage(event) {
       if ((number == OSC_1_WAVE) || (number == OSC_2_WAVE) || (number == MIXER_SUB_OSC) || (number == VOICE_MODE) || (number == EG_AMP_MOD) || (number == REL_EQ_DECAY)) {
         afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceModeOrEGAmpModOrRelEqDecay();
       }
-    } else if (number == MODULATION     ) {
-      document.getElementById("spanMODULATION     ").innerHTML = value;
-    } else if (number == SUSTAIN_PEDAL  ) {
-      document.getElementById("spanSUSTAIN_PEDAL  ").innerHTML = value;
-    } else if (number == RESET_ALL_CTRLS) {
-      document.getElementById("spanPB").innerHTML = "+0";
-      document.getElementById("spanMODULATION     ").innerHTML = "0";
-      document.getElementById("spanSUSTAIN_PEDAL  ").innerHTML = "0";
-    } else if (number == P_BEND_BY_CC) {
-      var pb = (value - 64) * 128;
-      if (pb == 8064) {
-        pb = 8191;
-      }
-      document.getElementById("spanPB").innerHTML = value;
-      if (pb >= 0) {
-        document.getElementById("spanPB").innerHTML = "+" + String(pb);
-      } else {
-        document.getElementById("spanPB").innerHTML = pb;
-      }
     } else if (number >= PC_BY_CC_8 && number <= PC_BY_CC_15) {
       // Program Change by CC
       var programIndex = number - PC_BY_CC_8;
@@ -515,19 +491,6 @@ function onMIDIMessage(event) {
         setRandom();
         return;
       }
-    }
-  } else if (event.data[0] == (PITCH_BEND | MIDI_CH)) {
-    var value = event.data[1] + (event.data[2] * 128) - 8192;
-    document.getElementById("spanPB").innerHTML = value;
-    if (value >= 0) {
-      document.getElementById("spanPB").innerHTML = "+" + String(value);
-    } else {
-      document.getElementById("spanPB").innerHTML = value;
-    }
-  } else if (event.data[0] == (NOTE_ON | MIDI_CH)) {
-    var velocity = event.data[2];
-    if (velocity > 0) {
-      document.getElementById("spanVelocity").innerHTML = velocity;
     }
   }
 
@@ -776,7 +739,6 @@ function saveControllers(number) {
 function noteOn(noteNumber) {
   if (midiOutput) {
     midiOutput.send([(NOTE_ON | MIDI_CH), noteNumber + transpose, 100]);
-    document.getElementById("spanVelocity").innerHTML = 100;
     sleep(0);
   }
 }
@@ -980,55 +942,31 @@ function getStoredCCValueString(index, number) {
 </table>
 
 <table>
+<tr><td>MIDI Ch</td>
+    <td></td>
+    <td><span id="spanMidiCh">-</span></td>
+    </tr>
 <tr><td>MIDI In 1</td>
     <td></td>
     <td><select id="selectInputPort1" size="1" onchange="onChangeInputPort1()"></select></td>
-    <td></td>
-    <td>Pitch Bend</td>
-    <td></td>
-    <td><span id="spanPB">-</span></td>
     </tr>
 <tr><td>MIDI In 2</td>
     <td></td>
     <td><select id="selectInputPort2" size="1" onchange="onChangeInputPort2()"></select></td>
-    <td></td>
-    <td>Modulation</td>
-    <td></td>
-    <td><span id="spanMODULATION     ">-</span></td>
     </tr>
 <tr><td>MIDI In 3</td>
     <td></td>
     <td><select id="selectInputPort3" size="1" onchange="onChangeInputPort3()"></select></td>
-    <td></td>
-    <td>Sustain Pedal</td>
-    <td></td>
-    <td><span id="spanSUSTAIN_PEDAL  ">-</span></td>
     </tr>
 <tr><td>MIDI In 4</td>
     <td></td>
     <td><select id="selectInputPort4" size="1" onchange="onChangeInputPort4()"></select></td>
-    <td></td>
-    <td style="visibility:hidden">Velocity</td>
-    <td></td>
-    <td style="visibility:hidden"><span id="spanVelocity">-</span></td>
     </tr>
 <tr><td>MIDI Out</td>
     <td></td>
     <td><select id="selectOutputPort" size="1" onchange="onChangeOutputPort()"></select></td>
-    <td></td>
-    <td>MIDI Ch</td>
-    <td></td>
-    <td><span id="spanMidiCh">-</td>
     </tr>
-<tr><td></td>
-    <td></td>
-    <td></td>
-    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-    <td></td>
-    <td>&nbsp;</td>
-    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-    <td></td>
-    <td>&nbsp;</td>
+<tr><td>&nbsp;</td>
     </tr>
 </table>
 
@@ -1288,7 +1226,7 @@ function getStoredCCValueString(index, number) {
 <td><span    id="spanREL_EQ_DECAY   " >-</span></td>
 </tr>
 <tr>
-<td colspan="2"><b>Filter</b> Mode [LP|LC]             </td>
+<td colspan="2"><b>Filter</b> Mode [LP|HP]             </td>
 <td colspan="2">                                </td>
 <td colspan="2">                                </td>
 <td colspan="2">                                </td>
@@ -1317,7 +1255,7 @@ function getStoredCCValueString(index, number) {
 <table>
 <tr><td colspan="2">Software Kbd Transpose</td>
     </tr>
-<tr><td><input id="inputTranspose" type="range" min="-36" max="36" step="12" oninput="onChangeTranspose(value)" ></td>
+<tr><td><input id="inputTranspose" type="range" min="-48" max="48" step="12" oninput="onChangeTranspose(value)" ></td>
     <td><span id="spanTranspose" >-</span></td></tr>
 <tr>
     <td>&nbsp;</td><td>&nbsp;</td>
