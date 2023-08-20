@@ -620,7 +620,7 @@ private:
   template <uint8_t N>
   INLINE void update_osc1_shape(int16_t lfo_level, int16_t eg_level) {
     int32_t osc1_shape = 0x8000u - (m_osc1_shape_control_effective << 8)
-                         + ((eg_level * m_shape_eg_amt) >> 5) - ((lfo_level * m_shape_lfo_amt) >> 3);
+                         + ((eg_level * m_shape_eg_amt) >> 5) - ((lfo_level * m_shape_lfo_amt) >> 5);
 
 #if 0
     // osc1_shape = clamp(osc1_shape, 0x0, 0x10000)
