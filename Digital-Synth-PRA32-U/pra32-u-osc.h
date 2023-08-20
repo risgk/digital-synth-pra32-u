@@ -278,7 +278,7 @@ public:
   }
 
   INLINE void set_mixer_osc_mix(uint8_t controller_value) {
-    m_mixer_osc_mix_control = (controller_value + 1) >> 1;
+    m_mixer_osc_mix_control = ((controller_value + 1) >> 1) << 1;
   }
 
   INLINE void set_osc2_pitch(uint8_t controller_value) {
@@ -446,8 +446,8 @@ private:
   INLINE int32_t process_osc(int16_t noise_int15, bool halve_noise_level) {
     int32_t result = 0;
 
-    int16_t osc1_gain = m_mix_table[(OSC_MIX_TABLE_LENGTH - 1) - m_mixer_osc_mix_control_effective];
-    int16_t osc2_gain = m_mix_table[                             m_mixer_osc_mix_control_effective];
+    int16_t osc1_gain = m_mix_table[(OSC_MIX_TABLE_LENGTH - 1) - (m_mixer_osc_mix_control_effective >> 1)];
+    int16_t osc2_gain = m_mix_table[                             (m_mixer_osc_mix_control_effective >> 1)];
 
     m_phase[N] += m_freq[N];
     boolean new_period_osc1 = (m_phase[N] & 0x00FFFFFF) < m_freq[N]; // crossing the begin of a osc 1 wave, the begin or the middle of a sub osc wave

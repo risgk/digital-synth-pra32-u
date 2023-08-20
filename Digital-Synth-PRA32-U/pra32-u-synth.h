@@ -831,7 +831,7 @@ public:
       m_osc.process_at_low_rate_a<3>(lfo_output, m_eg[6].get_output());
       m_filter[3].process_at_low_rate(m_count >> 2, m_eg[6].get_output(), lfo_output, m_osc.get_osc_pitch(3));
       m_amp[3].process_at_low_rate(m_eg[7].get_output());
-      m_chorus_fx.process_at_low_rate();
+      m_chorus_fx.process_at_low_rate(m_count >> 2);
       break;
     }
 
