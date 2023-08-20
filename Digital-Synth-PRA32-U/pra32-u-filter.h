@@ -69,7 +69,7 @@ public:
     m_resonance_index = (controller_value + 4) >> 4;
   }
 
-  INLINE int8_t get_cutoff_eg_amt(uint8_t controller_value) {
+  INLINE int8_t get_cutoff_mod_amt(uint8_t controller_value) {
     static int8_t cutoff_mod_amt_table[128] = {
       -120, -120, -120, -120, -120, -118, -116, -114,
       -112, -110, -108, -106, -104, -102, -100,  -98,
@@ -93,11 +93,11 @@ public:
   }
 
   INLINE void set_cutoff_eg_amt(uint8_t controller_value) {
-    m_cutoff_eg_amt = get_cutoff_eg_amt(controller_value);
+    m_cutoff_eg_amt = get_cutoff_mod_amt(controller_value);
   }
 
   INLINE void set_cutoff_lfo_amt(uint8_t controller_value) {
-    m_cutoff_lfo_amt = get_cutoff_eg_amt(controller_value);
+    m_cutoff_lfo_amt = get_cutoff_mod_amt(controller_value);
   }
 
   INLINE void set_cutoff_pitch_amt(uint8_t controller_value) {
