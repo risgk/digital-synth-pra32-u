@@ -20,7 +20,7 @@
         - 0: Pulse Width 50%, or 2nd Saw Phase 50% (min)
         - 64: Pulse Width 25%, or 2nd Saw Phase 25%
         - 96: Pulse Width 12.5%, or 2nd Saw Phase 12.5%
-        - 127: Pulse Width 0%, or 2nd Saw Phase 0% (max)
+        - 127: Pulse Width 0.4%, or 2nd Saw Phase 99.6% (max)
 - Osc 1 Morph $$
     - Pulse Wave
         - 0: Pulse 100% = Saw 100% + Reverse Saw 100% (min)
