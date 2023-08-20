@@ -60,8 +60,8 @@
     - GP0 and GP1 pins are used by UART0 TX and UART0 RX
     - DIN/TRS MIDI is available by using (and modifying) Adafruit MIDI FeatherWing Kit, for example
         - Adafruit [MIDI FeatherWing Kit](https://www.adafruit.com/product/4740)
-        - necobit電子 [MIDI Unit for GROVE](https://necobit.com/denshi/grove-midi-unit/) (Shipping to Japan only)
         - 木下研究所 [MIDI-UARTインターフェースさん キット](https://www.switch-science.com/products/8117) (Shipping to Japan only)
+        - necobit電子 [MIDI Unit for GROVE](https://necobit.com/denshi/grove-midi-unit/) (Shipping to Japan only)
 
 
 ### Audio Out
