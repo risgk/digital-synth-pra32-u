@@ -528,10 +528,10 @@ private:
     }
 
     if (N >= 4) {
-      pitch_temp += (lfo_level * m_pitch_lfo_amt[1]) >> 9;
+      pitch_temp += (lfo_level * m_pitch_lfo_amt[1]) >> 10;
       pitch_temp += (m_osc2_pitch << 8) + m_osc2_detune + m_osc2_detune;
     } else {
-      pitch_temp += (lfo_level * m_pitch_lfo_amt[0]) >> 9;
+      pitch_temp += (lfo_level * m_pitch_lfo_amt[0]) >> 10;
     }
 
     coarse = high_byte(pitch_temp);
