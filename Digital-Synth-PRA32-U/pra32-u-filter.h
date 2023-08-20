@@ -117,7 +117,7 @@ public:
   }
 
   INLINE void process_at_low_rate(uint8_t count, int16_t eg_input, int16_t lfo_input, uint16_t osc_pitch) {
-    switch (count & (0x08 - 1)) {
+    switch (count & (0x04 - 1)) {
     case 0x00:
       update_cutoff_control_effective();
       break;

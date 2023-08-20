@@ -107,10 +107,10 @@ public:
 
     set_voice_mode(VOICE_PARAPHONIC);
 
-    m_amp[0].set_gain<1>(127);
-    m_amp[1].set_gain<1>(127);
-    m_amp[2].set_gain<1>(127);
-    m_amp[3].set_gain<1>(127);
+    m_amp[0].set_gain(127);
+    m_amp[1].set_gain(127);
+    m_amp[2].set_gain(127);
+    m_amp[3].set_gain(127);
 
     m_eg_osc_amt = 64;
     m_lfo_osc_amt = 64;
@@ -581,10 +581,10 @@ public:
       break;
 #endif
     case AMP_LEVEL      :
-      m_amp[0].set_gain<1>(controller_value);
-      m_amp[1].set_gain<1>(controller_value);
-      m_amp[2].set_gain<1>(controller_value);
-      m_amp[3].set_gain<1>(controller_value);
+      m_amp[0].set_gain(controller_value);
+      m_amp[1].set_gain(controller_value);
+      m_amp[2].set_gain(controller_value);
+      m_amp[3].set_gain(controller_value);
       break;
 
     case PORTAMENTO     :
