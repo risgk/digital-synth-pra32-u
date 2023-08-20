@@ -17,10 +17,11 @@ class PRA32_U_ChorusFx {
 
   uint8_t  m_gain;
 
-  uint8_t  m_chorus_depth_control;
+  uint16_t m_chorus_depth_control;
+  uint16_t m_chorus_depth_control_effective;
   uint32_t m_chorus_rate;
-  uint8_t  m_chorus_delay_time_control;
-  uint8_t  m_chorus_delay_time_control_effective;
+  uint16_t m_chorus_delay_time_control;
+  uint16_t m_chorus_delay_time_control_effective;
   uint8_t  m_param_chorus_mode;
   boolean  m_param_chorus_bypass;
   uint8_t  m_effective_chorus_mode;
@@ -36,13 +37,13 @@ public:
   , m_gain()
 
   , m_chorus_depth_control()
+  , m_chorus_depth_control_effective()
   , m_chorus_rate()
   , m_chorus_delay_time_control()
   , m_chorus_delay_time_control_effective()
   , m_param_chorus_mode()
   , m_param_chorus_bypass()
   , m_effective_chorus_mode()
-  , m_chorus_depth_control_actual()
   , m_chorus_lfo_phase()
   , m_chorus_delay_time()
   {
@@ -57,14 +58,15 @@ public:
     m_effective_chorus_mode = CHORUS_MODE_OFF;
     set_gain(90);
 
-    m_chorus_depth_control_actual = 64;
+    m_chorus_depth_control_effective = 64 << 6;
+    m_chorus_delay_time_control_effective = 64 << 6;
   }
 
   INLINE void set_chorus_depth(uint8_t controller_value) {
     if (controller_value < 126) {
-      m_chorus_depth_control = controller_value;
+      m_chorus_depth_control = controller_value << 6;
     } else {
-      m_chorus_depth_control = 126;
+      m_chorus_depth_control = 126 << 6;
     }
   }
 
@@ -73,7 +75,7 @@ public:
   }
 
   INLINE void set_chorus_delay_time(uint8_t controller_value) {
-    m_chorus_delay_time_control = controller_value;
+    m_chorus_delay_time_control = controller_value << 6;
   }
 
   INLINE void set_chorus_mode(uint8_t controller_value) {
@@ -129,23 +131,28 @@ public:
     return m_chorus_delay_time[N];
   }
 
-  INLINE void process_at_low_rate() {
+  INLINE void process_at_low_rate(uint8_t count) {
 #if 1
-    // todo
+    static_cast<void>(count);
+
+    m_chorus_depth_control_effective += (m_chorus_depth_control_effective < m_chorus_depth_control);
+    m_chorus_depth_control_effective -= (m_chorus_depth_control_effective > m_chorus_depth_control);
+
     m_chorus_delay_time_control_effective += (m_chorus_delay_time_control_effective < m_chorus_delay_time_control);
     m_chorus_delay_time_control_effective -= (m_chorus_delay_time_control_effective > m_chorus_delay_time_control);
 
-    if (m_chorus_delay_time_control_effective < 64) {
-      if (m_chorus_depth_control > (m_chorus_delay_time_control_effective << 1)) {
-        m_chorus_depth_control_actual = (m_chorus_delay_time_control_effective << 1);
+    uint16_t chorus_depth_control_effective_limited;
+    if (m_chorus_delay_time_control_effective < (64 << 6)) {
+      if (m_chorus_depth_control_effective > (m_chorus_delay_time_control_effective << 1)) {
+        chorus_depth_control_effective_limited = (m_chorus_delay_time_control_effective << 1);
       } else {
-        m_chorus_depth_control_actual = m_chorus_depth_control;
+        chorus_depth_control_effective_limited = m_chorus_depth_control_effective;
       }
     } else {
-      if (m_chorus_depth_control > ((127 - m_chorus_delay_time_control_effective) << 1)) {
-        m_chorus_depth_control_actual = ((127 - m_chorus_delay_time_control_effective) << 1);
+      if (m_chorus_depth_control_effective > (((127 << 6) - m_chorus_delay_time_control_effective) << 1)) {
+        chorus_depth_control_effective_limited = (((127 << 6) - m_chorus_delay_time_control_effective) << 1);
       } else {
-        m_chorus_depth_control_actual = m_chorus_depth_control;
+        chorus_depth_control_effective_limited = m_chorus_depth_control_effective;
       }
     }
 
@@ -154,7 +161,7 @@ public:
 
     int16_t chorus_lfo_wave_level = get_chorus_lfo_wave_level(m_chorus_lfo_phase);
 
-    int16_t chorus_lfo_level = (chorus_lfo_wave_level * m_chorus_depth_control_actual) >> 8;
+    int16_t chorus_lfo_level = (chorus_lfo_wave_level * chorus_depth_control_effective_limited) >> 14;
 
     switch (m_effective_chorus_mode) {
     case CHORUS_MODE_BYPASS   :
@@ -168,16 +175,14 @@ public:
     case CHORUS_MODE_P_STEREO :
     case CHORUS_MODE_MONO     :
       {
-        uint16_t chorus_delay_time_control_mul_4 = m_chorus_delay_time_control_effective * 4;
-        m_chorus_delay_time[0] = (chorus_delay_time_control_mul_4 << 4) + chorus_lfo_level;
+        m_chorus_delay_time[0] = m_chorus_delay_time_control_effective + chorus_lfo_level;
         m_chorus_delay_time[1] = m_chorus_delay_time[0];
       }
       break;
     case CHORUS_MODE_STEREO_2 :
       {
-        uint16_t chorus_delay_time_control_mul_4 = m_chorus_delay_time_control_effective * 4;
-        m_chorus_delay_time[0] = (chorus_delay_time_control_mul_4 << 4) - chorus_lfo_level;
-        m_chorus_delay_time[1] = (chorus_delay_time_control_mul_4 << 4) + chorus_lfo_level;
+        m_chorus_delay_time[0] = m_chorus_delay_time_control_effective - chorus_lfo_level;
+        m_chorus_delay_time[1] = m_chorus_delay_time_control_effective + chorus_lfo_level;
       }
       break;
     }

@@ -155,6 +155,6 @@ private:
     }
     lfo_depth <<= 1;
 
-    m_lfo_level = (lfo_depth * m_lfo_wave_level) >> 9;
+    m_lfo_level = (lfo_depth * m_lfo_wave_level) >> 7;
   }
 };

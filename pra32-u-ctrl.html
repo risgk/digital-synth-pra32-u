@@ -41,7 +41,7 @@ td.keyh {
 }
 </style>
 <script>
-const APP_NAME_VERSION = "PRA32-U CTRL v0.3.0";
+const APP_NAME_VERSION = "PRA32-U CTRL v0.3.1";
 
 const MIDI_CH        = 0;       // 0-based
 
@@ -255,7 +255,7 @@ presetControllers[MIXER_SUB_OSC  ] = [127, 64 , 64 , 64 , 127, 64 , 64 , 64 ];
 
 presetControllers[OSC_2_WAVE     ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 presetControllers[OSC_2_COARSE   ] = [71 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
-presetControllers[OSC_2_FINE     ] = [70 , 70 , 70 , 70 , 70 , 70 , 70 , 64 ];
+presetControllers[OSC_2_FINE     ] = [64 , 70 , 70 , 70 , 70 , 70 , 70 , 64 ];
 presetControllers[MIXER_OSC_MIX  ] = [64 , 32 , 32 , 32 , 32 , 32 , 32 , 0  ];
 
 presetControllers[FILTER_CUTOFF  ] = [115, 115, 91 , 115, 67 , 115, 67 , 127];
@@ -275,12 +275,12 @@ presetControllers[PORTAMENTO     ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 
 presetControllers[LFO_WAVE       ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 presetControllers[LFO_RATE       ] = [80 , 80 , 80 , 80 , 80 , 80 , 80 , 80 ];
-presetControllers[LFO_DEPTH      ] = [0  , 0  , 0  , 0  , 0  , 127, 0  , 0  ];
+presetControllers[LFO_DEPTH      ] = [0  , 0  , 0  , 0  , 0  , 64 , 0  , 0  ];
 presetControllers[LFO_FADE_TIME  ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 
-presetControllers[LFO_OSC_AMT    ] = [80 , 80 , 80 , 80 , 80 , 96 , 80 , 64 ];
+presetControllers[LFO_OSC_AMT    ] = [118, 118, 118, 118, 64 , 127, 64 , 64 ];
 presetControllers[LFO_OSC_DST    ] = [0  , 0  , 0  , 0  , 0  , 127, 0  , 0  ];
-presetControllers[LFO_FILTER_AMT ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
+presetControllers[LFO_FILTER_AMT ] = [64 , 64 , 64 , 64 , 88 , 64 , 88 , 64 ];
 presetControllers[AMP_LEVEL      ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
 
 presetControllers[AMP_ATTACK     ] = [0  , 64 , 0  , 0  , 0  , 0  , 0  , 0  ];

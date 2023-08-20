@@ -107,10 +107,10 @@ public:
 
     set_voice_mode(VOICE_PARAPHONIC);
 
-    m_amp[0].set_gain<1>(127);
-    m_amp[1].set_gain<1>(127);
-    m_amp[2].set_gain<1>(127);
-    m_amp[3].set_gain<1>(127);
+    m_amp[0].set_gain(127);
+    m_amp[1].set_gain(127);
+    m_amp[2].set_gain(127);
+    m_amp[3].set_gain(127);
 
     m_eg_osc_amt = 64;
     m_lfo_osc_amt = 64;
@@ -581,10 +581,10 @@ public:
       break;
 #endif
     case AMP_LEVEL      :
-      m_amp[0].set_gain<1>(controller_value);
-      m_amp[1].set_gain<1>(controller_value);
-      m_amp[2].set_gain<1>(controller_value);
-      m_amp[3].set_gain<1>(controller_value);
+      m_amp[0].set_gain(controller_value);
+      m_amp[1].set_gain(controller_value);
+      m_amp[2].set_gain(controller_value);
+      m_amp[3].set_gain(controller_value);
       break;
 
     case PORTAMENTO     :
@@ -603,7 +603,7 @@ public:
       break;
 
     case MIXER_OSC_MIX  :
-      m_osc.set_osc2_mix(controller_value);
+      m_osc.set_mixer_osc_mix(controller_value);
       break;
 
     case OSC_2_COARSE   :
@@ -831,7 +831,7 @@ public:
       m_osc.process_at_low_rate_a<3>(lfo_output, m_eg[6].get_output());
       m_filter[3].process_at_low_rate(m_count >> 2, m_eg[6].get_output(), lfo_output, m_osc.get_osc_pitch(3));
       m_amp[3].process_at_low_rate(m_eg[7].get_output());
-      m_chorus_fx.process_at_low_rate();
+      m_chorus_fx.process_at_low_rate(m_count >> 2);
       break;
     }
 
