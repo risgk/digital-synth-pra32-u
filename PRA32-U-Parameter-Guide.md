@@ -161,6 +161,6 @@
 - Release = Decay [Off|On]
     - 0 (0-63): Off
     - 127 (64-127): On, EG Release = EG Decay and Amp Release = Amp Decay
-- Filter Mode [LP|LC]
+- Filter Mode [LP|HP]
     - 0 (0-63): Low Pass
-    - 127 (64-127): Low Cut
+    - 127 (64-127): High Pass

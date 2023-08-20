@@ -19,7 +19,7 @@
 ## Change History
 
 - v0.3.0 (Prototype): Extend Note Number range; Remove drift of Oscillators; Improve Triangle Wave; Change Portamento curve;
-  Improve Filter Low Cut Mode; Modify Filter coefficients;
+  Rename Filter Mode LC (Low Cut) to HP (High Pass); Improve Filter Low Cut Mode; Modify Filter coefficients;
   Change EG curve; Extend LFO Rate change range; Change LFO Fade Time; Change Chorue Rate curve; Update Presets;
   Fix Filter Key Track (Fix problem with strange sound when pitch is outside of note number range);
   Fix behavior when Portamento is 0 (Off); Other changes
