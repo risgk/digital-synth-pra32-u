@@ -57,7 +57,7 @@ const uint8_t   MIXER_SUB_OSC   = 26;
 
 const uint8_t   OSC_2_WAVE      = 55;
 const uint8_t   OSC_2_COARSE    = 20;
-const uint8_t   OSC_2_FINE      = 21;
+const uint8_t   OSC_2_PITCH     = 21;
 const uint8_t   MIXER_OSC_MIX   = 25;
 
 const uint8_t   FILTER_CUTOFF   = 16;
