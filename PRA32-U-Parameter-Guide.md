@@ -46,7 +46,7 @@
     - -60 (4): -60 semitone (min)
     - +60 (124): +60 semitone (max)
 - Osc 2 Fine [-|+]
-    - -59 (5): -7 semitone (min)
+    - -51 (13): -5 semitone (min)
     - -32 (32): -25 cent
     - +0 (64): +0 cent
     - +32 (96): +25 cent
