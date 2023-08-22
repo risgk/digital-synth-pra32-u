@@ -46,8 +46,11 @@
     - -60 (4): -60 semitone (min)
     - +60 (124): +60 semitone (max)
 - Osc 2 Fine [-|+]
-    - -64 (0): -50 cent (min)
-    - +63 (127): +49.2 cent (max)
+    - -59 (5): -7 semitone (min)
+    - -32 (32): -25 cent
+    - +0 (64): +0 cent
+    - +32 (96): +25 cent
+    - +59 (123): +7 semitone (max)
 - Mixer Osc Mix [1|2]
 - Filter Cutoff
     - 0: f = 13.0 Hz (min)
@@ -88,13 +91,9 @@
     - Pitch
         - -62 (2): -24 semitone (min)
         - -38 (26): -12 semitone
-        - -17 (47): -150 cent
         - -16 (48): -100 cent
-        - -1 (63): -6.25 cent
         - +0 (64): +0 cent
-        - +1 (65): +6.25 cent
         - +16 (80): +100 cent
-        - +17 (81): +150 cent
         - +38 (102): +12 semitone
         - +62 (126): +24 semitone (max)
     - Shape
