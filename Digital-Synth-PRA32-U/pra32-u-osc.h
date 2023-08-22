@@ -282,12 +282,12 @@ public:
   }
 
   INLINE void set_osc2_pitch(uint8_t controller_value) {
-    if (controller_value < 16) {
-      m_osc2_pitch = -48;
-    } else if (controller_value < 112) {
+    if (controller_value < 4) {
+      m_osc2_pitch = -60;
+    } else if (controller_value < 124) {
       m_osc2_pitch = controller_value - 64;
     } else {
-      m_osc2_pitch = 48;
+      m_osc2_pitch = 60;
     }
   }
 
