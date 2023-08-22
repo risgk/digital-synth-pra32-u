@@ -47,9 +47,11 @@
     - +60 (124): +60 semitone (max)
 - Osc 2 Tune [-|+]
     - -50 (14): -5 semitone (min)
+    - -34 (30): -1 semitone
     - -32 (32): -50 cent
     - +0 (64): +0 cent
     - +32 (96): +50 cent
+    - +34 (98): +1 semitone
     - +58 (122): +7 semitone (max)
 - Mixer Osc Mix [1|2]
 - Filter Cutoff
