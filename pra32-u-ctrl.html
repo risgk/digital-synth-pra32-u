@@ -62,7 +62,7 @@ const MIXER_SUB_OSC   = 26;
 
 const OSC_2_WAVE      = 55;
 const OSC_2_COARSE    = 20;
-const OSC_2_PITCH     = 21;
+const OSC_2_TUNE      = 21;
 const MIXER_OSC_MIX   = 25;
 
 const FILTER_CUTOFF   = 16;
@@ -139,7 +139,7 @@ var controlNumberToStringMap = new Map([
 
   [ OSC_2_WAVE     , "OSC_2_WAVE     " ],
   [ OSC_2_COARSE   , "OSC_2_COARSE   " ],
-  [ OSC_2_PITCH    , "OSC_2_PITCH    " ],
+  [ OSC_2_TUNE     , "OSC_2_TUNE     " ],
   [ MIXER_OSC_MIX  , "MIXER_OSC_MIX  " ],
 
   [ FILTER_CUTOFF  , "FILTER_CUTOFF  " ],
@@ -196,7 +196,7 @@ var controllersInLocalStorage = [
 
   OSC_2_WAVE     ,
   OSC_2_COARSE   ,
-  OSC_2_PITCH    ,
+  OSC_2_TUNE     ,
   MIXER_OSC_MIX  ,
 
   FILTER_CUTOFF  ,
@@ -255,7 +255,7 @@ presetControllers[MIXER_SUB_OSC  ] = [127, 64 , 64 , 64 , 127, 64 , 64 , 64 ];
 
 presetControllers[OSC_2_WAVE     ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 presetControllers[OSC_2_COARSE   ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
-presetControllers[OSC_2_PITCH    ] = [123, 72 , 72 , 72 , 72 , 72 , 72 , 64 ];
+presetControllers[OSC_2_TUNE     ] = [123, 72 , 72 , 72 , 72 , 72 , 72 , 64 ];
 presetControllers[MIXER_OSC_MIX  ] = [64 , 32 , 32 , 32 , 32 , 32 , 32 , 0  ];
 
 presetControllers[FILTER_CUTOFF  ] = [115, 115, 91 , 115, 67 , 115, 67 , 127];
@@ -644,7 +644,7 @@ function updateDisplayOfControl(number, value) {
   switch (number) {
   case MIXER_SUB_OSC   :
   case OSC_2_COARSE    :
-  case OSC_2_PITCH     :
+  case OSC_2_TUNE      :
   case FILTER_EG_AMT   :
   case EG_OSC_AMT      :
   case LFO_OSC_AMT     :
@@ -846,7 +846,7 @@ function fileExport() {
   str += "\n";
   str += fileExportOneLine(OSC_2_WAVE     );
   str += fileExportOneLine(OSC_2_COARSE   );
-  str += fileExportOneLine(OSC_2_PITCH    );
+  str += fileExportOneLine(OSC_2_TUNE     );
   str += fileExportOneLine(MIXER_OSC_MIX  );
   str += "\n";
   str += fileExportOneLine(FILTER_CUTOFF  );
@@ -1078,7 +1078,7 @@ function getStoredCCValueString(index, number) {
 <tr>
 <td colspan="2"><b>Osc 2</b> Wave [Saw|-|Tri|Nos|Sqr]  </td>
 <td colspan="2"><b>Osc 2</b> Coarse [-|+]              </td>
-<td colspan="2"><b>Osc 2</b> Pitch [-|+]               </td>
+<td colspan="2"><b>Osc 2</b> Tune [-|+]                </td>
 <td colspan="2"><b>Mixer</b> Osc Mix [1|2]             </td>
 </tr>
 <tr>
@@ -1086,8 +1086,8 @@ function getStoredCCValueString(index, number) {
 <td><span    id="spanOSC_2_WAVE     " >-</span></td>
 <td><input  id="inputOSC_2_COARSE   "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_2_COARSE   , value)"></td>
 <td><span    id="spanOSC_2_COARSE   " >-</span></td>
-<td><input  id="inputOSC_2_PITCH    "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_2_PITCH    , value)"></td>
-<td><span    id="spanOSC_2_PITCH    " >-</span></td>
+<td><input  id="inputOSC_2_TUNE     "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_2_TUNE     , value)"></td>
+<td><span    id="spanOSC_2_TUNE     " >-</span></td>
 <td><input  id="inputMIXER_OSC_MIX  "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(MIXER_OSC_MIX  , value)"></td>
 <td><span    id="spanMIXER_OSC_MIX  " >-</span></td>
 </tr>

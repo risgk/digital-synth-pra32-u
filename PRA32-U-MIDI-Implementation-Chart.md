@@ -32,7 +32,7 @@
 |                               |               |               |                                  |
 |                            55 | x             | o             | Osc 2 Wave [Saw|-|Tri|Nos|Sqr]   |
 |                            20 | x             | o             | Osc 2 Coarse [-|+]               |
-|                            21 | x             | o             | Osc 2 Pitch [-|+]                |
+|                            21 | x             | o             | Osc 2 Tune [-|+]                 |
 |                            25 | x             | o             | Mixer Osc Mix [1|2]              |
 |                               |               |               |                                  |
 |                            16 | x             | o             | Filter Cutoff                    |

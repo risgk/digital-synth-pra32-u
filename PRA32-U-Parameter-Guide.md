@@ -45,7 +45,7 @@
 - Osc 2 Coarse [-|+]
     - -60 (4): -60 semitone (min)
     - +60 (124): +60 semitone (max)
-- Osc 2 Pitch [-|+]
+- Osc 2 Tune [-|+]
     - -51 (13): -5 semitone (min)
     - -32 (32): -25 cent
     - +0 (64): +0 cent
