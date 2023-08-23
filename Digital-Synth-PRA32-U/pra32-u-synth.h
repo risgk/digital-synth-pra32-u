@@ -610,7 +610,7 @@ public:
       m_osc.set_osc2_pitch(controller_value);
       break;
 
-    case OSC_2_TUNE     :
+    case OSC_2_PITCH    :
       m_osc.set_osc2_detune(controller_value);
       break;
 
@@ -731,7 +731,7 @@ public:
 
     control_change(OSC_2_WAVE     , g_preset_table_OSC_2_WAVE     [program_number]);
     control_change(OSC_2_COARSE   , g_preset_table_OSC_2_COARSE   [program_number]);
-    control_change(OSC_2_TUNE     , g_preset_table_OSC_2_TUNE     [program_number]);
+    control_change(OSC_2_PITCH    , g_preset_table_OSC_2_PITCH    [program_number]);
     control_change(MIXER_OSC_MIX  , g_preset_table_MIXER_OSC_MIX  [program_number]);
 
     control_change(FILTER_CUTOFF  , g_preset_table_FILTER_CUTOFF  [program_number]);
