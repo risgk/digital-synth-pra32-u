@@ -536,7 +536,7 @@ private:
     } else {
       pitch_eg_amt = m_pitch_eg_amt[0];
     }
-    uint16_t pitch_temp =  (64 << 8) + (m_pitch_current[N & 0x03] >> 16) + m_pitch_bend_normalized + ((eg_level * pitch_eg_amt) >> 16);
+    uint16_t pitch_temp =  (64 << 8) + (m_pitch_current[N & 0x03] >> 16) + m_pitch_bend_normalized + ((eg_level * pitch_eg_amt) >> 14);
 
     uint8_t coarse = high_byte(pitch_temp);
     if (coarse < (NOTE_NUMBER_MIN + 64)) {
@@ -546,10 +546,10 @@ private:
     }
 
     if (N >= 4) {
-      pitch_temp += (lfo_level * m_pitch_lfo_amt[1]) >> 16;
+      pitch_temp += (lfo_level * m_pitch_lfo_amt[1]) >> 14;
       pitch_temp += (m_osc2_pitch << 8) + m_osc2_detune;
     } else {
-      pitch_temp += (lfo_level * m_pitch_lfo_amt[0]) >> 16;
+      pitch_temp += (lfo_level * m_pitch_lfo_amt[0]) >> 14;
     }
 
     coarse = high_byte(pitch_temp);
