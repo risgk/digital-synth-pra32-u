@@ -10,7 +10,7 @@ uint8_t g_preset_table_MIXER_SUB_OSC  [] = {127, 64 , 64 , 64 , 127, 64 , 64 , 6
 
 uint8_t g_preset_table_OSC_2_WAVE     [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
 uint8_t g_preset_table_OSC_2_COARSE   [] = {64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ,   64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 };
-uint8_t g_preset_table_OSC_2_TUNE     [] = {107, 72 , 72 , 72 , 72 , 72 , 72 , 64 ,   107, 72 , 72 , 72 , 72 , 72 , 72 , 64 };
+uint8_t g_preset_table_OSC_2_TUNE     [] = {109, 72 , 72 , 72 , 72 , 72 , 72 , 64 ,   109, 72 , 72 , 72 , 72 , 72 , 72 , 64 };
 uint8_t g_preset_table_MIXER_OSC_MIX  [] = {64 , 64 , 64 , 64 , 64 , 64 , 64 , 0  ,   64 , 64 , 64 , 64 , 64 , 64 , 64 , 0  };
 
 uint8_t g_preset_table_FILTER_CUTOFF  [] = {115, 115, 91 , 115, 67 , 115, 67 , 127,   115, 115, 91 , 115, 67 , 115, 67 , 127};
@@ -33,7 +33,7 @@ uint8_t g_preset_table_LFO_RATE       [] = {80 , 80 , 80 , 80 , 80 , 80 , 80 , 8
 uint8_t g_preset_table_LFO_DEPTH      [] = {0  , 0  , 0  , 0  , 0  , 127, 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 127, 0  , 0  };
 uint8_t g_preset_table_LFO_FADE_TIME  [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
 
-uint8_t g_preset_table_LFO_OSC_AMT    [] = {103, 103, 103, 103, 64 , 96 , 64 , 64 ,   103, 103, 103, 103, 64 , 96 , 64 , 64 };
+uint8_t g_preset_table_LFO_OSC_AMT    [] = {119, 119, 119, 119, 64 , 96 , 64 , 64 ,   119, 119, 119, 119, 64 , 96 , 64 , 64 };
 uint8_t g_preset_table_LFO_OSC_DST    [] = {0  , 0  , 0  , 0  , 0  , 127, 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 127, 0  , 0  };
 uint8_t g_preset_table_LFO_FILTER_AMT [] = {64 , 64 , 64 , 64 , 88 , 64 , 88 , 64 ,   64 , 64 , 64 , 64 , 88 , 64 , 88 , 64 };
 uint8_t g_preset_table_AMP_LEVEL      [] = {64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ,   64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 };
