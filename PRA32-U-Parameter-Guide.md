@@ -47,9 +47,11 @@
     - +60 (124): +60 semitone (max)
 - Osc 2 Pitch [-|+]
     - -41 (23): -5 semitone (min)
+    - -33 (31): -1 semitone
     - -32 (32): -50 cent
     - +0 (64): +0 cent
     - +32 (96): +50 cent
+    - +33 (97): +1 semitone
     - +45 (109): +7 semitone (max)
 - Mixer Osc Mix [1|2]
 - Filter Cutoff
@@ -90,9 +92,13 @@
 - EG Osc Amt [-|+], LFO Osc Amt [-|+]
     - Pitch
         - -55 (9): -24 semitone (min)
+        - -43 (21): -12 semitone
+        - -33 (31): -2 semitone
         - -32 (32): -100 cent
         - +0 (64): +0 cent
         - +32 (96): +100 cent
+        - +33 (97): +2 semitone
+        - +43 (107): +12 semitone
         - +55 (119): +24 semitone (max)
     - Shape
         - -63 (1): Shape -252 (min)
