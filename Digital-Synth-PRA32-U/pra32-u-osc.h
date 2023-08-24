@@ -481,7 +481,7 @@ private:
 
     // For Pulse Wave (wave_3)
     uint32_t phase_3 = m_phase[N] + (m_osc1_shape_effective[N] << 8);
-    boolean new_period_osc1_add = ((phase_3 + 0x00800000) & 0x00FFFFFF) < m_freq[N]; // crossing the middle of a saw wave
+    boolean new_period_osc1_add = ((phase_3 + 0x00800000) & 0x00FFFFFF) < (m_freq[N] + 0x00010000); // crossing the middle of a saw wave
     m_wave_table[N + 8] = reinterpret_cast<const int16_t*>((reinterpret_cast<const uintptr_t>(m_wave_table[N + 8]) * (1 - new_period_osc1_add)));
     m_wave_table[N + 8] = reinterpret_cast<const int16_t*>( reinterpret_cast<const uint8_t*>( m_wave_table[N + 8]) +
                                                            (reinterpret_cast<const uintptr_t>(m_wave_table_temp[N]) * new_period_osc1_add));
