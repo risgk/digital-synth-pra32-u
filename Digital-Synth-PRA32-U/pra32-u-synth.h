@@ -706,7 +706,7 @@ public:
         uint8_t program_index = controller_number - PC_BY_CC_8;
         uint8_t old_value = m_sp_prog_chg_cc_values[program_index];
         m_sp_prog_chg_cc_values[program_index] = controller_value;
-        if ((old_value <= 63) && (controller_value >= 64)) {
+        if ((old_value < 64) && (controller_value >= 64)) {
           program_change(program_index + 8);
         }
       }
