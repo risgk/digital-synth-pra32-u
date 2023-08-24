@@ -720,9 +720,11 @@ public:
   }
 
   /* INLINE */ void program_change(uint8_t program_number) {
-    if (program_number > PROGRAM_NUMBER_MAX) {
+    if (program_number >= ((PROGRAM_NUMBER_MAX + 1) << 2)) {
       return;
     }
+
+    program_number = program_number & PROGRAM_NUMBER_MAX;
 
     control_change(OSC_1_WAVE     , g_preset_table_OSC_1_WAVE     [program_number]);
     control_change(OSC_1_SHAPE    , g_preset_table_OSC_1_SHAPE    [program_number]);
