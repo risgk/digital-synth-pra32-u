@@ -41,7 +41,7 @@ class PRA32_U_Osc {
   uint8_t        m_mixer_osc_mix_control;
   uint8_t        m_mixer_osc_mix_control_effective;
   int8_t         m_osc2_pitch;
-  int8_t         m_osc2_detune;
+  int16_t        m_osc2_detune;
 
   uint8_t        m_phase_high;
   int8_t         m_osc1_shape_control;
@@ -224,22 +224,22 @@ public:
 
   INLINE int16_t get_pitch_mod_amt_table(uint8_t controller_value) {
     static int16_t pitch_mod_amt_table[128] = {
-      -384, -384, -384, -384, -384, -384, -384, -384,
-      -384, -384, -384, -368, -352, -336, -320, -304,
-      -288, -272, -256, -240, -224, -208, -192, -176,
-      -160, -144, -128, -112,  -96,  -80,  -64,  -48,
-       -32,  -31,  -30,  -29,  -28,  -27,  -26,  -25,
-       -24,  -23,  -22,  -21,  -20,  -19,  -18,  -17,
-       -16,  -15,  -14,  -13,  -12,  -11,  -10,   -9,
-        -8,   -7,   -6,   -5,   -4,   -3,   -2,   -1,
-        +0,   +1,   +2,   +3,   +4,   +5,   +6,   +7,
-        +8,   +9,  +10,  +11,  +12,  +13,  +14,  +15,
-       +16,  +17,  +18,  +19,  +20,  +21,  +22,  +23,
-       +24,  +25,  +26,  +27,  +28,  +29,  +30,  +31,
-       +32,  +48,  +64,  +80,  +96, +112, +128, +144,
-      +160, +176, +192, +208, +224, +240, +256, +272,
-      +288, +304, +320, +336, +352, +368, +384, +384,
-      +384, +384, +384, +384, +384, +384, +384, +384,
+      -6144, -6144, -6144, -6144, -6144, -6144, -6144, -6144,
+      -6144, -6144, -5888, -5632, -5376, -5120, -4864, -4608,
+      -4352, -4096, -3840, -3584, -3328, -3072, -2816, -2560,
+      -2304, -2048, -1792, -1536, -1280, -1024,  -768,  -512,
+       -256,  -248,  -240,  -232,  -224,  -216,  -208,  -200,
+       -192,  -184,  -176,  -168,  -160,  -152,  -144,  -136,
+       -128,  -120,  -112,  -104,   -96,   -88,   -80,   -72,
+        -64,   -56,   -48,   -40,   -32,   -24,   -16,    -8,
+         +0,    +8,   +16,   +24,   +32,   +40,   +48,   +56,
+        +64,   +72,   +80,   +88,   +96,  +104,  +112,  +120,
+       +128,  +136,  +144,  +152,  +160,  +168,  +176,  +184,
+       +192,  +200,  +208,  +216,  +224,  +232,  +240,  +248,
+       +256,  +512,  +768, +1024, +1280, +1536, +1792, +2048,
+      +2304, +2560, +2816, +3072, +3328, +3584, +3840, +4096,
+      +4352, +4608, +4864, +5120, +5376, +5632, +5888, +6144,
+      +6144, +6144, +6144, +6144, +6144, +6144, +6144, +6144,
     };
 
     return pitch_mod_amt_table[controller_value];
@@ -282,17 +282,36 @@ public:
   }
 
   INLINE void set_osc2_pitch(uint8_t controller_value) {
-    if (controller_value < 16) {
-      m_osc2_pitch = -48;
-    } else if (controller_value < 112) {
+    if (controller_value < 4) {
+      m_osc2_pitch = -60;
+    } else if (controller_value < 124) {
       m_osc2_pitch = controller_value - 64;
     } else {
-      m_osc2_pitch = 48;
+      m_osc2_pitch = 60;
     }
   }
 
   INLINE void set_osc2_detune(uint8_t controller_value) {
-    m_osc2_detune = (controller_value - 64) << 1;
+    static int16_t m_osc2_detune_table[128] = {
+      -1280, -1280, -1280, -1280, -1280, -1280, -1280, -1280,
+      -1280, -1280, -1280, -1280, -1280, -1280, -1280, -1280,
+      -1280, -1280, -1280, -1280, -1280, -1280, -1280, -1280,
+      -1152, -1024,  -896,  -768,  -640,  -512,  -384,  -256,
+       -128,  -124,  -120,  -116,  -112,  -108,  -104,  -100,
+        -96,   -92,   -88,   -84,   -80,   -76,   -72,   -68,
+        -64,   -60,   -56,   -52,   -48,   -44,   -40,   -36,
+        -32,   -28,   -24,   -20,   -16,   -12,    -8,    -4,
+         +0,    +4,    +8,   +12,   +16,   +20,   +24,   +28,
+        +32,   +36,   +40,   +44,   +48,   +52,   +56,   +60,
+        +64,   +68,   +72,   +76,   +80,   +84,   +88,   +92,
+        +96,  +100,  +104,  +108,  +112,  +116,  +120,  +124,
+       +128,  +256,  +384,  +512,  +640,  +768,  +896, +1024,
+      +1152, +1280, +1408, +1536, +1664, +1792, +1792, +1792,
+      +1792, +1792, +1792, +1792, +1792, +1792, +1792, +1792,
+      +1792, +1792, +1792, +1792, +1792, +1792, +1792, +1792,
+    };
+
+    m_osc2_detune = m_osc2_detune_table[controller_value];
   }
 
   template <uint8_t N>
@@ -462,7 +481,7 @@ private:
 
     // For Pulse Wave (wave_3)
     uint32_t phase_3 = m_phase[N] + (m_osc1_shape_effective[N] << 8);
-    boolean new_period_osc1_add = ((phase_3 + 0x00800000) & 0x00FFFFFF) < m_freq[N]; // crossing the middle of a saw wave
+    boolean new_period_osc1_add = ((phase_3 + 0x00800000) & 0x00FFFFFF) < (m_freq[N] + 0x00010000); // crossing the middle of a saw wave
     m_wave_table[N + 8] = reinterpret_cast<const int16_t*>((reinterpret_cast<const uintptr_t>(m_wave_table[N + 8]) * (1 - new_period_osc1_add)));
     m_wave_table[N + 8] = reinterpret_cast<const int16_t*>( reinterpret_cast<const uint8_t*>( m_wave_table[N + 8]) +
                                                            (reinterpret_cast<const uintptr_t>(m_wave_table_temp[N]) * new_period_osc1_add));
@@ -517,7 +536,7 @@ private:
     } else {
       pitch_eg_amt = m_pitch_eg_amt[0];
     }
-    uint16_t pitch_temp =  (64 << 8) + (m_pitch_current[N & 0x03] >> 16) + m_pitch_bend_normalized + ((pitch_eg_amt * eg_level) >> 10);
+    uint16_t pitch_temp =  (64 << 8) + (m_pitch_current[N & 0x03] >> 16) + m_pitch_bend_normalized + ((eg_level * pitch_eg_amt) >> 14);
 
     uint8_t coarse = high_byte(pitch_temp);
     if (coarse < (NOTE_NUMBER_MIN + 64)) {
@@ -527,10 +546,10 @@ private:
     }
 
     if (N >= 4) {
-      pitch_temp += (lfo_level * m_pitch_lfo_amt[1]) >> 10;
-      pitch_temp += (m_osc2_pitch << 8) + m_osc2_detune + m_osc2_detune;
+      pitch_temp += (lfo_level * m_pitch_lfo_amt[1]) >> 14;
+      pitch_temp += (m_osc2_pitch << 8) + m_osc2_detune;
     } else {
-      pitch_temp += (lfo_level * m_pitch_lfo_amt[0]) >> 10;
+      pitch_temp += (lfo_level * m_pitch_lfo_amt[0]) >> 14;
     }
 
     coarse = high_byte(pitch_temp);

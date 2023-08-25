@@ -1,6 +1,6 @@
-# Digital Synth PRA32-U Parameter Guide v0.3.1
+# Digital Synth PRA32-U Parameter Guide v0.4.0
 
-- 2023-08-20 ISGK Instruments
+- 2023-08-26 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
 
 ## Control Change Parameters
@@ -20,7 +20,7 @@
         - 0: Pulse Width 50%, or 2nd Saw Phase 50% (min)
         - 64: Pulse Width 25%, or 2nd Saw Phase 25%
         - 96: Pulse Width 12.5%, or 2nd Saw Phase 12.5%
-        - 127: Pulse Width 0%, or 2nd Saw Phase 0% (max)
+        - 127: Pulse Width 0.4%, or 2nd Saw Phase 99.6% (max)
 - Osc 1 Morph $$
     - Pulse Wave
         - 0: Pulse 100% = Saw 100% + Reverse Saw 100% (min)
@@ -43,11 +43,16 @@
     - 96 (80-111): White Noise
     - 127 (112-127): Square Wave
 - Osc 2 Coarse [-|+]
-    - -48 (16): -48 semitone (min)
-    - +48 (112): +48 semitone (max)
-- Osc 2 Fine [-|+]
-    - -64 (0): -100 cent (min)
-    - +63 (127): +98.4375 cent (max)
+    - -60 (4): -60 semitone (min)
+    - +60 (124): +60 semitone (max)
+- Osc 2 Pitch [-|+]
+    - -41 (23): -5 semitone (min)
+    - -33 (31): -1 semitone
+    - -32 (32): -50 cent
+    - +0 (64): +0 cent
+    - +32 (96): +50 cent
+    - +33 (97): +1 semitone
+    - +45 (109): +7 semitone (max)
 - Mixer Osc Mix [1|2]
 - Filter Cutoff
     - 0: f = 13.0 Hz (min)
@@ -86,17 +91,15 @@
     - 127: 18.6 s
 - EG Osc Amt [-|+], LFO Osc Amt [-|+]
     - Pitch
-        - -54 (10): -24 semitone (min)
-        - -42 (22): -12 semitone
-        - -32 (32): -200 cent
-        - -16 (48): -100 cent
-        - -1 (63): -6.25 cent
+        - -55 (9): -24 semitone (min)
+        - -43 (21): -12 semitone
+        - -33 (31): -2 semitone
+        - -32 (32): -100 cent
         - +0 (64): +0 cent
-        - +1 (65): +6.25 cent
-        - +16 (80): +100 cent
-        - +32 (96): +200 cent
-        - +42 (106): +12 semitone
-        - +54 (118): +24 semitone (max)
+        - +32 (96): +100 cent
+        - +33 (97): +2 semitone
+        - +43 (107): +12 semitone
+        - +55 (119): +24 semitone (max)
     - Shape
         - -63 (1): Shape -252 (min)
         - +63 (127): Shape +252 (max)

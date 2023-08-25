@@ -1,6 +1,6 @@
-# Digital Synth PRA32-U v0.3.1 (Prototype)
+# Digital Synth PRA32-U v0.4.0 (Prototype)
 
-- 2023-08-20 ISGK Instruments
+- 2023-08-26 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
 
 
@@ -12,12 +12,14 @@
 - Modifiable with Arduino IDE and Arduino-Pico (by Earle F. Philhower, III)
 - An **I2S DAC** hardware (e.g. Pimoroni Pico Audio Pack and Waveshare Pico-Audio) is required
 - Prebuilt UF2 files ("bin")
-    - "Digital-Synth-PRA32-U-0.3.1-Pimoroni-Pico-Audio-Pack.uf2" is for Raspberry Pi Pico and Pimoroni Pico Audio Pack
-    - "Digital-Synth-PRA32-U-0.3.1-Waveshare-Pico-Audio-Rev2.1.uf2" is for Raspberry Pi Pico and Waveshare Pico-Audio Rev2.1
+    - "Digital-Synth-PRA32-U-0.4.0-Pimoroni-Pico-Audio-Pack.uf2" is for Raspberry Pi Pico and Pimoroni Pico Audio Pack
+    - "Digital-Synth-PRA32-U-0.4.0-Waveshare-Pico-Audio-Rev2.1.uf2" is for Raspberry Pi Pico and Waveshare Pico-Audio Rev2.1
 
 
 ## Change History
 
+- v0.4.0 (Prototype): Extend Osc 2 Coarse range; Change Osc 2 Fine curve; Rename "Osc 2 Fine" to "Osc 2 Pitch";
+  Change LFO Osc/Filter Amt curve; Update Presets
 - v0.3.1 (Prototype): Adjust smoothing time when parameters change; Update Presets; Fix LFO Osc/Filter Amt; Other changes
 - v0.3.0 (Prototype): Extend Note Number range; Remove drift of Oscillators; Improve Triangle Wave; Change Portamento curve;
   Improve Filter Low Cut Mode; Rename Filter Mode LC (Low Cut) to HP (High Pass); Modify Filter coefficients;
@@ -60,8 +62,8 @@
     - GP0 and GP1 pins are used by UART0 TX and UART0 RX
     - DIN/TRS MIDI is available by using (and modifying) Adafruit MIDI FeatherWing Kit, for example
         - Adafruit [MIDI FeatherWing Kit](https://www.adafruit.com/product/4740)
-        - necobit電子 [MIDI Unit for GROVE](https://necobit.com/denshi/grove-midi-unit/) (Shipping to Japan only)
         - 木下研究所 [MIDI-UARTインターフェースさん キット](https://www.switch-science.com/products/8117) (Shipping to Japan only)
+        - necobit電子 [MIDI Unit for GROVE](https://necobit.com/denshi/grove-midi-unit/) (Shipping to Japan only)
 
 
 ### Audio Out
@@ -182,11 +184,11 @@ graph LR
 
 ![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)
 
-**Digital Synth PRA32-U v0.3.1 by ISGK Instruments (Ryo Ishigaki)**
+**Digital Synth PRA32-U v0.4.0 by ISGK Instruments (Ryo Ishigaki)**
 
 To the extent possible under law, ISGK Instruments (Ryo Ishigaki)
 has waived all copyright and related or neighboring rights
-to Digital Synth PRA32-U v0.3.1.
+to Digital Synth PRA32-U v0.4.0.
 
 You should have received a copy of the CC0 legalcode along with this
 work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.

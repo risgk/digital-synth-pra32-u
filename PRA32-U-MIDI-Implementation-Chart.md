@@ -1,6 +1,6 @@
 ```
-  [Polyphonic/Paraphonic Synthesizer]                             Date: 2023-08-20                  
-  Model: Digital Synth PRA32-U    MIDI Implementation Chart       Version: 0.3.1                    
+  [Polyphonic/Paraphonic Synthesizer]                             Date: 2023-08-26                  
+  Model: Digital Synth PRA32-U    MIDI Implementation Chart       Version: 0.4.0                    
 +-------------------------------+---------------+---------------+----------------------------------+
 | Function...                   | Transmitted   | Recognized    | Remarks                          |
 +-------------------------------+---------------+---------------+----------------------------------+
@@ -32,7 +32,7 @@
 |                               |               |               |                                  |
 |                            55 | x             | o             | Osc 2 Wave [Saw|-|Tri|Nos|Sqr]   |
 |                            20 | x             | o             | Osc 2 Coarse [-|+]               |
-|                            21 | x             | o             | Osc 2 Fine [-|+]                 |
+|                            21 | x             | o             | Osc 2 Pitch [-|+]                |
 |                            25 | x             | o             | Mixer Osc Mix [1|2]              |
 |                               |               |               |                                  |
 |                            16 | x             | o             | Filter Cutoff                    |

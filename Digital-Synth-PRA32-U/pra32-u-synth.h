@@ -610,7 +610,7 @@ public:
       m_osc.set_osc2_pitch(controller_value);
       break;
 
-    case OSC_2_FINE     :
+    case OSC_2_PITCH    :
       m_osc.set_osc2_detune(controller_value);
       break;
 
@@ -706,7 +706,7 @@ public:
         uint8_t program_index = controller_number - PC_BY_CC_8;
         uint8_t old_value = m_sp_prog_chg_cc_values[program_index];
         m_sp_prog_chg_cc_values[program_index] = controller_value;
-        if ((old_value <= 63) && (controller_value >= 64)) {
+        if ((old_value < 64) && (controller_value >= 64)) {
           program_change(program_index + 8);
         }
       }
@@ -720,9 +720,11 @@ public:
   }
 
   /* INLINE */ void program_change(uint8_t program_number) {
-    if (program_number > PROGRAM_NUMBER_MAX) {
+    if (program_number >= ((PROGRAM_NUMBER_MAX + 1) << 2)) {
       return;
     }
+
+    program_number = program_number & PROGRAM_NUMBER_MAX;
 
     control_change(OSC_1_WAVE     , g_preset_table_OSC_1_WAVE     [program_number]);
     control_change(OSC_1_SHAPE    , g_preset_table_OSC_1_SHAPE    [program_number]);
@@ -731,7 +733,7 @@ public:
 
     control_change(OSC_2_WAVE     , g_preset_table_OSC_2_WAVE     [program_number]);
     control_change(OSC_2_COARSE   , g_preset_table_OSC_2_COARSE   [program_number]);
-    control_change(OSC_2_FINE     , g_preset_table_OSC_2_FINE     [program_number]);
+    control_change(OSC_2_PITCH    , g_preset_table_OSC_2_PITCH    [program_number]);
     control_change(MIXER_OSC_MIX  , g_preset_table_MIXER_OSC_MIX  [program_number]);
 
     control_change(FILTER_CUTOFF  , g_preset_table_FILTER_CUTOFF  [program_number]);
