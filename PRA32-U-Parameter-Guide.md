@@ -1,6 +1,6 @@
-# Digital Synth PRA32-U Parameter Guide v0.3.1
+# Digital Synth PRA32-U Parameter Guide v0.4.0
 
-- 2023-08-20 ISGK Instruments
+- 2023-08-26 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
 
 ## Control Change Parameters
