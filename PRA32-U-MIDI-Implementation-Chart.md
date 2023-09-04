@@ -25,12 +25,12 @@
 | Control                     1 | x             | o             | Modulation                       |
 | Change                     64 | x             | o             | Sustain Pedal [Off|On]           |
 |                               |               |               |                                  |
-|                            24 | x             | o             | Osc 1 Wave [Saw|-|Tri|Pls|Sqr]   |
+|                            24 | x             | o             | Osc 1 Wave [Saw|-|-|Tri|Pls|Sqr] |
 |                           102 | x             | o             | Osc 1 Shape $$                   |
 |                           103 | x             | o             | Osc 1 Morph $$                   |
 |                            26 | x             | o             | Mixer Noise/Sub Osc [N|S] $$$    |
 |                               |               |               |                                  |
-|                            55 | x             | o             | Osc 2 Wave [Saw|-|Tri|Nos|Sqr]   |
+|                            55 | x             | o             | Osc 2 Wave [Saw|-|-|Tri|Nos|Sqr] |
 |                            20 | x             | o             | Osc 2 Coarse [-|+]               |
 |                            21 | x             | o             | Osc 2 Pitch [-|+]                |
 |                            25 | x             | o             | Mixer Osc Mix [1|2]              |
@@ -47,10 +47,10 @@
 |                               |               |               |                                  |
 |                           104 | x             | o             | EG Osc Amt [-|+]                 |
 |                           105 | x             | o             | EG Osc Dst [P|2P|1S]             |
-|                            87 | x             | o             | Voice Mode [Pol|Par|Mon|LP|Lgt]  |
+|                            87 | x             | o             | Voice Mode [Pol|Par|-|M|LP|Lgt]  |
 |                            22 | x             | o             | Portamento                       |
 |                               |               |               |                                  |
-|                            14 | x             | o             | LFO Wave [T1|T2|Saw|SH|Sqr]      |
+|                            14 | x             | o             | LFO Wave [T1|T2|-|Saw|SH|Sqr]    |
 |                            80 | x             | o             | LFO Rate                         |
 |                            81 | x             | o             | LFO Depth                        |
 |                            15 | x             | o             | LFO Fade Time                    |
@@ -65,7 +65,7 @@
 |                            58 | x             | o             | Amp Sustain                      |
 |                            59 | x             | o             | Amp Release                      |
 |                               |               |               |                                  |
-|                            63 | x             | o             | Chorus Mode [Off|M|PS|S|S2]      |
+|                            63 | x             | o             | Chorus Mode [Off|M|-|PS|S|S2]    |
 |                            61 | x             | o             | Chorus Rate                      |
 |                            60 | x             | o             | Chorus Depth                     |
 |                            62 | x             | o             | Chorus Delay Time                |

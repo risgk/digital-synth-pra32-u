@@ -10,11 +10,13 @@
     - $$ : Disabled if Osc 1 Wave is not Pls (Pulse)
     - $$$ : Noise is disabled if Osc 2 Wave is Nos (Noise) and
             Noise level is halved in Polyphonic/Paraphonic Mode
-- Osc 1 Wave [Saw|-|Tri|Pls|Sqr]
-    - 0 (0-47): Saw Wave
-    - 64 (48-79): Triangle Wave
-    - 96 (80-111): Pulse Wave (Shape adjustable)
-    - 127 (112-127): Square Wave
+- Osc 1 Wave [Saw|-|-|Tri|Pls|Sqr]
+    - 0 (0-12): Saw Wave
+    - 25 (13-38): Triangle Wave
+    - 51 (39-63): Triangle Wave
+    - 76 (64-88): Triangle Wave
+    - 102 (89-114): Pulse Wave (Shape adjustable)
+    - 127 (115-127): Square Wave
 - Osc 1 Shape $$
     - Pulse Wave (= 1st Saw + Phase Shifted 2nd Saw)
         - 0: Pulse Width 50%, or 2nd Saw Phase 50% (min)
@@ -37,11 +39,13 @@
     - +1 (65): Sub Osc 1.6%
     - +62 (126): Sub Osc 96.9%
     - +63 (127): Sub Osc 100%
-- Osc 2 Wave [Saw|-|Tri|Nos|Sqr]
-    - 0 (0-47): Saw Wave
-    - 64 (48-79): Triangle Wave
-    - 96 (80-111): White Noise
-    - 127 (112-127): Square Wave
+- Osc 2 Wave [Saw|-|-|Tri|Nos|Sqr]
+    - 0 (0-12): Saw Wave
+    - 25 (13-38): Triangle Wave
+    - 51 (39-63): Triangle Wave
+    - 76 (64-88): Triangle Wave
+    - 102 (89-114): White Noise
+    - 127 (115-127): Square Wave
 - Osc 2 Coarse [-|+]
     - -60 (4): -60 semitone (min)
     - +60 (124): +60 semitone (max)
@@ -107,23 +111,25 @@
     - 0 (0-31): Osc 1 & 2 Pitch
     - 64 (32-95): Osc 2 Pitch
     - 127 (96-127): Osc 1 Shape
-- Voice Mode [Pol|Par|Mon|LP|Lgt]
-    - 0 (0-15): Polyphonic (LFO Single Trigger)
-    - 32 (16-47): Paraphonic (LFO Single Trigger)
-    - 64 (48-79): Monophonic (EG & LFO Multi Trigger)
-    - 96 (80-111): Legato Portamento (Monophonic, EG & LFO Single Trigger, Auto Portamento)
-    - 127 (112-127): Legato (Monophonic, EG & LFO Single Trigger)
+- Voice Mode [Pol|Par|-|M|LP|Lgt]
+    - 0 (0-12): Polyphonic (LFO Single Trigger)
+    - 25 (13-38): Paraphonic (LFO Single Trigger)
+    - 51 (39-63): Monophonic (EG & LFO Multi Trigger)
+    - 76 (64-88): Monophonic (EG & LFO Multi Trigger)
+    - 102 (89-114): Legato Portamento (Monophonic, EG & LFO Single Trigger, Auto Portamento)
+    - 127 (115-127): Legato (Monophonic, EG & LFO Single Trigger)
 - Portamento
     - 0: Portamento Time 0 ms
     - 1: Portamento Time 1.1 ms
     - 64: Portamento Time 100 ms
     - 127: Portamento Time 9.3 s
-- LFO Wave [T1|T2|Saw|SH|Sqr]
-    - 0 (0-15): Triangle Wave (-0.5 to +0.5)
-    - 32 (16-47): Triangle Wave 2 (Key Sync, -0.5 to +0.5)
-    - 64 (48-79): Saw Wave (Key Sync, -0.49 to +0.5)
-    - 96 (80-111): Sample & Hold (Key Sync, -0.49 to +0.5)
-    - 127 (112-127): Square Wave (Key Sync, 0.0 to 1.0)
+- LFO Wave [T1|T2|-|Saw|SH|Sqr]
+    - 0 (0-12): Triangle Wave (-0.5 to +0.5)
+    - 25 (13-38): Triangle Wave 2 (Key Sync, -0.5 to +0.5)
+    - 51 (39-63): Saw Wave (Key Sync, -0.49 to +0.5)
+    - 76 (64-88): Saw Wave (Key Sync, -0.49 to +0.5)
+    - 102 (89-114): Sample & Hold (Key Sync, -0.49 to +0.5)
+    - 127 (115-127): Square Wave (Key Sync, 0.0 to 1.0)
 - LFO Rate
     - 0: 0.068 Hz (min)
     - 64: 2.7 Hz
@@ -136,12 +142,13 @@
     - 1: 9.6 ms
     - 64: 1.0 s
     - 127: 9.6 s (max)
-- Chorus Mode [Off|M|PS|S|S2]
-    - 0 (0-15): Chorus Off
-    - 32 (16-47): Mono Chorus
-    - 64 (48-79): Pseudo-Stereo Chorus
-    - 96 (80-111): Stereo Chorus
-    - 127 (112-127): Stereo 2-phase Chorus
+- Chorus Mode [Off|M|-|PS|S|S2]
+    - 0 (0-12): Chorus Off
+    - 25 (13-38): Mono Chorus
+    - 51 (39-63): Pseudo-Stereo Chorus
+    - 76 (64-88): Pseudo-Stereo Chorus
+    - 102 (89-114): Stereo Chorus
+    - 127 (115-127): Stereo 2-phase Chorus
 - Chorus Rate
     - 0: LFO Frequency 0.012 Hz (min)
     - 64: LFO Frequency 0.48 Hz
