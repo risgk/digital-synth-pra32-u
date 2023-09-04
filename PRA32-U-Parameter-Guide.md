@@ -13,9 +13,9 @@
 - Osc 1 Wave [Saw|-|-|Tri|Pls|Sqr]
     - 0 (0-12): Saw Wave
     - 25 (13-38): Triangle Wave
-    - 51 (39-63): Triangle Wave
-    - 76 (64-88): Triangle Wave
-    - 102 (89-114): Pulse Wave (Shape adjustable)
+    - 50 (39-63): Triangle Wave
+    - 75 (64-88): Triangle Wave
+    - 100 (89-114): Pulse Wave (Shape adjustable)
     - 127 (115-127): Square Wave
 - Osc 1 Shape $$
     - Pulse Wave (= 1st Saw + Phase Shifted 2nd Saw)
@@ -42,9 +42,9 @@
 - Osc 2 Wave [Saw|-|-|Tri|Nos|Sqr]
     - 0 (0-12): Saw Wave
     - 25 (13-38): Triangle Wave
-    - 51 (39-63): Triangle Wave
-    - 76 (64-88): Triangle Wave
-    - 102 (89-114): White Noise
+    - 50 (39-63): Triangle Wave
+    - 75 (64-88): Triangle Wave
+    - 100 (89-114): White Noise
     - 127 (115-127): Square Wave
 - Osc 2 Coarse [-|+]
     - -60 (4): -60 semitone (min)
@@ -114,9 +114,9 @@
 - Voice Mode [Pol|Par|-|M|LP|Lgt]
     - 0 (0-12): Polyphonic (LFO Single Trigger)
     - 25 (13-38): Paraphonic (LFO Single Trigger)
-    - 51 (39-63): Monophonic (EG & LFO Multi Trigger)
-    - 76 (64-88): Monophonic (EG & LFO Multi Trigger)
-    - 102 (89-114): Legato Portamento (Monophonic, EG & LFO Single Trigger, Auto Portamento)
+    - 50 (39-63): Monophonic (EG & LFO Multi Trigger)
+    - 75 (64-88): Monophonic (EG & LFO Multi Trigger)
+    - 100 (89-114): Legato Portamento (Monophonic, EG & LFO Single Trigger, Auto Portamento)
     - 127 (115-127): Legato (Monophonic, EG & LFO Single Trigger)
 - Portamento
     - 0: Portamento Time 0 ms
@@ -126,9 +126,9 @@
 - LFO Wave [T1|T2|-|Saw|SH|Sqr]
     - 0 (0-12): Triangle Wave (-0.5 to +0.5)
     - 25 (13-38): Triangle Wave 2 (Key Sync, -0.5 to +0.5)
-    - 51 (39-63): Saw Wave (Key Sync, -0.49 to +0.5)
-    - 76 (64-88): Saw Wave (Key Sync, -0.49 to +0.5)
-    - 102 (89-114): Sample & Hold (Key Sync, -0.49 to +0.5)
+    - 50 (39-63): Saw Wave (Key Sync, -0.49 to +0.5)
+    - 75 (64-88): Saw Wave (Key Sync, -0.49 to +0.5)
+    - 100 (89-114): Sample & Hold (Key Sync, -0.49 to +0.5)
     - 127 (115-127): Square Wave (Key Sync, 0.0 to 1.0)
 - LFO Rate
     - 0: 0.068 Hz (min)
@@ -145,9 +145,9 @@
 - Chorus Mode [Off|M|-|PS|S|S2]
     - 0 (0-12): Chorus Off
     - 25 (13-38): Mono Chorus
-    - 51 (39-63): Pseudo-Stereo Chorus
-    - 76 (64-88): Pseudo-Stereo Chorus
-    - 102 (89-114): Stereo Chorus
+    - 50 (39-63): Pseudo-Stereo Chorus
+    - 75 (64-88): Pseudo-Stereo Chorus
+    - 100 (89-114): Stereo Chorus
     - 127 (115-127): Stereo 2-phase Chorus
 - Chorus Rate
     - 0: LFO Frequency 0.012 Hz (min)
