@@ -49,17 +49,16 @@ public:
   }
 
   INLINE void set_lfo_waveform(uint8_t controller_value) {
-    if        (controller_value < 16) {
-      m_lfo_waveform = LFO_WAVEFORM_TRI_ASYNC;
-    } else if (controller_value < 48) {
-      m_lfo_waveform = LFO_WAVEFORM_TRI_SYNC;
-    } else if (controller_value < 80) {
-      m_lfo_waveform = LFO_WAVEFORM_SAW_DOWN;
-    } else if (controller_value < 112) {
-      m_lfo_waveform = LFO_WAVEFORM_RANDOM;
-    } else {
-      m_lfo_waveform = LFO_WAVEFORM_SQUARE;
-    }
+    static uint8_t lfo_waveform_table[6] = {
+      LFO_WAVEFORM_TRI_ASYNC,
+      LFO_WAVEFORM_TRI_SYNC,
+      LFO_WAVEFORM_SAW_DOWN,
+      LFO_WAVEFORM_SAW_DOWN,
+      LFO_WAVEFORM_RANDOM,
+      LFO_WAVEFORM_SQUARE,
+    };
+
+    m_lfo_waveform = lfo_waveform_table[((controller_value * 10) + 127) / 254];
   }
 
   INLINE void set_lfo_rate(uint8_t controller_value) {

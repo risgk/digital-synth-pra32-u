@@ -910,18 +910,16 @@ private:
   }
 
   INLINE void set_voice_mode(uint8_t controller_value) {
-    static uint8_t voice_mode_table[8] = {
+    static uint8_t voice_mode_table[6] = {
       VOICE_POLYPHONIC,
       VOICE_PARAPHONIC,
-      VOICE_PARAPHONIC,
       VOICE_MONOPHONIC,
       VOICE_MONOPHONIC,
       VOICE_LEGATO_PORTA,
-      VOICE_LEGATO_PORTA,
-      VOICE_LEGATO
+      VOICE_LEGATO,
     };
 
-    uint8_t new_voice_mode = voice_mode_table[controller_value >> 4];
+    uint8_t new_voice_mode = voice_mode_table[((controller_value * 10) + 127) / 254];
     if (m_voice_mode != new_voice_mode) {
       m_voice_mode = new_voice_mode;
       all_sound_off();

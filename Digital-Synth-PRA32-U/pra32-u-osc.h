@@ -184,30 +184,26 @@ public:
 
   template <uint8_t N>
   INLINE void set_osc_waveform(uint8_t controller_value) {
-    static uint8_t waveform_tables[2][8] = {
+    static uint8_t waveform_tables[2][6] = {
       {
         WAVEFORM_SAW,
         WAVEFORM_SAW,
-        WAVEFORM_SAW,
         WAVEFORM_TRIANGLE,
         WAVEFORM_TRIANGLE,
         WAVEFORM_1_PULSE,
-        WAVEFORM_1_PULSE,
-        WAVEFORM_SQUARE
+        WAVEFORM_SQUARE,
       },
       {
         WAVEFORM_SAW,
         WAVEFORM_SAW,
-        WAVEFORM_SAW,
         WAVEFORM_TRIANGLE,
         WAVEFORM_TRIANGLE,
         WAVEFORM_2_NOISE,
-        WAVEFORM_2_NOISE,
-        WAVEFORM_SQUARE
+        WAVEFORM_SQUARE,
       },
     };
 
-    m_waveform[N] = waveform_tables[N][controller_value >> 4];
+    m_waveform[N] = waveform_tables[N][((controller_value * 10) + 127) / 254];
   }
 
   INLINE void set_osc1_shape_control(uint8_t controller_value) {
