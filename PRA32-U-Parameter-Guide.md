@@ -12,7 +12,7 @@
             Noise level is halved in Polyphonic/Paraphonic Mode
 - Osc 1 Wave [Saw|-|-|Tri|Pls|Sqr]
     - 0 (0-12): Saw Wave
-    - 25 (13-38): Triangle Wave
+    - 25 (13-38): Saw Wave
     - 50 (39-63): Triangle Wave
     - 75 (64-88): Triangle Wave
     - 100 (89-114): Pulse Wave (Shape adjustable)
@@ -41,7 +41,7 @@
     - +63 (127): Sub Osc 100%
 - Osc 2 Wave [Saw|-|-|Tri|Nos|Sqr]
     - 0 (0-12): Saw Wave
-    - 25 (13-38): Triangle Wave
+    - 25 (13-38): Saw Wave
     - 50 (39-63): Triangle Wave
     - 75 (64-88): Triangle Wave
     - 100 (89-114): White Noise
