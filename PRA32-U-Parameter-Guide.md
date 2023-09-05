@@ -39,9 +39,9 @@
     - +1 (65): Sub Osc 1.6%
     - +62 (126): Sub Osc 96.9%
     - +63 (127): Sub Osc 100%
-- Osc 2 Wave [Saw|-|-|Tri|Nos|Sqr]
+- Osc 2 Wave [Saw|O1|-|Tri|Nos|Sqr]
     - 0 (0-12): Saw Wave
-    - 25 (13-38): Saw Wave
+    - 25 (13-38): Same as Osc 1 Wave (except Pulse Wave -> Saw Wave)
     - 50 (39-63): Triangle Wave
     - 75 (64-88): Triangle Wave
     - 100 (89-114): White Noise
