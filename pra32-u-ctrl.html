@@ -406,7 +406,7 @@ function afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceModeOrEGAmpModOrRelEqDecay() 
   var targetCCNumbers = [FILTER_KEY_TRK];
 
   var valueVoiceMode = localStorage.getItem("keyVOICE_MODE     ");
-  if ((16 <= valueVoiceMode) && (valueVoiceMode < 48)) {
+  if (Math.floor(((valueVoiceMode * 10) + 127) / 254) == 1) {
     targetCCNumbers.forEach(function(i) {
       document.getElementById("span" + controlNumberToStringMap.get(i)).style.color = 'lightgray';
     });
@@ -417,17 +417,17 @@ function afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceModeOrEGAmpModOrRelEqDecay() 
   }
 
   var valueOsc1Wave = localStorage.getItem("keyOSC_1_WAVE     ");
-  if ((valueOsc1Wave >= 89) && (valueOsc1Wave < 115)) {
-    document.getElementById("spanOSC_1_SHAPE    ").style.color = 'black';
-    document.getElementById("spanOSC_1_MORPH    ").style.color = 'black';
-  } else {
+  if (Math.floor(((valueOsc1Wave * 10) + 127) / 254) == 4) {
     document.getElementById("spanOSC_1_SHAPE    ").style.color = 'lightgray';
     document.getElementById("spanOSC_1_MORPH    ").style.color = 'lightgray';
+  } else {
+    document.getElementById("spanOSC_1_SHAPE    ").style.color = 'black';
+    document.getElementById("spanOSC_1_MORPH    ").style.color = 'black';
   }
 
   var valueOsc2Wave = localStorage.getItem("keyOSC_2_WAVE     ");
   var valueMixerSubOsc = localStorage.getItem("keyMIXER_SUB_OSC  ");
-  if ((valueOsc2Wave >= 89) && (valueOsc2Wave < 115) && (valueMixerSubOsc < 64)) {
+  if ((Math.floor(((valueOsc2Wave * 10) + 127) / 254) == 4) && (valueMixerSubOsc < 64)) {
     document.getElementById("spanMIXER_SUB_OSC  ").style.color = 'lightgray';
   } else {
     document.getElementById("spanMIXER_SUB_OSC  ").style.color = 'black';
