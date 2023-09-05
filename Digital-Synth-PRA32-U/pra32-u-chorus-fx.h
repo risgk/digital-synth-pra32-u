@@ -88,7 +88,13 @@ public:
       CHORUS_MODE_STEREO_2,
     };
 
-    uint8_t new_chorus_mode = chorus_mode_table[((controller_value * 10) + 127) / 254];
+    volatile int32_t index = ((controller_value * 10) + 127) / 254;
+
+    // index = max(index, 5)
+    index = index - 5;
+    index = (index < 0) * index + 5;
+
+    uint8_t new_chorus_mode = chorus_mode_table[index];
 
     update_effective_chorus_mode(new_chorus_mode, m_chorus_bypass);
   }

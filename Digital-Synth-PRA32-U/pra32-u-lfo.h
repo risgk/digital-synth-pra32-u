@@ -58,7 +58,13 @@ public:
       LFO_WAVEFORM_SQUARE,
     };
 
-    m_lfo_waveform = lfo_waveform_table[((controller_value * 10) + 127) / 254];
+    volatile int32_t index = ((controller_value * 10) + 127) / 254;
+
+    // index = max(index, 5)
+    index = index - 5;
+    index = (index < 0) * index + 5;
+
+    m_lfo_waveform = lfo_waveform_table[index];
   }
 
   INLINE void set_lfo_rate(uint8_t controller_value) {

@@ -919,7 +919,13 @@ private:
       VOICE_LEGATO,
     };
 
-    uint8_t new_voice_mode = voice_mode_table[((controller_value * 10) + 127) / 254];
+    volatile int32_t index = ((controller_value * 10) + 127) / 254;
+
+    // index = max(index, 5)
+    index = index - 5;
+    index = (index < 0) * index + 5;
+
+    uint8_t new_voice_mode = voice_mode_table[index];
     if (m_voice_mode != new_voice_mode) {
       m_voice_mode = new_voice_mode;
       all_sound_off();

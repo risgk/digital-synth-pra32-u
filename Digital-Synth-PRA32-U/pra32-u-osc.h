@@ -203,7 +203,13 @@ public:
       },
     };
 
-    m_waveform[N] = waveform_tables[N][((controller_value * 10) + 127) / 254];
+    volatile int32_t index = ((controller_value * 10) + 127) / 254;
+
+    // index = max(index, 5)
+    index = index - 5;
+    index = (index < 0) * index + 5;
+
+    m_waveform[N] = waveform_tables[N][index];
   }
 
   INLINE void set_osc1_shape_control(uint8_t controller_value) {
