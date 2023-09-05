@@ -60,7 +60,7 @@ public:
 
     volatile int32_t index = ((controller_value * 10) + 127) / 254;
 
-    // index = max(index, 5)
+    // index = min(index, 5)
     index = index - 5;
     index = (index < 0) * index + 5;
 
