@@ -156,6 +156,10 @@ generate_osc_wave_tables_array("saw")
 generate_osc_wave_tables_array("triangle")
 generate_osc_wave_tables_array("square")
 
+generate_osc_wave_table("sine", 1, 1.0) do |n, k|
+  Math.sin((2.0 * Math::PI) * (n.to_f / (1 << OSC_WAVE_TABLE_SAMPLES_BITS)) * k)
+end
+
 $file.printf("int32_t g_portamento_coef_table[] = {\n  ")
 (0..127).each do |i|
   time = i
