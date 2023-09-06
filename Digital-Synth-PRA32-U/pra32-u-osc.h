@@ -13,9 +13,10 @@ class PRA32_U_Osc {
   static const uint8_t WAVEFORM_SAW           = 0;
   static const uint8_t WAVEFORM_SQUARE        = 1;
   static const uint8_t WAVEFORM_TRIANGLE      = 2;
-  static const uint8_t WAVEFORM_1_PULSE       = 3;
-  static const uint8_t WAVEFORM_2_NOISE       = 4;
-  static const uint8_t WAVEFORM_SAME_AS_OSC_1 = 5;
+  static const uint8_t WAVEFORM_SINE          = 3;
+  static const uint8_t WAVEFORM_1_PULSE       = 4;
+  static const uint8_t WAVEFORM_2_NOISE       = 5;
+  static const uint8_t WAVEFORM_SAME_AS_OSC_1 = 6;
 
   uint32_t       m_portamento_coef[4];
   int16_t        m_pitch_eg_amt[2];
@@ -193,7 +194,7 @@ public:
       {
         WAVEFORM_SAW,
         WAVEFORM_SAW,
-        WAVEFORM_TRIANGLE,
+        WAVEFORM_SINE,
         WAVEFORM_TRIANGLE,
         WAVEFORM_1_PULSE,
         WAVEFORM_SQUARE,
@@ -201,18 +202,19 @@ public:
       {
         WAVEFORM_SAW,
         WAVEFORM_SAME_AS_OSC_1,
-        WAVEFORM_TRIANGLE,
+        WAVEFORM_SINE,
         WAVEFORM_TRIANGLE,
         WAVEFORM_2_NOISE,
         WAVEFORM_SQUARE,
       },
     };
 
-    static uint8_t waveform_same_as_osc_1_tables[4] = {
+    static uint8_t waveform_same_as_osc_1_tables[5] = {
       WAVEFORM_SAW,       // WAVEFORM_SAW           = 0
       WAVEFORM_SQUARE,    // WAVEFORM_SQUARE        = 1
       WAVEFORM_TRIANGLE,  // WAVEFORM_TRIANGLE      = 2
-      WAVEFORM_SAW    ,   // WAVEFORM_1_PULSE       = 3
+      WAVEFORM_SINE,      // WAVEFORM_SINE          = 3
+      WAVEFORM_SAW,       // WAVEFORM_1_PULSE       = 4
     };
 
     volatile int32_t index = ((controller_value * 10) + 127) / 254;
@@ -459,12 +461,13 @@ public:
 
 private:
   INLINE const int16_t* get_wave_table(uint8_t waveform, uint8_t note_number) {
-    static int16_t** wave_table_table[5] = {
-      g_osc_saw_wave_tables,       // WAVEFORM_SAW
-      g_osc_square_wave_tables,    // WAVEFORM_SQUARE
-      g_osc_triangle_wave_tables,  // WAVEFORM_TRIANGLE
-      g_osc_saw_wave_tables,       // WAVEFORM_1_PULSE
-      g_osc_square_wave_tables,    // WAVEFORM_2_NOISE
+    static int16_t** wave_table_table[6] = {
+      g_osc_saw_wave_tables,       // WAVEFORM_SAW           = 0
+      g_osc_square_wave_tables,    // WAVEFORM_SQUARE        = 1
+      g_osc_triangle_wave_tables,  // WAVEFORM_TRIANGLE      = 2
+      g_osc_sine_wave_tables,      // WAVEFORM_SINE          = 3
+      g_osc_saw_wave_tables,       // WAVEFORM_1_PULSE       = 4
+      g_osc_square_wave_tables,    // WAVEFORM_2_NOISE       = 5
     };
 
     return wave_table_table[waveform][note_number - NOTE_NUMBER_MIN];

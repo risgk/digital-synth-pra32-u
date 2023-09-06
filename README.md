@@ -19,7 +19,7 @@
 ## Change History
 
 - v0.5.0 (Prototype): Change the meanings of the values of Osc 1/2 Wave, Voice Mode, LFO Wave, and Chorus Mode;
-  Add Osc 2 Wave "Same as Osc 1 Wave"
+  Add Sine Wave to Osc 1 and 2; Add "Same as Osc 1 Wave" to Osc 2; Other changes
 - v0.4.0 (Prototype): Extend Osc 2 Coarse range; Change Osc 2 Fine curve; Rename "Osc 2 Fine" to "Osc 2 Pitch";
   Change LFO Osc/Filter Amt curve; Update Presets
 - v0.3.1 (Prototype): Adjust smoothing time when parameters change; Update Presets; Fix LFO Osc/Filter Amt; Other changes

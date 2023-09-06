@@ -49,13 +49,13 @@ $file.printf("int16_t g_osc_tune_table[] = {\n  ")
 end
 $file.printf("};\n\n")
 
-def generate_osc_wave_table(name, last, amp, organ = false)
+def generate_osc_wave_table(name, last, amp)
   $file.printf("int16_t g_osc_#{name}_wave_table_h%d[] = {\n  ", last)
   (0..(1 << OSC_WAVE_TABLE_SAMPLES_BITS)).each do |n|
     level = 0
     nn = n
     nn = 0 if n == (1 << OSC_WAVE_TABLE_SAMPLES_BITS)
-    max = organ ? last * 2 : last
+    max = last
     (1..max).each do |k|
       level += yield(nn, k)
     end
@@ -86,10 +86,9 @@ end
 
 OSC_DETUNE_CORRECRION = 1015  # Approx. 25 cents
 
-def last_harmonic(freq, organ = false, organ_last)
+def last_harmonic(freq)
   last = (freq != 0) ? ((FREQUENCY_MAX * (1 << OSC_PHASE_RESOLUTION_BITS)) /
                         (((freq * OSC_DETUNE_CORRECRION / 1000) + OSC_DETUNE_FREQ_MAX) * SAMPLING_RATE)) : 0
-  last = organ_last if organ && last > organ_last
   last = 9 if last == 10
   last = 7 if last == 8
   last = 5 if last == 6
@@ -98,9 +97,9 @@ def last_harmonic(freq, organ = false, organ_last)
   last
 end
 
-def generate_osc_wave_table_arrays(organ = false, organ_last = 8)
+def generate_osc_wave_table_arrays
   $osc_harmonics_restriction_table.
-    map { |freq| last_harmonic(freq, organ, organ_last) }.uniq.sort.reverse.each do |i|
+    map { |freq| last_harmonic(freq) }.uniq.sort.reverse.each do |i|
     yield(i)
   end
 end
@@ -137,10 +136,14 @@ generate_osc_wave_table_arrays do |last|
   end
 end
 
-def generate_osc_wave_tables_array(name, organ = false, organ_last = 8)
+generate_osc_wave_table("sine", 1, 1.0) do |n, k|
+  Math.sin((2.0 * Math::PI) * (n.to_f / (1 << OSC_WAVE_TABLE_SAMPLES_BITS)) * k)
+end
+
+def generate_osc_wave_tables_array(name, last = 127)
   $file.printf("int16_t* g_osc_#{name}_wave_tables[] = {\n  ")
   $osc_harmonics_restriction_table.each_with_index do |freq, idx|
-    $file.printf("g_osc_#{name}_wave_table_h%-3d,", last_harmonic(freq, organ, organ_last))
+    $file.printf("g_osc_#{name}_wave_table_h%-3d,", [last_harmonic(freq), last].min)
     if idx == DATA_BYTE_MAX
       $file.printf("\n")
     elsif idx % 3 == (3 - 1)
@@ -155,10 +158,7 @@ end
 generate_osc_wave_tables_array("saw")
 generate_osc_wave_tables_array("triangle")
 generate_osc_wave_tables_array("square")
-
-generate_osc_wave_table("sine", 1, 1.0) do |n, k|
-  Math.sin((2.0 * Math::PI) * (n.to_f / (1 << OSC_WAVE_TABLE_SAMPLES_BITS)) * k)
-end
+generate_osc_wave_tables_array("sine", 1)
 
 $file.printf("int32_t g_portamento_coef_table[] = {\n  ")
 (0..127).each do |i|
