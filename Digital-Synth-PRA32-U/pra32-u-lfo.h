@@ -2,10 +2,11 @@
 
 #include "pra32-u-common.h"
 #include "pra32-u-lfo-table.h"
+#include "pra32-u-osc-table.h"
 
 class PRA32_U_LFO {
-  static const uint8_t LFO_WAVEFORM_TRI_ASYNC = 0;
-  static const uint8_t LFO_WAVEFORM_TRI_SYNC  = 1;
+  static const uint8_t LFO_WAVEFORM_TRIANGLE  = 0;
+  static const uint8_t LFO_WAVEFORM_SINE      = 1;
   static const uint8_t LFO_WAVEFORM_SAW_DOWN  = 2;
   static const uint8_t LFO_WAVEFORM_RANDOM    = 3;
   static const uint8_t LFO_WAVEFORM_SQUARE    = 4;
@@ -40,7 +41,7 @@ public:
   , m_noise_int15()
   , m_sampled_noise_int15()
   {
-    m_lfo_waveform = LFO_WAVEFORM_TRI_ASYNC;
+    m_lfo_waveform = LFO_WAVEFORM_TRIANGLE;
     m_lfo_fade_coef = LFO_FADE_COEF_OFF;
     m_lfo_fade_cnt = m_lfo_fade_coef;
     m_lfo_fade_level = LFO_FADE_LEVEL_MAX;
@@ -50,8 +51,8 @@ public:
 
   INLINE void set_lfo_waveform(uint8_t controller_value) {
     static uint8_t lfo_waveform_table[6] = {
-      LFO_WAVEFORM_TRI_ASYNC,
-      LFO_WAVEFORM_TRI_SYNC,
+      LFO_WAVEFORM_TRIANGLE,
+      LFO_WAVEFORM_SINE,
       LFO_WAVEFORM_SAW_DOWN,
       LFO_WAVEFORM_SAW_DOWN,
       LFO_WAVEFORM_RANDOM,
@@ -81,7 +82,9 @@ public:
   }
 
   INLINE void trigger_lfo() {
-    if (m_lfo_waveform != LFO_WAVEFORM_TRI_ASYNC) {
+    if (   (m_lfo_waveform == LFO_WAVEFORM_SAW_DOWN)
+        || (m_lfo_waveform == LFO_WAVEFORM_RANDOM)
+        || (m_lfo_waveform == LFO_WAVEFORM_SQUARE)) {
       m_lfo_phase = 0x00FFFFFF;
     }
 
@@ -106,8 +109,7 @@ private:
     int16_t level = 0;
 
     switch (m_lfo_waveform) {
-    case LFO_WAVEFORM_TRI_ASYNC:
-    case LFO_WAVEFORM_TRI_SYNC:
+    case LFO_WAVEFORM_TRIANGLE:
       level = static_cast<int16_t>(phase >> 8) >> 1;
       if (level < -(64 << 7)) {
         level = -(64 << 7) - (level + (64 << 7));
@@ -115,6 +117,16 @@ private:
         // do nothing
       } else {
         level = (64 << 7) - (level - (64 << 7));
+      }
+      break;
+    case LFO_WAVEFORM_SINE:
+      {
+        uint16_t phase16     = phase >> 8;
+        uint16_t curr_index  = phase16 >> (16 - OSC_WAVE_TABLE_SAMPLES_BITS);
+        uint16_t next_weight = phase16 & ((1 << (16 - OSC_WAVE_TABLE_SAMPLES_BITS)) - 1);
+        int16_t  curr_data   = g_osc_sine_wave_table_h1[curr_index + 0];
+        int16_t  next_data   = g_osc_sine_wave_table_h1[curr_index + 1];
+        level                = curr_data + (((next_data - curr_data) * next_weight) >> (16 - OSC_WAVE_TABLE_SAMPLES_BITS)); // lerp
       }
       break;
     case LFO_WAVEFORM_SAW_DOWN:

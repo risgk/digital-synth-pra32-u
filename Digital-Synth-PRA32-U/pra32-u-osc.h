@@ -474,17 +474,13 @@ private:
   }
 
   INLINE int16_t get_wave_level(const int16_t* wave_table, uint32_t phase) {
-    uint16_t phase16 = phase >> 8;
-
+    uint16_t phase16     = phase >> 8;
     uint16_t curr_index  = phase16 >> (16 - OSC_WAVE_TABLE_SAMPLES_BITS);
     uint16_t next_weight = phase16 & ((1 << (16 - OSC_WAVE_TABLE_SAMPLES_BITS)) - 1);
-    int16_t curr_data   = wave_table[curr_index + 0];
-    int16_t next_data   = wave_table[curr_index + 1];
-
-    // lerp
-    int16_t result = curr_data + (((next_data - curr_data) * next_weight) >> (16 - OSC_WAVE_TABLE_SAMPLES_BITS));
-
-    return result;
+    int16_t  curr_data   = wave_table[curr_index + 0];
+    int16_t  next_data   = wave_table[curr_index + 1];
+    int16_t  level       = curr_data + (((next_data - curr_data) * next_weight) >> (16 - OSC_WAVE_TABLE_SAMPLES_BITS)); // lerp
+    return level;
   }
 
   template <uint8_t N>
