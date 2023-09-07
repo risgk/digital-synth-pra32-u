@@ -1,7 +1,6 @@
 #pragma once
 
 #include "pra32-u-common.h"
-#include "pra32-u-osc-table.h"
 
 class PRA32_U_ChorusFx {
   static const uint16_t DELAY_BUFF_SIZE = 512;
@@ -231,7 +230,10 @@ private:
     uint16_t next_weight = (sample_delay & 0xF);
     int16_t  curr_data   = m_delay_buff[curr_index];
     int16_t  next_data   = m_delay_buff[next_index];
-    int16_t  result      = curr_data + (((next_data - curr_data) * next_weight) >> 4); // lerp
+
+    // lerp
+    int16_t result = curr_data + (((next_data - curr_data) * next_weight) >> 4);
+
     return result;
   }
 
@@ -246,12 +248,15 @@ private:
   }
 
   INLINE int16_t get_chorus_lfo_wave_level(uint32_t phase) {
-    uint16_t phase16     = phase >> 8;
-    uint16_t curr_index  = phase16 >> (16 - OSC_WAVE_TABLE_SAMPLES_BITS);
-    uint16_t next_weight = phase16 & ((1 << (16 - OSC_WAVE_TABLE_SAMPLES_BITS)) - 1);
-    int16_t  curr_data   = g_osc_sine_wave_table_h1[curr_index + 0];
-    int16_t  next_data   = g_osc_sine_wave_table_h1[curr_index + 1];
-    int16_t  level       = curr_data + (((next_data - curr_data) * next_weight) >> (16 - OSC_WAVE_TABLE_SAMPLES_BITS)); // lerp
-    return level;
+    int16_t triangle_wave_level = 0;
+    phase = (phase >> 9);
+
+    if (phase < 0x00004000) {
+      triangle_wave_level = phase - (512 << 4);
+    } else {
+      triangle_wave_level = (1535 << 4) - phase;
+    }
+
+    return triangle_wave_level;
   }
 };
