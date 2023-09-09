@@ -111,7 +111,7 @@
     - 0 (0-31): Osc 1 & 2 Pitch
     - 64 (32-95): Osc 2 Pitch
     - 127 (96-127): Osc 1 Shape
-- Voice Mode [Pol|Par|-|M|LP|Lgt]
+- Voice Mode [Pol|Par|-|Mon|LP|Lgt]
     - 0 (0-12): Polyphonic (LFO Single Trigger)
     - 25 (13-38): Paraphonic (LFO Single Trigger)
     - 50 (39-63): Monophonic (EG & LFO Multi Trigger)
