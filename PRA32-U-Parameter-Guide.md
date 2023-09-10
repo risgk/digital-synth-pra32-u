@@ -124,12 +124,12 @@
     - 64: Portamento Time 100 ms
     - 127: Portamento Time 9.3 s
 - LFO Wave [Tri|Sin|-|Saw|SH|Sqr]
-    - 0 (0-12): Triangle Wave (Key Sync Off, -0.5 to +0.5)
-    - 25 (13-38): Sine Wave (Key Sync Off, -0.5 to +0.5)
-    - 50 (39-63): Saw Wave (Key Sync On, -0.49 to +0.5)
-    - 75 (64-88): Saw Wave (Key Sync On, -0.49 to +0.5)
-    - 100 (89-114): Sample & Hold (Key Sync On, -0.49 to +0.5)
-    - 127 (115-127): Square Wave (Key Sync On, 0.0 to 1.0)
+    - 0 (0-12): Triangle Wave (Key Trigger Off, -0.5 to +0.5)
+    - 25 (13-38): Sine Wave (Key Trigger Off, -0.5 to +0.5)
+    - 50 (39-63): Saw Wave (Key Trigger On, -0.49 to +0.5)
+    - 75 (64-88): Saw Wave (Key Trigger On, -0.49 to +0.5)
+    - 100 (89-114): Sample & Hold (Key Trigger On, -0.49 to +0.5)
+    - 127 (115-127): Square Wave (Key Trigger On, 0.0 to 1.0)
 - LFO Rate
     - 0: 0.068 Hz (min)
     - 64: 2.7 Hz
