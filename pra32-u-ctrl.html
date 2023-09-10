@@ -418,11 +418,11 @@ function afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceModeOrEGAmpModOrRelEqDecay() 
 
   var valueOsc1Wave = localStorage.getItem("keyOSC_1_WAVE     ");
   if (Math.floor(((valueOsc1Wave * 10) + 127) / 254) == 4) {
-    document.getElementById("spanOSC_1_SHAPE    ").style.color = 'lightgray';
-    document.getElementById("spanOSC_1_MORPH    ").style.color = 'lightgray';
-  } else {
     document.getElementById("spanOSC_1_SHAPE    ").style.color = 'black';
     document.getElementById("spanOSC_1_MORPH    ").style.color = 'black';
+  } else {
+    document.getElementById("spanOSC_1_SHAPE    ").style.color = 'lightgray';
+    document.getElementById("spanOSC_1_MORPH    ").style.color = 'lightgray';
   }
 
   var valueOsc2Wave = localStorage.getItem("keyOSC_2_WAVE     ");
