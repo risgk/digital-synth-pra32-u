@@ -169,11 +169,13 @@ private:
     m_cutoff_candidate += (lfo_input * m_cutoff_lfo_amt) >> 14;
     m_cutoff_candidate += (((osc_pitch - (60 << 8)) * m_cutoff_pitch_amt) + 128) >> 8;
 
-    // cutoff_current = clamp(m_cutoff_candidate, 0, 255)
-    volatile int16_t cutoff_current = m_cutoff_candidate - 255;
-    cutoff_current = (cutoff_current < 0) * cutoff_current + 255;
-    cutoff_current = (cutoff_current > 0) * cutoff_current;
-    m_cutoff_current = cutoff_current;
+    // cutoff_target = clamp(m_cutoff_candidate, 0, 255)
+    volatile int16_t cutoff_target = m_cutoff_candidate - 255;
+    cutoff_target = (cutoff_target < 0) * cutoff_target + 255;
+    cutoff_target = (cutoff_target > 0) * cutoff_target;
+
+    m_cutoff_current += (m_cutoff_current < cutoff_target);
+    m_cutoff_current -= (m_cutoff_current > cutoff_target);
 
     const int32_t* lpf_table = g_filter_lpf_tables[m_resonance_index];
     size_t index = m_cutoff_current * 3;
