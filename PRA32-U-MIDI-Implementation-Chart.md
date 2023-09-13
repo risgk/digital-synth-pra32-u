@@ -25,12 +25,12 @@
 | Control                     1 | x             | o             | Modulation                          |
 | Change                     64 | x             | o             | Sustain Pedal [Off|On]              |
 |                               |               |               |                                     |
-|                            24 | x             | o             | Osc 1 Wave [Saw|-|Sin|Tri|Pls|Sqr]  |
+|                            24 | x             | o             | Osc 1 Wave [Saw|Sin|-|Tri|Pls|Sqr]  |
 |                           102 | x             | o             | Osc 1 Shape $$                      |
 |                           103 | x             | o             | Osc 1 Morph $$                      |
 |                            26 | x             | o             | Mixer Noise/Sub Osc [N|S] $$$       |
 |                               |               |               |                                     |
-|                            55 | x             | o             | Osc 2 Wave [Saw|O1|Sin|Tri|Nos|Sqr] |
+|                            55 | x             | o             | Osc 2 Wave [Saw|Sin|-|Tri|Nos|Sqr]  |
 |                            20 | x             | o             | Osc 2 Coarse [-|+]                  |
 |                            21 | x             | o             | Osc 2 Pitch [-|+]                   |
 |                            25 | x             | o             | Mixer Osc Mix [1|2]                 |

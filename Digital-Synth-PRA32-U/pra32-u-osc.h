@@ -16,14 +16,12 @@ class PRA32_U_Osc {
   static const uint8_t WAVEFORM_SINE          = 3;
   static const uint8_t WAVEFORM_1_PULSE       = 4;
   static const uint8_t WAVEFORM_2_NOISE       = 5;
-  static const uint8_t WAVEFORM_SAME_AS_OSC_1 = 6;
 
   uint32_t       m_portamento_coef[4];
   int16_t        m_pitch_eg_amt[2];
   int16_t        m_pitch_lfo_amt[2];
 
   uint8_t        m_waveform[2];
-  uint8_t        m_waveform_effective[2];
   int16_t        m_pitch_bend;
   uint8_t        m_pitch_bend_range;
   int16_t        m_pitch_bend_normalized;
@@ -66,7 +64,6 @@ public:
   , m_pitch_lfo_amt()
 
   , m_waveform()
-  , m_waveform_effective()
   , m_pitch_bend()
   , m_pitch_bend_range()
   , m_pitch_bend_normalized()
@@ -115,8 +112,6 @@ public:
 
     m_waveform[0] = WAVEFORM_SAW;
     m_waveform[1] = WAVEFORM_SAW;
-    m_waveform_effective[0] = WAVEFORM_SAW;
-    m_waveform_effective[1] = WAVEFORM_SAW;
     m_pitch_target[0] = 60 << 24;
     m_pitch_target[1] = 60 << 24;
     m_pitch_target[2] = 60 << 24;
@@ -193,28 +188,20 @@ public:
     static uint8_t waveform_tables[2][6] = {
       {
         WAVEFORM_SAW,
-        WAVEFORM_SAW,
         WAVEFORM_SINE,
+        WAVEFORM_TRIANGLE,
         WAVEFORM_TRIANGLE,
         WAVEFORM_1_PULSE,
         WAVEFORM_SQUARE,
       },
       {
         WAVEFORM_SAW,
-        WAVEFORM_SAME_AS_OSC_1,
         WAVEFORM_SINE,
+        WAVEFORM_TRIANGLE,
         WAVEFORM_TRIANGLE,
         WAVEFORM_2_NOISE,
         WAVEFORM_SQUARE,
       },
-    };
-
-    static uint8_t waveform_same_as_osc_1_tables[5] = {
-      WAVEFORM_SAW,       // WAVEFORM_SAW           = 0
-      WAVEFORM_SQUARE,    // WAVEFORM_SQUARE        = 1
-      WAVEFORM_TRIANGLE,  // WAVEFORM_TRIANGLE      = 2
-      WAVEFORM_SINE,      // WAVEFORM_SINE          = 3
-      WAVEFORM_SAW,       // WAVEFORM_1_PULSE       = 4
     };
 
     volatile int32_t index = ((controller_value * 10) + 127) / 254;
@@ -224,15 +211,6 @@ public:
     index = (index < 0) * index + 5;
 
     m_waveform[N] = waveform_tables[N][index];
-
-
-    m_waveform_effective[0] = m_waveform[0];
-
-    if (m_waveform[1] == WAVEFORM_SAME_AS_OSC_1) {
-      m_waveform_effective[1] = waveform_same_as_osc_1_tables[m_waveform[0]];
-    } else {
-      m_waveform_effective[1] = m_waveform[1];
-    }
   }
 
   INLINE void set_osc1_shape_control(uint8_t controller_value) {
@@ -508,13 +486,13 @@ private:
     m_wave_table[N + 8] = reinterpret_cast<const int16_t*>( reinterpret_cast<const uint8_t*>( m_wave_table[N + 8]) +
                                                            (reinterpret_cast<const uintptr_t>(m_wave_table_temp[N]) * new_period_osc1_add));
     int16_t wave_3 = get_wave_level(m_wave_table[N + 8], phase_3);
-    result += ((((wave_3 * osc1_gain * m_osc_gain_effective[N]) >> 10) * -m_osc1_morph_control_effective) >> 6) * (m_waveform_effective[0] == WAVEFORM_1_PULSE);
+    result += ((((wave_3 * osc1_gain * m_osc_gain_effective[N]) >> 10) * -m_osc1_morph_control_effective) >> 6) * (m_waveform[0] == WAVEFORM_1_PULSE);
 
     if (m_mixer_noise_sub_osc_control_effective >= 0) {
       // Sub Osc (wave_1)
       int16_t wave_1 = get_wave_level(m_wave_table[N + 12], m_phase[N] >> 1);
       result += (wave_1 * m_mixer_noise_sub_osc_control * m_osc_gain_effective[N]) >> 6;
-    } else if (m_waveform_effective[1] != WAVEFORM_2_NOISE) {
+    } else if (m_waveform[1] != WAVEFORM_2_NOISE) {
       // Noise (wave_1)
       int16_t wave_1 =  -OSC_WAVE_TABLE_AMPLITUDE
                        +(OSC_WAVE_TABLE_AMPLITUDE << 1) * (noise_int15 & 0x1);
@@ -526,7 +504,7 @@ private:
     m_wave_table[N + 4] = reinterpret_cast<const int16_t*>((reinterpret_cast<const uintptr_t>(m_wave_table[N + 4]) * (1 - new_period_osc2)));
     m_wave_table[N + 4] = reinterpret_cast<const int16_t*>( reinterpret_cast<const uint8_t*>( m_wave_table[N + 4]) +
                                                            (reinterpret_cast<const uintptr_t>(m_wave_table_temp[N + 4]) * new_period_osc2));
-    if (m_waveform_effective[1] != WAVEFORM_2_NOISE) {
+    if (m_waveform[1] != WAVEFORM_2_NOISE) {
       int16_t wave_2 = get_wave_level(m_wave_table[N + 4], m_phase[N + 4]);
       result += (wave_2 * osc2_gain * m_osc_gain_effective[N]) >> 10;
     } else {
@@ -589,9 +567,9 @@ private:
     coarse = high_byte(pitch_temp);
     m_freq_base[N] = g_osc_freq_table[coarse - NOTE_NUMBER_MIN];
     if (N >= 4) {
-      m_wave_table_temp[N]     = get_wave_table(m_waveform_effective[1], coarse);
+      m_wave_table_temp[N]     = get_wave_table(m_waveform[1], coarse);
     } else {
-      m_wave_table_temp[N]     = get_wave_table(m_waveform_effective[0], coarse);
+      m_wave_table_temp[N]     = get_wave_table(m_waveform[0], coarse);
 
       // coarse_sub = max((coarse - 12), NOTE_NUMBER_MIN)
       volatile int32_t coarse_sub = (coarse - 12) - NOTE_NUMBER_MIN;
