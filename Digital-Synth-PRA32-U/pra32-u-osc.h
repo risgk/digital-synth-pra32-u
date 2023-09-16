@@ -637,22 +637,24 @@ private:
 
   template <uint8_t N>
   INLINE void update_osc1_shape(int16_t lfo_level, int16_t eg_level) {
-    int32_t osc1_shape = 0x8000u - (m_osc1_shape_control_effective << 8)
-                         + ((eg_level * m_shape_eg_amt) >> 5) - ((lfo_level * m_shape_lfo_amt) >> 5);
+    volatile int32_t osc1_shape = (128 << 8) - (m_osc1_shape_control_effective << 8)
+                                  + ((eg_level * m_shape_eg_amt) >> 5) - ((lfo_level * m_shape_lfo_amt) >> 5);
 
-#if 0
-    // osc1_shape = clamp(osc1_shape, 0x0, 0x10000)
-    osc1_shape = osc1_shape - 0x10000;
-    osc1_shape = (osc1_shape < 0) * osc1_shape + 0x10000;
-    osc1_shape = (osc1_shape > 0) * osc1_shape;
-#endif
+    // osc1_shape = clamp(y_0, (0 << 8), (256 << 8))
+    osc1_shape = osc1_shape - (256 << 8);
+    osc1_shape = (osc1_shape < 0) * osc1_shape + (256 << 8) - (0 << 8);
+    osc1_shape = (osc1_shape > 0) * osc1_shape + (0 << 8);
 
     m_osc1_shape[N] = osc1_shape;
   }
 
   template <uint8_t N>
   INLINE void update_osc1_shape_effective() {
-    m_osc1_shape_effective[N] = m_osc1_shape[N];
+    // effective_new = clamp(m_osc1_shape[N], (m_osc1_shape_effective[N] - 0x0100), (m_osc1_shape_effective[N] + 0x0100))
+    volatile int32_t effective_new = m_osc1_shape[N] - (m_osc1_shape_effective[N] + 0x0100);
+    effective_new = (effective_new < 0) * effective_new + (m_osc1_shape_effective[N] + 0x0100) - (m_osc1_shape_effective[N] - 0x0100);
+    effective_new = (effective_new > 0) * effective_new + (m_osc1_shape_effective[N] - 0x0100);
+    m_osc1_shape_effective[N] = effective_new;
   }
 
   INLINE void update_pitch_bend() {
