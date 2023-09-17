@@ -9,6 +9,7 @@ class PRA32_U_ChorusFx {
   uint16_t m_delay_wp;
 
   uint16_t m_chorus_level_control;
+  uint16_t m_chorus_level_control_effective;
   uint16_t m_chorus_depth_control;
   uint16_t m_chorus_depth_control_effective;
   uint32_t m_chorus_rate_control;
@@ -24,6 +25,7 @@ public:
   , m_delay_wp()
 
   , m_chorus_level_control()
+  , m_chorus_level_control_effective()
   , m_chorus_depth_control()
   , m_chorus_depth_control_effective()
   , m_chorus_rate_control()
@@ -37,8 +39,6 @@ public:
     set_chorus_depth     (64 );
     set_chorus_rate      (64 );
     set_chorus_delay_time(64 );
-
-    m_chorus_level_control = 0;
 
     m_chorus_depth_control_effective = 64 << 6;
     m_chorus_delay_time_control_effective = 64 << 6;
@@ -72,6 +72,9 @@ public:
   INLINE void process_at_low_rate(uint8_t count) {
 #if 1
     static_cast<void>(count);
+
+    m_chorus_level_control_effective += (m_chorus_level_control_effective < m_chorus_level_control);
+    m_chorus_level_control_effective -= (m_chorus_level_control_effective > m_chorus_level_control);
 
     m_chorus_depth_control_effective += (m_chorus_depth_control_effective < m_chorus_depth_control);
     m_chorus_depth_control_effective -= (m_chorus_depth_control_effective > m_chorus_depth_control);
@@ -111,8 +114,8 @@ public:
     int16_t eff_sample_1 = delay_buff_get(get_chorus_delay_time<1>());
     delay_buff_push(dir_sample);
 
-    right_level = (((dir_sample * (128 - m_chorus_level_control)) + (eff_sample_1 * m_chorus_level_control))) >> 7;
-    return        (((dir_sample * (128 - m_chorus_level_control)) + (eff_sample_0 * m_chorus_level_control))) >> 7;
+    right_level = (((dir_sample * (128 - m_chorus_level_control_effective)) + (eff_sample_1 * m_chorus_level_control_effective))) >> 7;
+    return        (((dir_sample * (128 - m_chorus_level_control_effective)) + (eff_sample_0 * m_chorus_level_control_effective))) >> 7;
   }
 
 private:
