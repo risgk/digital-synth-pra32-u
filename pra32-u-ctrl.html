@@ -232,7 +232,7 @@ var controllersInLocalStorage = [
 var presetControllers = {};
 
 // PRESET                             #0   #1   #2   #3   #4   #5   #6   #7   
-presetControllers[OSC_1_WAVE     ] = [100, 100, 100, 100, 100, 100, 100, 0  ];
+presetControllers[OSC_1_WAVE     ] = [127, 127, 127, 127, 127, 127, 127, 0  ];
 presetControllers[OSC_1_SHAPE    ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 presetControllers[OSC_1_MORPH    ] = [64 , 64 , 64 , 64 , 64 , 0  , 0  , 0  ];
 presetControllers[MIXER_SUB_OSC  ] = [127, 127, 127, 127, 127, 127, 127, 64 ];
@@ -396,7 +396,8 @@ function afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceModeOrEGAmpModOrRelEqDecay() 
   }
 
   var valueOsc1Wave = localStorage.getItem("keyOSC_1_WAVE     ");
-  if (Math.floor(((valueOsc1Wave * 10) + 127) / 254) == 4) {
+  var indexOsc1Wave = Math.floor(((valueOsc1Wave * 10) + 127) / 254);
+  if ((indexOsc1Wave == 4) || (indexOsc1Wave == 5)) {
     document.getElementById("spanOSC_1_SHAPE    ").style.color = 'black';
     document.getElementById("spanOSC_1_MORPH    ").style.color = 'black';
   } else {
@@ -405,8 +406,9 @@ function afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceModeOrEGAmpModOrRelEqDecay() 
   }
 
   var valueOsc2Wave = localStorage.getItem("keyOSC_2_WAVE     ");
+  var indexOsc2Wave = Math.floor(((valueOsc2Wave * 10) + 127) / 254)
   var valueMixerSubOsc = localStorage.getItem("keyMIXER_SUB_OSC  ");
-  if ((Math.floor(((valueOsc2Wave * 10) + 127) / 254) == 4) && (valueMixerSubOsc < 64)) {
+  if ((indexOsc2Wave == 4) && (valueMixerSubOsc < 64)) {
     document.getElementById("spanMIXER_SUB_OSC  ").style.color = 'lightgray';
   } else {
     document.getElementById("spanMIXER_SUB_OSC  ").style.color = 'black';
@@ -1032,7 +1034,7 @@ function getStoredCCValueString(index, number) {
 <td colspan="8"><hr></td>
 </tr>
 <tr>
-<td colspan="2"><b>Osc 1</b> Wave [Saw|Sin|-|Tri|Pls|Sqr]</td>
+<td colspan="2"><b>Osc 1</b> Wave [Saw|Sin|-|Tri|-|Pls]</td>
 <td colspan="2"><b>Osc 1</b> Shape                     </td>
 <td colspan="2"><b>Osc 1</b> Morph                     </td>
 <td colspan="2"><b>Mixer</b> Noise/Sub Osc [N|S]       </td>
@@ -1114,7 +1116,7 @@ function getStoredCCValueString(index, number) {
 <td><span    id="spanPORTAMENTO     " >-</span></td>
 </tr>
 <tr>
-<td colspan="2"><b>LFO</b> Wave [Tri|Sin|-|Saw|SH|Sqr] </td>
+<td colspan="2"><b>LFO</b> Wave [Sin|Tri|-|Saw|SH|Sqr] </td>
 <td colspan="2"><b>LFO</b> Rate                        </td>
 <td colspan="2"><b>LFO</b> Depth                       </td>
 <td colspan="2"><b>LFO</b> Fade Time                   </td>

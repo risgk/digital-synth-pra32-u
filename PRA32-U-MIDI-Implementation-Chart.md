@@ -25,7 +25,7 @@
 | Control                     1 | x             | o             | Modulation                          |
 | Change                     64 | x             | o             | Sustain Pedal [Off|On]              |
 |                               |               |               |                                     |
-|                            24 | x             | o             | Osc 1 Wave [Saw|Sin|-|Tri|Pls|Sqr]  |
+|                            24 | x             | o             | Osc 1 Wave [Saw|Sin|-|Tri|-|Pls]    |
 |                           102 | x             | o             | Osc 1 Shape $$                      |
 |                           103 | x             | o             | Osc 1 Morph $$                      |
 |                            26 | x             | o             | Mixer Noise/Sub Osc [N|S] $$$       |
@@ -50,7 +50,7 @@
 |                            87 | x             | o             | Voice Mode [Pol|Par|-|Mon|LP|Lgt]   |
 |                            22 | x             | o             | Portamento                          |
 |                               |               |               |                                     |
-|                            14 | x             | o             | LFO Wave [Tri|Sin|-|Saw|SH|Sqr]     |
+|                            14 | x             | o             | LFO Wave [Sin|Tri|-|Saw|SH|Sqr]     |
 |                            80 | x             | o             | LFO Rate                            |
 |                            81 | x             | o             | LFO Depth                           |
 |                            15 | x             | o             | LFO Fade Time                       |

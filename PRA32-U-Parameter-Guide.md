@@ -9,13 +9,13 @@
     - $ : Disabled in Paraphonic Mode
     - $$ : Disabled if Osc 1 Wave is not Pls (Pulse)
     - $$$ : Mixer Noise is disabled if Osc 2 Wave is Nos (Noise)
-- Osc 1 Wave [Saw|Sin|-|Tri|Pls|Sqr]
+- Osc 1 Wave [Saw|Sin|-|Tri|-|Pls]
     - 0 (0-12): Saw Wave
     - 25 (13-38): Sine Wave
     - 50 (39-63): Triangle Wave
     - 75 (64-88): Triangle Wave
     - 100 (89-114): Pulse Wave (Shape adjustable)
-    - 127 (115-127): Square Wave
+    - 127 (115-127): Pulse Wave (Shape adjustable)
 - Osc 1 Shape $$
     - Pulse Wave (= 1st Saw + Phase Shifted 2nd Saw)
         - 0: Pulse Width 50%, or 2nd Saw Phase 50% (min)
@@ -122,12 +122,12 @@
     - 1: Portamento Time 1.1 ms
     - 64: Portamento Time 100 ms
     - 127: Portamento Time 9.3 s
-- LFO Wave [Tri|Sin|-|Saw|SH|Sqr]
-    - 0 (0-12): Triangle Wave (Key Trigger Off, -0.5 to +0.5)
-    - 25 (13-38): Sine Wave (Key Trigger Off, -0.5 to +0.5)
-    - 50 (39-63): Saw Wave (Key Trigger On, -0.49 to +0.5)
-    - 75 (64-88): Saw Wave (Key Trigger On, -0.49 to +0.5)
-    - 100 (89-114): Sample & Hold (Key Trigger On, -0.49 to +0.5)
+- LFO Wave [Sin|Tri|-|Saw|SH|Sqr]
+    - 0 (0-12): Sine Wave (Key Trigger Off, -0.5 to +0.5)
+    - 25 (13-38): Triangle Wave (Key Trigger Off, -0.5 to +0.5)
+    - 50 (39-63): Saw Wave (Key Trigger On, -0.5 to +0.5)
+    - 75 (64-88): Saw Wave (Key Trigger On, -0.5 to +0.5)
+    - 100 (89-114): Sample & Hold (Key Trigger On, -0.5 to +0.5)
     - 127 (115-127): Square Wave (Key Trigger On, 0.0 to 1.0)
 - LFO Rate
     - 0: 0.068 Hz (min)

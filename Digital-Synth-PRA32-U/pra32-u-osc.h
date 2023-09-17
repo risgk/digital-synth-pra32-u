@@ -192,7 +192,7 @@ public:
         WAVEFORM_TRIANGLE,
         WAVEFORM_TRIANGLE,
         WAVEFORM_1_PULSE,
-        WAVEFORM_SQUARE,
+        WAVEFORM_1_PULSE,
       },
       {
         WAVEFORM_SAW,
