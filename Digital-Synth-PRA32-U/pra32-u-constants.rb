@@ -50,6 +50,7 @@ ACTIVE_SENSING        = 0xFE
 MODULATION      = 1
 SUSTAIN_PEDAL   = 64
 
+
 OSC_1_WAVE      = 24
 OSC_1_SHAPE     = 102
 OSC_1_MORPH     = 103
@@ -90,19 +91,14 @@ AMP_DECAY       = 57
 AMP_SUSTAIN     = 58
 AMP_RELEASE     = 59
 
+FILTER_MODE     = 109
+EG_AMP_MOD      = 31
+REL_EQ_DECAY    = 89
+P_BEND_RANGE    = 85
+
 CHORUS_MODE     = 63
 CHORUS_RATE     = 61
 CHORUS_DEPTH    = 60
-
-
-P_BEND_RANGE    = 85
-
-EG_AMP_MOD      = 31
-REL_EQ_DECAY    = 89
-
-FILTER_MODE     = 109
-
-
 
 
 PC_BY_CC_8      = 112
@@ -113,6 +109,7 @@ PC_BY_CC_12     = 116
 PC_BY_CC_13     = 117
 PC_BY_CC_14     = 118
 PC_BY_CC_15     = 119
+
 
 ALL_SOUND_OFF   = 120
 RESET_ALL_CTRLS = 121

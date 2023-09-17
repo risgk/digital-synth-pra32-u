@@ -748,17 +748,15 @@ public:
     control_change(AMP_SUSTAIN    , g_preset_table_AMP_SUSTAIN    [program_number]);
     control_change(AMP_RELEASE    , g_preset_table_AMP_RELEASE    [program_number]);
 
+    control_change(FILTER_MODE    , g_preset_table_FILTER_MODE    [program_number]);
+    control_change(EG_AMP_MOD     , g_preset_table_EG_AMP_MOD     [program_number]);
+    control_change(REL_EQ_DECAY   , g_preset_table_REL_EQ_DECAY   [program_number]);
+    control_change(P_BEND_RANGE   , g_preset_table_P_BEND_RANGE   [program_number]);
+
     control_change(CHORUS_MODE    , g_preset_table_CHORUS_MODE    [program_number]);
     control_change(CHORUS_RATE    , g_preset_table_CHORUS_RATE    [program_number]);
     control_change(CHORUS_DEPTH   , g_preset_table_CHORUS_DEPTH   [program_number]);
 
-
-    control_change(P_BEND_RANGE   , g_preset_table_P_BEND_RANGE   [program_number]);
-
-    control_change(EG_AMP_MOD     , g_preset_table_EG_AMP_MOD     [program_number]);
-    control_change(REL_EQ_DECAY   , g_preset_table_REL_EQ_DECAY   [program_number]);
-
-    control_change(FILTER_MODE    , g_preset_table_FILTER_MODE    [program_number]);
   }
 
   INLINE int16_t process(int16_t& right_level) {

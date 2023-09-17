@@ -94,19 +94,14 @@ const AMP_DECAY       = 57;
 const AMP_SUSTAIN     = 58;
 const AMP_RELEASE     = 59;
 
+const FILTER_MODE     = 109;
+const EG_AMP_MOD      = 31;
+const REL_EQ_DECAY    = 89;
+const P_BEND_RANGE    = 85;
+
 const CHORUS_MODE     = 63;
 const CHORUS_RATE     = 61;
 const CHORUS_DEPTH    = 60;
-
-
-const P_BEND_RANGE    = 85;
-
-const EG_AMP_MOD      = 31;
-const REL_EQ_DECAY    = 89;
-
-const FILTER_MODE     = 109;
-
-
 
 
 const PC_BY_CC_8      = 112;
@@ -171,19 +166,14 @@ var controlNumberToStringMap = new Map([
   [ AMP_SUSTAIN    , "AMP_SUSTAIN    " ],
   [ AMP_RELEASE    , "AMP_RELEASE    " ],
 
+  [ FILTER_MODE    , "FILTER_MODE    " ],
+  [ EG_AMP_MOD     , "EG_AMP_MOD     " ],
+  [ REL_EQ_DECAY   , "REL_EQ_DECAY   " ],
+  [ P_BEND_RANGE   , "P_BEND_RANGE   " ],
+
   [ CHORUS_MODE    , "CHORUS_MODE    " ],
   [ CHORUS_RATE    , "CHORUS_RATE    " ],
   [ CHORUS_DEPTH   , "CHORUS_DEPTH   " ],
-
-
-  [ P_BEND_RANGE   , "P_BEND_RANGE   " ],
-
-  [ EG_AMP_MOD     , "EG_AMP_MOD     " ],
-  [ REL_EQ_DECAY   , "REL_EQ_DECAY   " ],
-
-  [ FILTER_MODE    , "FILTER_MODE    " ],
-
-
 
 ]);
 
@@ -228,19 +218,14 @@ var controllersInLocalStorage = [
   AMP_SUSTAIN    ,
   AMP_RELEASE    ,
 
+  FILTER_MODE    ,
+  EG_AMP_MOD     ,
+  REL_EQ_DECAY   ,
+  P_BEND_RANGE   ,
+
   CHORUS_MODE    ,
   CHORUS_RATE    ,
   CHORUS_DEPTH   ,
-
-
-  P_BEND_RANGE   ,
-
-  EG_AMP_MOD     ,
-  REL_EQ_DECAY   ,
-
-  FILTER_MODE    ,
-
-
 
 ];
 
@@ -287,19 +272,14 @@ presetControllers[AMP_DECAY      ] = [0  , 0  , 0  , 0  , 96 , 0  , 104, 0  ];
 presetControllers[AMP_SUSTAIN    ] = [127, 127, 127, 127, 0  , 127, 0  , 127];
 presetControllers[AMP_RELEASE    ] = [0  , 64 , 0  , 0  , 96 , 0  , 0  , 0  ];
 
+presetControllers[FILTER_MODE    ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
+presetControllers[EG_AMP_MOD     ] = [0  , 0  , 0  , 0  , 127, 0  , 0  , 0  ];
+presetControllers[REL_EQ_DECAY   ] = [0  , 0  , 0  , 0  , 127, 0  , 0  , 0  ];
+presetControllers[P_BEND_RANGE   ] = [12 , 12 , 12 , 12 , 12 , 12 , 12 , 12 ];
+
 presetControllers[CHORUS_MODE    ] = [127, 127, 127, 127, 127, 127, 127, 0  ];
 presetControllers[CHORUS_RATE    ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
 presetControllers[CHORUS_DEPTH   ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
-
-
-presetControllers[P_BEND_RANGE   ] = [12 , 12 , 12 , 12 , 12 , 12 , 12 , 12 ];
-
-presetControllers[EG_AMP_MOD     ] = [0  , 0  , 0  , 0  , 127, 0  , 0  , 0  ];
-presetControllers[REL_EQ_DECAY   ] = [0  , 0  , 0  , 0  , 127, 0  , 0  , 0  ];
-
-presetControllers[FILTER_MODE    ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
-
-
 
 
 const PRESET_NUMBER_INITIAL = 7;
@@ -875,19 +855,14 @@ function fileExport() {
   str += fileExportOneLine(AMP_SUSTAIN    );
   str += fileExportOneLine(AMP_RELEASE    );
   str += "\n";
+  str += fileExportOneLine(FILTER_MODE    );
+  str += fileExportOneLine(EG_AMP_MOD     );
+  str += fileExportOneLine(REL_EQ_DECAY   );
+  str += fileExportOneLine(P_BEND_RANGE   );
+  str += "\n";
   str += fileExportOneLine(CHORUS_MODE    );
   str += fileExportOneLine(CHORUS_RATE    );
   str += fileExportOneLine(CHORUS_DEPTH   );
-  str += "\n";
-  str += "\n";
-  str += fileExportOneLine(P_BEND_RANGE   );
-  str += "\n";
-  str += fileExportOneLine(EG_AMP_MOD     );
-  str += fileExportOneLine(REL_EQ_DECAY   );
-  str += "\n";
-  str += fileExportOneLine(FILTER_MODE    );
-  str += "\n";
-  str += "\n";
   str += "\n";
   str += "  \"_end         \" : \"\"\n";
   str += "}\n";
@@ -1190,6 +1165,22 @@ function getStoredCCValueString(index, number) {
 <td colspan="8"><hr></td>
 </tr>
 <tr>
+<td colspan="2"><b>Filter</b> Mode [LP|HP]             </td>
+<td colspan="2"><b>EG</b> Amp Mod [Off|On]             </td>
+<td colspan="2">Release = Decay [Off|On]        </td>
+<td colspan="2">Pitch Bend Range                </td>
+</tr>
+<tr>
+<td><input  id="inputFILTER_MODE    "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(FILTER_MODE    , value)"></td>
+<td><span    id="spanFILTER_MODE    " >-</span></td>
+<td><input  id="inputEG_AMP_MOD     "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_AMP_MOD     , value)"></td>
+<td><span    id="spanEG_AMP_MOD     " >-</span></td>
+<td><input  id="inputREL_EQ_DECAY   "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(REL_EQ_DECAY   , value)"></td>
+<td><span    id="spanREL_EQ_DECAY   " >-</span></td>
+<td><input  id="inputP_BEND_RANGE   "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(P_BEND_RANGE   , value)"></td>
+<td><span    id="spanP_BEND_RANGE   " >-</span></td>
+</tr>
+<tr>
 <td colspan="2"><b>Chorus</b> Mode [Off|M|-|PS|S|S2]   </td>
 <td colspan="2"><b>Chorus</b> Rate                     </td>
 <td colspan="2"><b>Chorus</b> Depth                    </td>
@@ -1202,38 +1193,6 @@ function getStoredCCValueString(index, number) {
 <td><span    id="spanCHORUS_RATE    " >-</span></td>
 <td><input  id="inputCHORUS_DEPTH   "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_DEPTH   , value)"></td>
 <td><span    id="spanCHORUS_DEPTH   " >-</span></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2">Pitch Bend Range                </td>
-<td colspan="2">                                </td>
-<td colspan="2"><b>EG</b> Amp Mod [Off|On]             </td>
-<td colspan="2">Release = Decay [Off|On]        </td>
-</tr>
-<tr>
-<td><input  id="inputP_BEND_RANGE   "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(P_BEND_RANGE   , value)"></td>
-<td><span    id="spanP_BEND_RANGE   " >-</span></td>
-<td></td>
-<td></td>
-<td><input  id="inputEG_AMP_MOD     "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_AMP_MOD     , value)"></td>
-<td><span    id="spanEG_AMP_MOD     " >-</span></td>
-<td><input  id="inputREL_EQ_DECAY   "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(REL_EQ_DECAY   , value)"></td>
-<td><span    id="spanREL_EQ_DECAY   " >-</span></td>
-</tr>
-<tr>
-<td colspan="2"><b>Filter</b> Mode [LP|HP]             </td>
-<td colspan="2">                                </td>
-<td colspan="2">                                </td>
-<td colspan="2">                                </td>
-</tr>
-<tr>
-<td><input  id="inputFILTER_MODE    "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(FILTER_MODE    , value)"></td>
-<td><span    id="spanFILTER_MODE    " >-</span></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
 <td></td>
 <td></td>
 </tr>

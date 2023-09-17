@@ -65,17 +65,15 @@
 |                            58 | x             | o             | Amp Sustain                         |
 |                            59 | x             | o             | Amp Release                         |
 |                               |               |               |                                     |
+|                           109 | x             | o             | Filter Mode [LP|HP]                 |
+|                            31 | x             | o             | EG Amp Mod [Off|On]                 |
+|                            89 | x             | o             | Release = Decay [Off|On]            |
+|                            85 | x             | o             | Pitch Bend Range                    |
+|                               |               |               |                                     |
 |                            63 | x             | o             | Chorus Mode [Off|M|-|PS|S|S2]       |
 |                            61 | x             | o             | Chorus Rate                         |
 |                            60 | x             | o             | Chorus Depth                        |
 |                               |               |               |                                     |
-|                               |               |               |                                     |
-|                            85 | x             | o             | Pitch Bend Range                    |
-|                               |               |               |                                     |
-|                            31 | x             | o             | EG Amp Mod [Off|On]                 |
-|                            89 | x             | o             | Release = Decay [Off|On]            |
-|                               |               |               |                                     |
-|                           109 | x             | o             | Filter Mode [LP|HP]                 |
 |                               |               |               |                                     |
 |                       112-119 |               |               | Program Change #8-15 by CC          |
 |                            90 | x             | x             | [Reserved]                          |
