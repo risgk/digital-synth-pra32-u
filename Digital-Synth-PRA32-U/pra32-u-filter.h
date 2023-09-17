@@ -119,11 +119,13 @@ public:
   INLINE void process_at_low_rate(uint8_t count, int16_t eg_input, int16_t lfo_input, uint16_t osc_pitch) {
     switch (count & (0x04 - 1)) {
     case 0x00:
+    case 0x02:
+      update_coefs(eg_input, lfo_input, osc_pitch);
+      break;
+    case 0x03:
       update_cutoff_control_effective();
       break;
     }
-
-    update_coefs(eg_input, lfo_input, osc_pitch);
   }
 
   INLINE int16_t process(int16_t audio_input) {
