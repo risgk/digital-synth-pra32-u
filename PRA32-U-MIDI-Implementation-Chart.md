@@ -70,7 +70,7 @@
 |                            89 | x             | o             | Release = Decay [Off|On]            |
 |                            85 | x             | o             | Pitch Bend Range                    |
 |                               |               |               |                                     |
-|                            63 | x             | o             | Chorus Mode [Off|M|-|PS|S|S2]       |
+|                            63 | x             | o             | Chorus Level                        |
 |                            61 | x             | o             | Chorus Rate                         |
 |                            60 | x             | o             | Chorus Depth                        |
 |                               |               |               |                                     |

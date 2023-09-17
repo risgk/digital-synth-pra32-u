@@ -96,7 +96,7 @@ const uint8_t   EG_AMP_MOD      = 31;
 const uint8_t   REL_EQ_DECAY    = 89;
 const uint8_t   P_BEND_RANGE    = 85;
 
-const uint8_t   CHORUS_MODE     = 63;
+const uint8_t   CHORUS_LEVEL    = 63;
 const uint8_t   CHORUS_RATE     = 61;
 const uint8_t   CHORUS_DEPTH    = 60;
 
@@ -135,12 +135,6 @@ const uint8_t   LFO_WAVE_SINE      = 25;
 const uint8_t   LFO_WAVE_SAW_DOWN  = 75;
 const uint8_t   LFO_WAVE_S_AND_H   = 100;
 const uint8_t   LFO_WAVE_SQUARE    = 127;
-
-const uint8_t   CHORUS_OFF         = 0;
-const uint8_t   CHORUS_MONO        = 25;
-const uint8_t   CHORUS_P_STEREO    = 75;
-const uint8_t   CHORUS_STEREO      = 100;
-const uint8_t   CHORUS_STEREO_2    = 127;
 
 const uint8_t   VOICE_PARAPHONIC   = 0;
 const uint8_t   VOICE_POLYPHONIC   = 25;

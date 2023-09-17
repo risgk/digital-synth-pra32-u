@@ -48,7 +48,7 @@ uint8_t g_preset_table_EG_AMP_MOD     [] = {0  , 0  , 0  , 0  , 127, 0  , 0  , 0
 uint8_t g_preset_table_REL_EQ_DECAY   [] = {0  , 0  , 0  , 0  , 127, 0  , 0  , 0  ,   0  , 0  , 0  , 0  , 127, 0  , 0  , 0  };
 uint8_t g_preset_table_P_BEND_RANGE   [] = {12 , 12 , 12 , 12 , 12 , 12 , 12 , 12 ,   12 , 12 , 12 , 12 , 12 , 12 , 12 , 12 };
 
-uint8_t g_preset_table_CHORUS_MODE    [] = {127, 127, 127, 127, 127, 127, 127, 0  ,   127, 127, 127, 127, 127, 127, 127, 0  };
+uint8_t g_preset_table_CHORUS_LEVEL   [] = {127, 127, 127, 127, 127, 127, 127, 0  ,   127, 127, 127, 127, 127, 127, 127, 0  };
 uint8_t g_preset_table_CHORUS_RATE    [] = {64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ,   64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 };
 uint8_t g_preset_table_CHORUS_DEPTH   [] = {64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ,   64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 };
 
