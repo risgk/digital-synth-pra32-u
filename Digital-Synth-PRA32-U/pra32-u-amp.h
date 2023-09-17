@@ -27,7 +27,7 @@ PRA32_U_Amp()
 
   INLINE int16_t process(int16_t audio_input) {
     int16_t audio_output = (audio_input * m_gain_mod_input) >> 14;
-    audio_output = (audio_output * m_gain) >> 14;
+    audio_output = (audio_output * m_gain_effective) >> 14;
     return audio_output;
   }
 
