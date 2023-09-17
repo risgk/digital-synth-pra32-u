@@ -8,8 +8,7 @@
 - Notes
     - $ : Disabled in Paraphonic Mode
     - $$ : Disabled if Osc 1 Wave is not Pls (Pulse)
-    - $$$ : Noise is disabled if Osc 2 Wave is Nos (Noise) and
-            Noise level is halved in Polyphonic/Paraphonic Mode
+    - $$$ : Mixer Noise is disabled if Osc 2 Wave is Nos (Noise)
 - Osc 1 Wave [Saw|Sin|-|Tri|Pls|Sqr]
     - 0 (0-12): Saw Wave
     - 25 (13-38): Sine Wave
