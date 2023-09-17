@@ -122,11 +122,11 @@
     - 1: Portamento Time 1.1 ms
     - 64: Portamento Time 100 ms
     - 127: Portamento Time 9.3 s
-- LFO Wave [Sin|Saw|-|Tri|SH|Sqr]
-    - 0 (0-12): Sine Wave (Key Trigger Off, -0.5 to +0.5)
-    - 25 (13-38): Saw Wave (Key Trigger On, -0.5 to +0.5)
-    - 50 (39-63): Triangle Wave (Key Trigger Off, -0.5 to +0.5)
-    - 75 (64-88): Triangle Wave (Key Trigger Off, -0.5 to +0.5)
+- LFO Wave [Tri|Sin|-|Saw|SH|Sqr]
+    - 0 (0-12): Triangle Wave (Key Trigger Off, -0.5 to +0.5)
+    - 25 (13-38): Sine Wave (Key Trigger Off, -0.5 to +0.5)
+    - 50 (39-63): Saw Wave (Key Trigger On, -0.5 to +0.5)
+    - 75 (64-88): Saw Wave (Key Trigger On, -0.5 to +0.5)
     - 100 (89-114): Sample & Hold (Key Trigger On, -0.5 to +0.5)
     - 127 (115-127): Square Wave (Key Trigger On, 0.0 to 1.0)
 - LFO Rate

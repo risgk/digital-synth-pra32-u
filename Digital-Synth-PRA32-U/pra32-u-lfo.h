@@ -51,10 +51,10 @@ public:
 
   INLINE void set_lfo_waveform(uint8_t controller_value) {
     static uint8_t lfo_waveform_table[6] = {
+      LFO_WAVEFORM_TRIANGLE,
       LFO_WAVEFORM_SINE,
       LFO_WAVEFORM_SAW_DOWN,
-      LFO_WAVEFORM_TRIANGLE,
-      LFO_WAVEFORM_TRIANGLE,
+      LFO_WAVEFORM_SAW_DOWN,
       LFO_WAVEFORM_RANDOM,
       LFO_WAVEFORM_SQUARE,
     };
