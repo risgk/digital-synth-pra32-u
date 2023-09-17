@@ -96,7 +96,7 @@ const uint8_t   EG_AMP_MOD      = 31;
 const uint8_t   REL_EQ_DECAY    = 89;
 const uint8_t   P_BEND_RANGE    = 85;
 
-const uint8_t   CHORUS_LEVEL    = 63;
+const uint8_t   CHORUS_MIX      = 63;
 const uint8_t   CHORUS_RATE     = 61;
 const uint8_t   CHORUS_DEPTH    = 60;
 

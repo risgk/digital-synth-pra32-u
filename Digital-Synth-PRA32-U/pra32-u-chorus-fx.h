@@ -8,8 +8,8 @@ class PRA32_U_ChorusFx {
   int16_t  m_delay_buff[DELAY_BUFF_SIZE];
   uint16_t m_delay_wp;
 
-  uint16_t m_chorus_level_control;
-  uint16_t m_chorus_level_control_effective;
+  uint16_t m_chorus_mix_control;
+  uint16_t m_chorus_mix_control_effective;
   uint16_t m_chorus_depth_control;
   uint16_t m_chorus_depth_control_effective;
   uint32_t m_chorus_rate_control;
@@ -24,8 +24,8 @@ public:
   : m_delay_buff()
   , m_delay_wp()
 
-  , m_chorus_level_control()
-  , m_chorus_level_control_effective()
+  , m_chorus_mix_control()
+  , m_chorus_mix_control_effective()
   , m_chorus_depth_control()
   , m_chorus_depth_control_effective()
   , m_chorus_rate_control()
@@ -60,8 +60,8 @@ public:
     m_chorus_delay_time_control = controller_value << 6;
   }
 
-  INLINE void set_chorus_level(uint8_t controller_value) {
-    m_chorus_level_control = (controller_value + 1) >> 1;
+  INLINE void set_chorus_mix(uint8_t controller_value) {
+    m_chorus_mix_control = (controller_value + 1) >> 1;
   }
 
   template <uint8_t N>
@@ -73,8 +73,8 @@ public:
 #if 1
     static_cast<void>(count);
 
-    m_chorus_level_control_effective += (m_chorus_level_control_effective < m_chorus_level_control);
-    m_chorus_level_control_effective -= (m_chorus_level_control_effective > m_chorus_level_control);
+    m_chorus_mix_control_effective += (m_chorus_mix_control_effective < m_chorus_mix_control);
+    m_chorus_mix_control_effective -= (m_chorus_mix_control_effective > m_chorus_mix_control);
 
     m_chorus_depth_control_effective += (m_chorus_depth_control_effective < m_chorus_depth_control);
     m_chorus_depth_control_effective -= (m_chorus_depth_control_effective > m_chorus_depth_control);
@@ -114,8 +114,8 @@ public:
     int16_t eff_sample_1 = delay_buff_get(get_chorus_delay_time<1>());
     delay_buff_push(dir_sample);
 
-    right_level = (((dir_sample * (128 - m_chorus_level_control_effective)) + (eff_sample_1 * m_chorus_level_control_effective))) >> 7;
-    return        (((dir_sample * (128 - m_chorus_level_control_effective)) + (eff_sample_0 * m_chorus_level_control_effective))) >> 7;
+    right_level = (((dir_sample * (128 - m_chorus_mix_control_effective)) + (eff_sample_1 * m_chorus_mix_control_effective))) >> 7;
+    return        (((dir_sample * (128 - m_chorus_mix_control_effective)) + (eff_sample_0 * m_chorus_mix_control_effective))) >> 7;
   }
 
 private:

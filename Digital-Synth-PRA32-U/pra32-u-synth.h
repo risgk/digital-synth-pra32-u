@@ -568,8 +568,8 @@ public:
     case CHORUS_RATE    :
       m_chorus_fx.set_chorus_rate(controller_value);
       break;
-    case CHORUS_LEVEL   :
-      m_chorus_fx.set_chorus_level(controller_value);
+    case CHORUS_MIX     :
+      m_chorus_fx.set_chorus_mix(controller_value);
       break;
 
 #if 0
@@ -753,7 +753,7 @@ public:
     control_change(REL_EQ_DECAY   , g_preset_table_REL_EQ_DECAY   [program_number]);
     control_change(P_BEND_RANGE   , g_preset_table_P_BEND_RANGE   [program_number]);
 
-    control_change(CHORUS_LEVEL   , g_preset_table_CHORUS_LEVEL   [program_number]);
+    control_change(CHORUS_MIX     , g_preset_table_CHORUS_MIX     [program_number]);
     control_change(CHORUS_RATE    , g_preset_table_CHORUS_RATE    [program_number]);
     control_change(CHORUS_DEPTH   , g_preset_table_CHORUS_DEPTH   [program_number]);
 
