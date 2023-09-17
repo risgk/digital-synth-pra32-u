@@ -573,7 +573,7 @@ private:
       volatile int32_t coarse_sub = (coarse - 12) - NOTE_NUMBER_MIN;
       coarse_sub = (coarse_sub > 0) * coarse_sub + NOTE_NUMBER_MIN;
 
-      m_wave_table_temp[N + 8] = get_wave_table(WAVEFORM_TRIANGLE, coarse_sub);
+      m_wave_table_temp[N + 8] = get_wave_table(WAVEFORM_SINE, coarse_sub);
     }
 
 
