@@ -23,7 +23,7 @@ uint8_t g_preset_table_EG_DECAY       [] = {0  , 0  , 80 , 96 , 96 , 0  , 104, 0
 uint8_t g_preset_table_EG_SUSTAIN     [] = {127, 127, 0  , 0  , 0  , 127, 0  , 127,   127, 127, 0  , 0  , 0  , 127, 0  , 127};
 uint8_t g_preset_table_EG_RELEASE     [] = {0  , 64 , 0  , 0  , 96 , 0  , 0  , 0  ,   0  , 64 , 0  , 0  , 96 , 0  , 0  , 0  };
 
-uint8_t g_preset_table_EG_OSC_AMT     [] = {64 , 64 , 70 , 64 , 64 , 64 , 96 , 64 ,   64 , 64 , 70 , 64 , 64 , 64 , 96 , 64 };
+uint8_t g_preset_table_EG_OSC_AMT     [] = {64 , 64 , 70 , 64 , 64 , 64 , 32 , 64 ,   64 , 64 , 70 , 64 , 64 , 64 , 32 , 64 };
 uint8_t g_preset_table_EG_OSC_DST     [] = {0  , 0  , 64 , 0  , 0  , 0  , 127, 0  ,   0  , 0  , 64 , 0  , 0  , 0  , 127, 0  };
 uint8_t g_preset_table_VOICE_MODE     [] = {127, 0  , 0  , 0  , 75 , 127, 0  , 0  ,   127, 0  , 0  , 0  , 75 , 127, 0  , 0  };
 uint8_t g_preset_table_PORTAMENTO     [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
