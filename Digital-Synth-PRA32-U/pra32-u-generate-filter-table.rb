@@ -6,7 +6,7 @@ $file.printf("#pragma once\n\n")
 
 OCTAVES = 10
 
-def generate_filter_lpf_table(res_idx, name, q)
+def generate_filter_lpf_table(res_id, name, q)
   $file.printf("int32_t g_filter_lpf_table_%s[] = {\n  ", name)
   (0..DATA_BYTE_MAX * 2 + 1).each do |i|
     f_idx = [[-2, i - 1 * 2].max, 252].min
@@ -21,12 +21,12 @@ def generate_filter_lpf_table(res_idx, name, q)
     a_1 = (-2.0) * Math.cos(w_0)
     a_2 = 1.0 - alpha
 
-    input_gain = 1.0 / (2.0 ** (res_idx / 6.0))
+    input_gain = 1.0 / (2.0 ** (res_id / 12.0))
     b_2_over_a_0_gain = (input_gain * (b_2 / a_0) * (1 << FILTER_TABLE_FRACTION_BITS)).floor.to_i
     a_1_over_a_0 = ((a_1 / a_0) * (1 << FILTER_TABLE_FRACTION_BITS)).floor.to_i
     a_2_over_a_0 = ((a_2 / a_0) * (1 << FILTER_TABLE_FRACTION_BITS)).floor.to_i
 
-    printf("i: %d, f_idx: %d, f_0_over_f_s: %f, f_0: %f, res_idx: %d, q: %f, g: %f, q_mul_g: %f\n", i, f_idx, f_0_over_f_s, f_0, res_idx, q, input_gain, q * input_gain)
+    printf("i: %d, f_idx: %d, f_0_over_f_s: %f, f_0: %f, res_id: %d, q: %f, g: %f, q_mul_g: %f\n", i, f_idx, f_0_over_f_s, f_0, res_id, q, input_gain, q * input_gain)
 
     $file.printf("%+11d, %+11d, %+11d,", b_2_over_a_0_gain, a_1_over_a_0, a_2_over_a_0)
     if i == DATA_BYTE_MAX * 2 + 1
@@ -40,19 +40,19 @@ def generate_filter_lpf_table(res_idx, name, q)
   $file.printf("};\n\n")
 end
 
-MAX_RES_IDX = 7
+MAX_RES_ID = 14
 
-(0..MAX_RES_IDX).each do |res_idx|
-  generate_filter_lpf_table(res_idx, res_idx.to_s, Math.sqrt(2.0) ** (res_idx - 1.0))
+(0..MAX_RES_ID).each do |res_id|
+  generate_filter_lpf_table(res_id, res_id.to_s, Math.sqrt(2.0) ** ((res_id - 2.0) / 2.0))
 end
 
 $file.printf("int32_t* g_filter_lpf_tables[] = {\n  ")
-(0..8).each do |res_idx|
-  i = [[res_idx - 1, 0].max, MAX_RES_IDX].min
-  $file.printf("g_filter_lpf_table_%-2d,", i)
-  if res_idx == DATA_BYTE_MAX
+(0..16).each do |res_index|
+  res_id = [[res_index - 1, 0].max, MAX_RES_ID].min
+  $file.printf("g_filter_lpf_table_%-2d,", res_id)
+  if res_index == DATA_BYTE_MAX
     $file.printf("\n")
-  elsif res_idx % 4 == 3
+  elsif res_index % 4 == 3
     $file.printf("\n  ")
   else
     $file.printf(" ")
@@ -61,14 +61,14 @@ end
 $file.printf("};\n\n")
 
 $file.printf("int16_t g_filter_gain_tables[] = {\n  ")
-(0..8).each do |res_idx|
-  i = [[res_idx - 1, 0].max, MAX_RES_IDX].min
-  gain = ((1 << (FILTER_TABLE_FRACTION_BITS - 16)) * 1.0 / (2.0 ** (i / 6.0))).floor
+(0..16).each do |res_index|
+  res_id = [[res_index - 1, 0].max, MAX_RES_ID].min
+  gain = ((1 << (FILTER_TABLE_FRACTION_BITS - 16)) * 1.0 / (2.0 ** (res_id / 12.0))).floor
 
   $file.printf("%+6d,", gain)
-  if res_idx == DATA_BYTE_MAX
+  if res_index == DATA_BYTE_MAX
     $file.printf("\n")
-  elsif res_idx % 4 == 3
+  elsif res_index % 4 == 3
     $file.printf("\n  ")
   else
     $file.printf(" ")
