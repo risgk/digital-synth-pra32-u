@@ -84,7 +84,7 @@ const uint8_t   LFO_FADE_TIME   = 15;
 const uint8_t   LFO_OSC_AMT     = 82;
 const uint8_t   LFO_OSC_DST     = 9;
 const uint8_t   LFO_FILTER_AMT  = 83;
-const uint8_t   AMP_LEVEL       = 110;
+const uint8_t   AMP_GAIN        = 110;
 
 const uint8_t   AMP_ATTACK      = 56;
 const uint8_t   AMP_DECAY       = 57;

@@ -580,7 +580,7 @@ public:
       m_osc.set_osc_level(controller_value);
       break;
 #endif
-    case AMP_LEVEL      :
+    case AMP_GAIN       :
       m_amp[0].set_gain(controller_value);
       m_amp[1].set_gain(controller_value);
       m_amp[2].set_gain(controller_value);
@@ -759,7 +759,7 @@ public:
     control_change(LFO_OSC_AMT    , g_preset_table_LFO_OSC_AMT    [program_number]);
     control_change(LFO_OSC_DST    , g_preset_table_LFO_OSC_DST    [program_number]);
     control_change(LFO_FILTER_AMT , g_preset_table_LFO_FILTER_AMT [program_number]);
-    control_change(AMP_LEVEL      , g_preset_table_AMP_LEVEL      [program_number]);
+    control_change(AMP_GAIN       , g_preset_table_AMP_GAIN       [program_number]);
 
     control_change(AMP_ATTACK     , g_preset_table_AMP_ATTACK     [program_number]);
     control_change(AMP_DECAY      , g_preset_table_AMP_DECAY      [program_number]);

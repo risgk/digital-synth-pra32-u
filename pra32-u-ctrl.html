@@ -88,7 +88,7 @@ const LFO_FADE_TIME   = 15;
 const LFO_OSC_AMT     = 82;
 const LFO_OSC_DST     = 9;
 const LFO_FILTER_AMT  = 83;
-const AMP_LEVEL       = 110;
+const AMP_GAIN        = 110;
 
 const AMP_ATTACK      = 56;
 const AMP_DECAY       = 57;
@@ -165,7 +165,7 @@ var controlNumberToStringMap = new Map([
   [ LFO_OSC_AMT    , "LFO_OSC_AMT    " ],
   [ LFO_OSC_DST    , "LFO_OSC_DST    " ],
   [ LFO_FILTER_AMT , "LFO_FILTER_AMT " ],
-  [ AMP_LEVEL      , "AMP_LEVEL      " ],
+  [ AMP_GAIN       , "AMP_GAIN       " ],
 
   [ AMP_ATTACK     , "AMP_ATTACK     " ],
   [ AMP_DECAY      , "AMP_DECAY      " ],
@@ -222,7 +222,7 @@ var controllersInLocalStorage = [
   LFO_OSC_AMT    ,
   LFO_OSC_DST    ,
   LFO_FILTER_AMT ,
-  AMP_LEVEL      ,
+  AMP_GAIN       ,
 
   AMP_ATTACK     ,
   AMP_DECAY      ,
@@ -281,7 +281,7 @@ presetControllers[LFO_FADE_TIME  ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 presetControllers[LFO_OSC_AMT    ] = [119, 119, 119, 119, 64 , 96 , 64 , 64 ];
 presetControllers[LFO_OSC_DST    ] = [0  , 0  , 0  , 0  , 0  , 127, 0  , 0  ];
 presetControllers[LFO_FILTER_AMT ] = [64 , 64 , 64 , 64 , 88 , 64 , 88 , 64 ];
-presetControllers[AMP_LEVEL      ] = [64 , 64 , 64 , 64 , 64 , 64 , 96 , 64 ];
+presetControllers[AMP_GAIN       ] = [100, 100, 100, 100, 100, 100, 127, 100];
 
 presetControllers[AMP_ATTACK     ] = [0  , 64 , 0  , 0  , 0  , 0  , 0  , 0  ];
 presetControllers[AMP_DECAY      ] = [0  , 0  , 0  , 0  , 96 , 0  , 104, 0  ];
@@ -685,7 +685,7 @@ function preset(number) {
 function setRandom() {
   controllersInLocalStorage.forEach(function(i) {
     if ((i != VOICE_MODE     ) &&
-        (i != AMP_LEVEL      ) &&
+        (i != AMP_GAIN       ) &&
         (i != CHORUS_MODE    ) &&
         (i != CHORUS_RATE    ) &&
         (i != CHORUS_DEPTH   ) &&
@@ -872,7 +872,7 @@ function fileExport() {
   str += fileExportOneLine(LFO_OSC_AMT    );
   str += fileExportOneLine(LFO_OSC_DST    );
   str += fileExportOneLine(LFO_FILTER_AMT );
-  str += fileExportOneLine(AMP_LEVEL      );
+  str += fileExportOneLine(AMP_GAIN       );
   str += "\n";
   str += fileExportOneLine(AMP_ATTACK     );
   str += fileExportOneLine(AMP_DECAY      );
@@ -1162,7 +1162,7 @@ function getStoredCCValueString(index, number) {
 <td colspan="2"><b>LFO</b> Osc Amt [-|+]               </td>
 <td colspan="2"><b>LFO</b> Osc Dst [P|2P|1S]           </td>
 <td colspan="2"><b>LFO</b> Filter Amt [-|+]            </td>
-<td colspan="2"><b>Amp</b> Level                       </td>
+<td colspan="2"><b>Amp</b> Gain                        </td>
 </tr>
 <tr>
 <td><input  id="inputLFO_OSC_AMT    "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_OSC_AMT    , value)"></td>
@@ -1171,8 +1171,8 @@ function getStoredCCValueString(index, number) {
 <td><span    id="spanLFO_OSC_DST    " >-</span></td>
 <td><input  id="inputLFO_FILTER_AMT "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_FILTER_AMT , value)"></td>
 <td><span    id="spanLFO_FILTER_AMT " >-</span></td>
-<td><input  id="inputAMP_LEVEL      "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(AMP_LEVEL      , value)"></td>
-<td><span    id="spanAMP_LEVEL      " >-</span></td>
+<td><input  id="inputAMP_GAIN       "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(AMP_GAIN       , value)"></td>
+<td><span    id="spanAMP_GAIN       " >-</span></td>
 </tr>
 <tr>
 <td colspan="2"><b>Amp</b> Attack                      </td>

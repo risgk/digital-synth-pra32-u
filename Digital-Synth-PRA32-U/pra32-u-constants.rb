@@ -84,7 +84,7 @@ LFO_FADE_TIME   = 15
 LFO_OSC_AMT     = 82
 LFO_OSC_DST     = 9
 LFO_FILTER_AMT  = 83
-AMP_LEVEL       = 110
+AMP_GAIN        = 110
 
 AMP_ATTACK      = 56
 AMP_DECAY       = 57
