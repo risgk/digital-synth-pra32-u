@@ -21,7 +21,8 @@
 - v0.5.0 (Prototype): Change the meanings of the values of Osc 1/2 Wave, Voice Mode, LFO Wave, and Chorus Mode;
   Add Sine Wave to Osc 1 and 2; Limit the change range and the change rate of Osc 1 Shape;
   Change Noise specifications; Change Sub Osc Triangle Wave to Sine Wave; Change LFO Triangle Wave 2 to Sine Wave;
-  Limit the change rate of Filter Cutoff due to modulation; Change Amp Level to Amp Gain; Update Presets; Other changes
+  Limit the change rate of Filter Cutoff due to modulation; Change Amp Level to Amp Gain;
+  Delete Chorus Delay Time, Chorus Bypass, and Pitch Bend by CC; Update Presets; Other changes
 - v0.4.0 (Prototype): Extend Osc 2 Coarse range; Change Osc 2 Fine curve; Rename "Osc 2 Fine" to "Osc 2 Pitch";
   Change LFO Osc/Filter Amt curve; Update Presets
 - v0.3.1 (Prototype): Adjust smoothing time when parameters change; Update Presets; Fix LFO Osc/Filter Amt; Other changes

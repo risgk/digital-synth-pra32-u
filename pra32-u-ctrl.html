@@ -53,7 +53,6 @@ const PITCH_BEND     = 0xE0;
 
 const MODULATION      = 1;
 const SUSTAIN_PEDAL   = 64;
-const P_BEND_BY_CC    = 35;
 
 const OSC_1_WAVE      = 24;
 const OSC_1_SHAPE     = 102;
@@ -98,10 +97,10 @@ const AMP_RELEASE     = 59;
 const CHORUS_MODE     = 63;
 const CHORUS_RATE     = 61;
 const CHORUS_DEPTH    = 60;
-const CHORUS_DLY_TIME = 62;
+
 
 const P_BEND_RANGE    = 85;
-const CHORUS_BYPASS   = 111;
+
 const EG_AMP_MOD      = 31;
 const REL_EQ_DECAY    = 89;
 
@@ -175,10 +174,10 @@ var controlNumberToStringMap = new Map([
   [ CHORUS_MODE    , "CHORUS_MODE    " ],
   [ CHORUS_RATE    , "CHORUS_RATE    " ],
   [ CHORUS_DEPTH   , "CHORUS_DEPTH   " ],
-  [ CHORUS_DLY_TIME, "CHORUS_DLY_TIME" ],
+
 
   [ P_BEND_RANGE   , "P_BEND_RANGE   " ],
-  [ CHORUS_BYPASS  , "CHORUS_BYPASS  " ],
+
   [ EG_AMP_MOD     , "EG_AMP_MOD     " ],
   [ REL_EQ_DECAY   , "REL_EQ_DECAY   " ],
 
@@ -232,10 +231,10 @@ var controllersInLocalStorage = [
   CHORUS_MODE    ,
   CHORUS_RATE    ,
   CHORUS_DEPTH   ,
-  CHORUS_DLY_TIME,
+
 
   P_BEND_RANGE   ,
-  CHORUS_BYPASS  ,
+
   EG_AMP_MOD     ,
   REL_EQ_DECAY   ,
 
@@ -291,10 +290,10 @@ presetControllers[AMP_RELEASE    ] = [0  , 64 , 0  , 0  , 96 , 0  , 0  , 0  ];
 presetControllers[CHORUS_MODE    ] = [127, 127, 127, 127, 127, 127, 127, 0  ];
 presetControllers[CHORUS_RATE    ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
 presetControllers[CHORUS_DEPTH   ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
-presetControllers[CHORUS_DLY_TIME] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
+
 
 presetControllers[P_BEND_RANGE   ] = [12 , 12 , 12 , 12 , 12 , 12 , 12 , 12 ];
-presetControllers[CHORUS_BYPASS  ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
+
 presetControllers[EG_AMP_MOD     ] = [0  , 0  , 0  , 0  , 127, 0  , 0  , 0  ];
 presetControllers[REL_EQ_DECAY   ] = [0  , 0  , 0  , 0  , 127, 0  , 0  , 0  ];
 
@@ -689,8 +688,6 @@ function setRandom() {
         (i != CHORUS_MODE    ) &&
         (i != CHORUS_RATE    ) &&
         (i != CHORUS_DEPTH   ) &&
-        (i != CHORUS_DLY_TIME) &&
-        (i != CHORUS_BYPASS  ) &&
         (i != EG_AMP_MOD     ) &&
         (i != REL_EQ_DECAY   )) {
       onChangeControlChange(i, rand(128));
@@ -702,8 +699,7 @@ function setRandomChorus() {
   controllersInLocalStorage.forEach(function(i) {
     if ((i == CHORUS_MODE    ) ||
         (i == CHORUS_RATE    ) ||
-        (i == CHORUS_DEPTH   ) ||
-        (i == CHORUS_DLY_TIME)) {
+        (i == CHORUS_DEPTH   )) {
       onChangeControlChange(i, rand(128));
     }
   });
@@ -882,10 +878,10 @@ function fileExport() {
   str += fileExportOneLine(CHORUS_MODE    );
   str += fileExportOneLine(CHORUS_RATE    );
   str += fileExportOneLine(CHORUS_DEPTH   );
-  str += fileExportOneLine(CHORUS_DLY_TIME);
+  str += "\n";
   str += "\n";
   str += fileExportOneLine(P_BEND_RANGE   );
-  str += fileExportOneLine(CHORUS_BYPASS  );
+  str += "\n";
   str += fileExportOneLine(EG_AMP_MOD     );
   str += fileExportOneLine(REL_EQ_DECAY   );
   str += "\n";
@@ -1197,7 +1193,7 @@ function getStoredCCValueString(index, number) {
 <td colspan="2"><b>Chorus</b> Mode [Off|M|-|PS|S|S2]   </td>
 <td colspan="2"><b>Chorus</b> Rate                     </td>
 <td colspan="2"><b>Chorus</b> Depth                    </td>
-<td colspan="2"><b>Chorus</b> Delay Time               </td>
+<td colspan="2">                                </td>
 </tr>
 <tr>
 <td><input  id="inputCHORUS_MODE    "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_MODE    , value)"></td>
@@ -1206,20 +1202,20 @@ function getStoredCCValueString(index, number) {
 <td><span    id="spanCHORUS_RATE    " >-</span></td>
 <td><input  id="inputCHORUS_DEPTH   "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_DEPTH   , value)"></td>
 <td><span    id="spanCHORUS_DEPTH   " >-</span></td>
-<td><input  id="inputCHORUS_DLY_TIME"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_DLY_TIME, value)"></td>
-<td><span    id="spanCHORUS_DLY_TIME" >-</span></td>
+<td></td>
+<td></td>
 </tr>
 <tr>
 <td colspan="2">Pitch Bend Range                </td>
-<td colspan="2"><b>Chorus</b> Bypass [Off|On]          </td>
+<td colspan="2">                                </td>
 <td colspan="2"><b>EG</b> Amp Mod [Off|On]             </td>
 <td colspan="2">Release = Decay [Off|On]        </td>
 </tr>
 <tr>
 <td><input  id="inputP_BEND_RANGE   "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(P_BEND_RANGE   , value)"></td>
 <td><span    id="spanP_BEND_RANGE   " >-</span></td>
-<td><input  id="inputCHORUS_BYPASS  "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_BYPASS  , value)"></td>
-<td><span    id="spanCHORUS_BYPASS  " >-</span></td>
+<td></td>
+<td></td>
 <td><input  id="inputEG_AMP_MOD     "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_AMP_MOD     , value)"></td>
 <td><span    id="spanEG_AMP_MOD     " >-</span></td>
 <td><input  id="inputREL_EQ_DECAY   "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(REL_EQ_DECAY   , value)"></td>

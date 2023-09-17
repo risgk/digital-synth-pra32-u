@@ -68,16 +68,15 @@
 |                            63 | x             | o             | Chorus Mode [Off|M|-|PS|S|S2]       |
 |                            61 | x             | o             | Chorus Rate                         |
 |                            60 | x             | o             | Chorus Depth                        |
-|                            62 | x             | o             | Chorus Delay Time                   |
+|                               |               |               |                                     |
 |                               |               |               |                                     |
 |                            85 | x             | o             | Pitch Bend Range                    |
-|                           111 | x             | o             | Chorus Bypass [Off|On]              |
+|                               |               |               |                                     |
 |                            31 | x             | o             | EG Amp Mod [Off|On]                 |
 |                            89 | x             | o             | Release = Decay [Off|On]            |
 |                               |               |               |                                     |
 |                           109 | x             | o             | Filter Mode [LP|HP]                 |
 |                               |               |               |                                     |
-|                            35 | x             | o             | Pitch Bend by CC [-|+]              |
 |                       112-119 |               |               | Program Change #8-15 by CC          |
 |                            90 | x             | x             | [Reserved]                          |
 +-------------------------------+---------------+---------------+-------------------------------------+

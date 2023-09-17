@@ -49,9 +49,9 @@ public:
   {
     m_delay_wp = DELAY_BUFF_SIZE - 1;
 
-    set_chorus_depth     (32 );
-    set_chorus_rate      (32 );
-    set_chorus_delay_time(80 );
+    set_chorus_depth     (64 );
+    set_chorus_rate      (64 );
+    set_chorus_delay_time(64 );
 
     m_chorus_mode           = CHORUS_MODE_OFF;
     m_chorus_bypass         = false;

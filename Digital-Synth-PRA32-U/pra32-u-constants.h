@@ -49,7 +49,6 @@ const uint8_t   ACTIVE_SENSING        = 0xFE;
 
 const uint8_t   MODULATION      = 1;
 const uint8_t   SUSTAIN_PEDAL   = 64;
-const uint8_t   P_BEND_BY_CC    = 35;
 
 const uint8_t   OSC_1_WAVE      = 24;
 const uint8_t   OSC_1_SHAPE     = 102;
@@ -94,10 +93,10 @@ const uint8_t   AMP_RELEASE     = 59;
 const uint8_t   CHORUS_MODE     = 63;
 const uint8_t   CHORUS_RATE     = 61;
 const uint8_t   CHORUS_DEPTH    = 60;
-const uint8_t   CHORUS_DLY_TIME = 62;
+
 
 const uint8_t   P_BEND_RANGE    = 85;
-const uint8_t   CHORUS_BYPASS   = 111;
+
 const uint8_t   EG_AMP_MOD      = 31;
 const uint8_t   REL_EQ_DECAY    = 89;
 
