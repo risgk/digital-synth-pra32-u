@@ -38,11 +38,11 @@ public:
   }
 
   INLINE void set_attack(uint8_t controller_value) {
-    m_attack_coef = g_eg_attack_release_coef_table[controller_value + 16];
+    m_attack_coef = g_eg_coef_table[controller_value + 16];
   }
 
   INLINE void set_decay(uint8_t controller_value) {
-    m_decay_coef = g_eg_decay_coef_table[controller_value];
+    m_decay_coef = g_eg_coef_table[controller_value];
   }
 
   INLINE void set_sustain(uint8_t controller_value) {
@@ -50,7 +50,7 @@ public:
   }
 
   INLINE void set_release(uint8_t controller_value) {
-    m_release_coef = g_eg_attack_release_coef_table[controller_value];
+    m_release_coef = g_eg_coef_table[controller_value];
   }
 
   INLINE void note_on() {

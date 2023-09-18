@@ -83,12 +83,7 @@
     - 0: 0.7 ms
     - 64: 63.2 ms
     - 127: 5.9 s
-- EG Decay, Amp Decay
-    - 0: 2 ms
-    - 64: 200 ms
-    - 126: 17.3 s
-    - 127: No Decay
-- EG Release, Amp Release
+- EG Decay, Amp Decay, EG Release, Amp Release
     - 0: 2 ms
     - 64: 200 ms
     - 127: 18.6 s
