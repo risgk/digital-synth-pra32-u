@@ -136,6 +136,18 @@
     - 1: 9.6 ms
     - 64: 1.0 s
     - 127: 9.6 s (max)
+- Filter Mode [LP|HP]
+    - 0 (0-63): Low Pass
+    - 127 (64-127): High Pass
+- EG Amp Mod [Off|On]
+    - 0 (0-63): Off
+    - 127 (64-127): On, Amp ADSR = EG ADSR
+- Release = Decay [Off|On]
+    - 0 (0-63): Off
+    - 127 (64-127): On, EG Release = EG Decay and Amp Release = Amp Decay
+- Pitch Bend Range
+    - 0: 0 semitone (min)
+    - 24: 24 semitone (max)
 - Chorus Rate
     - 0: LFO Frequency 0.012 Hz (min)
     - 64: LFO Frequency 0.48 Hz
@@ -145,15 +157,3 @@
     - 32: Delay Time +/- 1.3 ms
     - 64: Delay Time +/- 2.7 ms
     - 126: Delay Time +/- 5.3 ms (max)
-- Pitch Bend Range
-    - 0: 0 semitone (min)
-    - 24: 24 semitone (max)
-- EG Amp Mod [Off|On]
-    - 0 (0-63): Off
-    - 127 (64-127): On, Amp ADSR = EG ADSR
-- Release = Decay [Off|On]
-    - 0 (0-63): Off
-    - 127 (64-127): On, EG Release = EG Decay and Amp Release = Amp Decay
-- Filter Mode [LP|HP]
-    - 0 (0-63): Low Pass
-    - 127 (64-127): High Pass
