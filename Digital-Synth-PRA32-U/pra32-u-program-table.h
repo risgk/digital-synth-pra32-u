@@ -6,7 +6,7 @@ const uint8_t PROGRAM_NUMBER_DEFAULT = 0;
 uint8_t g_preset_table_OSC_1_WAVE     [] = {127, 127, 127, 127, 127, 127, 127, 0  ,   127, 127, 127, 127, 127, 127, 127, 0  };
 uint8_t g_preset_table_OSC_1_SHAPE    [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
 uint8_t g_preset_table_OSC_1_MORPH    [] = {64 , 64 , 64 , 64 , 64 , 0  , 0  , 0  ,   64 , 64 , 64 , 64 , 64 , 0  , 0  , 0  };
-uint8_t g_preset_table_MIXER_SUB_OSC  [] = {109, 109, 109, 109, 109, 109, 109, 64 ,   109, 109, 109, 109, 109, 109, 109, 64 };
+uint8_t g_preset_table_MIXER_SUB_OSC  [] = {127, 64 , 64 , 64 , 127, 127, 64 , 64 ,   127, 64 , 64 , 64 , 127, 127, 64 , 64 };
 
 uint8_t g_preset_table_OSC_2_WAVE     [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
 uint8_t g_preset_table_OSC_2_COARSE   [] = {64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ,   64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 };
