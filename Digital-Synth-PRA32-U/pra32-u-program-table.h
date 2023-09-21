@@ -23,7 +23,7 @@ uint8_t g_preset_table_EG_DECAY       [] = {127, 127, 80 , 96 , 96 , 127, 100, 1
 uint8_t g_preset_table_EG_SUSTAIN     [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
 uint8_t g_preset_table_EG_RELEASE     [] = {0  , 64 , 0  , 0  , 96 , 0  , 0  , 0  ,   0  , 64 , 0  , 0  , 96 , 0  , 0  , 0  };
 
-uint8_t g_preset_table_EG_OSC_AMT     [] = {64 , 64 , 72 , 64 , 64 , 64 , 88 , 64 ,   64 , 64 , 72 , 64 , 64 , 64 , 88 , 64 };
+uint8_t g_preset_table_EG_OSC_AMT     [] = {64 , 64 , 72 , 64 , 64 , 64 , 96 , 64 ,   64 , 64 , 72 , 64 , 64 , 64 , 96 , 64 };
 uint8_t g_preset_table_EG_OSC_DST     [] = {0  , 0  , 64 , 0  , 0  , 0  , 127, 0  ,   0  , 0  , 64 , 0  , 0  , 0  , 127, 0  };
 uint8_t g_preset_table_VOICE_MODE     [] = {127, 0  , 0  , 0  , 75 , 127, 0  , 0  ,   127, 0  , 0  , 0  , 75 , 127, 0  , 0  };
 uint8_t g_preset_table_PORTAMENTO     [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
@@ -33,7 +33,7 @@ uint8_t g_preset_table_LFO_RATE       [] = {80 , 80 , 80 , 80 , 80 , 80 , 80 , 8
 uint8_t g_preset_table_LFO_DEPTH      [] = {0  , 127, 0  , 0  , 0  , 127, 0  , 0  ,   0  , 127, 0  , 0  , 0  , 127, 0  , 0  };
 uint8_t g_preset_table_LFO_FADE_TIME  [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
 
-uint8_t g_preset_table_LFO_OSC_AMT    [] = {119, 64 , 64 , 64 , 64 , 96 , 64 , 64 ,   119, 64 , 64 , 64 , 64 , 96 , 64 , 64 };
+uint8_t g_preset_table_LFO_OSC_AMT    [] = {96 , 64 , 64 , 64 , 64 , 96 , 64 , 64 ,   96 , 64 , 64 , 64 , 64 , 96 , 64 , 64 };
 uint8_t g_preset_table_LFO_OSC_DST    [] = {0  , 0  , 0  , 0  , 0  , 127, 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 127, 0  , 0  };
 uint8_t g_preset_table_LFO_FILTER_AMT [] = {64 , 64 , 88 , 88 , 88 , 64 , 88 , 64 ,   64 , 64 , 88 , 88 , 88 , 64 , 88 , 64 };
 uint8_t g_preset_table_AMP_GAIN       [] = {90 , 90 , 90 , 90 , 90 , 90 , 127, 90 ,   90 , 90 , 90 , 90 , 90 , 90 , 127, 90 };
