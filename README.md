@@ -18,7 +18,8 @@
 
 ## Change History
 
-- v0.5.0 (Prototype): Change the meanings of the values of Osc 1/2 Wave, Voice Mode, and LFO Wave; Add Sine Wave to Osc 1 and 2;
+- v0.5.0 (Prototype): Change Control Numbers of Control Changes;
+  Change the meanings of the values of Osc 1/2 Wave, Voice Mode, and LFO Wave; Add Sine Wave to Osc 1 and 2;
   Limit the change range and the change rate of Osc 1 Shape; Change Noise specifications;
   Change Sub Osc Triangle Wave to Sine Wave; Change LFO Triangle Wave 2 to Sine Wave;
   Improve resolution of Filter Resonance; Limit the change rate of Filter Cutoff due to modulation;

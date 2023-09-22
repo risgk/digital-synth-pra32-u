@@ -45,6 +45,7 @@ const APP_NAME_VERSION = "PRA32-U CTRL v0.4.0";
 
 const MIDI_CH        = 0;       // 0-based
 
+
 const NOTE_OFF       = 0x80;
 const NOTE_ON        = 0x90;
 const CONTROL_CHANGE = 0xB0;
@@ -54,54 +55,55 @@ const PITCH_BEND     = 0xE0;
 const MODULATION      = 1;
 const SUSTAIN_PEDAL   = 64;
 
-const OSC_1_WAVE      = 24;
-const OSC_1_SHAPE     = 102;
-const OSC_1_MORPH     = 103;
-const MIXER_SUB_OSC   = 26;
 
-const OSC_2_WAVE      = 55;
-const OSC_2_COARSE    = 20;
-const OSC_2_PITCH     = 21;
-const MIXER_OSC_MIX   = 25;
+const OSC_1_WAVE      = 102;
+const OSC_1_SHAPE     = 19;
+const OSC_1_MORPH     = 20;
+const MIXER_SUB_OSC   = 23;
 
-const FILTER_CUTOFF   = 16;
-const FILTER_RESO     = 17;
-const FILTER_EG_AMT   = 18;
-const FILTER_KEY_TRK  = 86;
+const OSC_2_WAVE      = 104;
+const OSC_2_COARSE    = 85;
+const OSC_2_PITCH     = 76;
+const MIXER_OSC_MIX   = 21;
 
-const EG_ATTACK       = 23;
-const EG_DECAY        = 19;
-const EG_SUSTAIN      = 27;
-const EG_RELEASE      = 28;
+const FILTER_CUTOFF   = 74;
+const FILTER_RESO     = 71;
+const FILTER_EG_AMT   = 24;
+const FILTER_KEY_TRK  = 26;
 
-const EG_OSC_AMT      = 104;
-const EG_OSC_DST      = 105;
-const VOICE_MODE      = 87;
-const PORTAMENTO      = 22;
+const EG_ATTACK       = 73;
+const EG_DECAY        = 75;
+const EG_SUSTAIN      = 30;
+const EG_RELEASE      = 72;
 
-const LFO_WAVE        = 14;
-const LFO_RATE        = 80;
-const LFO_DEPTH       = 81;
-const LFO_FADE_TIME   = 15;
+const EG_OSC_AMT      = 91;
+const EG_OSC_DST      = 89;
+const VOICE_MODE      = 27;
+const PORTAMENTO      = 5;
 
-const LFO_OSC_AMT     = 82;
-const LFO_OSC_DST     = 9;
-const LFO_FILTER_AMT  = 83;
-const AMP_GAIN        = 110;
+const LFO_WAVE        = 18;
+const LFO_RATE        = 3;
+const LFO_DEPTH       = 17;
+const LFO_FADE_TIME   = 56;
 
-const AMP_ATTACK      = 56;
-const AMP_DECAY       = 57;
-const AMP_SUSTAIN     = 58;
-const AMP_RELEASE     = 59;
+const LFO_OSC_AMT     = 13;
+const LFO_OSC_DST     = 103;
+const LFO_FILTER_AMT  = 25;
+const AMP_GAIN        = 15;
 
-const FILTER_MODE     = 109;
-const EG_AMP_MOD      = 31;
-const REL_EQ_DECAY    = 89;
-const P_BEND_RANGE    = 85;
+const AMP_ATTACK      = 52;
+const AMP_DECAY       = 53;
+const AMP_SUSTAIN     = 54;
+const AMP_RELEASE     = 55;
 
-const CHORUS_MIX      = 63;
-const CHORUS_RATE     = 61;
-const CHORUS_DEPTH    = 60;
+const FILTER_MODE     = 86;
+const EG_AMP_MOD      = 87;
+const REL_EQ_DECAY    = 29;
+const P_BEND_RANGE    = 57;
+
+const CHORUS_MIX      = 93;
+const CHORUS_RATE     = 58;
+const CHORUS_DEPTH    = 59;
 
 
 const PC_BY_CC_8      = 112;
@@ -113,6 +115,9 @@ const PC_BY_CC_13     = 117;
 const PC_BY_CC_14     = 118;
 const PC_BY_CC_15     = 119;
 
+const SP_RAND_CTRL    = 111;  // Special Random Control (for PRA32-U CTRL)
+
+
 const ALL_SOUND_OFF   = 120;
 const RESET_ALL_CTRLS = 121;
 const ALL_NOTES_OFF   = 123;
@@ -122,8 +127,6 @@ const OMNI_MODE_ON    = 125;
 const MONO_MODE_ON    = 126;
 const POLY_MODE_ON    = 127;
 
-// Special Random Control (for PRA32-U CTRL)
-const SP_RAND_CTRL    = 90;
 
 var controlNumberToStringMap = new Map([
   [ OSC_1_WAVE     , "OSC_1_WAVE     " ],
