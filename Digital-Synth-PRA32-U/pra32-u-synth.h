@@ -850,6 +850,10 @@ public:
     }
 
     int16_t left_level = m_chorus_fx.process(voice_mixer_output, right_level);
+
+    left_level  >>= 1;
+    right_level >>= 1;
+
     return left_level;
   }
 
