@@ -702,7 +702,7 @@ public:
   }
 
   /* INLINE */ void program_change(uint8_t program_number) {
-    if (program_number >= ((PROGRAM_NUMBER_MAX + 1) << 2)) {
+    if (program_number > PROGRAM_NUMBER_MAX) {
       return;
     }
 
