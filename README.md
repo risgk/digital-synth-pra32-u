@@ -48,7 +48,7 @@
 - Please install Arduino-Pico = **Raspberry Pi Pico/RP2040** (by Earle F. Philhower, III) core
     - Additional Board Manager URL: <https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json>
     - Info: <https://github.com/earlephilhower/arduino-pico>
-    - Raspberry Pi Pico/RP2040 core **version 3.3.2** is recommended
+    - Raspberry Pi Pico/RP2040 core **version 3.6.0** is recommended
 - Please install **MIDI Library** (by Francois Best, lathoub)
     - Info: <https://github.com/FortySevenEffects/arduino_midi_library>
     - MIDI Library **version 5.0.2** is recommended
