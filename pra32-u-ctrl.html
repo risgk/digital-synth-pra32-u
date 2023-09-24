@@ -481,15 +481,15 @@ function onMIDIMessage(event) {
   const PROGRAM_CHANGE = 0xC0;
   if (event.data[0] == (PROGRAM_CHANGE | MIDI_CH)) {
     var number = event.data[1];
-    if (number >= 0 && number <= 7) {
-      preset(number);
-      return;
-    } else if (number >= 8 && number <= 15) {
-      loadControllers(number);
-      return;
-    } else if (number == 127) {
+    if (number == 127) {
       // Program #127: Random Control
       setRandom();
+      return;
+    } else if ((number % 16) >= 0 && (number % 16) <= 7) {
+      preset(number % 16);
+      return;
+    } else if ((number % 16) >= 8 && (number % 16) <= 15) {
+      loadControllers(number % 16);
       return;
     }
   }
