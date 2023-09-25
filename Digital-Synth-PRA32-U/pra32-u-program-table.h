@@ -30,10 +30,10 @@ uint8_t g_preset_table_PORTAMENTO     [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0
 
 uint8_t g_preset_table_LFO_WAVE       [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
 uint8_t g_preset_table_LFO_RATE       [] = {80 , 80 , 80 , 80 , 80 , 80 , 80 , 80 ,   80 , 80 , 80 , 80 , 80 , 80 , 80 , 80 };
-uint8_t g_preset_table_LFO_DEPTH      [] = {0  , 127, 0  , 0  , 0  , 127, 0  , 0  ,   0  , 127, 0  , 0  , 0  , 127, 0  , 0  };
+uint8_t g_preset_table_LFO_DEPTH      [] = {0  , 0  , 0  , 0  , 0  , 127, 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 127, 0  , 0  };
 uint8_t g_preset_table_LFO_FADE_TIME  [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
 
-uint8_t g_preset_table_LFO_OSC_AMT    [] = {96 , 64 , 64 , 64 , 64 , 96 , 64 , 64 ,   96 , 64 , 64 , 64 , 64 , 96 , 64 , 64 };
+uint8_t g_preset_table_LFO_OSC_AMT    [] = {96 , 96 , 64 , 64 , 64 , 96 , 64 , 64 ,   96 , 96 , 64 , 64 , 64 , 96 , 64 , 64 };
 uint8_t g_preset_table_LFO_OSC_DST    [] = {0  , 0  , 0  , 0  , 0  , 127, 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 127, 0  , 0  };
 uint8_t g_preset_table_LFO_FILTER_AMT [] = {64 , 64 , 88 , 88 , 88 , 64 , 88 , 64 ,   64 , 64 , 88 , 88 , 88 , 64 , 88 , 64 };
 uint8_t g_preset_table_AMP_GAIN       [] = {90 , 90 , 90 , 90 , 90 , 90 , 127, 90 ,   90 , 90 , 90 , 90 , 90 , 90 , 127, 90 };
