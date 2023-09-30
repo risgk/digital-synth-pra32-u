@@ -162,3 +162,14 @@
     - 32: Delay Time +/- 1.3 ms
     - 64: Delay Time +/- 2.7 ms
     - 126: Delay Time +/- 5.3 ms (max)
+- Delay Feedback
+    - 0: Feedback 0% (min)
+    - 64: Feedback 25%
+    - 127: Feedback 49.6% (max)
+- Delay Time
+    - 7: 10 ms (min)
+    - 27: 50 ms
+    - 64: 173.3 ms
+    - 87: 250 ms
+    - 93: 270 ms
+    - 112: 333.3 ms (max)

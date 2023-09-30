@@ -23,7 +23,7 @@
   Limit the change range and the change rate of Osc 1 Shape; Change Noise specifications;
   Change Sub Osc Triangle Wave to Sine Wave; Change LFO Triangle Wave 2 to Sine Wave;
   Improve resolution of Filter Resonance; Limit the change rate of Filter Cutoff due to modulation;
-  Change Amp Level to Amp Gain; Change Chorus Mode to Chorus Mix; Reduce output level;
+  Change Amp Level to Amp Gain; Change Chorus Mode to Chorus Mix; Add Delay Fx;
   Delete Chorus Delay Time, Chorus Bypass, and Pitch Bend by CC; Update Presets; Other changes
 - v0.4.0 (Prototype): Extend Osc 2 Coarse range; Change Osc 2 Fine curve; Rename "Osc 2 Fine" to "Osc 2 Pitch";
   Change LFO Osc/Filter Amt curve; Update Presets
@@ -145,7 +145,9 @@ graph LR
     end
     V1A --> VM[Voice Mixer]
     V2[Voice 2] & V3[Voice 3] & V4[Voice 4] --> VM
-    VM --> C[Chorus FX] --> AO[Audio Out]
+    VM --> C[Chorus FX] --> D[Delay FX] --> AO[Audio Out]
+    C --> D
+    D --> AO
     N[Noise Gen]  --> V1O2 & V1OM & V2 & V3 & V4
     N -.-> L[LFO w/ S/H]
     L -.-> V1O1 & V1O2 & V1F & V2 & V3 & V4
@@ -163,7 +165,9 @@ graph LR
     end
     V1G --> VM[Voice Mixer]
     V2[Voice 2] & V3[Voice 3] & V4[Voice 4] --> VM
-    VM --> F[Filter] --> A[Amp] --> C[Chorus FX] --> AO[Audio Out]
+    VM --> F[Filter] --> A[Amp] --> C[Chorus FX] --> D[Delay FX] --> AO[Audio Out]
+    C --> D
+    D --> AO
     N[Noise Gen]  --> V1O2 & V1OM & V2 & V3 & V4
     N -.-> L[LFO w/ S/H]
     L -.-> V1O1 & V1O2 & V2 & V3 & V4 & F
@@ -178,7 +182,9 @@ graph LR
 graph LR
     O1[Osc 1 w/ Sub Osc] --> OM[Osc Mixer]
     O2[Osc 2] --> OM
-    OM --> F[Filter] --> A[Amp] --> C[Chorus FX] --> AO[Audio Out]
+    OM --> F[Filter] --> A[Amp] --> C[Chorus FX] --> D[Delay FX] --> AO[Audio Out]
+    C --> D
+    D --> AO
     N[Noise Gen] --> O2 & OM
     N -.-> L[LFO w/ S/H]
     L -.-> O1 & O2 & F

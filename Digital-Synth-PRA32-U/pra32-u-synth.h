@@ -8,6 +8,7 @@
 #include "pra32-u-noise-gen.h"
 #include "pra32-u-eg.h"
 #include "pra32-u-chorus-fx.h"
+#include "pra32-u-delay-fx.h"
 #include "pra32-u-program-table.h"
 
 class PRA32_U_Synth {
@@ -18,6 +19,7 @@ class PRA32_U_Synth {
   PRA32_U_LFO      m_lfo;
   PRA32_U_EG       m_eg[2 * 4];
   PRA32_U_ChorusFx m_chorus_fx;
+  PRA32_U_DelayFx  m_delay_fx;
 
   uint32_t         m_count;
 
@@ -62,6 +64,7 @@ public:
   , m_lfo()
   , m_eg()
   , m_chorus_fx()
+  , m_delay_fx()
 
   , m_count()
 
@@ -808,6 +811,7 @@ public:
       m_osc.process_at_low_rate_a<2>(lfo_output, m_eg[4].get_output());
       m_filter[2].process_at_low_rate(m_count >> 2, m_eg[4].get_output(), lfo_output, m_osc.get_osc_pitch(2));
       m_amp[2].process_at_low_rate(m_eg[5].get_output());
+      m_delay_fx.process_at_low_rate(m_count >> 2);
       break;
     case 0x03:
       m_osc.process_at_low_rate_a<3>(lfo_output, m_eg[6].get_output());
@@ -849,12 +853,14 @@ public:
       voice_mixer_output = amp_output[0];
     }
 
-    int16_t left_level = m_chorus_fx.process(voice_mixer_output, right_level);
+    int16_t chorus_fx_output_r;
+    int16_t chorus_fx_output_l = m_chorus_fx.process(voice_mixer_output, chorus_fx_output_r);
 
-    left_level  >>= 1;
-    right_level >>= 1;
+    int16_t delay_fx_output_r;
+    int16_t delay_fx_output_l = m_delay_fx.process(chorus_fx_output_l, chorus_fx_output_r, delay_fx_output_r);
 
-    return left_level;
+    right_level = delay_fx_output_r;
+    return        delay_fx_output_l;
   }
 
 private:
