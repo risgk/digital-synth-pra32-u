@@ -662,6 +662,13 @@ public:
       set_voice_mode(controller_value);
       break;
 
+    case DELAY_FEEDBACK :
+      m_delay_fx.set_delay_feedback(controller_value);
+      break;
+    case DELAY_TIME     :
+      m_delay_fx.set_delay_time(controller_value);
+      break;
+
     case ALL_NOTES_OFF  :
     case OMNI_MODE_OFF  :
     case OMNI_MODE_ON   :
@@ -759,6 +766,11 @@ public:
     control_change(CHORUS_MIX     , g_preset_table_CHORUS_MIX     [program_number]);
     control_change(CHORUS_RATE    , g_preset_table_CHORUS_RATE    [program_number]);
     control_change(CHORUS_DEPTH   , g_preset_table_CHORUS_DEPTH   [program_number]);
+
+
+    control_change(DELAY_FEEDBACK , g_preset_table_DELAY_FEEDBACK [program_number]);
+    control_change(DELAY_TIME     , g_preset_table_DELAY_TIME     [program_number]);
+
 
   }
 

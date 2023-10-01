@@ -103,6 +103,11 @@ CHORUS_RATE     = 58
 CHORUS_DEPTH    = 59
 
 
+DELAY_FEEDBACK  = 92
+DELAY_TIME      = 90
+
+
+
 PC_BY_CC_8      = 112
 PC_BY_CC_9      = 113
 PC_BY_CC_10     = 114
