@@ -7,7 +7,7 @@
 ## Overview
 
 - 4 Voice Polyphonic/Paraphonic Synthesizer for Raspberry Pi Pico/RP2040
-    - Built-in Chorus FX
+    - Built-in Chorus and Delay FX
     - Controlled by MIDI -- PRA32-U is a MIDI sound module
 - Modifiable with Arduino IDE and Arduino-Pico (by Earle F. Philhower, III)
 - An **I2S DAC** hardware (e.g. Pimoroni Pico Audio Pack and Waveshare Pico-Audio) is required
