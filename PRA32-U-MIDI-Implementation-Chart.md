@@ -25,54 +25,54 @@
 | Control                     1 | x             | o             | Modulation                          |
 | Change                     64 | x             | o             | Sustain Pedal [Off|On]              |
 |                               |               |               |                                     |
-|                            24 | x             | o             | Osc 1 Wave [Saw|Sin|-|Tri|-|Pls]    |
-|                           102 | x             | o             | Osc 1 Shape $$                      |
-|                           103 | x             | o             | Osc 1 Morph $$                      |
-|                            26 | x             | o             | Mixer Noise/Sub Osc [N|S] $$$       |
+|                           102 | x             | o             | Osc 1 Wave [Saw|Sin|-|Tri|-|Pls]    |
+|                            19 | x             | o             | Osc 1 Shape $$                      |
+|                            20 | x             | o             | Osc 1 Morph $$                      |
+|                            23 | x             | o             | Mixer Noise/Sub Osc [N|S] $$$       |
 |                               |               |               |                                     |
-|                            55 | x             | o             | Osc 2 Wave [Saw|Sin|-|Tri|Nos|Sqr]  |
-|                            20 | x             | o             | Osc 2 Coarse [-|+]                  |
-|                            21 | x             | o             | Osc 2 Pitch [-|+]                   |
-|                            25 | x             | o             | Mixer Osc Mix [1|2]                 |
+|                           104 | x             | o             | Osc 2 Wave [Saw|Sin|-|Tri|Nos|Sqr]  |
+|                            85 | x             | o             | Osc 2 Coarse [-|+]                  |
+|                            76 | x             | o             | Osc 2 Pitch [-|+]                   |
+|                            21 | x             | o             | Mixer Osc Mix [1|2]                 |
 |                               |               |               |                                     |
-|                            16 | x             | o             | Filter Cutoff                       |
-|                            17 | x             | o             | Filter Resonance                    |
-|                            18 | x             | o             | Filter EG Amt [-|+]                 |
-|                            86 | x             | o             | Filter Key Track [0.0|0.5|1.0] $    |
+|                            74 | x             | o             | Filter Cutoff                       |
+|                            71 | x             | o             | Filter Resonance                    |
+|                            24 | x             | o             | Filter EG Amt [-|+]                 |
+|                            26 | x             | o             | Filter Key Track [0.0|0.5|1.0] $    |
 |                               |               |               |                                     |
-|                            23 | x             | o             | EG Attack                           |
-|                            19 | x             | o             | EG Decay                            |
-|                            27 | x             | o             | EG Sustain                          |
-|                            28 | x             | o             | EG Release                          |
+|                            73 | x             | o             | EG Attack                           |
+|                            75 | x             | o             | EG Decay                            |
+|                            30 | x             | o             | EG Sustain                          |
+|                            72 | x             | o             | EG Release                          |
 |                               |               |               |                                     |
-|                           104 | x             | o             | EG Osc Amt [-|+]                    |
-|                           105 | x             | o             | EG Osc Dst [P|2P|1S]                |
-|                            87 | x             | o             | Voice Mode [Pol|Par|-|Mon|LP|Lgt]   |
-|                            22 | x             | o             | Portamento                          |
+|                            91 | x             | o             | EG Osc Amt [-|+]                    |
+|                            89 | x             | o             | EG Osc Dst [P|2P|1S]                |
+|                            27 | x             | o             | Voice Mode [Pol|Par|-|Mon|LP|Lgt]   |
+|                             5 | x             | o             | Portamento                          |
 |                               |               |               |                                     |
-|                            14 | x             | o             | LFO Wave [Tri|Sin|-|Saw|SH|Sqr]     |
-|                            80 | x             | o             | LFO Rate                            |
-|                            81 | x             | o             | LFO Depth                           |
-|                            15 | x             | o             | LFO Fade Time                       |
+|                            18 | x             | o             | LFO Wave [Tri|Sin|-|Saw|SH|Sqr]     |
+|                             3 | x             | o             | LFO Rate                            |
+|                            17 | x             | o             | LFO Depth                           |
+|                            56 | x             | o             | LFO Fade Time                       |
 |                               |               |               |                                     |
-|                            82 | x             | o             | LFO Osc Amt [-|+]                   |
-|                             9 | x             | o             | LFO Osc Dst [P|2P|1S]               |
-|                            83 | x             | o             | LFO Filter Amt [-|+]                |
-|                           110 | x             | o             | Amp Gain                            |
+|                            13 | x             | o             | LFO Osc Amt [-|+]                   |
+|                           103 | x             | o             | LFO Osc Dst [P|2P|1S]               |
+|                            25 | x             | o             | LFO Filter Amt [-|+]                |
+|                            15 | x             | o             | Amp Gain                            |
 |                               |               |               |                                     |
-|                            56 | x             | o             | Amp Attack                          |
-|                            57 | x             | o             | Amp Decay                           |
-|                            58 | x             | o             | Amp Sustain                         |
-|                            59 | x             | o             | Amp Release                         |
+|                            52 | x             | o             | Amp Attack                          |
+|                            53 | x             | o             | Amp Decay                           |
+|                            54 | x             | o             | Amp Sustain                         |
+|                            55 | x             | o             | Amp Release                         |
 |                               |               |               |                                     |
-|                           109 | x             | o             | Filter Mode [LP|HP]                 |
-|                            31 | x             | o             | EG Amp Mod [Off|On]                 |
-|                            89 | x             | o             | Release = Decay [Off|On]            |
-|                            85 | x             | o             | Pitch Bend Range                    |
+|                            86 | x             | o             | Filter Mode [LP|HP]                 |
+|                            87 | x             | o             | EG Amp Mod [Off|On]                 |
+|                            29 | x             | o             | Release = Decay [Off|On]            |
+|                            57 | x             | o             | Pitch Bend Range                    |
 |                               |               |               |                                     |
-|                            63 | x             | o             | Chorus Mix [Dry|Wet]                |
-|                            61 | x             | o             | Chorus Rate                         |
-|                            60 | x             | o             | Chorus Depth                        |
+|                            93 | x             | o             | Chorus Mix [Dry|Wet]                |
+|                            58 | x             | o             | Chorus Rate                         |
+|                            59 | x             | o             | Chorus Depth                        |
 |                               |               |               |                                     |
 |                               |               |               |                                     |
 |                            92 | x             | o             | Delay Feedback                      |
@@ -81,7 +81,7 @@
 |                               |               |               |                                     |
 |                               |               |               |                                     |
 |                       112-119 |               |               | Program Change #8-15 by CC          |
-|                            90 | x             | x             | [Reserved]                          |
+|                           111 | x             | x             | [Reserved]                          |
 +-------------------------------+---------------+---------------+-------------------------------------+
 | Program                       | x             | o             |                                     |
 | Change       : True #         | ************* | 0-15          |                                     |
