@@ -9,6 +9,7 @@ class PRA32_U_DelayFx {
   uint16_t m_delay_wp[2];
 
   uint8_t  m_delay_feedback;
+  uint8_t  m_delay_feedback_effective;
   uint16_t m_delay_time;
   uint16_t m_delay_time_effective;
 
@@ -18,6 +19,7 @@ public:
   , m_delay_wp()
 
   , m_delay_feedback()
+  , m_delay_feedback_effective()
   , m_delay_time()
   , m_delay_time_effective()
   {
@@ -60,6 +62,9 @@ public:
   INLINE void process_at_low_rate(uint8_t count) {
     static_cast<void>(count);
 
+    m_delay_feedback_effective += (m_delay_feedback_effective < m_delay_feedback);
+    m_delay_feedback_effective -= (m_delay_feedback_effective > m_delay_feedback);
+
     m_delay_time_effective += (m_delay_time_effective < m_delay_time);
     m_delay_time_effective -= (m_delay_time_effective > m_delay_time);
   }
@@ -68,8 +73,8 @@ public:
     int16_t left_delay   = delay_buff_get<0>(m_delay_time_effective);
     int16_t right_delay  = delay_buff_get<1>(m_delay_time_effective);
 
-    int16_t left_output  = (left_input  >> 1) + ((left_delay  * m_delay_feedback) >> 8);
-    int16_t right_output = (right_input >> 1) + ((right_delay * m_delay_feedback) >> 8);
+    int16_t left_output  = (left_input  >> 1) + ((left_delay  * m_delay_feedback_effective) >> 8);
+    int16_t right_output = (right_input >> 1) + ((right_delay * m_delay_feedback_effective) >> 8);
 
     delay_buff_push<0>(left_output);
     delay_buff_push<1>(right_output);
