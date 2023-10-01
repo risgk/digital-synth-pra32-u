@@ -1,6 +1,6 @@
-# Digital Synth PRA32-U v0.4.0 (Prototype)
+# Digital Synth PRA32-U v1.0.0
 
-- 2023-08-26 ISGK Instruments
+- 2023-10-01 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
 
 
@@ -12,12 +12,19 @@
 - Modifiable with Arduino IDE and Arduino-Pico (by Earle F. Philhower, III)
 - An **I2S DAC** hardware (e.g. Pimoroni Pico Audio Pack and Waveshare Pico-Audio) is required
 - Prebuilt UF2 files ("bin")
-    - "Digital-Synth-PRA32-U-0.4.0-Pimoroni-Pico-Audio-Pack.uf2" is for Raspberry Pi Pico and Pimoroni Pico Audio Pack
-    - "Digital-Synth-PRA32-U-0.4.0-Waveshare-Pico-Audio-Rev2.1.uf2" is for Raspberry Pi Pico and Waveshare Pico-Audio Rev2.1
+    - "Digital-Synth-PRA32-U-1.0.0-Pimoroni-Pico-Audio-Pack.uf2" is for Raspberry Pi Pico and Pimoroni Pico Audio Pack
+    - "Digital-Synth-PRA32-U-1.0.0-Waveshare-Pico-Audio-Rev2.1.uf2" is for Raspberry Pi Pico and Waveshare Pico-Audio Rev2.1
 
 
 ## Change History
 
+- v1.0.0: Change Control Numbers of Control Changes;
+  Change the meanings of the values of Osc 1/2 Wave, Voice Mode, and LFO Wave; Add Sine Wave to Osc 1 and 2;
+  Limit the change range and the change rate of Osc 1 Shape; Change Noise specifications;
+  Change Sub Osc Triangle Wave to Sine Wave; Change LFO Triangle Wave 2 to Sine Wave;
+  Improve resolution of Filter Resonance; Limit the change rate of Filter Cutoff due to modulation;
+  Change Amp Level to Amp Gain; Change Chorus Mode to Chorus Mix; Add Delay Fx;
+  Delete Chorus Delay Time, Chorus Bypass, and Pitch Bend by CC; Update Presets; Other changes
 - v0.4.0 (Prototype): Extend Osc 2 Coarse range; Change Osc 2 Fine curve; Rename "Osc 2 Fine" to "Osc 2 Pitch";
   Change LFO Osc/Filter Amt curve; Update Presets
 - v0.3.1 (Prototype): Adjust smoothing time when parameters change; Update Presets; Fix LFO Osc/Filter Amt; Other changes
@@ -41,7 +48,7 @@
 - Please install Arduino-Pico = **Raspberry Pi Pico/RP2040** (by Earle F. Philhower, III) core
     - Additional Board Manager URL: <https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json>
     - Info: <https://github.com/earlephilhower/arduino-pico>
-    - Raspberry Pi Pico/RP2040 core **version 3.3.2** is recommended
+    - Raspberry Pi Pico/RP2040 core **version 3.6.0** is recommended
 - Please install **MIDI Library** (by Francois Best, lathoub)
     - Info: <https://github.com/FortySevenEffects/arduino_midi_library>
     - MIDI Library **version 5.0.2** is recommended
@@ -138,7 +145,9 @@ graph LR
     end
     V1A --> VM[Voice Mixer]
     V2[Voice 2] & V3[Voice 3] & V4[Voice 4] --> VM
-    VM --> C[Chorus FX] --> AO[Audio Out]
+    VM --> C[Chorus FX] --> D[Delay FX] --> AO[Audio Out]
+    C --> D
+    D --> AO
     N[Noise Gen]  --> V1O2 & V1OM & V2 & V3 & V4
     N -.-> L[LFO w/ S/H]
     L -.-> V1O1 & V1O2 & V1F & V2 & V3 & V4
@@ -156,7 +165,9 @@ graph LR
     end
     V1G --> VM[Voice Mixer]
     V2[Voice 2] & V3[Voice 3] & V4[Voice 4] --> VM
-    VM --> F[Filter] --> A[Amp] --> C[Chorus FX] --> AO[Audio Out]
+    VM --> F[Filter] --> A[Amp] --> C[Chorus FX] --> D[Delay FX] --> AO[Audio Out]
+    C --> D
+    D --> AO
     N[Noise Gen]  --> V1O2 & V1OM & V2 & V3 & V4
     N -.-> L[LFO w/ S/H]
     L -.-> V1O1 & V1O2 & V2 & V3 & V4 & F
@@ -171,7 +182,9 @@ graph LR
 graph LR
     O1[Osc 1 w/ Sub Osc] --> OM[Osc Mixer]
     O2[Osc 2] --> OM
-    OM --> F[Filter] --> A[Amp] --> C[Chorus FX] --> AO[Audio Out]
+    OM --> F[Filter] --> A[Amp] --> C[Chorus FX] --> D[Delay FX] --> AO[Audio Out]
+    C --> D
+    D --> AO
     N[Noise Gen] --> O2 & OM
     N -.-> L[LFO w/ S/H]
     L -.-> O1 & O2 & F
@@ -184,11 +197,11 @@ graph LR
 
 ![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)
 
-**Digital Synth PRA32-U v0.4.0 by ISGK Instruments (Ryo Ishigaki)**
+**Digital Synth PRA32-U v1.0.0 by ISGK Instruments (Ryo Ishigaki)**
 
 To the extent possible under law, ISGK Instruments (Ryo Ishigaki)
 has waived all copyright and related or neighboring rights
-to Digital Synth PRA32-U v0.4.0.
+to Digital Synth PRA32-U v1.0.0.
 
 You should have received a copy of the CC0 legalcode along with this
 work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.

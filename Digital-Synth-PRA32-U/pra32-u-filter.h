@@ -66,7 +66,7 @@ public:
   }
 
   INLINE void set_resonance(uint8_t controller_value) {
-    m_resonance_index = (controller_value + 4) >> 4;
+    m_resonance_index = (controller_value + 2) >> 3;
   }
 
   INLINE int8_t get_cutoff_mod_amt(uint8_t controller_value) {
@@ -119,11 +119,13 @@ public:
   INLINE void process_at_low_rate(uint8_t count, int16_t eg_input, int16_t lfo_input, uint16_t osc_pitch) {
     switch (count & (0x04 - 1)) {
     case 0x00:
+    case 0x02:
+      update_coefs(eg_input, lfo_input, osc_pitch);
+      break;
+    case 0x03:
       update_cutoff_control_effective();
       break;
     }
-
-    update_coefs(eg_input, lfo_input, osc_pitch);
   }
 
   INLINE int16_t process(int16_t audio_input) {
@@ -169,11 +171,13 @@ private:
     m_cutoff_candidate += (lfo_input * m_cutoff_lfo_amt) >> 14;
     m_cutoff_candidate += (((osc_pitch - (60 << 8)) * m_cutoff_pitch_amt) + 128) >> 8;
 
-    // cutoff_current = clamp(m_cutoff_candidate, 0, 255)
-    volatile int16_t cutoff_current = m_cutoff_candidate - 255;
-    cutoff_current = (cutoff_current < 0) * cutoff_current + 255;
-    cutoff_current = (cutoff_current > 0) * cutoff_current;
-    m_cutoff_current = cutoff_current;
+    // cutoff_target = clamp(m_cutoff_candidate, 0, 255)
+    volatile int16_t cutoff_target = m_cutoff_candidate - 255;
+    cutoff_target = (cutoff_target < 0) * cutoff_target + 255;
+    cutoff_target = (cutoff_target > 0) * cutoff_target;
+
+    m_cutoff_current += (m_cutoff_current < cutoff_target);
+    m_cutoff_current -= (m_cutoff_current > cutoff_target);
 
     const int32_t* lpf_table = g_filter_lpf_tables[m_resonance_index];
     size_t index = m_cutoff_current * 3;

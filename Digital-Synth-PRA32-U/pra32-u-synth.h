@@ -8,6 +8,7 @@
 #include "pra32-u-noise-gen.h"
 #include "pra32-u-eg.h"
 #include "pra32-u-chorus-fx.h"
+#include "pra32-u-delay-fx.h"
 #include "pra32-u-program-table.h"
 
 class PRA32_U_Synth {
@@ -18,6 +19,7 @@ class PRA32_U_Synth {
   PRA32_U_LFO      m_lfo;
   PRA32_U_EG       m_eg[2 * 4];
   PRA32_U_ChorusFx m_chorus_fx;
+  PRA32_U_DelayFx  m_delay_fx;
 
   uint32_t         m_count;
 
@@ -62,6 +64,7 @@ public:
   , m_lfo()
   , m_eg()
   , m_chorus_fx()
+  , m_delay_fx()
 
   , m_count()
 
@@ -568,11 +571,8 @@ public:
     case CHORUS_RATE    :
       m_chorus_fx.set_chorus_rate(controller_value);
       break;
-    case CHORUS_DLY_TIME:
-      m_chorus_fx.set_chorus_delay_time(controller_value);
-      break;
-    case CHORUS_MODE    :
-      m_chorus_fx.set_chorus_mode(controller_value);
+    case CHORUS_MIX     :
+      m_chorus_fx.set_chorus_mix(controller_value);
       break;
 
 #if 0
@@ -580,7 +580,7 @@ public:
       m_osc.set_osc_level(controller_value);
       break;
 #endif
-    case AMP_LEVEL      :
+    case AMP_GAIN       :
       m_amp[0].set_gain(controller_value);
       m_amp[1].set_gain(controller_value);
       m_amp[2].set_gain(controller_value);
@@ -589,17 +589,6 @@ public:
 
     case PORTAMENTO     :
       m_portamento = controller_value;
-      break;
-
-    case P_BEND_BY_CC   :
-      {
-        uint8_t lsb = 0;
-        uint8_t msb = controller_value;
-        if (msb == 0x7F) {
-          lsb = 0x7F;
-        }
-        pitch_bend(lsb, msb);
-      }
       break;
 
     case MIXER_OSC_MIX  :
@@ -639,10 +628,6 @@ public:
       m_osc.set_pitch_bend_range(controller_value);
       break;
 
-    case CHORUS_BYPASS  :
-      m_chorus_fx.set_chorus_bypass(controller_value);
-      break;
-
     case EG_AMP_MOD     :
       m_controller_value_eg_amp_mod   = controller_value;
       update_eg_and_amp_eg();
@@ -675,6 +660,13 @@ public:
 
     case VOICE_MODE     :
       set_voice_mode(controller_value);
+      break;
+
+    case DELAY_FEEDBACK :
+      m_delay_fx.set_delay_feedback(controller_value);
+      break;
+    case DELAY_TIME     :
+      m_delay_fx.set_delay_time(controller_value);
       break;
 
     case ALL_NOTES_OFF  :
@@ -720,7 +712,7 @@ public:
   }
 
   /* INLINE */ void program_change(uint8_t program_number) {
-    if (program_number >= ((PROGRAM_NUMBER_MAX + 1) << 2)) {
+    if (program_number > PROGRAM_NUMBER_MAX) {
       return;
     }
 
@@ -759,24 +751,27 @@ public:
     control_change(LFO_OSC_AMT    , g_preset_table_LFO_OSC_AMT    [program_number]);
     control_change(LFO_OSC_DST    , g_preset_table_LFO_OSC_DST    [program_number]);
     control_change(LFO_FILTER_AMT , g_preset_table_LFO_FILTER_AMT [program_number]);
-    control_change(AMP_LEVEL      , g_preset_table_AMP_LEVEL      [program_number]);
+    control_change(AMP_GAIN       , g_preset_table_AMP_GAIN       [program_number]);
 
     control_change(AMP_ATTACK     , g_preset_table_AMP_ATTACK     [program_number]);
     control_change(AMP_DECAY      , g_preset_table_AMP_DECAY      [program_number]);
     control_change(AMP_SUSTAIN    , g_preset_table_AMP_SUSTAIN    [program_number]);
     control_change(AMP_RELEASE    , g_preset_table_AMP_RELEASE    [program_number]);
 
-    control_change(CHORUS_MODE    , g_preset_table_CHORUS_MODE    [program_number]);
-    control_change(CHORUS_RATE    , g_preset_table_CHORUS_RATE    [program_number]);
-    control_change(CHORUS_DEPTH   , g_preset_table_CHORUS_DEPTH   [program_number]);
-    control_change(CHORUS_DLY_TIME, g_preset_table_CHORUS_DLY_TIME[program_number]);
-
-    control_change(P_BEND_RANGE   , g_preset_table_P_BEND_RANGE   [program_number]);
-    control_change(CHORUS_BYPASS  , g_preset_table_CHORUS_BYPASS  [program_number]);
+    control_change(FILTER_MODE    , g_preset_table_FILTER_MODE    [program_number]);
     control_change(EG_AMP_MOD     , g_preset_table_EG_AMP_MOD     [program_number]);
     control_change(REL_EQ_DECAY   , g_preset_table_REL_EQ_DECAY   [program_number]);
+    control_change(P_BEND_RANGE   , g_preset_table_P_BEND_RANGE   [program_number]);
 
-    control_change(FILTER_MODE    , g_preset_table_FILTER_MODE    [program_number]);
+    control_change(CHORUS_MIX     , g_preset_table_CHORUS_MIX     [program_number]);
+    control_change(CHORUS_RATE    , g_preset_table_CHORUS_RATE    [program_number]);
+    control_change(CHORUS_DEPTH   , g_preset_table_CHORUS_DEPTH   [program_number]);
+
+
+    control_change(DELAY_FEEDBACK , g_preset_table_DELAY_FEEDBACK [program_number]);
+    control_change(DELAY_TIME     , g_preset_table_DELAY_TIME     [program_number]);
+
+
   }
 
   INLINE int16_t process(int16_t& right_level) {
@@ -828,6 +823,7 @@ public:
       m_osc.process_at_low_rate_a<2>(lfo_output, m_eg[4].get_output());
       m_filter[2].process_at_low_rate(m_count >> 2, m_eg[4].get_output(), lfo_output, m_osc.get_osc_pitch(2));
       m_amp[2].process_at_low_rate(m_eg[5].get_output());
+      m_delay_fx.process_at_low_rate(m_count >> 2);
       break;
     case 0x03:
       m_osc.process_at_low_rate_a<3>(lfo_output, m_eg[6].get_output());
@@ -869,8 +865,14 @@ public:
       voice_mixer_output = amp_output[0];
     }
 
-    int16_t left_level = m_chorus_fx.process(voice_mixer_output, right_level);
-    return left_level;
+    int16_t chorus_fx_output_r;
+    int16_t chorus_fx_output_l = m_chorus_fx.process(voice_mixer_output, chorus_fx_output_r);
+
+    int16_t delay_fx_output_r;
+    int16_t delay_fx_output_l = m_delay_fx.process(chorus_fx_output_l, chorus_fx_output_r, delay_fx_output_r);
+
+    right_level = delay_fx_output_r;
+    return        delay_fx_output_l;
   }
 
 private:
@@ -910,18 +912,22 @@ private:
   }
 
   INLINE void set_voice_mode(uint8_t controller_value) {
-    static uint8_t voice_mode_table[8] = {
+    static uint8_t voice_mode_table[6] = {
       VOICE_POLYPHONIC,
       VOICE_PARAPHONIC,
-      VOICE_PARAPHONIC,
       VOICE_MONOPHONIC,
       VOICE_MONOPHONIC,
       VOICE_LEGATO_PORTA,
-      VOICE_LEGATO_PORTA,
-      VOICE_LEGATO
+      VOICE_LEGATO,
     };
 
-    uint8_t new_voice_mode = voice_mode_table[controller_value >> 4];
+    volatile int32_t index = ((controller_value * 10) + 127) / 254;
+
+    // index = min(index, 5)
+    index = index - 5;
+    index = (index < 0) * index + 5;
+
+    uint8_t new_voice_mode = voice_mode_table[index];
     if (m_voice_mode != new_voice_mode) {
       m_voice_mode = new_voice_mode;
       all_sound_off();

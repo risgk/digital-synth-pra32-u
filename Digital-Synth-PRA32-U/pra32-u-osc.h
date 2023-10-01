@@ -13,8 +13,9 @@ class PRA32_U_Osc {
   static const uint8_t WAVEFORM_SAW           = 0;
   static const uint8_t WAVEFORM_SQUARE        = 1;
   static const uint8_t WAVEFORM_TRIANGLE      = 2;
-  static const uint8_t WAVEFORM_1_PULSE       = 3;
-  static const uint8_t WAVEFORM_2_NOISE       = 4;
+  static const uint8_t WAVEFORM_SINE          = 3;
+  static const uint8_t WAVEFORM_1_PULSE       = 4;
+  static const uint8_t WAVEFORM_2_NOISE       = 5;
 
   uint32_t       m_portamento_coef[4];
   int16_t        m_pitch_eg_amt[2];
@@ -184,30 +185,32 @@ public:
 
   template <uint8_t N>
   INLINE void set_osc_waveform(uint8_t controller_value) {
-    static uint8_t waveform_tables[2][8] = {
+    static uint8_t waveform_tables[2][6] = {
       {
         WAVEFORM_SAW,
-        WAVEFORM_SAW,
-        WAVEFORM_SAW,
+        WAVEFORM_SINE,
         WAVEFORM_TRIANGLE,
         WAVEFORM_TRIANGLE,
         WAVEFORM_1_PULSE,
         WAVEFORM_1_PULSE,
-        WAVEFORM_SQUARE
       },
       {
         WAVEFORM_SAW,
-        WAVEFORM_SAW,
-        WAVEFORM_SAW,
+        WAVEFORM_SINE,
         WAVEFORM_TRIANGLE,
         WAVEFORM_TRIANGLE,
         WAVEFORM_2_NOISE,
-        WAVEFORM_2_NOISE,
-        WAVEFORM_SQUARE
+        WAVEFORM_SQUARE,
       },
     };
 
-    m_waveform[N] = waveform_tables[N][controller_value >> 4];
+    volatile int32_t index = ((controller_value * 10) + 127) / 254;
+
+    // index = min(index, 5)
+    index = index - 5;
+    index = (index < 0) * index + 5;
+
+    m_waveform[N] = waveform_tables[N][index];
   }
 
   INLINE void set_osc1_shape_control(uint8_t controller_value) {
@@ -416,12 +419,12 @@ public:
   INLINE void process(int16_t noise_int15, int16_t output[4]) {
 #if 1
     if (m_mono_mode == false) {
-      output[0] = process_osc<0>(noise_int15, true) >> 8;
-      output[1] = process_osc<1>(noise_int15, true) >> 8;
-      output[2] = process_osc<2>(noise_int15, true) >> 8;
-      output[3] = process_osc<3>(noise_int15, true) >> 8;
+      output[0] = process_osc<0>(noise_int15) >> 8;
+      output[1] = process_osc<1>(noise_int15) >> 8;
+      output[2] = process_osc<2>(noise_int15) >> 8;
+      output[3] = process_osc<3>(noise_int15) >> 8;
     } else {
-      output[0] = process_osc<0>(noise_int15, false) >> 7;
+      output[0] = process_osc<0>(noise_int15) >> 7;
       output[1] = 0;
       output[2] = 0;
       output[3] = 0;
@@ -436,33 +439,30 @@ public:
 
 private:
   INLINE const int16_t* get_wave_table(uint8_t waveform, uint8_t note_number) {
-    static int16_t** wave_table_table[5] = {
-      g_osc_saw_wave_tables,       // WAVEFORM_SAW
-      g_osc_square_wave_tables,    // WAVEFORM_SQUARE
-      g_osc_triangle_wave_tables,  // WAVEFORM_TRIANGLE
-      g_osc_saw_wave_tables,       // WAVEFORM_1_PULSE
-      g_osc_square_wave_tables,    // WAVEFORM_2_NOISE
+    static int16_t** wave_table_table[6] = {
+      g_osc_saw_wave_tables,       // WAVEFORM_SAW           = 0
+      g_osc_square_wave_tables,    // WAVEFORM_SQUARE        = 1
+      g_osc_triangle_wave_tables,  // WAVEFORM_TRIANGLE      = 2
+      g_osc_sine_wave_tables,      // WAVEFORM_SINE          = 3
+      g_osc_saw_wave_tables,       // WAVEFORM_1_PULSE       = 4
+      g_osc_square_wave_tables,    // WAVEFORM_2_NOISE       = 5
     };
 
     return wave_table_table[waveform][note_number - NOTE_NUMBER_MIN];
   }
 
   INLINE int16_t get_wave_level(const int16_t* wave_table, uint32_t phase) {
-    uint16_t phase16 = phase >> 8;
-
+    uint16_t phase16     = phase >> 8;
     uint16_t curr_index  = phase16 >> (16 - OSC_WAVE_TABLE_SAMPLES_BITS);
     uint16_t next_weight = phase16 & ((1 << (16 - OSC_WAVE_TABLE_SAMPLES_BITS)) - 1);
-    int16_t curr_data   = wave_table[curr_index + 0];
-    int16_t next_data   = wave_table[curr_index + 1];
-
-    // lerp
-    int16_t result = curr_data + (((next_data - curr_data) * next_weight) >> (16 - OSC_WAVE_TABLE_SAMPLES_BITS));
-
-    return result;
+    int16_t  curr_data   = wave_table[curr_index + 0];
+    int16_t  next_data   = wave_table[curr_index + 1];
+    int16_t  level       = curr_data + (((next_data - curr_data) * next_weight) >> (16 - OSC_WAVE_TABLE_SAMPLES_BITS)); // lerp
+    return level;
   }
 
   template <uint8_t N>
-  INLINE int32_t process_osc(int16_t noise_int15, bool halve_noise_level) {
+  INLINE int32_t process_osc(int16_t noise_int15) {
     int32_t result = 0;
 
     int16_t osc1_gain = m_mix_table[(OSC_MIX_TABLE_LENGTH - 1) - (m_mixer_osc_mix_control_effective >> 1)];
@@ -494,9 +494,8 @@ private:
       result += (wave_1 * m_mixer_noise_sub_osc_control * m_osc_gain_effective[N]) >> 6;
     } else if (m_waveform[1] != WAVEFORM_2_NOISE) {
       // Noise (wave_1)
-      int16_t wave_1 =  -OSC_WAVE_TABLE_AMPLITUDE
-                       +(OSC_WAVE_TABLE_AMPLITUDE << 1) * (noise_int15 & 0x1);
-      result += (wave_1 * -m_mixer_noise_sub_osc_control_effective * m_osc_gain_effective[N]) >> (6 + halve_noise_level);
+      int16_t wave_1 = noise_int15 >> 1;
+      result += (wave_1 * -m_mixer_noise_sub_osc_control_effective * m_osc_gain_effective[N]) >> 6;
     }
 
     m_phase[N + 4] += m_freq[N + 4];
@@ -509,9 +508,8 @@ private:
       result += (wave_2 * osc2_gain * m_osc_gain_effective[N]) >> 10;
     } else {
       // Noise (wave_2)
-      int16_t wave_2 =  -OSC_WAVE_TABLE_AMPLITUDE
-                       +(OSC_WAVE_TABLE_AMPLITUDE << 1) * (noise_int15 & 0x1);
-      result += (wave_2 * osc2_gain * m_osc_gain_effective[N]) >> (10 + halve_noise_level);
+      int16_t wave_2 = noise_int15 >> 1;
+      result += (wave_2 * osc2_gain * m_osc_gain_effective[N]) >> 10;
     }
 
     return result;
@@ -575,7 +573,7 @@ private:
       volatile int32_t coarse_sub = (coarse - 12) - NOTE_NUMBER_MIN;
       coarse_sub = (coarse_sub > 0) * coarse_sub + NOTE_NUMBER_MIN;
 
-      m_wave_table_temp[N + 8] = get_wave_table(WAVEFORM_TRIANGLE, coarse_sub);
+      m_wave_table_temp[N + 8] = get_wave_table(WAVEFORM_SINE, coarse_sub);
     }
 
 
@@ -637,22 +635,24 @@ private:
 
   template <uint8_t N>
   INLINE void update_osc1_shape(int16_t lfo_level, int16_t eg_level) {
-    int32_t osc1_shape = 0x8000u - (m_osc1_shape_control_effective << 8)
-                         + ((eg_level * m_shape_eg_amt) >> 5) - ((lfo_level * m_shape_lfo_amt) >> 5);
+    volatile int32_t osc1_shape = (128 << 8) - (m_osc1_shape_control_effective << 8)
+                                  + ((eg_level * m_shape_eg_amt) >> 5) - ((lfo_level * m_shape_lfo_amt) >> 5);
 
-#if 0
-    // osc1_shape = clamp(osc1_shape, 0x0, 0x10000)
-    osc1_shape = osc1_shape - 0x10000;
-    osc1_shape = (osc1_shape < 0) * osc1_shape + 0x10000;
-    osc1_shape = (osc1_shape > 0) * osc1_shape;
-#endif
+    // osc1_shape = clamp(y_0, (0 << 8), (256 << 8))
+    osc1_shape = osc1_shape - (256 << 8);
+    osc1_shape = (osc1_shape < 0) * osc1_shape + (256 << 8) - (0 << 8);
+    osc1_shape = (osc1_shape > 0) * osc1_shape + (0 << 8);
 
     m_osc1_shape[N] = osc1_shape;
   }
 
   template <uint8_t N>
   INLINE void update_osc1_shape_effective() {
-    m_osc1_shape_effective[N] = m_osc1_shape[N];
+    // effective_new = clamp(m_osc1_shape[N], (m_osc1_shape_effective[N] - 0x0100), (m_osc1_shape_effective[N] + 0x0100))
+    volatile int32_t effective_new = m_osc1_shape[N] - (m_osc1_shape_effective[N] + 0x0100);
+    effective_new = (effective_new < 0) * effective_new + (m_osc1_shape_effective[N] + 0x0100) - (m_osc1_shape_effective[N] - 0x0100);
+    effective_new = (effective_new > 0) * effective_new + (m_osc1_shape_effective[N] - 0x0100);
+    m_osc1_shape_effective[N] = effective_new;
   }
 
   INLINE void update_pitch_bend() {
