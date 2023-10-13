@@ -1,4 +1,4 @@
-# Digital Synth PRA32-U v1.0.2
+# Digital Synth PRA32-U v1.0.3
 
 - 2023-10-13 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
@@ -12,12 +12,13 @@
 - Modifiable with Arduino IDE and Arduino-Pico (by Earle F. Philhower, III)
 - An **I2S DAC** hardware (e.g. Pimoroni Pico Audio Pack and Waveshare Pico-Audio) is required
 - Prebuilt UF2 files ("bin")
-    - "Digital-Synth-PRA32-U-1.0.1-Pimoroni-Pico-Audio-Pack.uf2" is for Raspberry Pi Pico and Pimoroni Pico Audio Pack
-    - "Digital-Synth-PRA32-U-1.0.1-Waveshare-Pico-Audio-Rev2.1.uf2" is for Raspberry Pi Pico and Waveshare Pico-Audio Rev2.1
+    - "Digital-Synth-PRA32-U-1.0.3-Pimoroni-Pico-Audio-Pack.uf2" is for Raspberry Pi Pico and Pimoroni Pico Audio Pack
+    - "Digital-Synth-PRA32-U-1.0.3-Waveshare-Pico-Audio-Rev2.1.uf2" is for Raspberry Pi Pico and Waveshare Pico-Audio Rev2.1
 
 
 ## Change History
 
+- v1.0.3: Fix a problem with received MIDI messages being dropped; Improve README; Fix UF2 files
 - v1.0.2: Turn MIDI Thru Off
 - v1.0.1: Fix unstable PRA32-U CTRL operation when using Serial MIDI (DIN/TRS MIDI); Fix README
 - v1.0.0: Change Control Numbers of Control Changes;
@@ -45,7 +46,7 @@
 ## Preparation for modification
 
 - Please install **Arduino IDE**
-    - **NOTE**: Large noise is generated during the sketch upload!
+    - **NOTE**: Large noise is generated during the sketch upload if other than Update Method: "Default (UF2)" is used
     - Info: <https://www.arduino.cc/en/software>
 - Please install Arduino-Pico = **Raspberry Pi Pico/RP2040** (by Earle F. Philhower, III) core
     - Additional Board Manager URL: <https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json>
@@ -199,11 +200,11 @@ graph LR
 
 ![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)
 
-**Digital Synth PRA32-U v1.0.2 by ISGK Instruments (Ryo Ishigaki)**
+**Digital Synth PRA32-U v1.0.3 by ISGK Instruments (Ryo Ishigaki)**
 
 To the extent possible under law, ISGK Instruments (Ryo Ishigaki)
 has waived all copyright and related or neighboring rights
-to Digital Synth PRA32-U v1.0.2.
+to Digital Synth PRA32-U v1.0.3.
 
 You should have received a copy of the CC0 legalcode along with this
 work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.

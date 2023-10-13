@@ -41,7 +41,7 @@ td.keyh {
 }
 </style>
 <script>
-const APP_NAME_VERSION = "PRA32-U CTRL v1.0.2";
+const APP_NAME_VERSION = "PRA32-U CTRL v1.0.3";
 
 const MIDI_CH        = 0;       // 0-based
 
@@ -352,11 +352,11 @@ function sleep(msec) {
 function panic() {
   if (midiOutput) {
     midiOutput.send([(CONTROL_CHANGE | MIDI_CH), ALL_NOTES_OFF, 0]);
-    sleep(10);
+    sleep(0);
     midiOutput.send([(CONTROL_CHANGE | MIDI_CH), ALL_SOUND_OFF, 0]);
-    sleep(10);
+    sleep(0);
     midiOutput.send([(CONTROL_CHANGE | MIDI_CH), RESET_ALL_CTRLS, 0]);
-    sleep(10);
+    sleep(0);
   }
 }
 
@@ -675,7 +675,7 @@ function onChangeControlChange(number, value) {
   if (midiOutput) {
     if ((number <= 127) && (parseInt(value) <= 127)) {
       midiOutput.send([(CONTROL_CHANGE | MIDI_CH), number, parseInt(value)]);
-      sleep(2);
+      sleep(0);
     }
   }
 }
@@ -744,14 +744,14 @@ function saveControllers(number) {
 function noteOn(noteNumber) {
   if (midiOutput) {
     midiOutput.send([(NOTE_ON | MIDI_CH), noteNumber + transpose, 100]);
-    sleep(2);
+    sleep(0);
   }
 }
 
 function noteOff(noteNumber) {
   if (midiOutput) {
     midiOutput.send([(NOTE_OFF | MIDI_CH), noteNumber + transpose, 64]);
-    sleep(2);
+    sleep(0);
   }
 }
 
