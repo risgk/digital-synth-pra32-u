@@ -18,6 +18,7 @@
 
 ## Change History
 
+- v1.0.3: Fix a problem with received MIDI messages being dropped
 - v1.0.2: Turn MIDI Thru Off
 - v1.0.1: Fix unstable PRA32-U CTRL operation when using Serial MIDI (DIN/TRS MIDI); Fix README
 - v1.0.0: Change Control Numbers of Control Changes;
