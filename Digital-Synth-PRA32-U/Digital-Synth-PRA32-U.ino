@@ -90,6 +90,7 @@ void __not_in_flash_func(setup1)() {
   MIDI.setHandleProgramChange(handleHandleProgramChange);
   MIDI.setHandlePitchBend(handleHandlePitchBend);
   MIDI.begin(MIDI_CHANNEL_OMNI);
+  MIDI.turnThruOff();
 #if defined(USE_SERIAL1_MIDI)
   Serial1.begin(SERIAL1_MIDI_SPEED);
 #endif
