@@ -152,7 +152,7 @@
     - 127 (64-127): On, EG Release = EG Decay and Amp Release = Amp Decay
 - Pitch Bend Range
     - 0: 0 semitone (min)
-    - 24: 24 semitone (max)
+    - 60: 60 semitone (max)
 - Chorus Rate
     - 0: LFO Frequency 0.012 Hz (min)
     - 64: LFO Frequency 0.48 Hz
