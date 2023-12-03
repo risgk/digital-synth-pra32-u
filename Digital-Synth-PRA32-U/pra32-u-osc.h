@@ -347,8 +347,8 @@ public:
 
   INLINE void set_pitch_bend_range(uint8_t controller_value) {
     uint8_t range = controller_value;
-    if (range > 60) {
-      range = 60;
+    if (range > 64) {
+      range = 64;
     }
     m_pitch_bend_range = range;
     update_pitch_bend();
