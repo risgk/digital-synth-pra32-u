@@ -141,7 +141,8 @@ public:
     m_x_1 = x_0;
 
     if (m_filter_mode >= 64) {
-      // low cut
+      // high pass
+      m_y_1 = y_0;
       y_0 = ((audio_input * m_filter_gain) << (AUDIO_FRACTION_BITS - (FILTER_TABLE_FRACTION_BITS - 16))) - y_0;
     }
 
@@ -150,7 +151,10 @@ public:
     y_0_clamped = (y_0_clamped < 0) * y_0_clamped + (+MAX_ABS_OUTPUT << 16) - (-MAX_ABS_OUTPUT << 16);
     y_0_clamped = (y_0_clamped > 0) * y_0_clamped + (-MAX_ABS_OUTPUT << 16);
 
-    m_y_1 = y_0_clamped;
+    if (m_filter_mode < 64) {
+      // low pass
+      m_y_1 = y_0_clamped;
+    }
 #else
     volatile int32_t y_0_clamped = x_0;
 #endif
