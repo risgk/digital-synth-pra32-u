@@ -17,7 +17,7 @@
 
 ## Change History
 
-- v1.1.0: Extend Pitch Bend Range
+- v1.1.0: Fix Filter clipping (behavior during oscillation); Extend Pitch Bend Range
 - v1.0.3: Fix a problem with received MIDI messages being dropped; Improve README; Fix UF2 files
 - v1.0.2: Turn MIDI Thru Off
 - v1.0.1: Fix unstable PRA32-U CTRL operation when using Serial MIDI (DIN/TRS MIDI); Fix README
