@@ -85,7 +85,7 @@
 - **NOTE**: The RP2040 system clock (sysclk) changes to overclocked 147.6 MHz by I2S Audio Library setSysClk()
 - Modify `I2S_DAC_MUTE_OFF_PIN`, `I2S_DATA_PIN`, `I2S_MCLK_PIN`, `I2S_MCLK_MULT`, `I2S_BCLK_PIN`, and `I2S_SWAP_BCLK_AND_LRCLK_PINS`
   in "Digital-Synth-PRA32-U.ino" to match the hardware configuration
-- The default setting is for Pimoroni [Pico Audio Pack](https://shop.pimoroni.com/products/pico-audio-pack) [PIM544]
+- The default setting is for Pimoroni [Pico Audio Pack](https://shop.pimoroni.com/products/pico-audio-pack) (PIM544)
 ```
 #define I2S_DAC_MUTE_OFF_PIN            (22)
 #define I2S_DATA_PIN                    (9)
@@ -94,8 +94,8 @@
 #define I2S_BCLK_PIN                    (10)  // I2S_LRCLK_PIN is I2S_BCLK_PIN + 1
 #define I2S_SWAP_BCLK_AND_LRCLK_PINS    (false)
 ```
-- The following is setting is for [Pimoroni Pico VGA Demo Base](https://shop.pimoroni.com/products/pimoroni-pico-vga-demo-base) [PIM553]
-  and [Pimoroni Pico DV Demo Base](https://shop.pimoroni.com/products/pimoroni-pico-dv-demo-base) [PIM588]
+- The following is setting is for [Pimoroni Pico VGA Demo Base](https://shop.pimoroni.com/products/pimoroni-pico-vga-demo-base) (PIM553)
+  and [Pimoroni Pico DV Demo Base](https://shop.pimoroni.com/products/pimoroni-pico-dv-demo-base) (PIM588)
 ```
 //#define I2S_DAC_MUTE_OFF_PIN            (0)
 #define I2S_DATA_PIN                    (26)
@@ -104,7 +104,16 @@
 #define I2S_BCLK_PIN                    (27)  // I2S_LRCLK_PIN is I2S_BCLK_PIN + 1
 #define I2S_SWAP_BCLK_AND_LRCLK_PINS    (false)
 ```
-- The following is setting is for [Waveshare Pico-Audio](https://www.waveshare.com/wiki/Pico-Audio) Rev2.1 [WAVESHARE-20167]
+- The following is setting is for Waveshare Pico-Audio Initial Version (WAVESHARE-20167)
+```
+//#define I2S_DAC_MUTE_OFF_PIN            (0)
+#define I2S_DATA_PIN                    (26)
+//#define I2S_MCLK_PIN                    (0)
+//#define I2S_MCLK_MULT                   (0)
+#define I2S_BCLK_PIN                    (27)  // I2S_LRCLK_PIN is I2S_BCLK_PIN + 1
+#define I2S_SWAP_BCLK_AND_LRCLK_PINS    (false)
+```
+- The following is setting is for [Waveshare Pico-Audio](https://www.waveshare.com/wiki/Pico-Audio) Rev2.1 Version (WAVESHARE-20167)
 ```
 //#define I2S_DAC_MUTE_OFF_PIN            (0)
 #define I2S_DATA_PIN                    (22)
