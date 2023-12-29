@@ -95,6 +95,7 @@
 #define I2S_SWAP_BCLK_AND_LRCLK_PINS    (false)
 ```
 - The following is setting is for [Pimoroni Pico VGA Demo Base](https://shop.pimoroni.com/products/pimoroni-pico-vga-demo-base) [PIM553]
+  and [Pimoroni Pico DV Demo Base](https://shop.pimoroni.com/products/pimoroni-pico-dv-demo-base) [PIM588]
 ```
 //#define I2S_DAC_MUTE_OFF_PIN            (0)
 #define I2S_DATA_PIN                    (26)
