@@ -17,7 +17,7 @@
 
 ## Change History
 
-- v1.2.0: Renew High Pass Filter; Fixed an oscillation problem caused by Delay Feedback
+- v1.2.0: Renew High Pass Filter; Modify Presets; Fixed an oscillation problem caused by Delay Feedback
 - v1.1.1: Revert Filter clipping in High Pass mode
 - v1.1.0: Fix Filter clipping (behavior during oscillation); Extend Pitch Bend Range;
   Delete the code for Waveshare Pico-Audio Rev2.1

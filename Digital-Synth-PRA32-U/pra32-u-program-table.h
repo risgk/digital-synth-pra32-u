@@ -44,7 +44,7 @@ uint8_t g_preset_table_AMP_SUSTAIN    [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0
 uint8_t g_preset_table_AMP_RELEASE    [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
 
 uint8_t g_preset_table_FILTER_MODE    [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
-uint8_t g_preset_table_EG_AMP_MOD     [] = {0  , 127, 0  , 0  , 127, 0  , 127, 0  ,   0  , 127, 0  , 0  , 127, 0  , 127, 0  };
+uint8_t g_preset_table_EG_AMP_MOD     [] = {127, 127, 0  , 0  , 127, 127, 127, 0  ,   127, 127, 0  , 0  , 127, 127, 127, 0  };
 uint8_t g_preset_table_REL_EQ_DECAY   [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
 uint8_t g_preset_table_P_BEND_RANGE   [] = {12 , 12 , 12 , 12 , 12 , 12 , 12 , 12 ,   12 , 12 , 12 , 12 , 12 , 12 , 12 , 12 };
 
