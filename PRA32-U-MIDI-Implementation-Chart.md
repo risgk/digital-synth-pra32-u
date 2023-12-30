@@ -77,7 +77,7 @@
 |                               |               |               |                                     |
 |                            92 | x             | o             | Delay Feedback                      |
 |                            90 | x             | o             | Delay Time                          |
-|                               |               |               |                                     |
+|                            35 | x             | o             | Delay Mode [S|P]                    |
 |                               |               |               |                                     |
 |                               |               |               |                                     |
 |                       112-119 |               |               | Program Change #8-15 by CC          |

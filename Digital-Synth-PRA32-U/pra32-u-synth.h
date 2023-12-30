@@ -668,6 +668,9 @@ public:
     case DELAY_TIME     :
       m_delay_fx.set_delay_time(controller_value);
       break;
+    case DELAY_MODE     :
+      m_delay_fx.set_delay_mode(controller_value);
+      break;
 
     case ALL_NOTES_OFF  :
     case OMNI_MODE_OFF  :
@@ -770,7 +773,7 @@ public:
 
     control_change(DELAY_FEEDBACK , g_preset_table_DELAY_FEEDBACK [program_number]);
     control_change(DELAY_TIME     , g_preset_table_DELAY_TIME     [program_number]);
-
+    control_change(DELAY_MODE     , g_preset_table_DELAY_MODE     [program_number]);
 
   }
 

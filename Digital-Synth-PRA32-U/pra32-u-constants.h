@@ -105,7 +105,7 @@ const uint8_t   CHORUS_DEPTH    = 59;
 
 const uint8_t   DELAY_FEEDBACK  = 92;
 const uint8_t   DELAY_TIME      = 90;
-
+const uint8_t   DELAY_MODE      = 35;
 
 
 const uint8_t   PC_BY_CC_8      = 112;

@@ -105,7 +105,7 @@ CHORUS_DEPTH    = 59
 
 DELAY_FEEDBACK  = 92
 DELAY_TIME      = 90
-
+DELAY_MODE      = 35
 
 
 PC_BY_CC_8      = 112

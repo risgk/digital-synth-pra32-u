@@ -176,3 +176,6 @@
     - 87: 250 ms
     - 93: 270 ms
     - 102: 300 ms (max)
+- Delay Mode [S|P]
+    - 0 (0-63): Stereo Delay
+    - 127 (64-127): Ping Pong Delay

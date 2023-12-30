@@ -108,7 +108,7 @@ const CHORUS_DEPTH    = 59;
 
 const DELAY_FEEDBACK  = 92;
 const DELAY_TIME      = 90;
-
+const DELAY_MODE      = 35;
 
 
 const PC_BY_CC_8      = 112;
@@ -186,7 +186,7 @@ var controlNumberToStringMap = new Map([
 
   [ DELAY_FEEDBACK , "DELAY_FEEDBACK " ],
   [ DELAY_TIME     , "DELAY_TIME     " ],
-
+  [ DELAY_MODE     , "DELAY_MODE     " ],
 
 ]);
 
@@ -243,7 +243,7 @@ var controllersInLocalStorage = [
 
   DELAY_FEEDBACK ,
   DELAY_TIME     ,
-
+  DELAY_MODE     ,
 
 ];
 
@@ -302,7 +302,7 @@ presetControllers[CHORUS_DEPTH   ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
 
 presetControllers[DELAY_FEEDBACK ] = [32 , 32 , 32 , 32 , 32 , 32 , 32 , 0  ];
 presetControllers[DELAY_TIME     ] = [93 , 93 , 93 , 93 , 93 , 93 , 93 , 93 ];
-
+presetControllers[DELAY_MODE     ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 
 
 const PRESET_NUMBER_INITIAL = 7;
@@ -695,6 +695,7 @@ function setRandom() {
         (i != CHORUS_DEPTH   ) &&
         (i != DELAY_FEEDBACK ) &&
         (i != DELAY_TIME     ) &&
+        (i != DELAY_MODE     ) &&
         (i != EG_AMP_MOD     ) &&
         (i != REL_EQ_DECAY   )) {
       onChangeControlChange(i, rand(128));
@@ -708,7 +709,8 @@ function setRandomChorus() {
         (i == CHORUS_RATE    ) ||
         (i == CHORUS_DEPTH   ) ||
         (i == DELAY_FEEDBACK ) ||
-        (i == DELAY_TIME     )) {
+        (i == DELAY_TIME     ) ||
+        (i == DELAY_MODE     )) {
       onChangeControlChange(i, rand(128));
     }
   });
@@ -896,7 +898,7 @@ function fileExport() {
   str += "\n";
   str += fileExportOneLine(DELAY_FEEDBACK );
   str += fileExportOneLine(DELAY_TIME     );
-  str += "\n";
+  str += fileExportOneLine(DELAY_MODE     );
   str += "\n";
   str += "  \"_end         \" : \"\"\n";
   str += "}\n";
@@ -1233,7 +1235,7 @@ function getStoredCCValueString(index, number) {
 <tr>
 <td colspan="2"><b>Delay</b> Feedback                  </td>
 <td colspan="2"><b>Delay</b> Time                      </td>
-<td colspan="2">                                </td>
+<td colspan="2"><b>Delay</b> Mode [S|P]                </td>
 <td colspan="2">                                </td>
 </tr>
 <tr>
@@ -1241,8 +1243,8 @@ function getStoredCCValueString(index, number) {
 <td><span    id="spanDELAY_FEEDBACK " >-</span></td>
 <td><input  id="inputDELAY_TIME     "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(DELAY_TIME     , value)"></td>
 <td><span    id="spanDELAY_TIME     " >-</span></td>
-<td></td>
-<td></td>
+<td><input  id="inputDELAY_MODE     "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(DELAY_MODE     , value)"></td>
+<td><span    id="spanDELAY_MODE     " >-</span></td>
 <td></td>
 <td></td>
 </tr>
