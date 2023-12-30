@@ -10,7 +10,7 @@ uint8_t g_preset_table_MIXER_SUB_OSC  [] = {127, 64 , 64 , 64 , 127, 127, 64 , 6
 
 uint8_t g_preset_table_OSC_2_WAVE     [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
 uint8_t g_preset_table_OSC_2_COARSE   [] = {64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ,   64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 };
-uint8_t g_preset_table_OSC_2_PITCH    [] = {109, 72 , 72 , 72 , 72 , 72 , 72 , 64 ,   109, 72 , 72 , 72 , 72 , 72 , 72 , 64 };
+uint8_t g_preset_table_OSC_2_PITCH    [] = {109, 72 , 72 , 72 , 72 , 72 , 72 , 72 ,   109, 72 , 72 , 72 , 72 , 72 , 72 , 72 };
 uint8_t g_preset_table_MIXER_OSC_MIX  [] = {64 , 64 , 64 , 64 , 64 , 64 , 64 , 0  ,   64 , 64 , 64 , 64 , 64 , 64 , 64 , 0  };
 
 uint8_t g_preset_table_FILTER_CUTOFF  [] = {115, 115, 91 , 103, 55 , 115, 67 , 127,   115, 115, 91 , 103, 55 , 115, 67 , 127};
