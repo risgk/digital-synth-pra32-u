@@ -73,8 +73,8 @@ public:
     int16_t left_delay   = delay_buff_get<0>(m_delay_time_effective);
     int16_t right_delay  = delay_buff_get<1>(m_delay_time_effective);
 
-    int16_t left_output  = (left_input  >> 1) + ((left_delay  * m_delay_feedback_effective) >> 8);
-    int16_t right_output = (right_input >> 1) + ((right_delay * m_delay_feedback_effective) >> 8);
+    int16_t left_output  = (left_input  >> 1) + ((left_delay  * m_delay_feedback_effective) / 256);
+    int16_t right_output = (right_input >> 1) + ((right_delay * m_delay_feedback_effective) / 256);
 
     delay_buff_push<0>(left_output);
     delay_buff_push<1>(right_output);
