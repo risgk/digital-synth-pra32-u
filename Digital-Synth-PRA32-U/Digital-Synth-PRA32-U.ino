@@ -21,7 +21,7 @@
 #define I2S_SWAP_BCLK_AND_LRCLK_PINS    (false)
 
 #define I2S_BUFFERS                     (4)
-#define I2S_BUFFER_WORDS                (32)
+#define I2S_BUFFER_WORDS                (64)
 
 ////////////////////////////////////////////////////////////////
 
