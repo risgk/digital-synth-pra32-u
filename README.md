@@ -17,6 +17,7 @@
 
 ## Change History
 
+-v 1.2.1: Fixed an oscillation problem caused by Delay Feedback
 - v1.2.0: Renew High Pass Filter; Raspberry Pi Pico/RP2040 core version 3.6.2 is recommended
 - v1.1.1: Revert Filter clipping in High Pass mode
 - v1.1.0: Fix Filter clipping (behavior during oscillation); Extend Pitch Bend Range;
