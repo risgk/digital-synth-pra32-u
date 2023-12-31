@@ -25,6 +25,7 @@
 
 //#define USE_PWM_AUDIO_INSTEAD_OF_I2S
 
+// for Pimoroni Pico VGA Demo Base (PIM553)
 #define PWM_AUDIO_L_PIN                 (28)
 #define PWM_AUDIO_R_PIN                 (27)
 

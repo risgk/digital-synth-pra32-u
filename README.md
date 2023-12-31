@@ -18,8 +18,8 @@
 ## Change History
 
 - v1.2.0: Increase DMA buffer size for future feature additions (audio latency: 2.7 ms -> 5.3 ms);
-  Renew High Pass Filter; Add Delay Mode (Ping Pong Delay); Modify Presets;
-  Fixed an oscillation problem caused by Delay Feedback
+  Renew High Pass Filter; Add Delay Mode (Ping Pong Delay); Add PWM audio output option (experimental);
+  Modify Presets; Fixed an oscillation problem caused by Delay Feedback
 - v1.1.1: Revert Filter clipping in High Pass mode
 - v1.1.0: Fix Filter clipping (behavior during oscillation); Extend Pitch Bend Range;
   Delete the code for Waveshare Pico-Audio Rev2.1
@@ -64,24 +64,31 @@
 
 ## Features
 
-### MIDI In
+### MIDI Input
 
-- USB MIDI is the default
-    - MIDI Device Name: "Digital Synth PRA32-U"
-    - **NOTE**: Select USB Stack: "Adafruit TinyUSB" in the Arduino IDE "Tools" menu
-    - **KNOWN ISSUE**: When using some USB MIDI host hardware and communicate a lot, this device may miss MIDI messages
+#### USB MIDI Input (Default)
+
+- MIDI Device Name: "Digital Synth PRA32-U"
+- **NOTE**: Select USB Stack: "Adafruit TinyUSB" in the Arduino IDE "Tools" menu
+- **KNOWN ISSUE**: When using some USB MIDI host hardware and communicate a lot, this device may miss MIDI messages
+
+
+#### Serial MIDI Input (Option)
+
 - Serial MIDI can also be used instead of USB MIDI
-    - Comment out `#define USE_USB_MIDI` and uncomment out `//#define USE_SERIAL1_MIDI`
-      in "Digital-Synth-PRA32-U.ino" and modify `SERIAL1_MIDI_SPEED`
-    - Speed: 31.25 kbps (default) or 38.4 kbps
-    - GP0 and GP1 pins are used by UART0 TX and UART0 RX
-    - DIN/TRS MIDI is available by using (and modifying) Adafruit MIDI FeatherWing Kit, for example
-        - Adafruit [MIDI FeatherWing Kit](https://www.adafruit.com/product/4740)
-        - 木下研究所 [MIDI-UARTインターフェースさん キット](https://www.switch-science.com/products/8117) (Shipping to Japan only)
-        - necobit電子 [MIDI Unit for GROVE](https://necobit.com/denshi/grove-midi-unit/) (Shipping to Japan only)
+- Comment out `#define USE_USB_MIDI` and uncomment out `//#define USE_SERIAL1_MIDI`
+  in "Digital-Synth-PRA32-U.ino" and modify `SERIAL1_MIDI_SPEED`
+- Speed: 31.25 kbps (default) or 38.4 kbps
+- GP0 and GP1 pins are used by UART0 TX and UART0 RX
+- DIN/TRS MIDI is available by using (and modifying) Adafruit MIDI FeatherWing Kit, for example
+    - Adafruit [MIDI FeatherWing Kit](https://www.adafruit.com/product/4740)
+    - 木下研究所 [MIDI-UARTインターフェースさん キット](https://www.switch-science.com/products/8117) (Shipping to Japan only)
+    - necobit電子 [MIDI Unit for GROVE](https://necobit.com/denshi/grove-midi-unit/) (Shipping to Japan only)
 
 
-### Audio Out
+### Audio Output
+
+#### I2S Audio Output (Default)
 
 - Use an I2S DAC (e.g. Texas Instruments PCM5100A and Cirrus Logic CS4344), Sampling Rate: 48 kHz, Bit Depth: 16 bit
 - **NOTE**: The RP2040 system clock (sysclk) changes to overclocked 147.6 MHz by I2S Audio Library setSysClk()
@@ -123,6 +130,20 @@
 #define I2S_MCLK_MULT                   (256)
 #define I2S_BCLK_PIN                    (27)  // I2S_LRCLK_PIN is I2S_BCLK_PIN + 1
 #define I2S_SWAP_BCLK_AND_LRCLK_PINS    (true)
+```
+
+
+#### PWM Audio Output (Option) (Experimental)
+
+- PWM Audio can also be used instead of I2S
+- If PWM Audio is selected, Polyphonic Mode is disabled and Paraphonic Mode is used instead
+  (due to lack of CPU power)
+- Uncomment out `//#define USE_PWM_AUDIO_INSTEAD_OF_I2S`
+  in "Digital-Synth-PRA32-U.ino" and modify `PWM_AUDIO_L_PIN` and `PWM_AUDIO_R_PIN`
+- The following is setting is for Pimoroni Pico VGA Demo Base (PIM553)
+```
+#define PWM_AUDIO_L_PIN                 (28)
+#define PWM_AUDIO_R_PIN                 (27)
 ```
 
 
