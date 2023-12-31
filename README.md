@@ -70,7 +70,6 @@
 
 - MIDI Device Name: "Digital Synth PRA32-U"
 - **NOTE**: Select USB Stack: "Adafruit TinyUSB" in the Arduino IDE "Tools" menu
-- **KNOWN ISSUE**: When using some USB MIDI host hardware and communicate a lot, this device may miss MIDI messages
 
 
 #### Serial MIDI Input (Option)
