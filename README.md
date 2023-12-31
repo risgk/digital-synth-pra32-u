@@ -136,8 +136,8 @@
 #### PWM Audio Output (Option) (Experimental)
 
 - PWM Audio can also be used instead of I2S
-- If PWM Audio is selected, Polyphonic Mode is disabled and Paraphonic Mode is used instead
-  (due to lack of CPU power)
+    - If PWM Audio is selected, Polyphonic Mode is disabled and Paraphonic Mode is used instead (due to lack of CPU power)
+    - See "PWM audio" in [Hardware design with RP2040](https://datasheets.raspberrypi.com/rp2040/hardware-design-with-rp2040.pdf) for details
 - Uncomment out `//#define USE_PWM_AUDIO_INSTEAD_OF_I2S`
   in "Digital-Synth-PRA32-U.ino" and modify `PWM_AUDIO_L_PIN` and `PWM_AUDIO_R_PIN`
 - The following is setting is for Pimoroni Pico VGA Demo Base (PIM553)

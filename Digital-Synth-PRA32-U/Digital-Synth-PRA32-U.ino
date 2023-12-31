@@ -69,12 +69,24 @@ void __not_in_flash_func(loop)() {
 void __not_in_flash_func(setup1)() {
   g_i2s_output.setSysClk(SAMPLING_RATE);
 #if defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
+#if ((PWM_AUDIO_L_PIN + 1) == PWM_AUDIO_R_PIN) && ((PWM_AUDIO_L_PIN % 2) == 0)
+  g_pwm_l.setStereo(true);
+  g_pwm_l.setBuffers(I2S_BUFFERS, I2S_BUFFER_WORDS);
+  g_pwm_l.setFrequency(SAMPLING_RATE);
+  g_pwm_l.begin();
+#elif ((PWM_AUDIO_R_PIN + 1) == PWM_AUDIO_L_PIN) && ((PWM_AUDIO_R_PIN % 2) == 0)
+  g_pwm_r.setStereo(true);
+  g_pwm_r.setBuffers(I2S_BUFFERS, I2S_BUFFER_WORDS);
+  g_pwm_r.setFrequency(SAMPLING_RATE);
+  g_pwm_r.begin();
+#else
   g_pwm_l.setBuffers(I2S_BUFFERS, I2S_BUFFER_WORDS / 2);
   g_pwm_r.setBuffers(I2S_BUFFERS, I2S_BUFFER_WORDS / 2);
   g_pwm_l.setFrequency(SAMPLING_RATE);
   g_pwm_r.setFrequency(SAMPLING_RATE);
   g_pwm_l.begin();
   g_pwm_r.begin();
+#endif
 #else // defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
   g_i2s_output.setFrequency(SAMPLING_RATE);
   g_i2s_output.setDATA(I2S_DATA_PIN);
@@ -153,8 +165,16 @@ void __not_in_flash_func(loop1)() {
 
 #if defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
   for (uint32_t i = 0; i < I2S_BUFFER_WORDS; i++) {
+#if ((PWM_AUDIO_L_PIN + 1) == PWM_AUDIO_R_PIN) && ((PWM_AUDIO_L_PIN % 2) == 0)
+    g_pwm_l.write(left_buffer[i]);
+    g_pwm_l.write(right_buffer[i]);
+#elif ((PWM_AUDIO_R_PIN + 1) == PWM_AUDIO_L_PIN) && ((PWM_AUDIO_R_PIN % 2) == 0)
+    g_pwm_r.write(right_buffer[i]);
+    g_pwm_r.write(left_buffer[i]);
+#else
     g_pwm_l.write(left_buffer[i]);
     g_pwm_r.write(right_buffer[i]);
+#endif
   }
 #else // defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
   for (uint32_t i = 0; i < I2S_BUFFER_WORDS; i++) {
