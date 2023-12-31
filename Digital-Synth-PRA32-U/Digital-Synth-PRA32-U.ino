@@ -4,16 +4,13 @@
 
 //#define DEBUG_PRINT
 
-
 #define USE_USB_MIDI      // Select USB Stack: "Adafruit TinyUSB" in the Arduino IDE "Tools" menu
 //#define USE_SERIAL1_MIDI
 
 #define SERIAL1_MIDI_SPEED              (31250)
 //#define SERIAL1_MIDI_SPEED              (38400)
 
-
 #define MIDI_CH                         (0)  // 0-based
-
 
 // for Pimoroni Pico Audio Pack [PIM544]
 #define I2S_DAC_MUTE_OFF_PIN            (22)
@@ -26,14 +23,10 @@
 #define I2S_BUFFERS                     (4)
 #define I2S_BUFFER_WORDS                (64)
 
-
 //#define USE_PWM_AUDIO_INSTEAD_OF_I2S
 
 #define PWM_AUDIO_L_PIN                 (28)
 #define PWM_AUDIO_R_PIN                 (27)
-
-#define PWM_AUDIO_BUFFERS               (4)
-#define PWM_AUDIO_BUFFER_WORDS          (64)
 
 ////////////////////////////////////////////////////////////////
 
@@ -41,7 +34,6 @@
 #include "pra32-u-synth.h"
 
 PRA32_U_Synth g_synth;
-
 
 #include <MIDI.h>
 #if defined(USE_USB_MIDI)
@@ -52,7 +44,6 @@ MIDI_CREATE_INSTANCE(Adafruit_USBD_MIDI, usbd_midi, MIDI);
 MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
 #endif // defined(USE_USB_MIDI)
 
-
 #if defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
 #include <PWMAudio.h>
 PWMAudio g_pwm_l(PWM_AUDIO_L_PIN);
@@ -62,13 +53,11 @@ PWMAudio g_pwm_r(PWM_AUDIO_R_PIN);
 #include <I2S.h>
 I2S g_i2s_output(OUTPUT);
 
-
 void handleNoteOn(byte channel, byte pitch, byte velocity);
 void handleNoteOff(byte channel, byte pitch, byte velocity);
 void handleControlChange(byte channel, byte number, byte value);
 void handleHandleProgramChange(byte channel, byte number);
 void handleHandlePitchBend(byte channel, int bend);
-
 
 void __not_in_flash_func(setup)() {
 }
@@ -76,12 +65,11 @@ void __not_in_flash_func(setup)() {
 void __not_in_flash_func(loop)() {
 }
 
-
 void __not_in_flash_func(setup1)() {
   g_i2s_output.setSysClk(SAMPLING_RATE);
 #if defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
-  g_pwm_l.setBuffers(PWM_AUDIO_BUFFERS, PWM_AUDIO_BUFFER_WORDS / 2);
-  g_pwm_r.setBuffers(PWM_AUDIO_BUFFERS, PWM_AUDIO_BUFFER_WORDS / 2);
+  g_pwm_l.setBuffers(I2S_BUFFERS, I2S_BUFFER_WORDS / 2);
+  g_pwm_r.setBuffers(I2S_BUFFERS, I2S_BUFFER_WORDS / 2);
   g_pwm_l.setFrequency(SAMPLING_RATE);
   g_pwm_r.setFrequency(SAMPLING_RATE);
   g_pwm_l.begin();
@@ -102,7 +90,6 @@ void __not_in_flash_func(setup1)() {
   g_i2s_output.begin();
 #endif // defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
 
-
 #if defined(USE_USB_MIDI)
   TinyUSB_Device_Init(0);
   USBDevice.setManufacturerDescriptor("ISGK Instruments");
@@ -119,7 +106,6 @@ void __not_in_flash_func(setup1)() {
   Serial1.begin(SERIAL1_MIDI_SPEED);
 #endif // defined(USE_SERIAL1_MIDI)
 
-
 #if defined(DEBUG_PRINT)
 #if defined(USE_SERIAL1_MIDI)
   Serial.begin(0);  // Select USB Stack: "Pico SDK" in the Arduino IDE "Tools" menu
@@ -128,10 +114,8 @@ void __not_in_flash_func(setup1)() {
 #endif // defined(USE_SERIAL1_MIDI)
 #endif // defined(DEBUG_PRINT)
 
-
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
-
 
 #if defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
 #else // defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
@@ -147,34 +131,6 @@ void __not_in_flash_func(loop1)() {
 #if defined(DEBUG_PRINT)
   uint32_t debug_measurement_start0_us = micros();
 #endif // defined(DEBUG_PRINT)
-
-
-#if defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
-
-  for (uint32_t i = 0; i < (PWM_AUDIO_BUFFER_WORDS + 15) / 16; i++) {
-    MIDI.read();
-  }
-
-#if defined(DEBUG_PRINT)
-  uint32_t debug_measurement_start1_us = micros();
-#endif // defined(DEBUG_PRINT)
-
-  int16_t left_buffer[PWM_AUDIO_BUFFER_WORDS];
-  int16_t right_buffer[PWM_AUDIO_BUFFER_WORDS];
-  for (uint32_t i = 0; i < PWM_AUDIO_BUFFER_WORDS; i++) {
-    left_buffer[i] = g_synth.process(right_buffer[i]);
-  }
-
-#if defined(DEBUG_PRINT)
-  uint32_t debug_measurement_end_us = micros();
-#endif // defined(DEBUG_PRINT)
-
-  for (uint32_t i = 0; i < I2S_BUFFER_WORDS; i++) {
-    g_pwm_l.write(left_buffer[i]);
-    g_pwm_r.write(right_buffer[i]);
-  }
-
-#else // defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
 
   for (uint32_t i = 0; i < (I2S_BUFFER_WORDS + 15) / 16; i++) {
     MIDI.read();
@@ -194,12 +150,16 @@ void __not_in_flash_func(loop1)() {
   uint32_t debug_measurement_end_us = micros();
 #endif // defined(DEBUG_PRINT)
 
+#if defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
+  for (uint32_t i = 0; i < I2S_BUFFER_WORDS; i++) {
+    g_pwm_l.write(left_buffer[i]);
+    g_pwm_r.write(right_buffer[i]);
+  }
+#else // defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
   for (uint32_t i = 0; i < I2S_BUFFER_WORDS; i++) {
     g_i2s_output.write16(left_buffer[i], right_buffer[i]);
   }
-
 #endif // defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
-
 
 #if defined(DEBUG_PRINT)
   static uint32_t s_debug_measurement_max0_us = 0;
