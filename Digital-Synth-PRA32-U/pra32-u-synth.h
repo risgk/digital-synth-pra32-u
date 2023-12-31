@@ -931,6 +931,12 @@ private:
     index = (index < 0) * index + 5;
 
     uint8_t new_voice_mode = voice_mode_table[index];
+#if defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
+    // due to CPU power shortage
+    if (new_voice_mode == VOICE_POLYPHONIC) {
+      new_voice_mode = VOICE_PARAPHONIC;
+    }
+#endif // defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
     if (m_voice_mode != new_voice_mode) {
       m_voice_mode = new_voice_mode;
       all_sound_off();
