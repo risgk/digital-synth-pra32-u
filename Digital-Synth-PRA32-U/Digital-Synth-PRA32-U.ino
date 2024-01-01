@@ -29,6 +29,8 @@
 #define PWM_AUDIO_L_PIN                 (28)
 #define PWM_AUDIO_R_PIN                 (27)
 
+#define USE_2_CORES_FOR_SIGNAL_PROCESSING
+
 ////////////////////////////////////////////////////////////////
 
 #include "pra32-u-common.h"
@@ -43,7 +45,7 @@ Adafruit_USBD_MIDI usbd_midi;
 MIDI_CREATE_INSTANCE(Adafruit_USBD_MIDI, usbd_midi, MIDI);
 #elif defined(USE_SERIAL1_MIDI)
 MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
-#endif // defined(USE_USB_MIDI)
+#endif
 
 #if defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
 #include <PWMAudio.h>
@@ -64,6 +66,7 @@ void __not_in_flash_func(setup)() {
 }
 
 void __not_in_flash_func(loop)() {
+  g_synth.secondary_core_process();
 }
 
 void __not_in_flash_func(setup1)() {

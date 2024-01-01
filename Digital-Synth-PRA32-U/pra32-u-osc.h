@@ -37,7 +37,6 @@ class PRA32_U_Osc {
   int8_t         m_osc_gain_effective[4];
   int8_t         m_osc_level;
 
-  boolean        m_mono_mode;
   boolean        m_gate_enabled;
   uint8_t        m_mixer_osc_mix_control;
   uint8_t        m_mixer_osc_mix_control_effective;
@@ -79,7 +78,6 @@ public:
   , m_osc_gain_effective()
   , m_osc_level()
 
-  , m_mono_mode()
   , m_gate_enabled()
   , m_mixer_osc_mix_control()
   , m_mixer_osc_mix_control_effective()
@@ -104,7 +102,6 @@ public:
     m_portamento_coef[2] = 0;
     m_portamento_coef[3] = 0;
 
-    set_mono_mode    (false);
     set_gate_enabled (false);
     set_mixer_osc_mix(0);
     set_osc2_pitch   (0);
@@ -272,10 +269,6 @@ public:
     m_shape_lfo_amt = -((controller_value - 64) << 1);
   }
 
-  INLINE void set_mono_mode(boolean mono_mode) {
-    m_mono_mode = mono_mode;
-  }
-
   INLINE void set_gate_enabled(boolean gate_enabled) {
     m_gate_enabled = gate_enabled;
   }
@@ -416,24 +409,12 @@ public:
     }
   }
 
-  INLINE void process(int16_t noise_int15, int16_t output[4]) {
+  template <uint8_t N>
+  INLINE int16_t process(int16_t noise_int15) {
 #if 1
-    if (m_mono_mode == false) {
-      output[0] = process_osc<0>(noise_int15) >> 8;
-      output[1] = process_osc<1>(noise_int15) >> 8;
-      output[2] = process_osc<2>(noise_int15) >> 8;
-      output[3] = process_osc<3>(noise_int15) >> 8;
-    } else {
-      output[0] = process_osc<0>(noise_int15) >> 7;
-      output[1] = 0;
-      output[2] = 0;
-      output[3] = 0;
-    }
+    return process_osc<N>(noise_int15) >> 8;
 #else
-    output[1] = 0;
-    output[2] = 0;
-    output[3] = 0;
-    output[4] = 0;
+    return = 0;
 #endif
   }
 
