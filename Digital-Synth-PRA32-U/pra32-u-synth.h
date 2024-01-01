@@ -933,7 +933,7 @@ public:
 
   INLINE void secondary_core_process() {
 #if defined(USE_2_CORES_FOR_SIGNAL_PROCESSING)
-    if (m_secondary_core_processing_request) {
+    if (m_secondary_core_processing_request == 1) {
       int16_t noise_int15 = static_cast<int16_t>(m_secondary_core_processing_argument);
 
       int16_t osc_output   [4];
@@ -950,7 +950,6 @@ public:
         amp_output   [3] = m_amp   [3].process(filter_output[3]);
 
         m_secondary_core_processing_result = amp_output[2] + amp_output[3];
-
       } else if (m_voice_mode == VOICE_PARAPHONIC) {
         osc_output[2] = m_osc.process<2>(noise_int15);
         osc_output[3] = m_osc.process<3>(noise_int15);
