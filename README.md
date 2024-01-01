@@ -72,7 +72,7 @@
 - **NOTE**: Select USB Stack: "Adafruit TinyUSB" in the Arduino IDE "Tools" menu
 
 
-#### Serial MIDI Input (Option)
+#### Serial MIDI Input (Optional)
 
 - Serial MIDI can also be used instead of USB MIDI
 - Comment out `#define USE_USB_MIDI` and uncomment out `//#define USE_SERIAL1_MIDI`
@@ -132,7 +132,7 @@
 ```
 
 
-#### PWM Audio Output (Option) (Experimental)
+#### PWM Audio Output (Optional) (Experimental)
 
 - PWM Audio can also be used instead of I2S
     - If PWM Audio is selected, Polyphonic Mode is disabled and Paraphonic Mode is used instead (due to lack of CPU power)
