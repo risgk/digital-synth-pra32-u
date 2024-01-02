@@ -466,6 +466,7 @@ public:
   INLINE void reset_all_controllers() {
     pitch_bend(0, 64);
     set_modulation(0);
+    set_breath_controller(0);
 #if 0
     set_expression(127);
 #endif
@@ -694,14 +695,7 @@ public:
       break;
 
     case BTH_CONTROLLER    :
-      m_filter[0].set_breath_controller(controller_value);
-      m_filter[1].set_breath_controller(controller_value);
-      m_filter[2].set_breath_controller(controller_value);
-      m_filter[3].set_breath_controller(controller_value);
-      m_amp[0].set_breath_controller(controller_value);
-      m_amp[1].set_breath_controller(controller_value);
-      m_amp[2].set_breath_controller(controller_value);
-      m_amp[3].set_breath_controller(controller_value);
+      set_breath_controller(controller_value);
       break;
 
     case ALL_NOTES_OFF  :
@@ -1059,6 +1053,17 @@ private:
 
   INLINE void set_modulation(uint8_t controller_value) {
     m_lfo.set_lfo_depth<1>(controller_value);
+  }
+
+  INLINE void set_breath_controller(uint8_t controller_value) {
+    m_filter[0].set_breath_controller(controller_value);
+    m_filter[1].set_breath_controller(controller_value);
+    m_filter[2].set_breath_controller(controller_value);
+    m_filter[3].set_breath_controller(controller_value);
+    m_amp[0].set_breath_controller(controller_value);
+    m_amp[1].set_breath_controller(controller_value);
+    m_amp[2].set_breath_controller(controller_value);
+    m_amp[3].set_breath_controller(controller_value);
   }
 
 #if 0

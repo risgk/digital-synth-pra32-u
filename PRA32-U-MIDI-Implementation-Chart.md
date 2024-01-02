@@ -23,7 +23,8 @@
 | Pitch Bend                    | x             | o             |                                     |
 +-------------------------------+---------------+---------------+-------------------------------------+
 | Control                     1 | x             | o             | Modulation                          |
-| Change                     64 | x             | o             | Sustain Pedal [Off|On]              |
+| Change                      2 | x             | o             | Breath Controller                   |
+|                            64 | x             | o             | Sustain Pedal [Off|On]              |
 |                               |               |               |                                     |
 |                           102 | x             | o             | Osc 1 Wave [Saw|Sin|-|Tri|-|Pls]    |
 |                            19 | x             | o             | Osc 1 Shape $$                      |
