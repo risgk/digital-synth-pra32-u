@@ -60,9 +60,9 @@ private:
     if (m_breath_mod < 32) {
       m_breath_gain_linear = 16384;
     } else if (m_breath_mod < 96) {
-      m_breath_gain_linear = (m_breath_controller * 16384) / 127;
-    } else {
       m_breath_gain_linear = ((m_breath_controller * m_breath_controller) * 16384) / 16129;
+    } else {
+      m_breath_gain_linear = (m_breath_controller * 16384) / 127;
     }
   }
 };
