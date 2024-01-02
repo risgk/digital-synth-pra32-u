@@ -179,3 +179,10 @@
 - Delay Mode [S|P]
     - 0 (0-63): Stereo Delay
     - 127 (64-127): Ping Pong Delay
+- Breath Filter Amt [-|+]
+    - -60 (4): -60 (min)
+    - +60 (124): +60 (max)
+- Breath Amp Mod [Off|Qad|Lin]
+    - 0 (0-31): Off
+    - 64 (32-95): Quadratic Curve
+    - 127 (96-127): Liniear Curve

@@ -674,6 +674,7 @@ function updateDisplayOfControl(number, value) {
   case EG_OSC_AMT      :
   case LFO_OSC_AMT     :
   case LFO_FILTER_AMT  :
+  case BTH_FILTER_AMT  :
     if (value >= 64) {
       document.getElementById("span" + controlNumberToStringMap.get(number)).innerHTML = "+" + String(value - 64);
     } else {
