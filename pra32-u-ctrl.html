@@ -194,6 +194,11 @@ var controlNumberToStringMap = new Map([
   [ DELAY_TIME     , "DELAY_TIME     " ],
   [ DELAY_MODE     , "DELAY_MODE     " ],
 
+
+  [ BTH_FILTER_AMT , "BTH_FILTER_AMT " ],
+  [ BTH_AMP_MOD    , "BTH_AMP_MOD    " ],
+
+
 ]);
 
 var controllersInLocalStorage = [
@@ -250,6 +255,11 @@ var controllersInLocalStorage = [
   DELAY_FEEDBACK ,
   DELAY_TIME     ,
   DELAY_MODE     ,
+
+
+  BTH_FILTER_AMT ,
+  BTH_AMP_MOD    ,
+
 
 ];
 
@@ -309,6 +319,11 @@ presetControllers[CHORUS_DEPTH   ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
 presetControllers[DELAY_FEEDBACK ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 0  ];
 presetControllers[DELAY_TIME     ] = [93 , 93 , 93 , 93 , 93 , 93 , 93 , 93 ];
 presetControllers[DELAY_MODE     ] = [127, 127, 127, 127, 127, 127, 127, 127];
+
+
+presetControllers[BTH_FILTER_AMT ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
+presetControllers[BTH_AMP_MOD    ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
+
 
 
 const PRESET_NUMBER_INITIAL = 7;
@@ -696,14 +711,16 @@ function setRandom() {
   controllersInLocalStorage.forEach(function(i) {
     if ((i != VOICE_MODE     ) &&
         (i != AMP_GAIN       ) &&
+        (i != EG_AMP_MOD     ) &&
+        (i != REL_EQ_DECAY   ) &&
         (i != CHORUS_MIX     ) &&
         (i != CHORUS_RATE    ) &&
         (i != CHORUS_DEPTH   ) &&
         (i != DELAY_FEEDBACK ) &&
         (i != DELAY_TIME     ) &&
         (i != DELAY_MODE     ) &&
-        (i != EG_AMP_MOD     ) &&
-        (i != REL_EQ_DECAY   )) {
+        (i != BTH_FILTER_AMT ) &&
+        (i != BTH_AMP_MOD    )) {
       onChangeControlChange(i, rand(128));
     }
   });
@@ -905,6 +922,11 @@ function fileExport() {
   str += fileExportOneLine(DELAY_FEEDBACK );
   str += fileExportOneLine(DELAY_TIME     );
   str += fileExportOneLine(DELAY_MODE     );
+  str += "\n";
+  str += "\n";
+  str += fileExportOneLine(BTH_FILTER_AMT );
+  str += fileExportOneLine(BTH_AMP_MOD    );
+  str += "\n";
   str += "\n";
   str += "  \"_end         \" : \"\"\n";
   str += "}\n";
@@ -1251,6 +1273,22 @@ function getStoredCCValueString(index, number) {
 <td><span    id="spanDELAY_TIME     " >-</span></td>
 <td><input  id="inputDELAY_MODE     "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(DELAY_MODE     , value)"></td>
 <td><span    id="spanDELAY_MODE     " >-</span></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="2">Breath Filter Amt [-|+]         </td>
+<td colspan="2">Breath Amp Mod [Off|Lin|Qad]    </td>
+<td colspan="2">                                </td>
+<td colspan="2">                                </td>
+</tr>
+<tr>
+<td><input  id="inputBTH_FILTER_AMT "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(BTH_FILTER_AMT , value)"></td>
+<td><span    id="spanBTH_FILTER_AMT " >-</span></td>
+<td><input  id="inputBTH_AMP_MOD    "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(BTH_AMP_MOD    , value)"></td>
+<td><span    id="spanBTH_AMP_MOD    " >-</span></td>
+<td></td>
+<td></td>
 <td></td>
 <td></td>
 </tr>

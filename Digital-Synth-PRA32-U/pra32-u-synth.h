@@ -807,6 +807,11 @@ public:
     control_change(DELAY_TIME     , g_preset_table_DELAY_TIME     [program_number]);
     control_change(DELAY_MODE     , g_preset_table_DELAY_MODE     [program_number]);
 
+
+    control_change(BTH_FILTER_AMT , g_preset_table_BTH_FILTER_AMT [program_number]);
+    control_change(BTH_AMP_MOD    , g_preset_table_BTH_AMP_MOD    [program_number]);
+
+
   }
 
   INLINE int16_t process(int16_t& right_level) {
