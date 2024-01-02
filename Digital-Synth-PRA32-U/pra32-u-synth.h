@@ -680,6 +680,30 @@ public:
       m_delay_fx.set_delay_mode(controller_value);
       break;
 
+    case BTH_FILTER_AMT    :
+      m_filter[0].set_cutoff_breath_amt(controller_value);
+      m_filter[1].set_cutoff_breath_amt(controller_value);
+      m_filter[2].set_cutoff_breath_amt(controller_value);
+      m_filter[3].set_cutoff_breath_amt(controller_value);
+      break;
+    case BTH_AMP_MOD    :
+      m_amp[0].set_breath_mod(controller_value);
+      m_amp[1].set_breath_mod(controller_value);
+      m_amp[2].set_breath_mod(controller_value);
+      m_amp[3].set_breath_mod(controller_value);
+      break;
+
+    case BTH_CONTROLLER    :
+      m_filter[0].set_breath_controller(controller_value);
+      m_filter[1].set_breath_controller(controller_value);
+      m_filter[2].set_breath_controller(controller_value);
+      m_filter[3].set_breath_controller(controller_value);
+      m_amp[0].set_breath_controller(controller_value);
+      m_amp[1].set_breath_controller(controller_value);
+      m_amp[2].set_breath_controller(controller_value);
+      m_amp[3].set_breath_controller(controller_value);
+      break;
+
     case ALL_NOTES_OFF  :
     case OMNI_MODE_OFF  :
     case OMNI_MODE_ON   :
