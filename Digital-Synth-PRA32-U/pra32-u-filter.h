@@ -25,6 +25,8 @@ class PRA32_U_Filter {
   int8_t          m_cutoff_pitch_amt;
   int8_t          m_cutoff_offset;
   uint8_t         m_filter_mode;
+  int8_t          m_cutoff_breath_amt;
+  uint8_t         m_breath_controller;
 
   const uint8_t AUDIO_FRACTION_BITS = 14;
   const int16_t MAX_ABS_OUTPUT = ((124 << (AUDIO_FRACTION_BITS - 8)) >> 8) << 8;
@@ -50,6 +52,8 @@ public:
   , m_cutoff_pitch_amt()
   , m_cutoff_offset()
   , m_filter_mode()
+  , m_cutoff_breath_amt()
+  , m_breath_controller()
   {
     m_cutoff_current = 254;
 
@@ -112,6 +116,14 @@ public:
 
   INLINE void set_filter_mode(uint8_t controller_value) {
     m_filter_mode = controller_value;
+  }
+
+  INLINE void set_cutoff_breath_amt(uint8_t controller_value) {;
+    m_cutoff_breath_amt = get_cutoff_mod_amt(controller_value);
+  }
+
+  INLINE void set_breath_controller(uint8_t controller_value) {
+    m_breath_controller = (controller_value + 1) >> 1;
   }
 
   INLINE void set_cutoff_offset(int8_t cutoff_offset) {
@@ -179,6 +191,7 @@ private:
 
     m_cutoff_candidate += (lfo_input * m_cutoff_lfo_amt) >> 14;
     m_cutoff_candidate += (((osc_pitch - (60 << 8)) * m_cutoff_pitch_amt) + 128) >> 8;
+    m_cutoff_candidate += (m_breath_controller * m_cutoff_breath_amt) >> 6;
 
     // cutoff_target = clamp(m_cutoff_candidate, 0, 255)
     volatile int16_t cutoff_target = m_cutoff_candidate - 255;
