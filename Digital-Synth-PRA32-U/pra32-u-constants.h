@@ -94,8 +94,8 @@ const uint8_t   AMP_DECAY       = 53;
 const uint8_t   AMP_SUSTAIN     = 54;
 const uint8_t   AMP_RELEASE     = 55;
 
-const uint8_t   FILTER_MODE     = 86;
-const uint8_t   EG_AMP_MOD      = 87;
+const uint8_t   FILTER_MODE     = 78;
+const uint8_t   EG_AMP_MOD      = 28;
 const uint8_t   REL_EQ_DECAY    = 29;
 const uint8_t   P_BEND_RANGE    = 57;
 

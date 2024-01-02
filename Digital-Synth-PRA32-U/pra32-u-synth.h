@@ -1172,7 +1172,11 @@ private:
   }
 
   INLINE void update_eg_and_amp_eg() {
+#if 1
+    if (m_controller_value_eg_amp_mod < 1) {
+#else
     if (m_controller_value_eg_amp_mod < 64) {
+#endif
       m_eg[0].set_attack  (m_controller_value_eg_attack);
       m_eg[1].set_attack  (m_controller_value_amp_attack);
       m_eg[2].set_attack  (m_controller_value_eg_attack);
@@ -1200,7 +1204,11 @@ private:
       m_eg[6].set_sustain (m_controller_value_eg_sustain);
       m_eg[7].set_sustain (m_controller_value_amp_sustain);
 
+#if 1
+      if (m_controller_value_rel_eq_decay < 1) {
+#else
       if (m_controller_value_rel_eq_decay < 64) {
+#endif
         m_eg[0].set_release (m_controller_value_eg_release);
         m_eg[1].set_release (m_controller_value_amp_release);
         m_eg[2].set_release (m_controller_value_eg_release);
@@ -1219,7 +1227,6 @@ private:
         m_eg[6].set_release (m_controller_value_eg_decay);
         m_eg[7].set_release (m_controller_value_amp_decay);
       }
-
     } else {
       m_eg[0].set_attack  (m_controller_value_eg_attack);
       m_eg[1].set_attack  (m_controller_value_eg_attack);
@@ -1248,7 +1255,11 @@ private:
       m_eg[6].set_sustain (m_controller_value_eg_sustain);
       m_eg[7].set_sustain (m_controller_value_eg_sustain);
 
+#if 1
+      if (m_controller_value_rel_eq_decay < 1) {
+#else
       if (m_controller_value_rel_eq_decay < 64) {
+#endif
         m_eg[0].set_release (m_controller_value_eg_release);
         m_eg[1].set_release (m_controller_value_eg_release);
         m_eg[2].set_release (m_controller_value_eg_release);

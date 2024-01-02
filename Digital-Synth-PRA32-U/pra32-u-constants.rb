@@ -94,8 +94,8 @@ AMP_DECAY       = 53
 AMP_SUSTAIN     = 54
 AMP_RELEASE     = 55
 
-FILTER_MODE     = 86
-EG_AMP_MOD      = 87
+FILTER_MODE     = 78
+EG_AMP_MOD      = 28
 REL_EQ_DECAY    = 29
 P_BEND_RANGE    = 57
 

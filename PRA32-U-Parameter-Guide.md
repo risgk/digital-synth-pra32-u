@@ -142,14 +142,14 @@
     - 64: 1.0 s
     - 127: 9.6 s (max)
 - Filter Mode [LP|HP]
-    - 0 (0-63): Low Pass
-    - 127 (64-127): High Pass
+    - 0: Low Pass
+    - 127 (1-127): High Pass
 - EG Amp Mod [Off|On]
-    - 0 (0-63): Off
-    - 127 (64-127): On, Amp ADSR = EG ADSR
+    - 0: Off
+    - 127 (1-127): On, Amp ADSR = EG ADSR
 - Release = Decay [Off|On]
-    - 0 (0-63): Off
-    - 127 (64-127): On, EG Release = EG Decay and Amp Release = Amp Decay
+    - 0: Off
+    - 127 (1-127): On, EG Release = EG Decay and Amp Release = Amp Decay
 - Pitch Bend Range
     - 0: 0 semitone (min)
     - 60: 60 semitone (max)

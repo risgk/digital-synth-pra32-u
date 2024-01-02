@@ -97,8 +97,8 @@ const AMP_DECAY       = 53;
 const AMP_SUSTAIN     = 54;
 const AMP_RELEASE     = 55;
 
-const FILTER_MODE     = 86;
-const EG_AMP_MOD      = 87;
+const FILTER_MODE     = 78;
+const EG_AMP_MOD      = 28;
 const REL_EQ_DECAY    = 29;
 const P_BEND_RANGE    = 57;
 
@@ -459,14 +459,16 @@ function afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceModeOrEGAmpModOrRelEqDecay() 
   }
 
   var valueEGAmpMod = localStorage.getItem("keyEG_AMP_MOD     ");
-  if (valueEGAmpMod >= 64) {
+  if (valueEGAmpMod >= 1) {
+//  if (valueEGAmpMod >= 64) {
     document.getElementById("spanAMP_ATTACK     ").style.color = 'lightgray';
     document.getElementById("spanAMP_DECAY      ").style.color = 'lightgray';
     document.getElementById("spanAMP_SUSTAIN    ").style.color = 'lightgray';
     document.getElementById("spanAMP_RELEASE    ").style.color = 'lightgray';
 
     var valueRelEqDecay = localStorage.getItem("keyREL_EQ_DECAY   ");
-    if (valueRelEqDecay >= 64) {
+    if (valueRelEqDecay >= 1) {
+//    if (valueRelEqDecay >= 64) {
       document.getElementById("spanEG_RELEASE     ").style.color = 'lightgray';
     } else {
       document.getElementById("spanEG_RELEASE     ").style.color = 'black';
@@ -477,7 +479,8 @@ function afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceModeOrEGAmpModOrRelEqDecay() 
     document.getElementById("spanAMP_SUSTAIN    ").style.color = 'black';
 
     var valueRelEqDecay = localStorage.getItem("keyREL_EQ_DECAY   ");
-    if (valueRelEqDecay >= 64) {
+    if (valueRelEqDecay >= 1) {
+//    if (valueRelEqDecay >= 64) {
       document.getElementById("spanEG_RELEASE     ").style.color = 'lightgray';
       document.getElementById("spanAMP_RELEASE    ").style.color = 'lightgray';
     } else {

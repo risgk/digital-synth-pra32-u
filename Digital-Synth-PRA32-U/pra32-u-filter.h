@@ -148,7 +148,11 @@ public:
     int16_t x_3;
     int32_t y_0;
 
+#if 1
+    if (m_filter_mode < 1) {
+#else
     if (m_filter_mode < 64) {
+#endif
       // low pass
       x_3 = x_0 + (m_x_1 << 1) + m_x_2;
       y_0 = mul_s32_s16_h32(m_lpf_b_2_over_a_0, x_3) << (32 - FILTER_TABLE_FRACTION_BITS);
