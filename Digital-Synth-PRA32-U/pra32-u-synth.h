@@ -1038,6 +1038,11 @@ private:
     index = (index < 0) * index + 5;
 
     uint8_t new_voice_mode = voice_mode_table[index];
+#if 1
+    if (controller_value < 6) {
+      new_voice_mode = voice_mode_table[controller_value];
+    }
+#endif
 #if defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
     // due to CPU power shortage
     if (new_voice_mode == VOICE_POLYPHONIC) {

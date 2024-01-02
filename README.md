@@ -17,7 +17,8 @@
 
 ## Change History
 
-- v1.2.0: Change the numbers and the values of Control Changes (Filter Mode, EG Amp Mod, and Release = Decay);
+- v1.2.0: Change the numbers and the values of Control Changes (Voice Mode, LFO Wave,
+  Filter Mode, EG Amp Mod, and Release = Decay);
   Increase DMA buffer size for future feature additions (audio latency: 2.7 ms -> 5.3 ms);
   Use 2 cores for signal processing for future feature additions; Renew High Pass Filter;
   Add Delay Mode (Ping Pong Delay); Support Breath Controller (Breath Filter Amt and Breath Amp Mod);

@@ -76,10 +76,10 @@ const uint8_t   EG_RELEASE      = 72;
 
 const uint8_t   EG_OSC_AMT      = 91;
 const uint8_t   EG_OSC_DST      = 89;
-const uint8_t   VOICE_MODE      = 27;
+const uint8_t   VOICE_MODE      = 14;
 const uint8_t   PORTAMENTO      = 5;
 
-const uint8_t   LFO_WAVE        = 18;
+const uint8_t   LFO_WAVE        = 12;
 const uint8_t   LFO_RATE        = 3;
 const uint8_t   LFO_DEPTH       = 17;
 const uint8_t   LFO_FADE_TIME   = 56;

@@ -66,6 +66,11 @@ public:
     index = (index < 0) * index + 5;
 
     m_lfo_waveform = lfo_waveform_table[index];
+#if 1
+    if (controller_value < 6) {
+      m_lfo_waveform = lfo_waveform_table[controller_value];
+    }
+#endif
   }
 
   INLINE void set_lfo_rate(uint8_t controller_value) {

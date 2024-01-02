@@ -48,10 +48,10 @@
 |                               |               |               |                                     |
 |                            91 | x             | o             | EG Osc Amt [-|+]                    |
 |                            89 | x             | o             | EG Osc Dst [P|2P|1S]                |
-|                            27 | x             | o             | Voice Mode [Pol|Par|-|Mon|LP|Lgt]   |
+|                            14 | x             | o             | Voice Mode [Pol|Par|-|Mon|LP|Lgt]   |
 |                             5 | x             | o             | Portamento                          |
 |                               |               |               |                                     |
-|                            18 | x             | o             | LFO Wave [Tri|Sin|-|Saw|SH|Sqr]     |
+|                            12 | x             | o             | LFO Wave [Tri|Sin|-|Saw|SH|Sqr]     |
 |                             3 | x             | o             | LFO Rate                            |
 |                            17 | x             | o             | LFO Depth                           |
 |                            56 | x             | o             | LFO Fade Time                       |
