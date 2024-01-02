@@ -71,7 +71,7 @@
 |                            29 | x             | o             | Release = Decay [Off|On]            |
 |                            57 | x             | o             | Pitch Bend Range                    |
 |                               |               |               |                                     |
-|                            93 | x             | o             | Chorus Mix [Dry|Wet]                |
+|                            27 | x             | o             | Chorus Mix [Dry|Wet]                |
 |                            58 | x             | o             | Chorus Rate                         |
 |                            59 | x             | o             | Chorus Depth                        |
 |                               |               |               |                                     |

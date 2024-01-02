@@ -76,10 +76,10 @@ EG_RELEASE      = 72
 
 EG_OSC_AMT      = 91
 EG_OSC_DST      = 89
-VOICE_MODE      = 27
+VOICE_MODE      = 14
 PORTAMENTO      = 5
 
-LFO_WAVE        = 18
+LFO_WAVE        = 12
 LFO_RATE        = 3
 LFO_DEPTH       = 17
 LFO_FADE_TIME   = 56
