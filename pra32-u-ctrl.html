@@ -102,6 +102,11 @@ const EG_AMP_MOD      = 28;
 const REL_EQ_DECAY    = 29;
 const P_BEND_RANGE    = 57;
 
+const BTH_FILTER_AMT  = 60;
+const BTH_AMP_MOD     = 61;
+const VEL_EG_AMT      = 62;
+const VEL_AMP_EG_AMT  = 63;
+
 const CHORUS_MIX      = 27;
 const CHORUS_RATE     = 58;
 const CHORUS_DEPTH    = 59;
@@ -111,11 +116,6 @@ const DELAY_FEEDBACK  = 92;
 const DELAY_TIME      = 90;
 const DELAY_MODE      = 35;
 
-
-const BTH_FILTER_AMT  = 60;
-const BTH_AMP_MOD     = 61;
-const VEL_EG_AMT      = 62;
-const VEL_AMP_EG_AMT  = 63;
 
 const PC_BY_CC_8      = 112;
 const PC_BY_CC_9      = 113;
@@ -185,6 +185,11 @@ var controlNumberToStringMap = new Map([
   [ REL_EQ_DECAY   , "REL_EQ_DECAY   " ],
   [ P_BEND_RANGE   , "P_BEND_RANGE   " ],
 
+  [ BTH_FILTER_AMT , "BTH_FILTER_AMT " ],
+  [ BTH_AMP_MOD    , "BTH_AMP_MOD    " ],
+
+
+
   [ CHORUS_MIX     , "CHORUS_MIX     " ],
   [ CHORUS_RATE    , "CHORUS_RATE    " ],
   [ CHORUS_DEPTH   , "CHORUS_DEPTH   " ],
@@ -193,11 +198,6 @@ var controlNumberToStringMap = new Map([
   [ DELAY_FEEDBACK , "DELAY_FEEDBACK " ],
   [ DELAY_TIME     , "DELAY_TIME     " ],
   [ DELAY_MODE     , "DELAY_MODE     " ],
-
-
-  [ BTH_FILTER_AMT , "BTH_FILTER_AMT " ],
-  [ BTH_AMP_MOD    , "BTH_AMP_MOD    " ],
-
 
 ]);
 
@@ -247,6 +247,11 @@ var controllersInLocalStorage = [
   REL_EQ_DECAY   ,
   P_BEND_RANGE   ,
 
+  BTH_FILTER_AMT ,
+  BTH_AMP_MOD    ,
+
+
+
   CHORUS_MIX     ,
   CHORUS_RATE    ,
   CHORUS_DEPTH   ,
@@ -255,11 +260,6 @@ var controllersInLocalStorage = [
   DELAY_FEEDBACK ,
   DELAY_TIME     ,
   DELAY_MODE     ,
-
-
-  BTH_FILTER_AMT ,
-  BTH_AMP_MOD    ,
-
 
 ];
 
@@ -311,6 +311,11 @@ presetControllers[EG_AMP_MOD     ] = [127, 127, 0  , 0  , 127, 127, 127, 0  ];
 presetControllers[REL_EQ_DECAY   ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 presetControllers[P_BEND_RANGE   ] = [12 , 12 , 12 , 12 , 12 , 12 , 12 , 12 ];
 
+
+presetControllers[BTH_FILTER_AMT ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
+presetControllers[BTH_AMP_MOD    ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
+
+
 presetControllers[CHORUS_MIX     ] = [64 , 127, 127, 127, 64 , 64 , 127, 0  ];
 presetControllers[CHORUS_RATE    ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
 presetControllers[CHORUS_DEPTH   ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
@@ -319,11 +324,6 @@ presetControllers[CHORUS_DEPTH   ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
 presetControllers[DELAY_FEEDBACK ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 0  ];
 presetControllers[DELAY_TIME     ] = [93 , 93 , 93 , 93 , 93 , 93 , 93 , 93 ];
 presetControllers[DELAY_MODE     ] = [127, 127, 127, 127, 127, 127, 127, 127];
-
-
-presetControllers[BTH_FILTER_AMT ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
-presetControllers[BTH_AMP_MOD    ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
-
 
 
 const PRESET_NUMBER_INITIAL = 7;
@@ -919,6 +919,11 @@ function fileExport() {
   str += fileExportOneLine(REL_EQ_DECAY   );
   str += fileExportOneLine(P_BEND_RANGE   );
   str += "\n";
+  str += fileExportOneLine(BTH_FILTER_AMT );
+  str += fileExportOneLine(BTH_AMP_MOD    );
+  str += "\n";
+  str += "\n";
+  str += "\n";
   str += fileExportOneLine(CHORUS_MIX     );
   str += fileExportOneLine(CHORUS_RATE    );
   str += fileExportOneLine(CHORUS_DEPTH   );
@@ -927,11 +932,6 @@ function fileExport() {
   str += fileExportOneLine(DELAY_FEEDBACK );
   str += fileExportOneLine(DELAY_TIME     );
   str += fileExportOneLine(DELAY_MODE     );
-  str += "\n";
-  str += "\n";
-  str += fileExportOneLine(BTH_FILTER_AMT );
-  str += fileExportOneLine(BTH_AMP_MOD    );
-  str += "\n";
   str += "\n";
   str += "  \"_end         \" : \"\"\n";
   str += "}\n";
@@ -1250,6 +1250,25 @@ function getStoredCCValueString(index, number) {
 <td><span    id="spanP_BEND_RANGE   " >-</span></td>
 </tr>
 <tr>
+<td colspan="2">Breath Filter Amt [-|+]         </td>
+<td colspan="2">Breath Amp Mod [Off|Qad|Lin]    </td>
+<td colspan="2">                                </td>
+<td colspan="2">                                </td>
+</tr>
+<tr>
+<td><input  id="inputBTH_FILTER_AMT "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(BTH_FILTER_AMT , value)"></td>
+<td><span    id="spanBTH_FILTER_AMT " >-</span></td>
+<td><input  id="inputBTH_AMP_MOD    "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(BTH_AMP_MOD    , value)"></td>
+<td><span    id="spanBTH_AMP_MOD    " >-</span></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td colspan="8"><hr></td>
+</tr>
+<tr>
 <td colspan="2"><b>Chorus</b> Mix [Dry|Wet]            </td>
 <td colspan="2"><b>Chorus</b> Rate                     </td>
 <td colspan="2"><b>Chorus</b> Depth                    </td>
@@ -1278,22 +1297,6 @@ function getStoredCCValueString(index, number) {
 <td><span    id="spanDELAY_TIME     " >-</span></td>
 <td><input  id="inputDELAY_MODE     "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(DELAY_MODE     , value)"></td>
 <td><span    id="spanDELAY_MODE     " >-</span></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td colspan="2">Breath Filter Amt [-|+]         </td>
-<td colspan="2">Breath Amp Mod [Off|Qad|Lin]    </td>
-<td colspan="2">                                </td>
-<td colspan="2">                                </td>
-</tr>
-<tr>
-<td><input  id="inputBTH_FILTER_AMT "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(BTH_FILTER_AMT , value)"></td>
-<td><span    id="spanBTH_FILTER_AMT " >-</span></td>
-<td><input  id="inputBTH_AMP_MOD    "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(BTH_AMP_MOD    , value)"></td>
-<td><span    id="spanBTH_AMP_MOD    " >-</span></td>
-<td></td>
-<td></td>
 <td></td>
 <td></td>
 </tr>

@@ -48,6 +48,11 @@ uint8_t g_preset_table_EG_AMP_MOD     [] = {127, 127, 0  , 0  , 127, 127, 127, 0
 uint8_t g_preset_table_REL_EQ_DECAY   [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
 uint8_t g_preset_table_P_BEND_RANGE   [] = {12 , 12 , 12 , 12 , 12 , 12 , 12 , 12 ,   12 , 12 , 12 , 12 , 12 , 12 , 12 , 12 };
 
+uint8_t g_preset_table_BTH_FILTER_AMT [] = {64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ,   64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 };
+uint8_t g_preset_table_BTH_AMP_MOD    [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
+
+
+
 uint8_t g_preset_table_CHORUS_MIX     [] = {64 , 127, 127, 127, 64 , 64 , 127, 0  ,   64 , 127, 127, 127, 64 , 64 , 127, 0  };
 uint8_t g_preset_table_CHORUS_RATE    [] = {64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ,   64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 };
 uint8_t g_preset_table_CHORUS_DEPTH   [] = {64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ,   64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 };
@@ -56,9 +61,4 @@ uint8_t g_preset_table_CHORUS_DEPTH   [] = {64 , 64 , 64 , 64 , 64 , 64 , 64 , 6
 uint8_t g_preset_table_DELAY_FEEDBACK [] = {64 , 64 , 64 , 64 , 64 , 64 , 64 , 0  ,   64 , 64 , 64 , 64 , 64 , 64 , 64 , 0  };
 uint8_t g_preset_table_DELAY_TIME     [] = {93 , 93 , 93 , 93 , 93 , 93 , 93 , 93 ,   93 , 93 , 93 , 93 , 93 , 93 , 93 , 93 };
 uint8_t g_preset_table_DELAY_MODE     [] = {127, 127, 127, 127, 127, 127, 127, 127,   127, 127, 127, 127, 127, 127, 127, 127};
-
-
-uint8_t g_preset_table_BTH_FILTER_AMT [] = {64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ,   64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 };
-uint8_t g_preset_table_BTH_AMP_MOD    [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
-
 

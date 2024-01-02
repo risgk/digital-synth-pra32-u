@@ -792,6 +792,11 @@ public:
     control_change(REL_EQ_DECAY   , g_preset_table_REL_EQ_DECAY   [program_number]);
     control_change(P_BEND_RANGE   , g_preset_table_P_BEND_RANGE   [program_number]);
 
+    control_change(BTH_FILTER_AMT , g_preset_table_BTH_FILTER_AMT [program_number]);
+    control_change(BTH_AMP_MOD    , g_preset_table_BTH_AMP_MOD    [program_number]);
+
+
+
     control_change(CHORUS_MIX     , g_preset_table_CHORUS_MIX     [program_number]);
     control_change(CHORUS_RATE    , g_preset_table_CHORUS_RATE    [program_number]);
     control_change(CHORUS_DEPTH   , g_preset_table_CHORUS_DEPTH   [program_number]);
@@ -800,11 +805,6 @@ public:
     control_change(DELAY_FEEDBACK , g_preset_table_DELAY_FEEDBACK [program_number]);
     control_change(DELAY_TIME     , g_preset_table_DELAY_TIME     [program_number]);
     control_change(DELAY_MODE     , g_preset_table_DELAY_MODE     [program_number]);
-
-
-    control_change(BTH_FILTER_AMT , g_preset_table_BTH_FILTER_AMT [program_number]);
-    control_change(BTH_AMP_MOD    , g_preset_table_BTH_AMP_MOD    [program_number]);
-
 
   }
 

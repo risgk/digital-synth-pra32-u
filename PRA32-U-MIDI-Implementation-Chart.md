@@ -71,6 +71,11 @@
 |                            29 | x             | o             | Release = Decay [Off|On]            |
 |                            57 | x             | o             | Pitch Bend Range                    |
 |                               |               |               |                                     |
+|                            60 | x             | o             | Breath Filter Amt [-|+]             |
+|                            61 | x             | o             | Breath Amp Mod [Off|Qad|Lin]        |
+|                               |               |               |                                     |
+|                               |               |               |                                     |
+|                               |               |               |                                     |
 |                            27 | x             | o             | Chorus Mix [Dry|Wet]                |
 |                            58 | x             | o             | Chorus Rate                         |
 |                            59 | x             | o             | Chorus Depth                        |
@@ -79,11 +84,6 @@
 |                            92 | x             | o             | Delay Feedback                      |
 |                            90 | x             | o             | Delay Time                          |
 |                            35 | x             | o             | Delay Mode [S|P]                    |
-|                               |               |               |                                     |
-|                               |               |               |                                     |
-|                            60 | x             | o             | Breath Filter Amt [-|+]             |
-|                            61 | x             | o             | Breath Amp Mod [Off|Qad|Lin]        |
-|                               |               |               |                                     |
 |                               |               |               |                                     |
 |                               |               |               |                                     |
 |                       112-119 |               |               | Program Change #8-15 by CC          |
