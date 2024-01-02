@@ -10,12 +10,12 @@
     - $$ : Disabled if Osc 1 Wave is not Pls (Pulse)
     - $$$ : Mixer Noise is disabled if Osc 2 Wave is Nos (Noise)
 - Osc 1 Wave [Saw|Sin|-|Tri|-|Pls]
-    - 0 (0-12): Saw Wave
-    - 25 (13-38): Sine Wave
-    - 50 (39-63): Triangle Wave
-    - 75 (64-88): Triangle Wave
-    - 100 (89-114): Pulse Wave (Shape adjustable)
-    - 127 (115-127): Pulse Wave (Shape adjustable)
+    - 0, 6-12: Saw Wave
+    - 1, 25 (13-38): Sine Wave
+    - 2, 50 (39-63): Triangle Wave
+    - 3, 75 (64-88): Triangle Wave
+    - 4, 100 (89-114): Pulse Wave (Shape adjustable)
+    - 5, 127 (115-127): Pulse Wave (Shape adjustable)
 - Osc 1 Shape $$
     - Pulse Wave (= 1st Saw + Phase Shifted 2nd Saw)
         - 0: Pulse Width 50%, or 2nd Saw Phase 50% (min)
@@ -39,12 +39,12 @@
     - +62 (126): Sub Osc 96.9%
     - +63 (127): Sub Osc 100%
 - Osc 2 Wave [Saw|Sin|-|Tri|Nos|Sqr]
-    - 0 (0-12): Saw Wave
-    - 25 (13-38): Sine Wave
-    - 50 (39-63): Triangle Wave
-    - 75 (64-88): Triangle Wave
-    - 100 (89-114): White Noise
-    - 127 (115-127): Square Wave
+    - 0, 6-12: Saw Wave
+    - 1, 25 (13-38): Sine Wave
+    - 2, 50 (39-63): Triangle Wave
+    - 3, 75 (64-88): Triangle Wave
+    - 4, 100 (89-114): White Noise
+    - 5, 127 (115-127): Square Wave
 - Osc 2 Coarse [-|+]
     - -60 (4): -60 semitone (min)
     - +60 (124): +60 semitone (max)
@@ -107,9 +107,9 @@
         - -63 (1): Shape -252 (min)
         - +63 (127): Shape +252 (max)
 - EG Osc Dst [P|2P|1S], LFO Osc Dst [P|2P|1S]
-    - 0 (0-31): Osc 1 & 2 Pitch
-    - 64 (32-95): Osc 2 Pitch
-    - 127 (96-127): Osc 1 Shape
+    - 0, 3-31: Osc 1 & 2 Pitch
+    - 1, 64 (32-95): Osc 2 Pitch
+    - 2, 127 (96-127): Osc 1 Shape
 - Voice Mode [Pol|Par|-|Mon|LP|Lgt]
     - 0, 6-12: Polyphonic (LFO Single Trigger)
     - 1, 25 (13-38): Paraphonic (LFO Single Trigger)
@@ -157,9 +157,9 @@
     - -60 (4): -60 (min)
     - +60 (124): +60 (max)
 - Breath Amp Mod [Off|Qad|Lin]
-    - 0 (0-31): Off
-    - 64 (32-95): Quadratic Curve
-    - 127 (96-127): Liniear Curve
+    - 0, 3-31: Off
+    - 1, 64 (32-95): Quadratic Curve
+    - 2, 127 (96-127): Liniear Curve
 - Chorus Rate
     - 0: LFO Frequency 0.012 Hz (min)
     - 64: LFO Frequency 0.48 Hz
@@ -184,5 +184,5 @@
     - 93: 270 ms
     - 102: 300 ms (max)
 - Delay Mode [S|P]
-    - 0 (0-63): Stereo Delay
-    - 127 (64-127): Ping Pong Delay
+    - 0: Stereo Delay
+    - 127 (1-127): Ping Pong Delay

@@ -442,7 +442,8 @@ function afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceModeOrEGAmpModOrRelEqDecay() 
 
   var valueOsc1Wave = localStorage.getItem("keyOSC_1_WAVE     ");
   var indexOsc1Wave = Math.floor(((valueOsc1Wave * 10) + 127) / 254);
-  if ((indexOsc1Wave == 4) || (indexOsc1Wave == 5)) {
+  if ((valueOsc1Wave == 4) || (valueOsc1Wave == 5) || (indexOsc1Wave == 4) || (indexOsc1Wave == 5)) {
+//  if ((indexOsc1Wave == 4) || (indexOsc1Wave == 5)) {
     document.getElementById("spanOSC_1_SHAPE    ").style.color = 'black';
     document.getElementById("spanOSC_1_MORPH    ").style.color = 'black';
   } else {
@@ -453,7 +454,8 @@ function afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceModeOrEGAmpModOrRelEqDecay() 
   var valueOsc2Wave = localStorage.getItem("keyOSC_2_WAVE     ");
   var indexOsc2Wave = Math.floor(((valueOsc2Wave * 10) + 127) / 254)
   var valueMixerSubOsc = localStorage.getItem("keyMIXER_SUB_OSC  ");
-  if ((indexOsc2Wave == 4) && (valueMixerSubOsc < 64)) {
+  if (((valueOsc2Wave == 4) || (indexOsc2Wave == 4)) && (valueMixerSubOsc < 64)) {
+//  if ((indexOsc2Wave == 4) && (valueMixerSubOsc < 64)) {
     document.getElementById("spanMIXER_SUB_OSC  ").style.color = 'lightgray';
   } else {
     document.getElementById("spanMIXER_SUB_OSC  ").style.color = 'black';

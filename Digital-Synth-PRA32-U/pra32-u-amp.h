@@ -17,7 +17,7 @@ PRA32_U_Amp()
   , m_gain_control_effective(0)
   , m_gain_linear()
   , m_gain_mod_input(0)
-  , m_breath_mod(64)
+  , m_breath_mod()
   , m_breath_controller()
   , m_breath_gain_linear()
   {
@@ -28,7 +28,21 @@ PRA32_U_Amp()
   }
 
   INLINE void set_breath_mod(uint8_t controller_value) {
-    m_breath_mod = controller_value;
+#if 1
+    if (controller_value == 2 || controller_value >= 96) {
+#else
+    if (controller_value >= 96) {
+#endif
+      m_breath_mod = 2;
+#if 1
+    } else if (controller_value == 1 || controller_value >= 32) {
+#else
+    } else if (controller_value >= 32) {
+#endif
+      m_breath_mod = 1;
+    } else {
+      m_breath_mod = 0;
+    }
   }
 
   INLINE void set_breath_controller(uint8_t controller_value) {
@@ -57,12 +71,12 @@ private:
   }
 
   INLINE void update_breath_controller_effective() {
-    if (m_breath_mod < 32) {
-      m_breath_gain_linear = 16384;
-    } else if (m_breath_mod < 96) {
+    if (m_breath_mod == 2) {
+      m_breath_gain_linear = (m_breath_controller * 16384) / 127;
+    } else if (m_breath_mod == 1) {
       m_breath_gain_linear = ((m_breath_controller * m_breath_controller) * 16384) / 16129;
     } else {
-      m_breath_gain_linear = (m_breath_controller * 16384) / 127;
+      m_breath_gain_linear = 16384;
     }
   }
 };

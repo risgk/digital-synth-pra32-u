@@ -208,6 +208,11 @@ public:
     index = (index < 0) * index + 5;
 
     m_waveform[N] = waveform_tables[N][index];
+#if 1
+    if (controller_value < 6) {
+      m_waveform[N] = waveform_tables[N][controller_value];
+    }
+#endif
   }
 
   INLINE void set_osc1_shape_control(uint8_t controller_value) {
