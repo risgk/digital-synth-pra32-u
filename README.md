@@ -18,9 +18,9 @@
 ## Change History
 
 - v1.2.0: Increase DMA buffer size for future feature additions (audio latency: 2.7 ms -> 5.3 ms);
-  Use 2 cores for signal processing for future feature additions;
-  Renew High Pass Filter; Add Delay Mode (Ping Pong Delay); Modify Presets;
-  Fixed an oscillation problem caused by Delay Feedback; Add PWM audio output option (experimental) 
+  Use 2 cores for signal processing for future feature additions; Renew High Pass Filter;
+  Add Delay Mode (Ping Pong Delay); Support Breath Controller (Breath Filter Amt and Breath Amp Mod);
+  Modify Presets; Fixed an oscillation problem caused by Delay Feedback; Add PWM audio output option (experimental) 
 - v1.1.1: Revert Filter clipping in High Pass mode
 - v1.1.0: Fix Filter clipping (behavior during oscillation); Extend Pitch Bend Range;
   Delete the code for Waveshare Pico-Audio Rev2.1
