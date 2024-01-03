@@ -150,6 +150,7 @@
 - Release = Decay [Off|On]
     - 0: Off
     - 127 (1-127): On, EG Release = EG Decay and Amp Release = Amp Decay
+        - **NOTE**: EG Velocity Sensitivity and Amp Velocity Sensitivity works independently
 - Pitch Bend Range
     - 0: 0 semitone (min)
     - 60: 60 semitone (max)
