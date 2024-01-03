@@ -1,4 +1,4 @@
-# Digital Synth PRA32-U v1.2.0
+# Digital Synth PRA32-U v1.2.1
 
 - 2024-01-03 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
@@ -12,11 +12,12 @@
 - Modifiable with Arduino IDE and Arduino-Pico (by Earle F. Philhower, III)
 - An **I2S DAC** hardware (e.g. Pimoroni Pico Audio Pack and Waveshare Pico-Audio) is required
 - Prebuilt UF2 files ("bin")
-    - "Digital-Synth-PRA32-U-1.2.0-Pimoroni-Pico-Audio-Pack.uf2" is for Raspberry Pi Pico and Pimoroni Pico Audio Pack
+    - "Digital-Synth-PRA32-U-1.2.1-Pimoroni-Pico-Audio-Pack.uf2" is for Raspberry Pi Pico and Pimoroni Pico Audio Pack
 
 
 ## Change History
 
+- v1.2.1: Fixed an oscillation problem caused by Delay Feedback
 - v1.2.0: Renew High Pass Filter; Raspberry Pi Pico/RP2040 core version 3.6.2 is recommended
 - v1.1.1: Revert Filter clipping in High Pass mode
 - v1.1.0: Fix Filter clipping (behavior during oscillation); Extend Pitch Bend Range;
@@ -85,7 +86,7 @@
 - **NOTE**: The RP2040 system clock (sysclk) changes to overclocked 147.6 MHz by I2S Audio Library setSysClk()
 - Modify `I2S_DAC_MUTE_OFF_PIN`, `I2S_DATA_PIN`, `I2S_MCLK_PIN`, `I2S_MCLK_MULT`, `I2S_BCLK_PIN`, and `I2S_SWAP_BCLK_AND_LRCLK_PINS`
   in "Digital-Synth-PRA32-U.ino" to match the hardware configuration
-- The default setting is for Pimoroni [Pico Audio Pack](https://shop.pimoroni.com/products/pico-audio-pack) [PIM544]
+- The default setting is for Pimoroni [Pico Audio Pack](https://shop.pimoroni.com/products/pico-audio-pack) (PIM544)
 ```
 #define I2S_DAC_MUTE_OFF_PIN            (22)
 #define I2S_DATA_PIN                    (9)
@@ -94,7 +95,8 @@
 #define I2S_BCLK_PIN                    (10)  // I2S_LRCLK_PIN is I2S_BCLK_PIN + 1
 #define I2S_SWAP_BCLK_AND_LRCLK_PINS    (false)
 ```
-- The following is setting is for [Pimoroni Pico VGA Demo Base](https://shop.pimoroni.com/products/pimoroni-pico-vga-demo-base) [PIM553]
+- The following is setting is for [Pimoroni Pico VGA Demo Base](https://shop.pimoroni.com/products/pimoroni-pico-vga-demo-base) (PIM553)
+  and [Pimoroni Pico DV Demo Base](https://shop.pimoroni.com/products/pimoroni-pico-dv-demo-base) (PIM588)
 ```
 //#define I2S_DAC_MUTE_OFF_PIN            (0)
 #define I2S_DATA_PIN                    (26)
@@ -103,7 +105,16 @@
 #define I2S_BCLK_PIN                    (27)  // I2S_LRCLK_PIN is I2S_BCLK_PIN + 1
 #define I2S_SWAP_BCLK_AND_LRCLK_PINS    (false)
 ```
-- The following is setting is for [Waveshare Pico-Audio](https://www.waveshare.com/wiki/Pico-Audio) Rev2.1 [WAVESHARE-20167]
+- The following is setting is for Waveshare Pico-Audio Initial Version (WAVESHARE-20167)
+```
+//#define I2S_DAC_MUTE_OFF_PIN            (0)
+#define I2S_DATA_PIN                    (26)
+//#define I2S_MCLK_PIN                    (0)
+//#define I2S_MCLK_MULT                   (0)
+#define I2S_BCLK_PIN                    (27)  // I2S_LRCLK_PIN is I2S_BCLK_PIN + 1
+#define I2S_SWAP_BCLK_AND_LRCLK_PINS    (false)
+```
+- The following is setting is for [Waveshare Pico-Audio](https://www.waveshare.com/wiki/Pico-Audio) Rev2.1 Version (WAVESHARE-20167)
 ```
 //#define I2S_DAC_MUTE_OFF_PIN            (0)
 #define I2S_DATA_PIN                    (22)
@@ -212,11 +223,11 @@ graph LR
 
 ![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)
 
-**Digital Synth PRA32-U v1.2.0 by ISGK Instruments (Ryo Ishigaki)**
+**Digital Synth PRA32-U v1.2.1 by ISGK Instruments (Ryo Ishigaki)**
 
 To the extent possible under law, ISGK Instruments (Ryo Ishigaki)
 has waived all copyright and related or neighboring rights
-to Digital Synth PRA32-U v1.2.0.
+to Digital Synth PRA32-U v1.2.1.
 
 You should have received a copy of the CC0 legalcode along with this
 work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
