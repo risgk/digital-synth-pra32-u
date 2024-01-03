@@ -67,10 +67,10 @@ public:
 
   INLINE void note_on(uint8_t velocity) {
     if (velocity <= 127) {
-      m_note_on_velocity = (velocity + 1) >> 1;
+      m_note_on_velocity = velocity;
     }
 
-    m_attack_level = ((m_note_on_velocity * m_velocity_sensitivity) + (64 * (64 - m_velocity_sensitivity))) << 18;
+    m_attack_level = ((((m_note_on_velocity * m_velocity_sensitivity) + (127 * (64 - m_velocity_sensitivity))) * 16384) / 127) << 10;
     m_sustain_level = (m_attack_level >> 6) * m_sustain;
     m_state = STATE_ATTACK;
   }
