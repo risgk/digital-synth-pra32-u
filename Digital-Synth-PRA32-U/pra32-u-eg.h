@@ -69,6 +69,7 @@ public:
     if (velocity <= 127) {
       m_note_on_velocity = (velocity + 1) >> 1;
     }
+
     m_attack_level = ((m_note_on_velocity * m_velocity_sensitivity) + (64 * (64 - m_velocity_sensitivity))) << 18;
     m_sustain_level = (m_attack_level >> 6) * m_sustain;
     m_state = STATE_ATTACK;
@@ -87,13 +88,13 @@ public:
 #if 1
     switch (m_state) {
     case STATE_ATTACK:
-      m_level = ((m_attack_level - 1) << 1) - (mul_s32_s32_h32((((m_attack_level - 1) << 1) - m_level), m_attack_coef) << 2);
-
       if (m_level >= EG_LEVEL_MAX) {
         m_level = EG_LEVEL_MAX;
         m_state = STATE_SUSTAIN;
       } else if (m_level >= m_attack_level) {
         m_state = STATE_SUSTAIN;
+      } else {
+        m_level = ((m_attack_level - 1) << 1) - (mul_s32_s32_h32((((m_attack_level - 1) << 1) - m_level), m_attack_coef) << 2);
       }
       break;
 
