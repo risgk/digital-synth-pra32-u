@@ -62,14 +62,14 @@ void handleControlChange(byte channel, byte number, byte value);
 void handleHandleProgramChange(byte channel, byte number);
 void handleHandlePitchBend(byte channel, int bend);
 
-void __not_in_flash_func(setup1)() {
+void __not_in_flash_func(setup)() {
 }
 
-void __not_in_flash_func(loop1)() {
+void __not_in_flash_func(loop)() {
   g_synth.secondary_core_process();
 }
 
-void __not_in_flash_func(setup)() {
+void __not_in_flash_func(setup1)() {
   g_i2s_output.setSysClk(SAMPLING_RATE);
 #if defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
 #if ((PWM_AUDIO_L_PIN + 1) == PWM_AUDIO_R_PIN) && ((PWM_AUDIO_L_PIN % 2) == 0)
@@ -142,7 +142,7 @@ void __not_in_flash_func(setup)() {
 #endif // defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
 }
 
-void __not_in_flash_func(loop)() {
+void __not_in_flash_func(loop1)() {
 
 #if defined(DEBUG_PRINT)
   uint32_t debug_measurement_start0_us = micros();
