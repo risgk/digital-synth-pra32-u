@@ -1,6 +1,6 @@
-# Digital Synth PRA32-U v1.1.1
+# Digital Synth PRA32-U v1.2.0
 
-- 2023-12-24 ISGK Instruments
+- 2024-01-03 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
 
 
@@ -12,18 +12,19 @@
 - Modifiable with Arduino IDE and Arduino-Pico (by Earle F. Philhower, III)
 - An **I2S DAC** hardware (e.g. Pimoroni Pico Audio Pack and Waveshare Pico-Audio) is required
 - Prebuilt UF2 files ("bin")
-    - "Digital-Synth-PRA32-U-1.1.1-Pimoroni-Pico-Audio-Pack.uf2" is for Raspberry Pi Pico and Pimoroni Pico Audio Pack
+    - "Digital-Synth-PRA32-U-1.2.0-Pimoroni-Pico-Audio-Pack.uf2" is for Raspberry Pi Pico and Pimoroni Pico Audio Pack
 
 
 ## Change History
 
-- v1.2.0: Change the numbers of Control Changes (Voice Mode, LFO Wave, Filter Mode, EG Amp Mod, and Chorus Mix);
+- v2.0.0: Change the numbers of Control Changes (Voice Mode, LFO Wave, Filter Mode, EG Amp Mod, and Chorus Mix);
   Change the meanings of the values of Control Changes (Osc 1 Wave, Osc 2 Wave, EG Osc Dst, Voice Mode,
   LFO Wave, LFO Osc Dst, Filter Mode, EG Amp Mod, Release = Decay, Breath Amp Mod, and Delay Mode);
   Increase DMA buffer size for future feature additions (audio latency: 2.7 ms -> 5.3 ms);
-  Use 2 cores for signal processing for future feature additions; Renew High Pass Filter;
+  Use 2 cores for signal processing for future feature additions;
   Add Delay Mode (Ping Pong Delay); Support Breath Controller (Breath Filter Amt and Breath Amp Mod);
-  Modify Presets; Fixed an oscillation problem caused by Delay Feedback; Add PWM audio output option (experimental) 
+  Modify Presets; Fixed an oscillation problem caused by Delay Feedback; Add PWM audio output option (experimental)
+- v1.2.0: Renew High Pass Filter; Raspberry Pi Pico/RP2040 core version 3.6.2 is recommended
 - v1.1.1: Revert Filter clipping in High Pass mode
 - v1.1.0: Fix Filter clipping (behavior during oscillation); Extend Pitch Bend Range;
   Delete the code for Waveshare Pico-Audio Rev2.1
@@ -249,11 +250,11 @@ graph LR
 
 ![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)
 
-**Digital Synth PRA32-U v1.1.1 by ISGK Instruments (Ryo Ishigaki)**
+**Digital Synth PRA32-U v1.2.0 by ISGK Instruments (Ryo Ishigaki)**
 
 To the extent possible under law, ISGK Instruments (Ryo Ishigaki)
 has waived all copyright and related or neighboring rights
-to Digital Synth PRA32-U v1.1.1.
+to Digital Synth PRA32-U v1.2.0.
 
 You should have received a copy of the CC0 legalcode along with this
 work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
