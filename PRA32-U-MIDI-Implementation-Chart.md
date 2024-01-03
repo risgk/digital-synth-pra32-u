@@ -14,7 +14,7 @@
 | Note                          | x             | 0-127         |                                     |
 | Number       : True Voice     | ************* | 0-127         |                                     |
 +-------------------------------+---------------+---------------+-------------------------------------+
-| Velocity     Note ON          | x             | x             |                                     |
+| Velocity     Note ON          | x             | o             |                                     |
 |              Note OFF         | x             | x             |                                     |
 +-------------------------------+---------------+---------------+-------------------------------------+
 | After        Key's            | x             | x             |                                     |
@@ -73,8 +73,8 @@
 |                               |               |               |                                     |
 |                            60 | x             | o             | Breath Filter Amt [-|+]             |
 |                            61 | x             | o             | Breath Amp Mod [Off|Qad|Lin]        |
-|                               |               |               |                                     |
-|                               |               |               |                                     |
+|                            62 | x             | o             | EG Velocity Sensitivity             |
+|                            63 | x             | o             | Amp Velocity Sensitivity            |
 |                               |               |               |                                     |
 |                            27 | x             | o             | Chorus Mix [Dry|Wet]                |
 |                            58 | x             | o             | Chorus Rate                         |

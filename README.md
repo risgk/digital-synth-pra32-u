@@ -17,7 +17,8 @@
 
 ## Change History
 
-- v2.0.0: Add Delay Mode (Ping Pong Delay); Support Breath Controller (Breath Filter Amt and Breath Amp Mod); Modify Presets;
+- v2.0.0: Add Delay Mode (Ping Pong Delay); Support Breath Controller (Breath Filter Amt and Breath Amp Mod);
+  Support Note ON Velocity (EG Velocity Sensitivity and Amp Velocity Sensitivity); Modify Presets;
   Change the control numbers of Control Changes (Voice Mode, LFO Wave, Filter Mode, EG Amp Mod, and Chorus Mix);
   Change the meanings of the values of Control Changes (Osc 1 Wave, Osc 2 Wave, EG Osc Dst, Voice Mode,
   LFO Wave, LFO Osc Dst, Filter Mode, EG Amp Mod, Release = Decay, Breath Amp Mod, and Delay Mode);

@@ -693,6 +693,18 @@ public:
       m_amp[2].set_breath_mod(controller_value);
       m_amp[3].set_breath_mod(controller_value);
       break;
+    case EG_VEL_SENS    :
+      m_eg[0].set_velocity_sensitivity(controller_value);
+      m_eg[2].set_velocity_sensitivity(controller_value);
+      m_eg[4].set_velocity_sensitivity(controller_value);
+      m_eg[6].set_velocity_sensitivity(controller_value);
+      break;
+    case AMP_VEL_SENS   :
+      m_eg[1].set_velocity_sensitivity(controller_value);
+      m_eg[3].set_velocity_sensitivity(controller_value);
+      m_eg[5].set_velocity_sensitivity(controller_value);
+      m_eg[7].set_velocity_sensitivity(controller_value);
+      break;
 
     case BTH_CONTROLLER    :
       set_breath_controller(controller_value);
@@ -794,8 +806,8 @@ public:
 
     control_change(BTH_FILTER_AMT , g_preset_table_BTH_FILTER_AMT [program_number]);
     control_change(BTH_AMP_MOD    , g_preset_table_BTH_AMP_MOD    [program_number]);
-
-
+    control_change(EG_VEL_SENS    , g_preset_table_EG_VEL_SENS    [program_number]);
+    control_change(AMP_VEL_SENS   , g_preset_table_AMP_VEL_SENS   [program_number]);
 
     control_change(CHORUS_MIX     , g_preset_table_CHORUS_MIX     [program_number]);
     control_change(CHORUS_RATE    , g_preset_table_CHORUS_RATE    [program_number]);

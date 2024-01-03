@@ -101,8 +101,8 @@ const uint8_t   P_BEND_RANGE    = 57;
 
 const uint8_t   BTH_FILTER_AMT  = 60;
 const uint8_t   BTH_AMP_MOD     = 61;
-const uint8_t   VEL_EG_AMT      = 62;
-const uint8_t   VEL_AMP_EG_AMT  = 63;
+const uint8_t   EG_VEL_SENS     = 62;
+const uint8_t   AMP_VEL_SENS    = 63;
 
 const uint8_t   CHORUS_MIX      = 27;
 const uint8_t   CHORUS_RATE     = 58;

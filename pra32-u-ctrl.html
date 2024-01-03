@@ -104,8 +104,8 @@ const P_BEND_RANGE    = 57;
 
 const BTH_FILTER_AMT  = 60;
 const BTH_AMP_MOD     = 61;
-const VEL_EG_AMT      = 62;
-const VEL_AMP_EG_AMT  = 63;
+const EG_VEL_SENS     = 62;
+const AMP_VEL_SENS    = 63;
 
 const CHORUS_MIX      = 27;
 const CHORUS_RATE     = 58;
@@ -187,8 +187,8 @@ var controlNumberToStringMap = new Map([
 
   [ BTH_FILTER_AMT , "BTH_FILTER_AMT " ],
   [ BTH_AMP_MOD    , "BTH_AMP_MOD    " ],
-
-
+  [ EG_VEL_SENS    , "EG_VEL_SENS    " ],
+  [ AMP_VEL_SENS   , "AMP_VEL_SENS   " ],
 
   [ CHORUS_MIX     , "CHORUS_MIX     " ],
   [ CHORUS_RATE    , "CHORUS_RATE    " ],
@@ -249,8 +249,8 @@ var controllersInLocalStorage = [
 
   BTH_FILTER_AMT ,
   BTH_AMP_MOD    ,
-
-
+  EG_VEL_SENS    ,
+  AMP_VEL_SENS   ,
 
   CHORUS_MIX     ,
   CHORUS_RATE    ,
@@ -311,10 +311,10 @@ presetControllers[EG_AMP_MOD     ] = [127, 127, 0  , 0  , 127, 127, 127, 0  ];
 presetControllers[REL_EQ_DECAY   ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 presetControllers[P_BEND_RANGE   ] = [12 , 12 , 12 , 12 , 12 , 12 , 12 , 12 ];
 
-
 presetControllers[BTH_FILTER_AMT ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
 presetControllers[BTH_AMP_MOD    ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
-
+presetControllers[EG_VEL_SENS    ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
+presetControllers[AMP_VEL_SENS   ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 
 presetControllers[CHORUS_MIX     ] = [64 , 127, 127, 127, 64 , 64 , 127, 0  ];
 presetControllers[CHORUS_RATE    ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
@@ -727,7 +727,9 @@ function setRandom() {
         (i != DELAY_TIME     ) &&
         (i != DELAY_MODE     ) &&
         (i != BTH_FILTER_AMT ) &&
-        (i != BTH_AMP_MOD    )) {
+        (i != BTH_AMP_MOD    ) &&
+        (i != EG_VEL_SENS    ) &&
+        (i != AMP_VEL_SENS   )) {
       onChangeControlChange(i, rand(128));
     }
   });
@@ -923,8 +925,8 @@ function fileExport() {
   str += "\n";
   str += fileExportOneLine(BTH_FILTER_AMT );
   str += fileExportOneLine(BTH_AMP_MOD    );
-  str += "\n";
-  str += "\n";
+  str += fileExportOneLine(EG_VEL_SENS    );
+  str += fileExportOneLine(AMP_VEL_SENS   );
   str += "\n";
   str += fileExportOneLine(CHORUS_MIX     );
   str += fileExportOneLine(CHORUS_RATE    );
@@ -1252,20 +1254,20 @@ function getStoredCCValueString(index, number) {
 <td><span    id="spanP_BEND_RANGE   " >-</span></td>
 </tr>
 <tr>
-<td colspan="2">Breath Filter Amt [-|+]         </td>
-<td colspan="2">Breath Amp Mod [Off|Qad|Lin]    </td>
-<td colspan="2">                                </td>
-<td colspan="2">                                </td>
+<td colspan="2"><b>Breath</b> Filter Amt [-|+]         </td>
+<td colspan="2"><b>Breath</b> Amp Mod [Off|Qad|Lin]    </td>
+<td colspan="2"><b>EG</b> Velocity Sensitivity         </td>
+<td colspan="2"><b>Amp</b> Velocity Sensitivity        </td>
 </tr>
 <tr>
 <td><input  id="inputBTH_FILTER_AMT "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(BTH_FILTER_AMT , value)"></td>
 <td><span    id="spanBTH_FILTER_AMT " >-</span></td>
 <td><input  id="inputBTH_AMP_MOD    "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(BTH_AMP_MOD    , value)"></td>
 <td><span    id="spanBTH_AMP_MOD    " >-</span></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td><input  id="inputEG_VEL_SENS    "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_VEL_SENS    , value)"></td>
+<td><span    id="spanEG_VEL_SENS    " >-</span></td>
+<td><input  id="inputAMP_VEL_SENS   "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(AMP_VEL_SENS   , value)"></td>
+<td><span    id="spanAMP_VEL_SENS   " >-</span></td>
 </tr>
 <tr>
 <td colspan="8"><hr></td>

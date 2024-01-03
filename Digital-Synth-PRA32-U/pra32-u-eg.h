@@ -53,6 +53,10 @@ public:
     m_release_coef = g_eg_attack_release_coef_table[controller_value];
   }
 
+  INLINE void set_velocity_sensitivity(uint8_t controller_value) {
+    // todo
+  }
+
   INLINE void note_on() {
     m_state = STATE_ATTACK;
   }
