@@ -79,9 +79,6 @@ public:
     int16_t left_delay   = delay_buff_get<0>(m_delay_time_effective);
     int16_t right_delay  = delay_buff_get<1>(m_delay_time_effective);
 
-    int16_t left_feedback;
-    int16_t right_feedback;
-
 #if 1
     if (m_delay_mode < 1) {
 #else
