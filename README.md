@@ -1,6 +1,6 @@
-# Digital Synth PRA32-U v1.1.1
+# Digital Synth PRA32-U v1.2.0
 
-- 2023-12-24 ISGK Instruments
+- 2024-01-03 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
 
 
@@ -12,12 +12,12 @@
 - Modifiable with Arduino IDE and Arduino-Pico (by Earle F. Philhower, III)
 - An **I2S DAC** hardware (e.g. Pimoroni Pico Audio Pack and Waveshare Pico-Audio) is required
 - Prebuilt UF2 files ("bin")
-    - "Digital-Synth-PRA32-U-1.1.1-Pimoroni-Pico-Audio-Pack.uf2" is for Raspberry Pi Pico and Pimoroni Pico Audio Pack
+    - "Digital-Synth-PRA32-U-1.2.0-Pimoroni-Pico-Audio-Pack.uf2" is for Raspberry Pi Pico and Pimoroni Pico Audio Pack
 
 
 ## Change History
 
-- v1.2.0: Renew High Pass Filter
+- v1.2.0: Renew High Pass Filter; Raspberry Pi Pico/RP2040 core version 3.6.2 is recommended
 - v1.1.1: Revert Filter clipping in High Pass mode
 - v1.1.0: Fix Filter clipping (behavior during oscillation); Extend Pitch Bend Range;
   Delete the code for Waveshare Pico-Audio Rev2.1
@@ -54,7 +54,7 @@
 - Please install Arduino-Pico = **Raspberry Pi Pico/RP2040** (by Earle F. Philhower, III) core
     - Additional Board Manager URL: <https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json>
     - Info: <https://github.com/earlephilhower/arduino-pico>
-    - Raspberry Pi Pico/RP2040 core **version 3.6.0** is recommended
+    - Raspberry Pi Pico/RP2040 core **version 3.6.2** is recommended
 - Please install **MIDI Library** (by Francois Best, lathoub)
     - Info: <https://github.com/FortySevenEffects/arduino_midi_library>
     - MIDI Library **version 5.0.2** is recommended
@@ -212,11 +212,11 @@ graph LR
 
 ![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)
 
-**Digital Synth PRA32-U v1.1.1 by ISGK Instruments (Ryo Ishigaki)**
+**Digital Synth PRA32-U v1.2.0 by ISGK Instruments (Ryo Ishigaki)**
 
 To the extent possible under law, ISGK Instruments (Ryo Ishigaki)
 has waived all copyright and related or neighboring rights
-to Digital Synth PRA32-U v1.1.1.
+to Digital Synth PRA32-U v1.2.0.
 
 You should have received a copy of the CC0 legalcode along with this
 work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.

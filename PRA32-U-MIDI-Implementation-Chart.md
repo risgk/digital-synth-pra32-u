@@ -1,6 +1,6 @@
 ```
-  [Polyphonic/Paraphonic Synthesizer]                             Date: 2023-12-24                     
-  Model: Digital Synth PRA32-U    MIDI Implementation Chart       Version: 1.1.1                       
+  [Polyphonic/Paraphonic Synthesizer]                             Date: 2024-01-03                     
+  Model: Digital Synth PRA32-U    MIDI Implementation Chart       Version: 1.2.0                       
 +-------------------------------+---------------+---------------+-------------------------------------+
 | Function...                   | Transmitted   | Recognized    | Remarks                             |
 +-------------------------------+---------------+---------------+-------------------------------------+
