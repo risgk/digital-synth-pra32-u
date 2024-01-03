@@ -83,17 +83,17 @@ public:
     int16_t right_feedback;
 
 #if 1
-    if (m_delay_mode < 1) {
+    if (m_delay_mode == 1 || m_delay_mode >= 64) {
 #else
-    if (m_delay_mode < 64) {
+    if (m_delay_mode >= 64) {
 #endif
-      // Stereo Delay
-      left_feedback  = ((((left_input  >> 1) + left_delay ) * m_delay_feedback_effective) / 256);
-      right_feedback = ((((right_input >> 1) + right_delay) * m_delay_feedback_effective) / 256);
-    } else {
       // Ping Pong Delay
       left_feedback  = ((                                    right_delay) * m_delay_feedback_effective) / 256;
       right_feedback = ((((left_input + right_input) >> 2) + left_delay ) * m_delay_feedback_effective) / 256;
+    } else {
+      // Stereo Delay
+      left_feedback  = ((((left_input  >> 1) + left_delay ) * m_delay_feedback_effective) / 256);
+      right_feedback = ((((right_input >> 1) + right_delay) * m_delay_feedback_effective) / 256);
     }
 
     delay_buff_push<0>(left_feedback);

@@ -462,7 +462,7 @@ function afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceModeOrEGAmpModOrRelEqDecay() 
   }
 
   var valueEGAmpMod = localStorage.getItem("keyEG_AMP_MOD     ");
-  if (valueEGAmpMod >= 1) {
+  if (valueEGAmpMod == 1 || valueEGAmpMod >= 64) {
 //  if (valueEGAmpMod >= 64) {
     document.getElementById("spanAMP_ATTACK     ").style.color = 'lightgray';
     document.getElementById("spanAMP_DECAY      ").style.color = 'lightgray';
@@ -470,7 +470,7 @@ function afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceModeOrEGAmpModOrRelEqDecay() 
     document.getElementById("spanAMP_RELEASE    ").style.color = 'lightgray';
 
     var valueRelEqDecay = localStorage.getItem("keyREL_EQ_DECAY   ");
-    if (valueRelEqDecay >= 1) {
+    if (valueRelEqDecay == 1 || valueRelEqDecay >= 64) {
 //    if (valueRelEqDecay >= 64) {
       document.getElementById("spanEG_RELEASE     ").style.color = 'lightgray';
     } else {
@@ -482,7 +482,7 @@ function afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceModeOrEGAmpModOrRelEqDecay() 
     document.getElementById("spanAMP_SUSTAIN    ").style.color = 'black';
 
     var valueRelEqDecay = localStorage.getItem("keyREL_EQ_DECAY   ");
-    if (valueRelEqDecay >= 1) {
+    if (valueRelEqDecay == 1 || valueRelEqDecay >= 64) {
 //    if (valueRelEqDecay >= 64) {
       document.getElementById("spanEG_RELEASE     ").style.color = 'lightgray';
       document.getElementById("spanAMP_RELEASE    ").style.color = 'lightgray';

@@ -142,14 +142,14 @@
     - 64: 1.0 s
     - 127: 9.6 s (max)
 - Filter Mode [LP|HP]
-    - 0: Low Pass
-    - 127 (1-127): High Pass
+    - 0, 2-63: Low Pass
+    - 1, 127 (64-127): High Pass
 - EG Amp Mod [Off|On]
-    - 0: Off
-    - 127 (1-127): On, Amp ADSR = EG ADSR
+    - 0, 2-63: Off
+    - 1, 127 (64-127): On, Amp ADSR = EG ADSR
 - Release = Decay [Off|On]
-    - 0: Off
-    - 127 (1-127): On, EG Release = EG Decay and Amp Release = Amp Decay
+    - 0, 2-63: Off
+    - 1, 127 (64-127): On, EG Release = EG Decay and Amp Release = Amp Decay
         - **NOTE**: EG Velocity Sensitivity and Amp Velocity Sensitivity works independently
 - Pitch Bend Range
     - 0: 0 semitone (min)
@@ -185,5 +185,5 @@
     - 93: 270 ms
     - 102: 300 ms (max)
 - Delay Mode [S|P]
-    - 0: Stereo Delay
-    - 127 (1-127): Ping Pong Delay
+    - 0, 2-63: Stereo Delay
+    - 1, 127 (64-127): Ping Pong Delay
