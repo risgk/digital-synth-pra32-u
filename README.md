@@ -17,13 +17,13 @@
 
 ## Change History
 
-- v2.0.0: Change the numbers of Control Changes (Voice Mode, LFO Wave, Filter Mode, EG Amp Mod, and Chorus Mix);
+- v2.0.0: Add Delay Mode (Ping Pong Delay); Support Breath Controller (Breath Filter Amt and Breath Amp Mod);
+  Modify Presets; Fixed an oscillation problem caused by Delay Feedback; Add PWM audio output option (experimental);
+  Change the control numbers of Control Changes (Voice Mode, LFO Wave, Filter Mode, EG Amp Mod, and Chorus Mix);
   Change the meanings of the values of Control Changes (Osc 1 Wave, Osc 2 Wave, EG Osc Dst, Voice Mode,
   LFO Wave, LFO Osc Dst, Filter Mode, EG Amp Mod, Release = Decay, Breath Amp Mod, and Delay Mode);
   Increase DMA buffer size for future feature additions (audio latency: 2.7 ms -> 5.3 ms);
-  Use 2 cores for signal processing for future feature additions;
-  Add Delay Mode (Ping Pong Delay); Support Breath Controller (Breath Filter Amt and Breath Amp Mod);
-  Modify Presets; Fixed an oscillation problem caused by Delay Feedback; Add PWM audio output option (experimental)
+  Use 2 cores for signal processing for future feature additions
 - v1.2.0: Renew High Pass Filter; Raspberry Pi Pico/RP2040 core version 3.6.2 is recommended
 - v1.1.1: Revert Filter clipping in High Pass mode
 - v1.1.0: Fix Filter clipping (behavior during oscillation); Extend Pitch Bend Range;
