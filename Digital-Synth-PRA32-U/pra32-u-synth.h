@@ -34,7 +34,6 @@ class PRA32_U_Synth {
   uint8_t           m_portamento;
 
   uint8_t           m_chorus_mode;
-  uint8_t           m_velocity_to_cutoff;
 
   uint8_t           m_eg_osc_amt;
   uint8_t           m_eg_osc_dst;
@@ -83,7 +82,6 @@ public:
   , m_portamento()
 
   , m_chorus_mode()
-  , m_velocity_to_cutoff()
 
   , m_eg_osc_amt()
   , m_eg_osc_dst()
@@ -134,17 +132,6 @@ public:
       return;
     }
 
-#if 0
-    int8_t cutoff_offset = 0;
-    if (m_velocity_to_cutoff == 128) {
-      cutoff_offset = velocity - 100;
-    } else {
-      cutoff_offset = high_sbyte(static_cast<int8_t>(velocity - 100) * (m_velocity_to_cutoff << 1));
-    }
-#else
-    (void) velocity;
-#endif
-
     if ((m_voice_mode == VOICE_MONOPHONIC) ||
         (m_voice_mode == VOICE_LEGATO) || (m_voice_mode == VOICE_LEGATO_PORTA)) {
       if ((m_voice_mode == VOICE_LEGATO) || (m_voice_mode == VOICE_LEGATO_PORTA)) {
@@ -164,11 +151,8 @@ public:
           m_osc.note_on<0>(note_number);
           m_osc.note_on<2>(note_number);
           m_lfo.trigger_lfo();
-          m_eg[0].note_on();
-          m_eg[1].note_on();
-#if 0
-          m_filter.set_cutoff_offset(cutoff_offset);
-#endif
+          m_eg[0].note_on(velocity);
+          m_eg[1].note_on(velocity);
         } else {
           m_note_on_number[3] = m_note_on_number[2];
           m_note_on_number[2] = m_note_on_number[1];
@@ -194,11 +178,8 @@ public:
         m_osc.note_on<0>(note_number);
         m_osc.note_on<2>(note_number);
         m_lfo.trigger_lfo();
-        m_eg[0].note_on();
-        m_eg[1].note_on();
-#if 0
-        m_filter.set_cutoff_offset(cutoff_offset);
-#endif
+        m_eg[0].note_on(velocity);
+        m_eg[1].note_on(velocity);
       }
     } else if (m_note_on_number[0] == note_number) {
       ++m_note_on_total_count;
@@ -207,11 +188,8 @@ public:
       m_osc.set_portamento<0>(m_portamento);
       m_osc.note_on<0>(note_number);
 
-      m_eg[0].note_on();
-      m_eg[1].note_on();
-#if 0
-      m_filter.set_cutoff_offset(cutoff_offset);
-#endif
+      m_eg[0].note_on(velocity);
+      m_eg[1].note_on(velocity);
     } else if (m_note_on_number[1] == note_number) {
       ++m_note_on_total_count;
       ++m_note_on_count[note_number];
@@ -220,15 +198,12 @@ public:
       m_osc.note_on<1>(note_number);
 
       if (m_voice_mode == VOICE_POLYPHONIC) {
-        m_eg[2].note_on();
-        m_eg[3].note_on();
+        m_eg[2].note_on(velocity);
+        m_eg[3].note_on(velocity);
       } else {
-        m_eg[0].note_on();
-        m_eg[1].note_on();
+        m_eg[0].note_on(velocity);
+        m_eg[1].note_on(velocity);
       }
-#if 0
-      m_filter.set_cutoff_offset(cutoff_offset);
-#endif
     } else if (m_note_on_number[2] == note_number) {
       ++m_note_on_total_count;
       ++m_note_on_count[note_number];
@@ -237,15 +212,12 @@ public:
       m_osc.note_on<2>(note_number);
 
       if (m_voice_mode == VOICE_POLYPHONIC) {
-        m_eg[4].note_on();
-        m_eg[5].note_on();
+        m_eg[4].note_on(velocity);
+        m_eg[5].note_on(velocity);
       } else {
-        m_eg[0].note_on();
-        m_eg[1].note_on();
+        m_eg[0].note_on(velocity);
+        m_eg[1].note_on(velocity);
       }
-#if 0
-      m_filter.set_cutoff_offset(cutoff_offset);
-#endif
     } else if (m_note_on_number[3] == note_number) {
       ++m_note_on_total_count;
       ++m_note_on_count[note_number];
@@ -254,15 +226,12 @@ public:
       m_osc.note_on<3>(note_number);
 
       if (m_voice_mode == VOICE_POLYPHONIC) {
-        m_eg[6].note_on();
-        m_eg[7].note_on();
+        m_eg[6].note_on(velocity);
+        m_eg[7].note_on(velocity);
       } else {
-        m_eg[0].note_on();
-        m_eg[1].note_on();
+        m_eg[0].note_on(velocity);
+        m_eg[1].note_on(velocity);
       }
-#if 0
-      m_filter.set_cutoff_offset(cutoff_offset);
-#endif
     } else {
       uint8_t note_on_osc_index;
       if        (m_note_on_number[0] == NOTE_NUMBER_INVALID) {
@@ -309,15 +278,12 @@ public:
       }
 
       if (m_voice_mode == VOICE_POLYPHONIC) {
-        m_eg[(note_on_osc_index << 1) + 0].note_on();
-        m_eg[(note_on_osc_index << 1) + 1].note_on();
+        m_eg[(note_on_osc_index << 1) + 0].note_on(velocity);
+        m_eg[(note_on_osc_index << 1) + 1].note_on(velocity);
       } else {
-        m_eg[0].note_on();
-        m_eg[1].note_on();
+        m_eg[0].note_on(velocity);
+        m_eg[1].note_on(velocity);
       }
-#if 0
-      m_filter.set_cutoff_offset(cutoff_offset);
-#endif
     }
   }
 
@@ -366,8 +332,8 @@ public:
 
           if (m_voice_mode == VOICE_MONOPHONIC) {
             m_lfo.trigger_lfo();
-            m_eg[0].note_on();
-            m_eg[1].note_on();
+            m_eg[0].note_on(255);
+            m_eg[1].note_on(255);
           }
         }
       } else if (m_note_on_number[1] == note_number) {
@@ -467,19 +433,11 @@ public:
     pitch_bend(0, 64);
     set_modulation(0);
     set_breath_controller(0);
-#if 0
-    set_expression(127);
-#endif
     set_sustain_pedal(0);
   }
 
   INLINE void control_change(uint8_t controller_number, uint8_t controller_value) {
     switch (controller_number) {
-#if 0
-    case EXPRESSION     :
-      m_eg[1].set_expression(controller_value);
-      break;
-#endif
     case MODULATION     :
       m_lfo.set_lfo_depth<1>(controller_value);
       break;
@@ -653,12 +611,6 @@ public:
       m_filter[2].set_filter_mode(controller_value);
       m_filter[3].set_filter_mode(controller_value);
       break;
-
-#if 0
-    case V_TO_CUTOFF    :
-      m_velocity_to_cutoff = ((controller_value + 1) >> 1) << 1;
-      break;
-#endif
 
     case FILTER_KEY_TRK :
       m_filter[0].set_cutoff_pitch_amt(controller_value);
@@ -1082,12 +1034,6 @@ private:
     m_amp[2].set_breath_controller(controller_value);
     m_amp[3].set_breath_controller(controller_value);
   }
-
-#if 0
-  INLINE void set_expression(uint8_t controller_value) {
-    m_eg[1].set_expression(controller_value);
-  }
-#endif
 
   INLINE void set_sustain_pedal(uint8_t controller_value) {
     if ((m_sustain_pedal == false) && (controller_value >= 64)) {

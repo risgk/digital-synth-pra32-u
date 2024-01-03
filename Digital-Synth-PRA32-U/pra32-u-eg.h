@@ -19,6 +19,10 @@ class PRA32_U_EG {
   int32_t m_decay_coef;
   int32_t m_sustain;
   int32_t m_release_coef;
+  uint8_t m_velocity_sensitivity;
+  uint8_t m_note_on_velocity;
+  int32_t m_attack_level;
+  int32_t m_sustain_level;
 
 public:
   PRA32_U_EG()
@@ -29,6 +33,10 @@ public:
   , m_decay_coef()
   , m_sustain()
   , m_release_coef()
+  , m_velocity_sensitivity()
+  , m_note_on_velocity()
+  , m_attack_level()
+  , m_sustain_level()
   {
     m_state = STATE_IDLE;
     set_attack(0);
@@ -46,7 +54,7 @@ public:
   }
 
   INLINE void set_sustain(uint8_t controller_value) {
-    m_sustain = ((controller_value + 1) >> 1) << 24;
+    m_sustain = (controller_value + 1) >> 1;
   }
 
   INLINE void set_release(uint8_t controller_value) {
@@ -54,15 +62,21 @@ public:
   }
 
   INLINE void set_velocity_sensitivity(uint8_t controller_value) {
-    // todo
+    m_velocity_sensitivity = (controller_value + 1) >> 1;
   }
 
-  INLINE void note_on() {
+  INLINE void note_on(uint8_t velocity) {
+    if (velocity <= 127) {
+      m_note_on_velocity = (velocity + 1) >> 1;
+    }
+    m_attack_level = ((m_note_on_velocity * m_velocity_sensitivity) + (64 * (64 - m_velocity_sensitivity))) << 18;
+    m_sustain_level = (m_attack_level >> 6) * m_sustain;
     m_state = STATE_ATTACK;
   }
 
   INLINE void note_off() {
     m_state = STATE_IDLE;
+    m_note_on_velocity = 0;
   }
 
   INLINE int16_t get_output() {
@@ -73,17 +87,20 @@ public:
 #if 1
     switch (m_state) {
     case STATE_ATTACK:
-      m_level = EG_LEVEL_MAX_2 - (mul_s32_s32_h32((EG_LEVEL_MAX_2 - m_level), m_attack_coef) << 2);
+      m_level = ((m_attack_level - 1) << 1) - (mul_s32_s32_h32((((m_attack_level - 1) << 1) - m_level), m_attack_coef) << 2);
+
       if (m_level >= EG_LEVEL_MAX) {
         m_level = EG_LEVEL_MAX;
+        m_state = STATE_SUSTAIN;
+      } else if (m_level >= m_attack_level) {
         m_state = STATE_SUSTAIN;
       }
       break;
 
     case STATE_SUSTAIN:
       {
-        // effective_sustain = min(effective_sustain, m_level)
-        int32_t effective_sustain = m_sustain - m_level;
+        // effective_sustain = min(m_sustain_level, m_level)
+        int32_t effective_sustain = m_sustain_level - m_level;
         effective_sustain = (effective_sustain < 0) * effective_sustain + m_level;
 
         m_level = effective_sustain + (mul_s32_s32_h32((m_level - effective_sustain), m_decay_coef) << 2);
