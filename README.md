@@ -1,6 +1,6 @@
-# Digital Synth PRA32-U v1.2.1
+# Digital Synth PRA32-U v2.0.0
 
-- 2024-01-03 ISGK Instruments
+- 2024-01-04 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
 
 
@@ -12,11 +12,24 @@
 - Modifiable with Arduino IDE and Arduino-Pico (by Earle F. Philhower, III)
 - An **I2S DAC** hardware (e.g. Pimoroni Pico Audio Pack and Waveshare Pico-Audio) is required
 - Prebuilt UF2 files ("bin")
-    - "Digital-Synth-PRA32-U-1.2.1-Pimoroni-Pico-Audio-Pack.uf2" is for Raspberry Pi Pico and Pimoroni Pico Audio Pack
+    - "Digital-Synth-PRA32-U-2.0.0-Pimoroni-Pico-Audio-Pack.uf2" is for Raspberry Pi Pico and Pimoroni Pico Audio Pack
 
 
 ## Change History
 
+- v2.0.0:
+    - Add Delay Mode (Ping Pong Delay);
+    - Support Breath Controller (Breath Filter Amt and Breath Amp Mod);
+    - Support Note ON Velocity (EG Velocity Sensitivity and Amp Velocity Sensitivity);
+    - Modify EG and Amp EG;
+    - Modify Presets;
+    - Change the control numbers of Control Changes
+      (Voice Mode: 27 -> 14, LFO Wave: 18 -> 12, Filter Mode: 86 -> 78, EG Amp Mod: 87 -> 28, and Chorus Mix: 93 -> 27);
+    - Change the meanings of the values of Control Changes
+      (Osc 1 Wave, Osc 2 Wave, EG Osc Dst, Voice Mode, LFO Wave, LFO Osc Dst, Filter Mode, EG Amp Mod, Release = Decay, Breath Amp Mod, and Delay Mode);
+    - Increase DMA buffer size (audio latency: 2.7 ms -> 5.3 ms);
+    - Use 2 cores for signal processing in Polyphonic and Paraphonic Modes;
+    - Add PWM audio output option (experimental)
 - v1.2.1: Fixed an oscillation problem caused by Delay Feedback
 - v1.2.0: Renew High Pass Filter; Raspberry Pi Pico/RP2040 core version 3.6.2 is recommended
 - v1.1.1: Revert Filter clipping in High Pass mode
@@ -63,24 +76,30 @@
 
 ## Features
 
-### MIDI In
+### MIDI Input
 
-- USB MIDI is the default
-    - MIDI Device Name: "Digital Synth PRA32-U"
-    - **NOTE**: Select USB Stack: "Adafruit TinyUSB" in the Arduino IDE "Tools" menu
-    - **KNOWN ISSUE**: When using some USB MIDI host hardware and communicate a lot, this device may miss MIDI messages
+#### USB MIDI Input (Default)
+
+- MIDI Device Name: "Digital Synth PRA32-U"
+- **NOTE**: Select USB Stack: "Adafruit TinyUSB" in the Arduino IDE "Tools" menu
+
+
+#### Serial MIDI Input (Optional)
+
 - Serial MIDI can also be used instead of USB MIDI
-    - Comment out `#define USE_USB_MIDI` and uncomment out `//#define USE_SERIAL1_MIDI`
-      in "Digital-Synth-PRA32-U.ino" and modify `SERIAL1_MIDI_SPEED`
-    - Speed: 31.25 kbps (default) or 38.4 kbps
-    - GP0 and GP1 pins are used by UART0 TX and UART0 RX
-    - DIN/TRS MIDI is available by using (and modifying) Adafruit MIDI FeatherWing Kit, for example
-        - Adafruit [MIDI FeatherWing Kit](https://www.adafruit.com/product/4740)
-        - 木下研究所 [MIDI-UARTインターフェースさん キット](https://www.switch-science.com/products/8117) (Shipping to Japan only)
-        - necobit電子 [MIDI Unit for GROVE](https://necobit.com/denshi/grove-midi-unit/) (Shipping to Japan only)
+- Comment out `#define USE_USB_MIDI` and uncomment out `//#define USE_SERIAL1_MIDI`
+  in "Digital-Synth-PRA32-U.ino" and modify `SERIAL1_MIDI_SPEED`
+- Speed: 31.25 kbps (default) or 38.4 kbps
+- GP0 and GP1 pins are used by UART0 TX and UART0 RX
+- DIN/TRS MIDI is available by using (and modifying) Adafruit MIDI FeatherWing Kit, for example
+    - Adafruit [MIDI FeatherWing Kit](https://www.adafruit.com/product/4740)
+    - 木下研究所 [MIDI-UARTインターフェースさん キット](https://www.switch-science.com/products/8117) (Shipping to Japan only)
+    - necobit電子 [MIDI Unit for GROVE](https://necobit.com/denshi/grove-midi-unit/) (Shipping to Japan only)
 
 
-### Audio Out
+### Audio Output
+
+#### I2S Audio Output (Default)
 
 - Use an I2S DAC (e.g. Texas Instruments PCM5100A and Cirrus Logic CS4344), Sampling Rate: 48 kHz, Bit Depth: 16 bit
 - **NOTE**: The RP2040 system clock (sysclk) changes to overclocked 147.6 MHz by I2S Audio Library setSysClk()
@@ -122,6 +141,21 @@
 #define I2S_MCLK_MULT                   (256)
 #define I2S_BCLK_PIN                    (27)  // I2S_LRCLK_PIN is I2S_BCLK_PIN + 1
 #define I2S_SWAP_BCLK_AND_LRCLK_PINS    (true)
+```
+
+
+#### PWM Audio Output (Optional) (Experimental)
+
+- PWM Audio can also be used instead of I2S
+    - If PWM Audio is selected, Polyphonic Mode is disabled and Paraphonic Mode is used instead (due to lack of CPU power)
+    - See "PWM audio" in [Hardware design with RP2040](https://datasheets.raspberrypi.com/rp2040/hardware-design-with-rp2040.pdf)
+      for details on PWM audio
+- Uncomment out `//#define USE_PWM_AUDIO_INSTEAD_OF_I2S`
+  in "Digital-Synth-PRA32-U.ino" and modify `PWM_AUDIO_L_PIN` and `PWM_AUDIO_R_PIN`
+- The following is setting is for Pimoroni Pico VGA Demo Base (PIM553)
+```
+#define PWM_AUDIO_L_PIN                 (28)
+#define PWM_AUDIO_R_PIN                 (27)
 ```
 
 
@@ -223,11 +257,11 @@ graph LR
 
 ![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)
 
-**Digital Synth PRA32-U v1.2.1 by ISGK Instruments (Ryo Ishigaki)**
+**Digital Synth PRA32-U v2.0.0 by ISGK Instruments (Ryo Ishigaki)**
 
 To the extent possible under law, ISGK Instruments (Ryo Ishigaki)
 has waived all copyright and related or neighboring rights
-to Digital Synth PRA32-U v1.2.1.
+to Digital Synth PRA32-U v2.0.0.
 
 You should have received a copy of the CC0 legalcode along with this
 work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.

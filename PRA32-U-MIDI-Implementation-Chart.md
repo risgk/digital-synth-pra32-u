@@ -1,6 +1,6 @@
 ```
-  [Polyphonic/Paraphonic Synthesizer]                             Date: 2024-01-03                     
-  Model: Digital Synth PRA32-U    MIDI Implementation Chart       Version: 1.2.1                       
+  [Polyphonic/Paraphonic Synthesizer]                             Date: 2024-01-04                     
+  Model: Digital Synth PRA32-U    MIDI Implementation Chart       Version: 2.0.0                       
 +-------------------------------+---------------+---------------+-------------------------------------+
 | Function...                   | Transmitted   | Recognized    | Remarks                             |
 +-------------------------------+---------------+---------------+-------------------------------------+
@@ -14,7 +14,7 @@
 | Note                          | x             | 0-127         |                                     |
 | Number       : True Voice     | ************* | 0-127         |                                     |
 +-------------------------------+---------------+---------------+-------------------------------------+
-| Velocity     Note ON          | x             | x             |                                     |
+| Velocity     Note ON          | x             | o             |                                     |
 |              Note OFF         | x             | x             |                                     |
 +-------------------------------+---------------+---------------+-------------------------------------+
 | After        Key's            | x             | x             |                                     |
@@ -23,7 +23,8 @@
 | Pitch Bend                    | x             | o             |                                     |
 +-------------------------------+---------------+---------------+-------------------------------------+
 | Control                     1 | x             | o             | Modulation                          |
-| Change                     64 | x             | o             | Sustain Pedal [Off|On]              |
+| Change                      2 | x             | o             | Breath Controller                   |
+|                            64 | x             | o             | Sustain Pedal [Off|On]              |
 |                               |               |               |                                     |
 |                           102 | x             | o             | Osc 1 Wave [Saw|Sin|-|Tri|-|Pls]    |
 |                            19 | x             | o             | Osc 1 Shape $$                      |
@@ -47,10 +48,10 @@
 |                               |               |               |                                     |
 |                            91 | x             | o             | EG Osc Amt [-|+]                    |
 |                            89 | x             | o             | EG Osc Dst [P|2P|1S]                |
-|                            27 | x             | o             | Voice Mode [Pol|Par|-|Mon|LP|Lgt]   |
+|                            14 | x             | o             | Voice Mode [Pol|Par|-|Mon|LP|Lgt]   |
 |                             5 | x             | o             | Portamento                          |
 |                               |               |               |                                     |
-|                            18 | x             | o             | LFO Wave [Tri|Sin|-|Saw|SH|Sqr]     |
+|                            12 | x             | o             | LFO Wave [Tri|Sin|-|Saw|SH|Sqr]     |
 |                             3 | x             | o             | LFO Rate                            |
 |                            17 | x             | o             | LFO Depth                           |
 |                            56 | x             | o             | LFO Fade Time                       |
@@ -65,19 +66,24 @@
 |                            54 | x             | o             | Amp Sustain                         |
 |                            55 | x             | o             | Amp Release                         |
 |                               |               |               |                                     |
-|                            86 | x             | o             | Filter Mode [LP|HP]                 |
-|                            87 | x             | o             | EG Amp Mod [Off|On]                 |
+|                            78 | x             | o             | Filter Mode [LP|HP]                 |
+|                            28 | x             | o             | EG Amp Mod [Off|On]                 |
 |                            29 | x             | o             | Release = Decay [Off|On]            |
 |                            57 | x             | o             | Pitch Bend Range                    |
 |                               |               |               |                                     |
-|                            93 | x             | o             | Chorus Mix [Dry|Wet]                |
+|                            60 | x             | o             | Breath Filter Amt [-|+]             |
+|                            61 | x             | o             | Breath Amp Mod [Off|Qad|Lin]        |
+|                            62 | x             | o             | EG Velocity Sensitivity             |
+|                            63 | x             | o             | Amp Velocity Sensitivity            |
+|                               |               |               |                                     |
+|                            27 | x             | o             | Chorus Mix [Dry|Wet]                |
 |                            58 | x             | o             | Chorus Rate                         |
 |                            59 | x             | o             | Chorus Depth                        |
 |                               |               |               |                                     |
 |                               |               |               |                                     |
 |                            92 | x             | o             | Delay Feedback                      |
 |                            90 | x             | o             | Delay Time                          |
-|                               |               |               |                                     |
+|                            35 | x             | o             | Delay Mode [S|P]                    |
 |                               |               |               |                                     |
 |                               |               |               |                                     |
 |                       112-119 |               |               | Program Change #8-15 by CC          |

@@ -26,7 +26,6 @@ const uint8_t   FILTER_CONTROL_INTERVAL      = 0x01 << FILTER_CONTROL_INTERVAL_B
 const int8_t    FILTER_TABLE_FRACTION_BITS   = 30;
 const uint8_t   EG_CONTROL_INTERVAL          = 0x10;
 const int32_t   EG_LEVEL_MAX                 = 0x40000000;
-const int32_t   EG_LEVEL_MAX_2               = 0x7FFFFFFF;
 
 
 const uint8_t   DATA_BYTE_MAX         = 0x7F;
@@ -50,6 +49,7 @@ const uint8_t   ACTIVE_SENSING        = 0xFE;
 
 
 const uint8_t   MODULATION      = 1;
+const uint8_t   BTH_CONTROLLER  = 2;
 const uint8_t   SUSTAIN_PEDAL   = 64;
 
 
@@ -75,10 +75,10 @@ const uint8_t   EG_RELEASE      = 72;
 
 const uint8_t   EG_OSC_AMT      = 91;
 const uint8_t   EG_OSC_DST      = 89;
-const uint8_t   VOICE_MODE      = 27;
+const uint8_t   VOICE_MODE      = 14;
 const uint8_t   PORTAMENTO      = 5;
 
-const uint8_t   LFO_WAVE        = 18;
+const uint8_t   LFO_WAVE        = 12;
 const uint8_t   LFO_RATE        = 3;
 const uint8_t   LFO_DEPTH       = 17;
 const uint8_t   LFO_FADE_TIME   = 56;
@@ -93,19 +93,24 @@ const uint8_t   AMP_DECAY       = 53;
 const uint8_t   AMP_SUSTAIN     = 54;
 const uint8_t   AMP_RELEASE     = 55;
 
-const uint8_t   FILTER_MODE     = 86;
-const uint8_t   EG_AMP_MOD      = 87;
+const uint8_t   FILTER_MODE     = 78;
+const uint8_t   EG_AMP_MOD      = 28;
 const uint8_t   REL_EQ_DECAY    = 29;
 const uint8_t   P_BEND_RANGE    = 57;
 
-const uint8_t   CHORUS_MIX      = 93;
+const uint8_t   BTH_FILTER_AMT  = 60;
+const uint8_t   BTH_AMP_MOD     = 61;
+const uint8_t   EG_VEL_SENS     = 62;
+const uint8_t   AMP_VEL_SENS    = 63;
+
+const uint8_t   CHORUS_MIX      = 27;
 const uint8_t   CHORUS_RATE     = 58;
 const uint8_t   CHORUS_DEPTH    = 59;
 
 
 const uint8_t   DELAY_FEEDBACK  = 92;
 const uint8_t   DELAY_TIME      = 90;
-
+const uint8_t   DELAY_MODE      = 35;
 
 
 const uint8_t   PC_BY_CC_8      = 112;

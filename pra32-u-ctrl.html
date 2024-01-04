@@ -41,7 +41,7 @@ td.keyh {
 }
 </style>
 <script>
-const APP_NAME_VERSION = "PRA32-U CTRL v1.2.1";
+const APP_NAME_VERSION = "PRA32-U CTRL v2.0.0";
 
 const MIDI_CH        = 0;       // 0-based
 
@@ -53,6 +53,7 @@ const PITCH_BEND     = 0xE0;
 
 
 const MODULATION      = 1;
+const BTH_CONTROLLER  = 2;
 const SUSTAIN_PEDAL   = 64;
 
 
@@ -78,10 +79,10 @@ const EG_RELEASE      = 72;
 
 const EG_OSC_AMT      = 91;
 const EG_OSC_DST      = 89;
-const VOICE_MODE      = 27;
+const VOICE_MODE      = 14;
 const PORTAMENTO      = 5;
 
-const LFO_WAVE        = 18;
+const LFO_WAVE        = 12;
 const LFO_RATE        = 3;
 const LFO_DEPTH       = 17;
 const LFO_FADE_TIME   = 56;
@@ -96,19 +97,24 @@ const AMP_DECAY       = 53;
 const AMP_SUSTAIN     = 54;
 const AMP_RELEASE     = 55;
 
-const FILTER_MODE     = 86;
-const EG_AMP_MOD      = 87;
+const FILTER_MODE     = 78;
+const EG_AMP_MOD      = 28;
 const REL_EQ_DECAY    = 29;
 const P_BEND_RANGE    = 57;
 
-const CHORUS_MIX      = 93;
+const BTH_FILTER_AMT  = 60;
+const BTH_AMP_MOD     = 61;
+const EG_VEL_SENS     = 62;
+const AMP_VEL_SENS    = 63;
+
+const CHORUS_MIX      = 27;
 const CHORUS_RATE     = 58;
 const CHORUS_DEPTH    = 59;
 
 
 const DELAY_FEEDBACK  = 92;
 const DELAY_TIME      = 90;
-
+const DELAY_MODE      = 35;
 
 
 const PC_BY_CC_8      = 112;
@@ -179,6 +185,11 @@ var controlNumberToStringMap = new Map([
   [ REL_EQ_DECAY   , "REL_EQ_DECAY   " ],
   [ P_BEND_RANGE   , "P_BEND_RANGE   " ],
 
+  [ BTH_FILTER_AMT , "BTH_FILTER_AMT " ],
+  [ BTH_AMP_MOD    , "BTH_AMP_MOD    " ],
+  [ EG_VEL_SENS    , "EG_VEL_SENS    " ],
+  [ AMP_VEL_SENS   , "AMP_VEL_SENS   " ],
+
   [ CHORUS_MIX     , "CHORUS_MIX     " ],
   [ CHORUS_RATE    , "CHORUS_RATE    " ],
   [ CHORUS_DEPTH   , "CHORUS_DEPTH   " ],
@@ -186,7 +197,7 @@ var controlNumberToStringMap = new Map([
 
   [ DELAY_FEEDBACK , "DELAY_FEEDBACK " ],
   [ DELAY_TIME     , "DELAY_TIME     " ],
-
+  [ DELAY_MODE     , "DELAY_MODE     " ],
 
 ]);
 
@@ -236,6 +247,11 @@ var controllersInLocalStorage = [
   REL_EQ_DECAY   ,
   P_BEND_RANGE   ,
 
+  BTH_FILTER_AMT ,
+  BTH_AMP_MOD    ,
+  EG_VEL_SENS    ,
+  AMP_VEL_SENS   ,
+
   CHORUS_MIX     ,
   CHORUS_RATE    ,
   CHORUS_DEPTH   ,
@@ -243,7 +259,7 @@ var controllersInLocalStorage = [
 
   DELAY_FEEDBACK ,
   DELAY_TIME     ,
-
+  DELAY_MODE     ,
 
 ];
 
@@ -257,7 +273,7 @@ presetControllers[MIXER_SUB_OSC  ] = [127, 64 , 64 , 64 , 127, 127, 64 , 64 ];
 
 presetControllers[OSC_2_WAVE     ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 presetControllers[OSC_2_COARSE   ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
-presetControllers[OSC_2_PITCH    ] = [109, 72 , 72 , 72 , 72 , 72 , 72 , 64 ];
+presetControllers[OSC_2_PITCH    ] = [109, 72 , 72 , 72 , 72 , 72 , 72 , 72 ];
 presetControllers[MIXER_OSC_MIX  ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 0  ];
 
 presetControllers[FILTER_CUTOFF  ] = [115, 115, 91 , 103, 55 , 115, 67 , 127];
@@ -266,9 +282,9 @@ presetControllers[FILTER_EG_AMT  ] = [64 , 64 , 88 , 16 , 112, 64 , 64 , 64 ];
 presetControllers[FILTER_KEY_TRK ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 0  ];
 
 presetControllers[EG_ATTACK      ] = [0  , 64 , 48 , 96 , 0  , 0  , 0  , 0  ];
-presetControllers[EG_DECAY       ] = [127, 127, 80 , 96 , 96 , 127, 100, 127];
-presetControllers[EG_SUSTAIN     ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
-presetControllers[EG_RELEASE     ] = [0  , 64 , 0  , 0  , 96 , 0  , 0  , 0  ];
+presetControllers[EG_DECAY       ] = [0  , 0  , 80 , 96 , 96 , 0  , 100, 0  ];
+presetControllers[EG_SUSTAIN     ] = [127, 127, 0  , 0  , 0  , 127, 0  , 127];
+presetControllers[EG_RELEASE     ] = [0  , 64 , 0  , 0  , 0  , 0  , 0  , 0  ];
 
 presetControllers[EG_OSC_AMT     ] = [64 , 64 , 72 , 64 , 64 , 64 , 96 , 64 ];
 presetControllers[EG_OSC_DST     ] = [0  , 0  , 64 , 0  , 0  , 0  , 127, 0  ];
@@ -286,23 +302,28 @@ presetControllers[LFO_FILTER_AMT ] = [64 , 64 , 88 , 88 , 88 , 64 , 88 , 64 ];
 presetControllers[AMP_GAIN       ] = [90 , 90 , 90 , 90 , 90 , 90 , 127, 90 ];
 
 presetControllers[AMP_ATTACK     ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
-presetControllers[AMP_DECAY      ] = [127, 127, 127, 127, 127, 127, 127, 127];
-presetControllers[AMP_SUSTAIN    ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
+presetControllers[AMP_DECAY      ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
+presetControllers[AMP_SUSTAIN    ] = [127, 127, 127, 127, 127, 127, 127, 127];
 presetControllers[AMP_RELEASE    ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 
 presetControllers[FILTER_MODE    ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
-presetControllers[EG_AMP_MOD     ] = [0  , 127, 0  , 0  , 127, 0  , 127, 0  ];
-presetControllers[REL_EQ_DECAY   ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
+presetControllers[EG_AMP_MOD     ] = [127, 127, 0  , 0  , 127, 127, 127, 0  ];
+presetControllers[REL_EQ_DECAY   ] = [0  , 0  , 0  , 0  , 127, 0  , 0  , 0  ];
 presetControllers[P_BEND_RANGE   ] = [12 , 12 , 12 , 12 , 12 , 12 , 12 , 12 ];
 
-presetControllers[CHORUS_MIX     ] = [127, 127, 127, 127, 127, 127, 127, 0  ];
+presetControllers[BTH_FILTER_AMT ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
+presetControllers[BTH_AMP_MOD    ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
+presetControllers[EG_VEL_SENS    ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
+presetControllers[AMP_VEL_SENS   ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
+
+presetControllers[CHORUS_MIX     ] = [64 , 127, 127, 127, 64 , 64 , 127, 0  ];
 presetControllers[CHORUS_RATE    ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
 presetControllers[CHORUS_DEPTH   ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
 
 
-presetControllers[DELAY_FEEDBACK ] = [32 , 32 , 32 , 32 , 32 , 32 , 32 , 0  ];
+presetControllers[DELAY_FEEDBACK ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 0  ];
 presetControllers[DELAY_TIME     ] = [93 , 93 , 93 , 93 , 93 , 93 , 93 , 93 ];
-
+presetControllers[DELAY_MODE     ] = [127, 127, 127, 127, 127, 127, 127, 127];
 
 
 const PRESET_NUMBER_INITIAL = 7;
@@ -408,7 +429,8 @@ function afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceModeOrEGAmpModOrRelEqDecay() 
   var targetCCNumbers = [FILTER_KEY_TRK];
 
   var valueVoiceMode = localStorage.getItem("keyVOICE_MODE     ");
-  if (Math.floor(((valueVoiceMode * 10) + 127) / 254) == 1) {
+  if (valueVoiceMode == 1 || Math.floor(((valueVoiceMode * 10) + 127) / 254) == 1) {
+//  if (Math.floor(((valueVoiceMode * 10) + 127) / 254) == 1) {
     targetCCNumbers.forEach(function(i) {
       document.getElementById("span" + controlNumberToStringMap.get(i)).style.color = 'lightgray';
     });
@@ -420,7 +442,8 @@ function afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceModeOrEGAmpModOrRelEqDecay() 
 
   var valueOsc1Wave = localStorage.getItem("keyOSC_1_WAVE     ");
   var indexOsc1Wave = Math.floor(((valueOsc1Wave * 10) + 127) / 254);
-  if ((indexOsc1Wave == 4) || (indexOsc1Wave == 5)) {
+  if ((valueOsc1Wave == 4) || (valueOsc1Wave == 5) || (indexOsc1Wave == 4) || (indexOsc1Wave == 5)) {
+//  if ((indexOsc1Wave == 4) || (indexOsc1Wave == 5)) {
     document.getElementById("spanOSC_1_SHAPE    ").style.color = 'black';
     document.getElementById("spanOSC_1_MORPH    ").style.color = 'black';
   } else {
@@ -431,21 +454,24 @@ function afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceModeOrEGAmpModOrRelEqDecay() 
   var valueOsc2Wave = localStorage.getItem("keyOSC_2_WAVE     ");
   var indexOsc2Wave = Math.floor(((valueOsc2Wave * 10) + 127) / 254)
   var valueMixerSubOsc = localStorage.getItem("keyMIXER_SUB_OSC  ");
-  if ((indexOsc2Wave == 4) && (valueMixerSubOsc < 64)) {
+  if (((valueOsc2Wave == 4) || (indexOsc2Wave == 4)) && (valueMixerSubOsc < 64)) {
+//  if ((indexOsc2Wave == 4) && (valueMixerSubOsc < 64)) {
     document.getElementById("spanMIXER_SUB_OSC  ").style.color = 'lightgray';
   } else {
     document.getElementById("spanMIXER_SUB_OSC  ").style.color = 'black';
   }
 
   var valueEGAmpMod = localStorage.getItem("keyEG_AMP_MOD     ");
-  if (valueEGAmpMod >= 64) {
+  if (valueEGAmpMod == 1 || valueEGAmpMod >= 64) {
+//  if (valueEGAmpMod >= 64) {
     document.getElementById("spanAMP_ATTACK     ").style.color = 'lightgray';
     document.getElementById("spanAMP_DECAY      ").style.color = 'lightgray';
     document.getElementById("spanAMP_SUSTAIN    ").style.color = 'lightgray';
     document.getElementById("spanAMP_RELEASE    ").style.color = 'lightgray';
 
     var valueRelEqDecay = localStorage.getItem("keyREL_EQ_DECAY   ");
-    if (valueRelEqDecay >= 64) {
+    if (valueRelEqDecay == 1 || valueRelEqDecay >= 64) {
+//    if (valueRelEqDecay >= 64) {
       document.getElementById("spanEG_RELEASE     ").style.color = 'lightgray';
     } else {
       document.getElementById("spanEG_RELEASE     ").style.color = 'black';
@@ -456,7 +482,8 @@ function afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceModeOrEGAmpModOrRelEqDecay() 
     document.getElementById("spanAMP_SUSTAIN    ").style.color = 'black';
 
     var valueRelEqDecay = localStorage.getItem("keyREL_EQ_DECAY   ");
-    if (valueRelEqDecay >= 64) {
+    if (valueRelEqDecay == 1 || valueRelEqDecay >= 64) {
+//    if (valueRelEqDecay >= 64) {
       document.getElementById("spanEG_RELEASE     ").style.color = 'lightgray';
       document.getElementById("spanAMP_RELEASE    ").style.color = 'lightgray';
     } else {
@@ -653,6 +680,7 @@ function updateDisplayOfControl(number, value) {
   case EG_OSC_AMT      :
   case LFO_OSC_AMT     :
   case LFO_FILTER_AMT  :
+  case BTH_FILTER_AMT  :
     if (value >= 64) {
       document.getElementById("span" + controlNumberToStringMap.get(number)).innerHTML = "+" + String(value - 64);
     } else {
@@ -690,13 +718,18 @@ function setRandom() {
   controllersInLocalStorage.forEach(function(i) {
     if ((i != VOICE_MODE     ) &&
         (i != AMP_GAIN       ) &&
+        (i != EG_AMP_MOD     ) &&
+        (i != REL_EQ_DECAY   ) &&
         (i != CHORUS_MIX     ) &&
         (i != CHORUS_RATE    ) &&
         (i != CHORUS_DEPTH   ) &&
         (i != DELAY_FEEDBACK ) &&
         (i != DELAY_TIME     ) &&
-        (i != EG_AMP_MOD     ) &&
-        (i != REL_EQ_DECAY   )) {
+        (i != DELAY_MODE     ) &&
+        (i != BTH_FILTER_AMT ) &&
+        (i != BTH_AMP_MOD    ) &&
+        (i != EG_VEL_SENS    ) &&
+        (i != AMP_VEL_SENS   )) {
       onChangeControlChange(i, rand(128));
     }
   });
@@ -708,7 +741,8 @@ function setRandomChorus() {
         (i == CHORUS_RATE    ) ||
         (i == CHORUS_DEPTH   ) ||
         (i == DELAY_FEEDBACK ) ||
-        (i == DELAY_TIME     )) {
+        (i == DELAY_TIME     ) ||
+        (i == DELAY_MODE     )) {
       onChangeControlChange(i, rand(128));
     }
   });
@@ -889,6 +923,11 @@ function fileExport() {
   str += fileExportOneLine(REL_EQ_DECAY   );
   str += fileExportOneLine(P_BEND_RANGE   );
   str += "\n";
+  str += fileExportOneLine(BTH_FILTER_AMT );
+  str += fileExportOneLine(BTH_AMP_MOD    );
+  str += fileExportOneLine(EG_VEL_SENS    );
+  str += fileExportOneLine(AMP_VEL_SENS   );
+  str += "\n";
   str += fileExportOneLine(CHORUS_MIX     );
   str += fileExportOneLine(CHORUS_RATE    );
   str += fileExportOneLine(CHORUS_DEPTH   );
@@ -896,7 +935,7 @@ function fileExport() {
   str += "\n";
   str += fileExportOneLine(DELAY_FEEDBACK );
   str += fileExportOneLine(DELAY_TIME     );
-  str += "\n";
+  str += fileExportOneLine(DELAY_MODE     );
   str += "\n";
   str += "  \"_end         \" : \"\"\n";
   str += "}\n";
@@ -1215,6 +1254,25 @@ function getStoredCCValueString(index, number) {
 <td><span    id="spanP_BEND_RANGE   " >-</span></td>
 </tr>
 <tr>
+<td colspan="2"><b>Breath</b> Filter Amt [-|+]         </td>
+<td colspan="2"><b>Breath</b> Amp Mod [Off|Qad|Lin]    </td>
+<td colspan="2"><b>EG</b> Velocity Sensitivity         </td>
+<td colspan="2"><b>Amp</b> Velocity Sensitivity        </td>
+</tr>
+<tr>
+<td><input  id="inputBTH_FILTER_AMT "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(BTH_FILTER_AMT , value)"></td>
+<td><span    id="spanBTH_FILTER_AMT " >-</span></td>
+<td><input  id="inputBTH_AMP_MOD    "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(BTH_AMP_MOD    , value)"></td>
+<td><span    id="spanBTH_AMP_MOD    " >-</span></td>
+<td><input  id="inputEG_VEL_SENS    "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_VEL_SENS    , value)"></td>
+<td><span    id="spanEG_VEL_SENS    " >-</span></td>
+<td><input  id="inputAMP_VEL_SENS   "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(AMP_VEL_SENS   , value)"></td>
+<td><span    id="spanAMP_VEL_SENS   " >-</span></td>
+</tr>
+<tr>
+<td colspan="8"><hr></td>
+</tr>
+<tr>
 <td colspan="2"><b>Chorus</b> Mix [Dry|Wet]            </td>
 <td colspan="2"><b>Chorus</b> Rate                     </td>
 <td colspan="2"><b>Chorus</b> Depth                    </td>
@@ -1233,7 +1291,7 @@ function getStoredCCValueString(index, number) {
 <tr>
 <td colspan="2"><b>Delay</b> Feedback                  </td>
 <td colspan="2"><b>Delay</b> Time                      </td>
-<td colspan="2">                                </td>
+<td colspan="2"><b>Delay</b> Mode [S|P]                </td>
 <td colspan="2">                                </td>
 </tr>
 <tr>
@@ -1241,8 +1299,8 @@ function getStoredCCValueString(index, number) {
 <td><span    id="spanDELAY_FEEDBACK " >-</span></td>
 <td><input  id="inputDELAY_TIME     "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(DELAY_TIME     , value)"></td>
 <td><span    id="spanDELAY_TIME     " >-</span></td>
-<td></td>
-<td></td>
+<td><input  id="inputDELAY_MODE     "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(DELAY_MODE     , value)"></td>
+<td><span    id="spanDELAY_MODE     " >-</span></td>
 <td></td>
 <td></td>
 </tr>

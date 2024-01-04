@@ -21,7 +21,15 @@
 #define I2S_SWAP_BCLK_AND_LRCLK_PINS    (false)
 
 #define I2S_BUFFERS                     (4)
-#define I2S_BUFFER_WORDS                (32)
+#define I2S_BUFFER_WORDS                (64)
+
+//#define USE_PWM_AUDIO_INSTEAD_OF_I2S
+
+// for Pimoroni Pico VGA Demo Base (PIM553)
+#define PWM_AUDIO_L_PIN                 (28)
+#define PWM_AUDIO_R_PIN                 (27)
+
+#define USE_2_CORES_FOR_SIGNAL_PROCESSING
 
 ////////////////////////////////////////////////////////////////
 
@@ -39,8 +47,13 @@ MIDI_CREATE_INSTANCE(Adafruit_USBD_MIDI, usbd_midi, MIDI);
 MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
 #endif
 
-#include <I2S.h>
+#if defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
+#include <PWMAudio.h>
+PWMAudio g_pwm_l(PWM_AUDIO_L_PIN);
+PWMAudio g_pwm_r(PWM_AUDIO_R_PIN);
+#endif // defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
 
+#include <I2S.h>
 I2S g_i2s_output(OUTPUT);
 
 void handleNoteOn(byte channel, byte pitch, byte velocity);
@@ -53,16 +66,37 @@ void __not_in_flash_func(setup)() {
 }
 
 void __not_in_flash_func(loop)() {
+  g_synth.secondary_core_process();
 }
 
 void __not_in_flash_func(setup1)() {
   g_i2s_output.setSysClk(SAMPLING_RATE);
+#if defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
+#if ((PWM_AUDIO_L_PIN + 1) == PWM_AUDIO_R_PIN) && ((PWM_AUDIO_L_PIN % 2) == 0)
+  g_pwm_l.setStereo(true);
+  g_pwm_l.setBuffers(I2S_BUFFERS, I2S_BUFFER_WORDS);
+  g_pwm_l.setFrequency(SAMPLING_RATE);
+  g_pwm_l.begin();
+#elif ((PWM_AUDIO_R_PIN + 1) == PWM_AUDIO_L_PIN) && ((PWM_AUDIO_R_PIN % 2) == 0)
+  g_pwm_r.setStereo(true);
+  g_pwm_r.setBuffers(I2S_BUFFERS, I2S_BUFFER_WORDS);
+  g_pwm_r.setFrequency(SAMPLING_RATE);
+  g_pwm_r.begin();
+#else
+  g_pwm_l.setBuffers(I2S_BUFFERS, I2S_BUFFER_WORDS / 2);
+  g_pwm_r.setBuffers(I2S_BUFFERS, I2S_BUFFER_WORDS / 2);
+  g_pwm_l.setFrequency(SAMPLING_RATE);
+  g_pwm_r.setFrequency(SAMPLING_RATE);
+  g_pwm_l.begin();
+  g_pwm_r.begin();
+#endif
+#else // defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
   g_i2s_output.setFrequency(SAMPLING_RATE);
   g_i2s_output.setDATA(I2S_DATA_PIN);
 #if defined(I2S_MCLK_PIN)
   g_i2s_output.setMCLK(I2S_MCLK_PIN);
   g_i2s_output.setMCLKmult(I2S_MCLK_MULT);
-#endif
+#endif // defined(I2S_MCLK_PIN)
   g_i2s_output.setBCLK(I2S_BCLK_PIN);
   if (I2S_SWAP_BCLK_AND_LRCLK_PINS) {
     g_i2s_output.swapClocks();
@@ -70,12 +104,13 @@ void __not_in_flash_func(setup1)() {
   g_i2s_output.setBitsPerSample(16);
   g_i2s_output.setBuffers(I2S_BUFFERS, I2S_BUFFER_WORDS);
   g_i2s_output.begin();
+#endif // defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
 
 #if defined(USE_USB_MIDI)
   TinyUSB_Device_Init(0);
   USBDevice.setManufacturerDescriptor("ISGK Instruments");
   USBDevice.setProductDescriptor("Digital Synth PRA32-U");
-#endif
+#endif // defined(USE_USB_MIDI)
   MIDI.setHandleNoteOn(handleNoteOn);
   MIDI.setHandleNoteOff(handleNoteOff);
   MIDI.setHandleControlChange(handleControlChange);
@@ -85,30 +120,33 @@ void __not_in_flash_func(setup1)() {
   MIDI.turnThruOff();
 #if defined(USE_SERIAL1_MIDI)
   Serial1.begin(SERIAL1_MIDI_SPEED);
-#endif
+#endif // defined(USE_SERIAL1_MIDI)
 
 #if defined(DEBUG_PRINT)
 #if defined(USE_SERIAL1_MIDI)
   Serial.begin(0);  // Select USB Stack: "Pico SDK" in the Arduino IDE "Tools" menu
-#else
+#else // defined(USE_SERIAL1_MIDI)
   Serial1.begin(115200);
-#endif
-#endif
+#endif // defined(USE_SERIAL1_MIDI)
+#endif // defined(DEBUG_PRINT)
 
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
 
+#if defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
+#else // defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
 #if defined(I2S_DAC_MUTE_OFF_PIN)
   pinMode(I2S_DAC_MUTE_OFF_PIN, OUTPUT);
   digitalWrite(I2S_DAC_MUTE_OFF_PIN, HIGH);
-#endif
+#endif // defined(I2S_DAC_MUTE_OFF_PIN)
+#endif // defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
 }
 
 void __not_in_flash_func(loop1)() {
 
 #if defined(DEBUG_PRINT)
   uint32_t debug_measurement_start0_us = micros();
-#endif
+#endif // defined(DEBUG_PRINT)
 
   for (uint32_t i = 0; i < (I2S_BUFFER_WORDS + 15) / 16; i++) {
     MIDI.read();
@@ -116,7 +154,7 @@ void __not_in_flash_func(loop1)() {
 
 #if defined(DEBUG_PRINT)
   uint32_t debug_measurement_start1_us = micros();
-#endif
+#endif // defined(DEBUG_PRINT)
 
   int16_t left_buffer[I2S_BUFFER_WORDS];
   int16_t right_buffer[I2S_BUFFER_WORDS];
@@ -126,11 +164,26 @@ void __not_in_flash_func(loop1)() {
 
 #if defined(DEBUG_PRINT)
   uint32_t debug_measurement_end_us = micros();
-#endif
+#endif // defined(DEBUG_PRINT)
 
+#if defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
+  for (uint32_t i = 0; i < I2S_BUFFER_WORDS; i++) {
+#if ((PWM_AUDIO_L_PIN + 1) == PWM_AUDIO_R_PIN) && ((PWM_AUDIO_L_PIN % 2) == 0)
+    g_pwm_l.write(left_buffer[i]);
+    g_pwm_l.write(right_buffer[i]);
+#elif ((PWM_AUDIO_R_PIN + 1) == PWM_AUDIO_L_PIN) && ((PWM_AUDIO_R_PIN % 2) == 0)
+    g_pwm_r.write(right_buffer[i]);
+    g_pwm_r.write(left_buffer[i]);
+#else
+    g_pwm_l.write(left_buffer[i]);
+    g_pwm_r.write(right_buffer[i]);
+#endif
+  }
+#else // defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
   for (uint32_t i = 0; i < I2S_BUFFER_WORDS; i++) {
     g_i2s_output.write16(left_buffer[i], right_buffer[i]);
   }
+#endif // defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
 
 #if defined(DEBUG_PRINT)
   static uint32_t s_debug_measurement_max0_us = 0;
@@ -152,15 +205,15 @@ void __not_in_flash_func(loop1)() {
     Serial.println(debug_measurement_elapsed0_us);
     Serial.println(s_debug_measurement_max0_us);
     Serial.println();
-#else
+#else // defined(USE_SERIAL1_MIDI)
     Serial1.println(debug_measurement_elapsed1_us);
     Serial1.println(s_debug_measurement_max1_us);
     Serial1.println(debug_measurement_elapsed0_us);
     Serial1.println(s_debug_measurement_max0_us);
     Serial1.println();
-#endif
+#endif // defined(USE_SERIAL1_MIDI)
   }
-#endif
+#endif // defined(DEBUG_PRINT)
 }
 
 void __not_in_flash_func(handleNoteOn)(byte channel, byte pitch, byte velocity)

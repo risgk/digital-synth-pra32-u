@@ -1,6 +1,6 @@
-# Digital Synth PRA32-U Parameter Guide v1.2.1
+# Digital Synth PRA32-U Parameter Guide v2.0.0
 
-- 2024-01-03 ISGK Instruments
+- 2024-01-04 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
 
 ## Control Change Parameters
@@ -10,12 +10,12 @@
     - $$ : Disabled if Osc 1 Wave is not Pls (Pulse)
     - $$$ : Mixer Noise is disabled if Osc 2 Wave is Nos (Noise)
 - Osc 1 Wave [Saw|Sin|-|Tri|-|Pls]
-    - 0 (0-12): Saw Wave
-    - 25 (13-38): Sine Wave
-    - 50 (39-63): Triangle Wave
-    - 75 (64-88): Triangle Wave
-    - 100 (89-114): Pulse Wave (Shape adjustable)
-    - 127 (115-127): Pulse Wave (Shape adjustable)
+    - 0, 6-12: Saw Wave
+    - 1, 25 (13-38): Sine Wave
+    - 2, 50 (39-63): Triangle Wave
+    - 3, 75 (64-88): Triangle Wave
+    - 4, 100 (89-114): Pulse Wave (Shape adjustable)
+    - 5, 127 (115-127): Pulse Wave (Shape adjustable)
 - Osc 1 Shape $$
     - Pulse Wave (= 1st Saw + Phase Shifted 2nd Saw)
         - 0: Pulse Width 50%, or 2nd Saw Phase 50% (min)
@@ -39,12 +39,12 @@
     - +62 (126): Sub Osc 96.9%
     - +63 (127): Sub Osc 100%
 - Osc 2 Wave [Saw|Sin|-|Tri|Nos|Sqr]
-    - 0 (0-12): Saw Wave
-    - 25 (13-38): Sine Wave
-    - 50 (39-63): Triangle Wave
-    - 75 (64-88): Triangle Wave
-    - 100 (89-114): White Noise
-    - 127 (115-127): Square Wave
+    - 0, 6-12: Saw Wave
+    - 1, 25 (13-38): Sine Wave
+    - 2, 50 (39-63): Triangle Wave
+    - 3, 75 (64-88): Triangle Wave
+    - 4, 100 (89-114): White Noise
+    - 5, 127 (115-127): Square Wave
 - Osc 2 Coarse [-|+]
     - -60 (4): -60 semitone (min)
     - +60 (124): +60 semitone (max)
@@ -107,28 +107,28 @@
         - -63 (1): Shape -252 (min)
         - +63 (127): Shape +252 (max)
 - EG Osc Dst [P|2P|1S], LFO Osc Dst [P|2P|1S]
-    - 0 (0-31): Osc 1 & 2 Pitch
-    - 64 (32-95): Osc 2 Pitch
-    - 127 (96-127): Osc 1 Shape
+    - 0, 3-31: Osc 1 & 2 Pitch
+    - 1, 64 (32-95): Osc 2 Pitch
+    - 2, 127 (96-127): Osc 1 Shape
 - Voice Mode [Pol|Par|-|Mon|LP|Lgt]
-    - 0 (0-12): Polyphonic (LFO Single Trigger)
-    - 25 (13-38): Paraphonic (LFO Single Trigger)
-    - 50 (39-63): Monophonic (EG & LFO Multi Trigger)
-    - 75 (64-88): Monophonic (EG & LFO Multi Trigger)
-    - 100 (89-114): Legato Portamento (Monophonic, EG & LFO Single Trigger, Auto Portamento)
-    - 127 (115-127): Legato (Monophonic, EG & LFO Single Trigger)
+    - 0, 6-12: Polyphonic (LFO Single Trigger)
+    - 1, 25 (13-38): Paraphonic (LFO Single Trigger)
+    - 2, 50 (39-63): Monophonic (EG & LFO Multi Trigger)
+    - 3, 75 (64-88): Monophonic (EG & LFO Multi Trigger)
+    - 4, 100 (89-114): Legato Portamento (Monophonic, EG & LFO Single Trigger, Auto Portamento)
+    - 5, 127 (115-127): Legato (Monophonic, EG & LFO Single Trigger)
 - Portamento
     - 0: Portamento Time 0 ms
     - 1: Portamento Time 1.1 ms
     - 64: Portamento Time 100 ms
     - 127: Portamento Time 9.3 s
 - LFO Wave [Tri|Sin|-|Saw|SH|Sqr]
-    - 0 (0-12): Triangle Wave (Key Trigger Off, -0.5 to +0.5)
-    - 25 (13-38): Sine Wave (Key Trigger Off, -0.5 to +0.5)
-    - 50 (39-63): Saw Wave (Key Trigger On, -0.5 to +0.5)
-    - 75 (64-88): Saw Wave (Key Trigger On, -0.5 to +0.5)
-    - 100 (89-114): Sample & Hold (Key Trigger On, -0.5 to +0.5)
-    - 127 (115-127): Square Wave (Key Trigger On, 0.0 to 1.0)
+    - 0, 6-12: Triangle Wave (Key Trigger Off, -0.5 to +0.5)
+    - 1, 25 (13-38): Sine Wave (Key Trigger Off, -0.5 to +0.5)
+    - 2, 50 (39-63): Saw Wave (Key Trigger On, -0.5 to +0.5)
+    - 3, 75 (64-88): Saw Wave (Key Trigger On, -0.5 to +0.5)
+    - 4, 100 (89-114): Sample & Hold (Key Trigger On, -0.5 to +0.5)
+    - 5, 127 (115-127): Square Wave (Key Trigger On, 0.0 to 1.0)
 - LFO Rate
     - 0: 0.068 Hz (min)
     - 64: 2.7 Hz
@@ -142,17 +142,25 @@
     - 64: 1.0 s
     - 127: 9.6 s (max)
 - Filter Mode [LP|HP]
-    - 0 (0-63): Low Pass
-    - 127 (64-127): High Pass
+    - 0, 2-63: Low Pass
+    - 1, 127 (64-127): High Pass
 - EG Amp Mod [Off|On]
-    - 0 (0-63): Off
-    - 127 (64-127): On, Amp ADSR = EG ADSR
+    - 0, 2-63: Off
+    - 1, 127 (64-127): On, Amp ADSR = EG ADSR
 - Release = Decay [Off|On]
-    - 0 (0-63): Off
-    - 127 (64-127): On, EG Release = EG Decay and Amp Release = Amp Decay
+    - 0, 2-63: Off
+    - 1, 127 (64-127): On, EG Release = EG Decay and Amp Release = Amp Decay
+        - **NOTE**: EG Velocity Sensitivity and Amp Velocity Sensitivity works independently
 - Pitch Bend Range
     - 0: 0 semitone (min)
     - 60: 60 semitone (max)
+- Breath Filter Amt [-|+]
+    - -60 (4): -60 (min)
+    - +60 (124): +60 (max)
+- Breath Amp Mod [Off|Qad|Lin]
+    - 0, 3-31: Off
+    - 1, 64 (32-95): Quadratic Curve
+    - 2, 127 (96-127): Liniear Curve
 - Chorus Rate
     - 0: LFO Frequency 0.012 Hz (min)
     - 64: LFO Frequency 0.48 Hz
@@ -176,3 +184,6 @@
     - 87: 250 ms
     - 93: 270 ms
     - 102: 300 ms (max)
+- Delay Mode [S|P]
+    - 0, 2-63: Stereo Delay
+    - 1, 127 (64-127): Ping Pong Delay

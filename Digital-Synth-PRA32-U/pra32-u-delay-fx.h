@@ -12,6 +12,7 @@ class PRA32_U_DelayFx {
   uint8_t  m_delay_feedback_effective;
   uint16_t m_delay_time;
   uint16_t m_delay_time_effective;
+  uint8_t  m_delay_mode;
 
 public:
   PRA32_U_DelayFx()
@@ -22,6 +23,7 @@ public:
   , m_delay_feedback_effective()
   , m_delay_time()
   , m_delay_time_effective()
+  , m_delay_mode()
   {
     m_delay_wp[0] = DELAY_BUFF_SIZE - 1;
     m_delay_wp[1] = DELAY_BUFF_SIZE - 1;
@@ -59,6 +61,10 @@ public:
     m_delay_time = delay_time_table[controller_value];
   }
 
+  INLINE void set_delay_mode(uint8_t controller_value) {
+    m_delay_mode = controller_value;
+  }
+
   INLINE void process_at_low_rate(uint8_t count) {
     static_cast<void>(count);
 
@@ -73,11 +79,28 @@ public:
     int16_t left_delay   = delay_buff_get<0>(m_delay_time_effective);
     int16_t right_delay  = delay_buff_get<1>(m_delay_time_effective);
 
-    int16_t left_output  = (left_input  >> 1) + ((left_delay  * m_delay_feedback_effective) / 256);
-    int16_t right_output = (right_input >> 1) + ((right_delay * m_delay_feedback_effective) / 256);
+    int16_t left_feedback;
+    int16_t right_feedback;
 
-    delay_buff_push<0>(left_output);
-    delay_buff_push<1>(right_output);
+#if 1
+    if (m_delay_mode == 1 || m_delay_mode >= 64) {
+#else
+    if (m_delay_mode >= 64) {
+#endif
+      // Ping Pong Delay
+      left_feedback  = ((                                    right_delay) * m_delay_feedback_effective) / 256;
+      right_feedback = ((((left_input + right_input) >> 2) + left_delay ) * m_delay_feedback_effective) / 256;
+    } else {
+      // Stereo Delay
+      left_feedback  = ((((left_input  >> 1) + left_delay ) * m_delay_feedback_effective) / 256);
+      right_feedback = ((((right_input >> 1) + right_delay) * m_delay_feedback_effective) / 256);
+    }
+
+    delay_buff_push<0>(left_feedback);
+    delay_buff_push<1>(right_feedback);
+
+    int16_t left_output  = (left_input  >> 1) + left_delay;
+    int16_t right_output = (right_input >> 1) + right_delay;
 
     right_level = right_output;
     return        left_output;

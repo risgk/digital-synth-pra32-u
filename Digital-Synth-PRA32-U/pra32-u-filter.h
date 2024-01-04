@@ -25,6 +25,8 @@ class PRA32_U_Filter {
   int8_t          m_cutoff_pitch_amt;
   int8_t          m_cutoff_offset;
   uint8_t         m_filter_mode;
+  int8_t          m_cutoff_breath_amt;
+  int16_t         m_breath_controller;
 
   const uint8_t AUDIO_FRACTION_BITS = 14;
   const int16_t MAX_ABS_OUTPUT = ((124 << (AUDIO_FRACTION_BITS - 8)) >> 8) << 8;
@@ -50,6 +52,8 @@ public:
   , m_cutoff_pitch_amt()
   , m_cutoff_offset()
   , m_filter_mode()
+  , m_cutoff_breath_amt()
+  , m_breath_controller()
   {
     m_cutoff_current = 254;
 
@@ -114,6 +118,14 @@ public:
     m_filter_mode = controller_value;
   }
 
+  INLINE void set_cutoff_breath_amt(uint8_t controller_value) {;
+    m_cutoff_breath_amt = get_cutoff_mod_amt(controller_value);
+  }
+
+  INLINE void set_breath_controller(uint8_t controller_value) {
+    m_breath_controller = (controller_value * 16384) / 127;
+  }
+
   INLINE void set_cutoff_offset(int8_t cutoff_offset) {
     m_cutoff_offset = cutoff_offset;
   }
@@ -136,14 +148,18 @@ public:
     int16_t x_3;
     int32_t y_0;
 
-    if (m_filter_mode < 64) {
-      // low pass
-      x_3 = x_0 + (m_x_1 << 1) + m_x_2;
-      y_0 = mul_s32_s16_h32(m_lpf_b_2_over_a_0, x_3) << (32 - FILTER_TABLE_FRACTION_BITS);
-    } else {
+#if 1
+    if (m_filter_mode == 1 || m_filter_mode >= 64) {
+#else
+    if (m_filter_mode >= 64) {
+#endif
       // high pass
       x_3 = x_0 - (m_x_1 << 1) + m_x_2;
       y_0 = mul_s32_s16_h32(m_hpf_b_2_over_a_0, x_3) << (32 - FILTER_TABLE_FRACTION_BITS);
+    } else {
+      // low pass
+      x_3 = x_0 + (m_x_1 << 1) + m_x_2;
+      y_0 = mul_s32_s16_h32(m_lpf_b_2_over_a_0, x_3) << (32 - FILTER_TABLE_FRACTION_BITS);
     }
 
     y_0 -= mul_s32_s32_h32(m_a_1_over_a_0, m_y_1) << (32 - FILTER_TABLE_FRACTION_BITS);
@@ -179,6 +195,7 @@ private:
 
     m_cutoff_candidate += (lfo_input * m_cutoff_lfo_amt) >> 14;
     m_cutoff_candidate += (((osc_pitch - (60 << 8)) * m_cutoff_pitch_amt) + 128) >> 8;
+    m_cutoff_candidate += (m_breath_controller * m_cutoff_breath_amt) >> 14;
 
     // cutoff_target = clamp(m_cutoff_candidate, 0, 255)
     volatile int16_t cutoff_target = m_cutoff_candidate - 255;
