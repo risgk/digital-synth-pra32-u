@@ -17,7 +17,8 @@
 
 ## Change History
 
-- v2.0.1: Fix Parameter Guide (Filter Resonance)
+- v2.0.1:
+    - Fix Parameter Guide (Filter Resonance)
 - v2.0.0:
     - Add Delay Mode (Ping Pong Delay);
     - Support Breath Controller (Breath Filter Amt and Breath Amp Mod);
