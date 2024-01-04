@@ -27,8 +27,8 @@
       (Voice Mode: 27 -> 14, LFO Wave: 18 -> 12, Filter Mode: 86 -> 78, EG Amp Mod: 87 -> 28, and Chorus Mix: 93 -> 27);
     - Change the meanings of the values of Control Changes
       (Osc 1 Wave, Osc 2 Wave, EG Osc Dst, Voice Mode, LFO Wave, LFO Osc Dst, Filter Mode, EG Amp Mod, Release = Decay, Breath Amp Mod, and Delay Mode);
-    - Increase DMA buffer size for future feature additions (audio latency: 2.7 ms -> 5.3 ms);
-    - Use 2 cores for signal processing for future feature additions;
+    - Increase DMA buffer size (audio latency: 2.7 ms -> 5.3 ms);
+    - Use 2 cores for signal processing in Polyphonic and Paraphonic Modes;
     - Add PWM audio output option (experimental)
 - v1.2.1: Fixed an oscillation problem caused by Delay Feedback
 - v1.2.0: Renew High Pass Filter; Raspberry Pi Pico/RP2040 core version 3.6.2 is recommended
