@@ -18,6 +18,7 @@
 ## Change History
 
 - v2.0.1:
+    - Fix Ping Pong Delay to start from the left
     - Fix Parameter Guide (Filter Resonance)
 - v2.0.0:
     - Add Delay Mode (Ping Pong Delay);
