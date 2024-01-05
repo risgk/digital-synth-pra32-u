@@ -784,12 +784,65 @@ public:
 
     program_number = program_number & PROGRAM_NUMBER_MAX;
 
-    for (uint32_t control_number = 0; control_number < 128; ++control_number) {
-      uint8_t controller_value = m_program_table[control_number][program_number];
-      if (controller_value < 128) {
-        control_change(control_number, controller_value);
-      }
-    }
+    control_change(OSC_1_WAVE     , m_program_table[OSC_1_WAVE     ][program_number]);
+    control_change(OSC_1_SHAPE    , m_program_table[OSC_1_SHAPE    ][program_number]);
+    control_change(OSC_1_MORPH    , m_program_table[OSC_1_MORPH    ][program_number]);
+    control_change(MIXER_SUB_OSC  , m_program_table[MIXER_SUB_OSC  ][program_number]);
+
+    control_change(OSC_2_WAVE     , m_program_table[OSC_2_WAVE     ][program_number]);
+    control_change(OSC_2_COARSE   , m_program_table[OSC_2_COARSE   ][program_number]);
+    control_change(OSC_2_PITCH    , m_program_table[OSC_2_PITCH    ][program_number]);
+    control_change(MIXER_OSC_MIX  , m_program_table[MIXER_OSC_MIX  ][program_number]);
+
+    control_change(FILTER_CUTOFF  , m_program_table[FILTER_CUTOFF  ][program_number]);
+    control_change(FILTER_RESO    , m_program_table[FILTER_RESO    ][program_number]);
+    control_change(FILTER_EG_AMT  , m_program_table[FILTER_EG_AMT  ][program_number]);
+    control_change(FILTER_KEY_TRK , m_program_table[FILTER_KEY_TRK ][program_number]);
+
+    control_change(EG_ATTACK      , m_program_table[EG_ATTACK      ][program_number]);
+    control_change(EG_DECAY       , m_program_table[EG_DECAY       ][program_number]);
+    control_change(EG_SUSTAIN     , m_program_table[EG_SUSTAIN     ][program_number]);
+    control_change(EG_RELEASE     , m_program_table[EG_RELEASE     ][program_number]);
+
+    control_change(EG_OSC_AMT     , m_program_table[EG_OSC_AMT     ][program_number]);
+    control_change(EG_OSC_DST     , m_program_table[EG_OSC_DST     ][program_number]);
+    control_change(VOICE_MODE     , m_program_table[VOICE_MODE     ][program_number]);
+    control_change(PORTAMENTO     , m_program_table[PORTAMENTO     ][program_number]);
+
+    control_change(LFO_WAVE       , m_program_table[LFO_WAVE       ][program_number]);
+    control_change(LFO_RATE       , m_program_table[LFO_RATE       ][program_number]);
+    control_change(LFO_DEPTH      , m_program_table[LFO_DEPTH      ][program_number]);
+    control_change(LFO_FADE_TIME  , m_program_table[LFO_FADE_TIME  ][program_number]);
+
+    control_change(LFO_OSC_AMT    , m_program_table[LFO_OSC_AMT    ][program_number]);
+    control_change(LFO_OSC_DST    , m_program_table[LFO_OSC_DST    ][program_number]);
+    control_change(LFO_FILTER_AMT , m_program_table[LFO_FILTER_AMT ][program_number]);
+    control_change(AMP_GAIN       , m_program_table[AMP_GAIN       ][program_number]);
+
+    control_change(AMP_ATTACK     , m_program_table[AMP_ATTACK     ][program_number]);
+    control_change(AMP_DECAY      , m_program_table[AMP_DECAY      ][program_number]);
+    control_change(AMP_SUSTAIN    , m_program_table[AMP_SUSTAIN    ][program_number]);
+    control_change(AMP_RELEASE    , m_program_table[AMP_RELEASE    ][program_number]);
+
+    control_change(FILTER_MODE    , m_program_table[FILTER_MODE    ][program_number]);
+    control_change(EG_AMP_MOD     , m_program_table[EG_AMP_MOD     ][program_number]);
+    control_change(REL_EQ_DECAY   , m_program_table[REL_EQ_DECAY   ][program_number]);
+    control_change(P_BEND_RANGE   , m_program_table[P_BEND_RANGE   ][program_number]);
+
+    control_change(BTH_FILTER_AMT , m_program_table[BTH_FILTER_AMT ][program_number]);
+    control_change(BTH_AMP_MOD    , m_program_table[BTH_AMP_MOD    ][program_number]);
+    control_change(EG_VEL_SENS    , m_program_table[EG_VEL_SENS    ][program_number]);
+    control_change(AMP_VEL_SENS   , m_program_table[AMP_VEL_SENS   ][program_number]);
+
+    control_change(CHORUS_MIX     , m_program_table[CHORUS_MIX     ][program_number]);
+    control_change(CHORUS_RATE    , m_program_table[CHORUS_RATE    ][program_number]);
+    control_change(CHORUS_DEPTH   , m_program_table[CHORUS_DEPTH   ][program_number]);
+
+
+    control_change(DELAY_FEEDBACK , m_program_table[DELAY_FEEDBACK ][program_number]);
+    control_change(DELAY_TIME     , m_program_table[DELAY_TIME     ][program_number]);
+    control_change(DELAY_MODE     , m_program_table[DELAY_MODE     ][program_number]);
+
   }
 
   INLINE int16_t process(int16_t& right_level) {
