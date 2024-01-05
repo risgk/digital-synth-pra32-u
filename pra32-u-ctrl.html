@@ -49,6 +49,7 @@ const MIDI_CH        = 0;       // 0-based
 const NOTE_OFF       = 0x80;
 const NOTE_ON        = 0x90;
 const CONTROL_CHANGE = 0xB0;
+const PROGRAM_CHANGE = 0xC0;
 const PITCH_BEND     = 0xE0;
 
 
@@ -764,7 +765,7 @@ function loadControllers(number) {
 }
 
 function saveControllers(number) {
-  var r = confirm("Store the current control values to the program #" + String(number) + "?");
+  var r = confirm("Store the current parameters to the program #" + String(number) + "?");
   if (r == false) {
     return;
   }
@@ -773,6 +774,13 @@ function saveControllers(number) {
     var value = document.getElementById("input" + controlNumberToStringMap.get(i)).value;
     localStorage.setItem("keyMemory" + String(number) + controlNumberToStringMap.get(i), value);
   });
+}
+
+function sendProgramChange(number) {
+  if (midiOutput) {
+    midiOutput.send([(PROGRAM_CHANGE | MIDI_CH), number]);
+    sleep(0);
+  }
 }
 
 function noteOn(noteNumber) {
@@ -806,7 +814,7 @@ function fileImportAllChange(event) {
 }
 
 function fileReaderImportAllLoad(event) {
-  var r = confirm("Import the current control values and the stored programs?");
+  var r = confirm("Import the current and the program parameters?");
   if (r == false) {
     document.getElementById("fileImportAll").value = "";
     return;
@@ -846,7 +854,7 @@ function fileReaderImportAllLoad(event) {
 }
 
 function fileReaderImportCurrentLoad(event) {
-  var r = confirm("Import the current control values?");
+  var r = confirm("Import the current parameters?");
   if (r == false) {
     document.getElementById("fileImportCurrent").value = "";
     return;
@@ -1015,7 +1023,7 @@ function getStoredCCValueString(index, number) {
 </table>
 
 <table>
-<tr><td>Preset</td>
+<tr><td>Preset Program</td>
     <td></td>
     <td><input type="button" value="#4 Synth Bass"     onclick="preset(4)"></td>
     <td></td>
@@ -1030,7 +1038,7 @@ function getStoredCCValueString(index, number) {
     <td><input type="button" value="Random Ctrl"       onclick="setRandom()"></td>
     <td></td>
     <td><input type="button" value="Random FX"         onclick="setRandomChorus()"></td></tr>
-<tr><td></td>
+<tr><td>(from Browser)</td>
     <td></td>
     <td><input type="button" value="#0 Fifth Lead"     onclick="preset(0)"></td>
     <td></td>
@@ -1047,7 +1055,7 @@ function getStoredCCValueString(index, number) {
 </table>
 
 <table>
-<tr><td>Recall</td>
+<tr><td>Recall Program</td>
     <td></td>
     <td><input type="button" value="#12"     onclick="loadControllers(12)"></td>
     <td></td>
@@ -1057,7 +1065,7 @@ function getStoredCCValueString(index, number) {
     <td></td>
     <td><input type="button" value="#15"     onclick="loadControllers(15)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-    <td>Store</td>
+    <td>Store Program</td>
     <td></td>
     <td><input type="button" value="#12"     onclick="saveControllers(12)"></td>
     <td></td>
@@ -1074,7 +1082,7 @@ function getStoredCCValueString(index, number) {
     <td></td>
     <td><input type="file" id="fileImportCurrent" style="display:none" accept=".json"/>
         <input type="button" value="Current" onclick="fileImportCurrent()"></td></tr>
-<tr><td></td>
+<tr><td>(from Browser)</td>
     <td></td>
     <td><input type="button" value="#8 "     onclick="loadControllers(8)" ></td>
     <td></td>
@@ -1084,7 +1092,7 @@ function getStoredCCValueString(index, number) {
     <td></td>
     <td><input type="button" value="#11"     onclick="loadControllers(11)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-    <td></td>
+    <td>(to Browser)</td>
     <td></td>
     <td><input type="button" value="#8 "     onclick="saveControllers(8)" ></td>
     <td></td>
@@ -1098,6 +1106,48 @@ function getStoredCCValueString(index, number) {
     <td></td>
     <td><input type="button" value="All"     onclick="fileExport()"></td></tr>
 <tr><td>&nbsp;</td></tr>
+</table>
+
+<table>
+<tr><td>Program Change</td>
+    <td></td>
+    <td><input type="button" value="#4 "     onclick="sendProgramChange(4)"></td>
+    <td></td>
+    <td><input type="button" value="#5 "     onclick="sendProgramChange(5)"></td>
+    <td></td>
+    <td><input type="button" value="#6 "     onclick="sendProgramChange(6)"></td>
+    <td></td>
+    <td><input type="button" value="#7 "     onclick="sendProgramChange(7)"></td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td></td>
+    <td><input type="button" value="#12"     onclick="sendProgramChange(12)"></td>
+    <td></td>
+    <td><input type="button" value="#13"     onclick="sendProgramChange(13)"></td>
+    <td></td>
+    <td><input type="button" value="#14"     onclick="sendProgramChange(14)"></td>
+    <td></td>
+    <td><input type="button" value="#15"     onclick="sendProgramChange(15)"></td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    </tr>
+<tr><td>(to Main Unit)</td>
+    <td></td>
+    <td><input type="button" value="#0 "     onclick="sendProgramChange(0)" ></td>
+    <td></td>
+    <td><input type="button" value="#1 "     onclick="sendProgramChange(1)" ></td>
+    <td></td>
+    <td><input type="button" value="#2 "     onclick="sendProgramChange(2)"></td>
+    <td></td>
+    <td><input type="button" value="#3 "     onclick="sendProgramChange(3)"></td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td></td>
+    <td><input type="button" value="#8 "     onclick="sendProgramChange(8)" ></td>
+    <td></td>
+    <td><input type="button" value="#9 "     onclick="sendProgramChange(9)" ></td>
+    <td></td>
+    <td><input type="button" value="#10"     onclick="sendProgramChange(10)"></td>
+    <td></td>
+    <td><input type="button" value="#11"     onclick="sendProgramChange(11)"></td>
+    </tr>
 </table>
 
 <table>
