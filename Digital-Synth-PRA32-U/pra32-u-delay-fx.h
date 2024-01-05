@@ -88,8 +88,8 @@ public:
     if (m_delay_mode >= 64) {
 #endif
       // Ping Pong Delay
-      left_feedback  = ((                                    right_delay) * m_delay_feedback_effective) / 256;
-      right_feedback = ((((left_input + right_input) >> 2) + left_delay ) * m_delay_feedback_effective) / 256;
+      left_feedback  = ((((left_input + right_input) >> 2) + right_delay) * m_delay_feedback_effective) / 256;
+      right_feedback = ((                                    left_delay ) * m_delay_feedback_effective) / 256;
     } else {
       // Stereo Delay
       left_feedback  = ((((left_input  >> 1) + left_delay ) * m_delay_feedback_effective) / 256);
