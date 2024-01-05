@@ -17,6 +17,8 @@
 
 ## Change History
 
+- v2.1.0:
+    - Modify programs #8-15 in the main unit;
 - v2.0.1:
     - Fix Ping Pong Delay to start from the left
     - Fix Parameter Guide (Filter Resonance)
