@@ -86,13 +86,13 @@
 |                            35 | x             | o             | Delay Mode [S|P]                    |
 |                               |               |               |                                     |
 |                               |               |               |                                     |
-|                            87 | x             | o             | Program Select to Write $$$$        |
+|                            87 | x             | o             | Program Number to Write $$$$        |
 |                           106 | x             | o             | Write Program to Flash $$$$         |
 |                       112-119 |               |               | Program Change #8-15 by CC          |
 |                           111 | x             | x             | [Reserved]                          |
 +-------------------------------+---------------+---------------+-------------------------------------+
 | Program                       | x             | o             |                                     |
-| Change       : True #         | ************* | 0-15          | Default 8                           |
+| Change       : True #         | ************* | 0-15          | Default 0                           |
 +-------------------------------+---------------+---------------+-------------------------------------+
 | System Exclusive              | x             | x             |                                     |
 +-------------------------------+---------------+---------------+-------------------------------------+
@@ -115,7 +115,7 @@
 |                               | $$ : Disabled if Osc 1 Wave is not Pls (Pulse)                      |
 |                               | $$$ : Mixer Noise is disabled if Osc 2 Wave is Nos (Noise)          |
 |                               | $$$$ : To write the current parameters to Program #8-15 in the      |
-|                               |        flash, set "Program Select to Write" (# is the value mod 16) |
+|                               |        flash, set "Program Number to Write" (# is the value mod 16) |
 |                               |        and then change "Write Program to Flash" from 0 to 1         |
 +-------------------------------+---------------------------------------------------------------------+
   Mode 1: Omni On,  Poly          Mode 2: Omni On,  Mono          o: Yes                               

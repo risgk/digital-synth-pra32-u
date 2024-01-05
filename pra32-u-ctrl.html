@@ -118,8 +118,8 @@ const DELAY_TIME      = 90;
 const DELAY_MODE      = 35;
 
 
-const PROG_SEL_TO_W   = 87;
-const W_PROG_TO_FLASH = 106;
+const PROG_NUM_TO_W   = 87;
+const WRITE_PROG_TO_F = 106;
 const PC_BY_CC_8      = 112;
 const PC_BY_CC_9      = 113;
 const PC_BY_CC_10     = 114;
@@ -786,17 +786,17 @@ function sendProgramChange(number) {
 }
 
 function writeProgram(number) {
-  var r = confirm("Write the current parameters to the program #" + String(number) + " in the main unit?");
+  var r = confirm("Write the current parameters to the program #" + String(number) + "?");
   if (r == false) {
     return;
   }
 
   if (midiOutput) {
-    midiOutput.send([(CONTROL_CHANGE | MIDI_CH), PROG_SEL_TO_W,   number]);
+    midiOutput.send([(CONTROL_CHANGE | MIDI_CH), PROG_NUM_TO_W,   number]);
     sleep(0);
-    midiOutput.send([(CONTROL_CHANGE | MIDI_CH), W_PROG_TO_FLASH, 0]);
+    midiOutput.send([(CONTROL_CHANGE | MIDI_CH), WRITE_PROG_TO_F, 0]);
     sleep(0);
-    midiOutput.send([(CONTROL_CHANGE | MIDI_CH), W_PROG_TO_FLASH, 1]);
+    midiOutput.send([(CONTROL_CHANGE | MIDI_CH), WRITE_PROG_TO_F, 1]);
     sleep(0);
   }
 }
@@ -1073,7 +1073,7 @@ function getStoredCCValueString(index, number) {
 </table>
 
 <table>
-<tr><td>Recall Program</td>
+<tr><td>Recall</td>
     <td></td>
     <td><input type="button" value="#12"     onclick="loadControllers(12)"></td>
     <td></td>
@@ -1083,7 +1083,7 @@ function getStoredCCValueString(index, number) {
     <td></td>
     <td><input type="button" value="#15"     onclick="loadControllers(15)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-    <td>Store Program</td>
+    <td>Store</td>
     <td></td>
     <td><input type="button" value="#12"     onclick="saveControllers(12)"></td>
     <td></td>
@@ -1127,63 +1127,63 @@ function getStoredCCValueString(index, number) {
 </table>
 
 <table>
-<tr><td><font color="red">Write Program</font></td>
+<tr><td><font color="green">Write Program</font></td>
     <td></td>
-    <td><input type="button" value="#12"     onclick="writeProgram(12)" style="color:red"></td>
+    <td><input type="button" value="#12"     onclick="writeProgram(12)" style="color:green"></td>
     <td></td>
-    <td><input type="button" value="#13"     onclick="writeProgram(13)" style="color:red"></td>
+    <td><input type="button" value="#13"     onclick="writeProgram(13)" style="color:green"></td>
     <td></td>
-    <td><input type="button" value="#14"     onclick="writeProgram(14)" style="color:red"></td>
+    <td><input type="button" value="#14"     onclick="writeProgram(14)" style="color:green"></td>
     <td></td>
-    <td><input type="button" value="#15"     onclick="writeProgram(15)" style="color:red"></td>
+    <td><input type="button" value="#15"     onclick="writeProgram(15)" style="color:green"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-    <td><font color="red">Program Change</font></td>
+    <td><font color="green">Program Change</font></td>
     <td></td>
-    <td><input type="button" value="#4 "     onclick="sendProgramChange(4)"  style="color:red"></td>
+    <td><input type="button" value="#4 "     onclick="sendProgramChange(4)"  style="color:green"></td>
     <td></td>
-    <td><input type="button" value="#5 "     onclick="sendProgramChange(5)"  style="color:red"></td>
+    <td><input type="button" value="#5 "     onclick="sendProgramChange(5)"  style="color:green"></td>
     <td></td>
-    <td><input type="button" value="#6 "     onclick="sendProgramChange(6)"  style="color:red"></td>
+    <td><input type="button" value="#6 "     onclick="sendProgramChange(6)"  style="color:green"></td>
     <td></td>
-    <td><input type="button" value="#7 "     onclick="sendProgramChange(7)"  style="color:red"></td>
+    <td><input type="button" value="#7 "     onclick="sendProgramChange(7)"  style="color:green"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td></td>
-    <td><input type="button" value="#12"     onclick="sendProgramChange(12)" style="color:red"></td>
+    <td><input type="button" value="#12"     onclick="sendProgramChange(12)" style="color:green"></td>
     <td></td>
-    <td><input type="button" value="#13"     onclick="sendProgramChange(13)" style="color:red"></td>
+    <td><input type="button" value="#13"     onclick="sendProgramChange(13)" style="color:green"></td>
     <td></td>
-    <td><input type="button" value="#14"     onclick="sendProgramChange(14)" style="color:red"></td>
+    <td><input type="button" value="#14"     onclick="sendProgramChange(14)" style="color:green"></td>
     <td></td>
-    <td><input type="button" value="#15"     onclick="sendProgramChange(15)" style="color:red"></td>
+    <td><input type="button" value="#15"     onclick="sendProgramChange(15)" style="color:green"></td>
     </tr>
-<tr><td><font color="red">(to Main Unit)</font></td>
+<tr><td><font color="green">(to PRA32-U)</font></td>
     <td></td>
-    <td><input type="button" value="#8 "     onclick="writeProgram(8)"  style="color:red"></td>
+    <td><input type="button" value="#8 "     onclick="writeProgram(8)"  style="color:green"></td>
     <td></td>
-    <td><input type="button" value="#9 "     onclick="writeProgram(9)"  style="color:red"></td>
+    <td><input type="button" value="#9 "     onclick="writeProgram(9)"  style="color:green"></td>
     <td></td>
-    <td><input type="button" value="#10"     onclick="writeProgram(10)" style="color:red"></td>
+    <td><input type="button" value="#10"     onclick="writeProgram(10)" style="color:green"></td>
     <td></td>
-    <td><input type="button" value="#11"     onclick="writeProgram(11)" style="color:red"></td>
+    <td><input type="button" value="#11"     onclick="writeProgram(11)" style="color:green"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-    <td><font color="red">(to Main Unit)</font></td>
+    <td><font color="green">(to PRA32-U)</font></td>
     <td></td>
-    <td><input type="button" value="#0 "     onclick="sendProgramChange(0)"  style="color:red"></td>
+    <td><input type="button" value="#0 "     onclick="sendProgramChange(0)"  style="color:green"></td>
     <td></td>
-    <td><input type="button" value="#1 "     onclick="sendProgramChange(1)"  style="color:red"></td>
+    <td><input type="button" value="#1 "     onclick="sendProgramChange(1)"  style="color:green"></td>
     <td></td>
-    <td><input type="button" value="#2 "     onclick="sendProgramChange(2)"  style="color:red"></td>
+    <td><input type="button" value="#2 "     onclick="sendProgramChange(2)"  style="color:green"></td>
     <td></td>
-    <td><input type="button" value="#3 "     onclick="sendProgramChange(3)"  style="color:red"></td>
+    <td><input type="button" value="#3 "     onclick="sendProgramChange(3)"  style="color:green"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td></td>
-    <td><input type="button" value="#8 "     onclick="sendProgramChange(8)"  style="color:red"></td>
+    <td><input type="button" value="#8 "     onclick="sendProgramChange(8)"  style="color:green"></td>
     <td></td>
-    <td><input type="button" value="#9 "     onclick="sendProgramChange(9)"  style="color:red"></td>
+    <td><input type="button" value="#9 "     onclick="sendProgramChange(9)"  style="color:green"></td>
     <td></td>
-    <td><input type="button" value="#10"     onclick="sendProgramChange(10)" style="color:red"></td>
+    <td><input type="button" value="#10"     onclick="sendProgramChange(10)" style="color:green"></td>
     <td></td>
-    <td><input type="button" value="#11"     onclick="sendProgramChange(11)" style="color:red"></td>
+    <td><input type="button" value="#11"     onclick="sendProgramChange(11)" style="color:green"></td>
     </tr>
 </table>
 

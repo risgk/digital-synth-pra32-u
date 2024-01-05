@@ -1,6 +1,6 @@
 #pragma once
 
-const uint8_t PROGRAM_NUMBER_DEFAULT = 8;
+const uint8_t PROGRAM_NUMBER_DEFAULT = 0;
 
 // Preset                                         #0   #1   #2   #3   #4   #5   #6   #7     #8   #9   #10  #11  #12  #13  #14  #15  
 const uint8_t g_preset_table_OSC_1_WAVE     [] = {127, 127, 127, 127, 127, 127, 127, 0  ,   127, 127, 127, 127, 127, 127, 127, 0  };
