@@ -49,7 +49,6 @@ const MIDI_CH        = 0;       // 0-based
 const NOTE_OFF       = 0x80;
 const NOTE_ON        = 0x90;
 const CONTROL_CHANGE = 0xB0;
-const PROGRAM_CHANGE = 0xC0;
 const PITCH_BEND     = 0xE0;
 
 
@@ -118,8 +117,6 @@ const DELAY_TIME      = 90;
 const DELAY_MODE      = 35;
 
 
-const PROG_NUM_TO_W   = 87;
-const WRITE_PROG_TO_F = 106;
 const PC_BY_CC_8      = 112;
 const PC_BY_CC_9      = 113;
 const PC_BY_CC_10     = 114;
@@ -268,7 +265,7 @@ var controllersInLocalStorage = [
 
 var presetControllers = {};
 
-// Preset                             #0   #1   #2   #3   #4   #5   #6   #7   
+// PRESET                             #0   #1   #2   #3   #4   #5   #6   #7   
 presetControllers[OSC_1_WAVE     ] = [127, 127, 127, 127, 127, 127, 127, 0  ];
 presetControllers[OSC_1_SHAPE    ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 presetControllers[OSC_1_MORPH    ] = [64 , 64 , 64 , 64 , 64 , 0  , 0  , 0  ];
@@ -767,7 +764,7 @@ function loadControllers(number) {
 }
 
 function saveControllers(number) {
-  var r = confirm("Store the current parameters to the program #" + String(number) + "?");
+  var r = confirm("Store the current control values to the program #" + String(number) + "?");
   if (r == false) {
     return;
   }
@@ -776,29 +773,6 @@ function saveControllers(number) {
     var value = document.getElementById("input" + controlNumberToStringMap.get(i)).value;
     localStorage.setItem("keyMemory" + String(number) + controlNumberToStringMap.get(i), value);
   });
-}
-
-function sendProgramChange(number) {
-  if (midiOutput) {
-    midiOutput.send([(PROGRAM_CHANGE | MIDI_CH), number]);
-    sleep(0);
-  }
-}
-
-function writeProgram(number) {
-  var r = confirm("Write the current parameters to the program #" + String(number) + "?");
-  if (r == false) {
-    return;
-  }
-
-  if (midiOutput) {
-    midiOutput.send([(CONTROL_CHANGE | MIDI_CH), PROG_NUM_TO_W,   number]);
-    sleep(0);
-    midiOutput.send([(CONTROL_CHANGE | MIDI_CH), WRITE_PROG_TO_F, 0]);
-    sleep(0);
-    midiOutput.send([(CONTROL_CHANGE | MIDI_CH), WRITE_PROG_TO_F, 1]);
-    sleep(0);
-  }
 }
 
 function noteOn(noteNumber) {
@@ -832,7 +806,7 @@ function fileImportAllChange(event) {
 }
 
 function fileReaderImportAllLoad(event) {
-  var r = confirm("Import the current and the program parameters?");
+  var r = confirm("Import the current control values and the stored programs?");
   if (r == false) {
     document.getElementById("fileImportAll").value = "";
     return;
@@ -844,7 +818,7 @@ function fileReaderImportAllLoad(event) {
     controllersInLocalStorage.forEach(function(i) {
       var line = obj[controlNumberToStringMap.get(i)];
       if (line != null) {
-        var value = line[1][number];
+        var value = line[1][number - 8];
         if (value != null) {
           localStorage.setItem("keyMemory" + String(number) + controlNumberToStringMap.get(i), value);
         }
@@ -872,7 +846,7 @@ function fileReaderImportAllLoad(event) {
 }
 
 function fileReaderImportCurrentLoad(event) {
-  var r = confirm("Import the current parameters?");
+  var r = confirm("Import the current control values?");
   if (r == false) {
     document.getElementById("fileImportCurrent").value = "";
     return;
@@ -1056,7 +1030,7 @@ function getStoredCCValueString(index, number) {
     <td><input type="button" value="Random Ctrl"       onclick="setRandom()"></td>
     <td></td>
     <td><input type="button" value="Random FX"         onclick="setRandomChorus()"></td></tr>
-<tr><td>(from Browser)</td>
+<tr><td></td>
     <td></td>
     <td><input type="button" value="#0 Fifth Lead"     onclick="preset(0)"></td>
     <td></td>
@@ -1100,7 +1074,7 @@ function getStoredCCValueString(index, number) {
     <td></td>
     <td><input type="file" id="fileImportCurrent" style="display:none" accept=".json"/>
         <input type="button" value="Current" onclick="fileImportCurrent()"></td></tr>
-<tr><td>(from Browser)</td>
+<tr><td></td>
     <td></td>
     <td><input type="button" value="#8 "     onclick="loadControllers(8)" ></td>
     <td></td>
@@ -1110,7 +1084,7 @@ function getStoredCCValueString(index, number) {
     <td></td>
     <td><input type="button" value="#11"     onclick="loadControllers(11)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-    <td>(to Browser)</td>
+    <td></td>
     <td></td>
     <td><input type="button" value="#8 "     onclick="saveControllers(8)" ></td>
     <td></td>
@@ -1124,67 +1098,6 @@ function getStoredCCValueString(index, number) {
     <td></td>
     <td><input type="button" value="All"     onclick="fileExport()"></td></tr>
 <tr><td>&nbsp;</td></tr>
-</table>
-
-<table>
-<tr><td><font color="green">Write Program</font></td>
-    <td></td>
-    <td><input type="button" value="#12"     onclick="writeProgram(12)" style="color:green"></td>
-    <td></td>
-    <td><input type="button" value="#13"     onclick="writeProgram(13)" style="color:green"></td>
-    <td></td>
-    <td><input type="button" value="#14"     onclick="writeProgram(14)" style="color:green"></td>
-    <td></td>
-    <td><input type="button" value="#15"     onclick="writeProgram(15)" style="color:green"></td>
-    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-    <td><font color="green">Program Change</font></td>
-    <td></td>
-    <td><input type="button" value="#4 "     onclick="sendProgramChange(4)"  style="color:green"></td>
-    <td></td>
-    <td><input type="button" value="#5 "     onclick="sendProgramChange(5)"  style="color:green"></td>
-    <td></td>
-    <td><input type="button" value="#6 "     onclick="sendProgramChange(6)"  style="color:green"></td>
-    <td></td>
-    <td><input type="button" value="#7 "     onclick="sendProgramChange(7)"  style="color:green"></td>
-    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-    <td></td>
-    <td><input type="button" value="#12"     onclick="sendProgramChange(12)" style="color:green"></td>
-    <td></td>
-    <td><input type="button" value="#13"     onclick="sendProgramChange(13)" style="color:green"></td>
-    <td></td>
-    <td><input type="button" value="#14"     onclick="sendProgramChange(14)" style="color:green"></td>
-    <td></td>
-    <td><input type="button" value="#15"     onclick="sendProgramChange(15)" style="color:green"></td>
-    </tr>
-<tr><td><font color="green">(to PRA32-U)</font></td>
-    <td></td>
-    <td><input type="button" value="#8 "     onclick="writeProgram(8)"  style="color:green"></td>
-    <td></td>
-    <td><input type="button" value="#9 "     onclick="writeProgram(9)"  style="color:green"></td>
-    <td></td>
-    <td><input type="button" value="#10"     onclick="writeProgram(10)" style="color:green"></td>
-    <td></td>
-    <td><input type="button" value="#11"     onclick="writeProgram(11)" style="color:green"></td>
-    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-    <td><font color="green">(to PRA32-U)</font></td>
-    <td></td>
-    <td><input type="button" value="#0 "     onclick="sendProgramChange(0)"  style="color:green"></td>
-    <td></td>
-    <td><input type="button" value="#1 "     onclick="sendProgramChange(1)"  style="color:green"></td>
-    <td></td>
-    <td><input type="button" value="#2 "     onclick="sendProgramChange(2)"  style="color:green"></td>
-    <td></td>
-    <td><input type="button" value="#3 "     onclick="sendProgramChange(3)"  style="color:green"></td>
-    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-    <td></td>
-    <td><input type="button" value="#8 "     onclick="sendProgramChange(8)"  style="color:green"></td>
-    <td></td>
-    <td><input type="button" value="#9 "     onclick="sendProgramChange(9)"  style="color:green"></td>
-    <td></td>
-    <td><input type="button" value="#10"     onclick="sendProgramChange(10)" style="color:green"></td>
-    <td></td>
-    <td><input type="button" value="#11"     onclick="sendProgramChange(11)" style="color:green"></td>
-    </tr>
 </table>
 
 <table>
