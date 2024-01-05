@@ -180,7 +180,7 @@
 - We recommend using Google Chrome, which implements Web MIDI API
 - Select "Digital Synth PRA32-U" in the list "MIDI Out"
 - Functions
-    - PRA32-U CTRL converts Program Changes (#0-7 for PRESET, #8-15 for user programs) into Control Changes
+    - PRA32-U CTRL converts Program Changes (#0-7 for Preset programs, #8-15 for user programs) into Control Changes
     - When Program Change #127 is entered or Control Change #111 is changed from Off (63 or lower) to On (64 or higher), "Rand Ctrl" is processed
     - PRA32-U CTRL stores the current control values and the user programs (#8-15) in a Web browser (localStorage)
     - Current parameter values and user programs (#8-15) can be imported/exported from/to JSON files

@@ -9,6 +9,7 @@ const uint8_t   NOTE_NUMBER_MIN     = 0;
 const uint8_t   NOTE_NUMBER_MAX     = 127;
 const uint8_t   NOTE_NUMBER_INVALID = 255;
 
+const uint8_t   PRESET_PROGRAM_NUMBER_MAX    = 7;
 const uint8_t   PROGRAM_NUMBER_MAX           = 15;
 
 const int8_t    OSC_CONTROL_INTERVAL_BITS    = 1;

@@ -11,6 +11,8 @@
 #include "pra32-u-delay-fx.h"
 #include "pra32-u-program-table.h"
 
+#include <cstring>
+
 class PRA32_U_Synth {
   PRA32_U_Osc       m_osc;
   PRA32_U_Filter    m_filter[4];
@@ -52,6 +54,8 @@ class PRA32_U_Synth {
   uint8_t           m_controller_value_rel_eq_decay;
 
   uint8_t           m_sp_prog_chg_cc_values[8];
+  uint8_t           m_current_controller_value_table[128];
+  uint8_t           m_program_table[128][PROGRAM_NUMBER_MAX + 1];
 
   volatile int32_t  m_secondary_core_processing_argument;
   volatile uint32_t m_secondary_core_processing_request;
@@ -100,6 +104,8 @@ public:
   , m_controller_value_rel_eq_decay(0)
 
   , m_sp_prog_chg_cc_values()
+  , m_current_controller_value_table()
+  , m_program_table()
 
   , m_secondary_core_processing_argument()
   , m_secondary_core_processing_request()
@@ -123,6 +129,71 @@ public:
 
     m_eg_osc_amt = 64;
     m_lfo_osc_amt = 64;
+
+    {
+      std::memset(m_current_controller_value_table, sizeof(m_current_controller_value_table), 255);
+      std::memset(m_program_table, sizeof(m_program_table), 255);
+
+      std::memcpy(m_program_table[OSC_1_WAVE     ], g_preset_table_OSC_1_WAVE     , sizeof(m_program_table[0]));
+      std::memcpy(m_program_table[OSC_1_SHAPE    ], g_preset_table_OSC_1_SHAPE    , sizeof(m_program_table[0]));
+      std::memcpy(m_program_table[OSC_1_MORPH    ], g_preset_table_OSC_1_MORPH    , sizeof(m_program_table[0]));
+      std::memcpy(m_program_table[MIXER_SUB_OSC  ], g_preset_table_MIXER_SUB_OSC  , sizeof(m_program_table[0]));
+
+      std::memcpy(m_program_table[OSC_2_WAVE     ], g_preset_table_OSC_2_WAVE     , sizeof(m_program_table[0]));
+      std::memcpy(m_program_table[OSC_2_COARSE   ], g_preset_table_OSC_2_COARSE   , sizeof(m_program_table[0]));
+      std::memcpy(m_program_table[OSC_2_PITCH    ], g_preset_table_OSC_2_PITCH    , sizeof(m_program_table[0]));
+      std::memcpy(m_program_table[MIXER_OSC_MIX  ], g_preset_table_MIXER_OSC_MIX  , sizeof(m_program_table[0]));
+
+      std::memcpy(m_program_table[FILTER_CUTOFF  ], g_preset_table_FILTER_CUTOFF  , sizeof(m_program_table[0]));
+      std::memcpy(m_program_table[FILTER_RESO    ], g_preset_table_FILTER_RESO    , sizeof(m_program_table[0]));
+      std::memcpy(m_program_table[FILTER_EG_AMT  ], g_preset_table_FILTER_EG_AMT  , sizeof(m_program_table[0]));
+      std::memcpy(m_program_table[FILTER_KEY_TRK ], g_preset_table_FILTER_KEY_TRK , sizeof(m_program_table[0]));
+
+      std::memcpy(m_program_table[EG_ATTACK      ], g_preset_table_EG_ATTACK      , sizeof(m_program_table[0]));
+      std::memcpy(m_program_table[EG_DECAY       ], g_preset_table_EG_DECAY       , sizeof(m_program_table[0]));
+      std::memcpy(m_program_table[EG_SUSTAIN     ], g_preset_table_EG_SUSTAIN     , sizeof(m_program_table[0]));
+      std::memcpy(m_program_table[EG_RELEASE     ], g_preset_table_EG_RELEASE     , sizeof(m_program_table[0]));
+
+      std::memcpy(m_program_table[EG_OSC_AMT     ], g_preset_table_EG_OSC_AMT     , sizeof(m_program_table[0]));
+      std::memcpy(m_program_table[EG_OSC_DST     ], g_preset_table_EG_OSC_DST     , sizeof(m_program_table[0]));
+      std::memcpy(m_program_table[VOICE_MODE     ], g_preset_table_VOICE_MODE     , sizeof(m_program_table[0]));
+      std::memcpy(m_program_table[PORTAMENTO     ], g_preset_table_PORTAMENTO     , sizeof(m_program_table[0]));
+
+      std::memcpy(m_program_table[LFO_WAVE       ], g_preset_table_LFO_WAVE       , sizeof(m_program_table[0]));
+      std::memcpy(m_program_table[LFO_RATE       ], g_preset_table_LFO_RATE       , sizeof(m_program_table[0]));
+      std::memcpy(m_program_table[LFO_DEPTH      ], g_preset_table_LFO_DEPTH      , sizeof(m_program_table[0]));
+      std::memcpy(m_program_table[LFO_FADE_TIME  ], g_preset_table_LFO_FADE_TIME  , sizeof(m_program_table[0]));
+
+      std::memcpy(m_program_table[LFO_OSC_AMT    ], g_preset_table_LFO_OSC_AMT    , sizeof(m_program_table[0]));
+      std::memcpy(m_program_table[LFO_OSC_DST    ], g_preset_table_LFO_OSC_DST    , sizeof(m_program_table[0]));
+      std::memcpy(m_program_table[LFO_FILTER_AMT ], g_preset_table_LFO_FILTER_AMT , sizeof(m_program_table[0]));
+      std::memcpy(m_program_table[AMP_GAIN       ], g_preset_table_AMP_GAIN       , sizeof(m_program_table[0]));
+
+      std::memcpy(m_program_table[AMP_ATTACK     ], g_preset_table_AMP_ATTACK     , sizeof(m_program_table[0]));
+      std::memcpy(m_program_table[AMP_DECAY      ], g_preset_table_AMP_DECAY      , sizeof(m_program_table[0]));
+      std::memcpy(m_program_table[AMP_SUSTAIN    ], g_preset_table_AMP_SUSTAIN    , sizeof(m_program_table[0]));
+      std::memcpy(m_program_table[AMP_RELEASE    ], g_preset_table_AMP_RELEASE    , sizeof(m_program_table[0]));
+
+      std::memcpy(m_program_table[FILTER_MODE    ], g_preset_table_FILTER_MODE    , sizeof(m_program_table[0]));
+      std::memcpy(m_program_table[EG_AMP_MOD     ], g_preset_table_EG_AMP_MOD     , sizeof(m_program_table[0]));
+      std::memcpy(m_program_table[REL_EQ_DECAY   ], g_preset_table_REL_EQ_DECAY   , sizeof(m_program_table[0]));
+      std::memcpy(m_program_table[P_BEND_RANGE   ], g_preset_table_P_BEND_RANGE   , sizeof(m_program_table[0]));
+
+      std::memcpy(m_program_table[BTH_FILTER_AMT ], g_preset_table_BTH_FILTER_AMT , sizeof(m_program_table[0]));
+      std::memcpy(m_program_table[BTH_AMP_MOD    ], g_preset_table_BTH_AMP_MOD    , sizeof(m_program_table[0]));
+      std::memcpy(m_program_table[EG_VEL_SENS    ], g_preset_table_EG_VEL_SENS    , sizeof(m_program_table[0]));
+      std::memcpy(m_program_table[AMP_VEL_SENS   ], g_preset_table_AMP_VEL_SENS   , sizeof(m_program_table[0]));
+
+      std::memcpy(m_program_table[CHORUS_MIX     ], g_preset_table_CHORUS_MIX     , sizeof(m_program_table[0]));
+      std::memcpy(m_program_table[CHORUS_RATE    ], g_preset_table_CHORUS_RATE    , sizeof(m_program_table[0]));
+      std::memcpy(m_program_table[CHORUS_DEPTH   ], g_preset_table_CHORUS_DEPTH   , sizeof(m_program_table[0]));
+
+
+      std::memcpy(m_program_table[DELAY_FEEDBACK ], g_preset_table_DELAY_FEEDBACK , sizeof(m_program_table[0]));
+      std::memcpy(m_program_table[DELAY_TIME     ], g_preset_table_DELAY_TIME     , sizeof(m_program_table[0]));
+      std::memcpy(m_program_table[DELAY_MODE     ], g_preset_table_DELAY_MODE     , sizeof(m_program_table[0]));
+
+    }
 
     program_change(PROGRAM_NUMBER_DEFAULT);
   }
@@ -436,8 +507,10 @@ public:
     set_sustain_pedal(0);
   }
 
-  INLINE void control_change(uint8_t controller_number, uint8_t controller_value) {
-    switch (controller_number) {
+  INLINE void control_change(uint8_t control_number, uint8_t controller_value) {
+    m_current_controller_value_table[control_number] = controller_value;
+
+    switch (control_number) {
     case MODULATION     :
       m_lfo.set_lfo_depth<1>(controller_value);
       break;
@@ -688,7 +761,7 @@ public:
     case PC_BY_CC_14    :
     case PC_BY_CC_15    :
       {
-        uint8_t program_index = controller_number - PC_BY_CC_8;
+        uint8_t program_index = control_number - PC_BY_CC_8;
         uint8_t old_value = m_sp_prog_chg_cc_values[program_index];
         m_sp_prog_chg_cc_values[program_index] = controller_value;
         if ((old_value < 64) && (controller_value >= 64)) {
@@ -711,65 +784,12 @@ public:
 
     program_number = program_number & PROGRAM_NUMBER_MAX;
 
-    control_change(OSC_1_WAVE     , g_preset_table_OSC_1_WAVE     [program_number]);
-    control_change(OSC_1_SHAPE    , g_preset_table_OSC_1_SHAPE    [program_number]);
-    control_change(OSC_1_MORPH    , g_preset_table_OSC_1_MORPH    [program_number]);
-    control_change(MIXER_SUB_OSC  , g_preset_table_MIXER_SUB_OSC  [program_number]);
-
-    control_change(OSC_2_WAVE     , g_preset_table_OSC_2_WAVE     [program_number]);
-    control_change(OSC_2_COARSE   , g_preset_table_OSC_2_COARSE   [program_number]);
-    control_change(OSC_2_PITCH    , g_preset_table_OSC_2_PITCH    [program_number]);
-    control_change(MIXER_OSC_MIX  , g_preset_table_MIXER_OSC_MIX  [program_number]);
-
-    control_change(FILTER_CUTOFF  , g_preset_table_FILTER_CUTOFF  [program_number]);
-    control_change(FILTER_RESO    , g_preset_table_FILTER_RESO    [program_number]);
-    control_change(FILTER_EG_AMT  , g_preset_table_FILTER_EG_AMT  [program_number]);
-    control_change(FILTER_KEY_TRK , g_preset_table_FILTER_KEY_TRK [program_number]);
-
-    control_change(EG_ATTACK      , g_preset_table_EG_ATTACK      [program_number]);
-    control_change(EG_DECAY       , g_preset_table_EG_DECAY       [program_number]);
-    control_change(EG_SUSTAIN     , g_preset_table_EG_SUSTAIN     [program_number]);
-    control_change(EG_RELEASE     , g_preset_table_EG_RELEASE     [program_number]);
-
-    control_change(EG_OSC_AMT     , g_preset_table_EG_OSC_AMT     [program_number]);
-    control_change(EG_OSC_DST     , g_preset_table_EG_OSC_DST     [program_number]);
-    control_change(VOICE_MODE     , g_preset_table_VOICE_MODE     [program_number]);
-    control_change(PORTAMENTO     , g_preset_table_PORTAMENTO     [program_number]);
-
-    control_change(LFO_WAVE       , g_preset_table_LFO_WAVE       [program_number]);
-    control_change(LFO_RATE       , g_preset_table_LFO_RATE       [program_number]);
-    control_change(LFO_DEPTH      , g_preset_table_LFO_DEPTH      [program_number]);
-    control_change(LFO_FADE_TIME  , g_preset_table_LFO_FADE_TIME  [program_number]);
-
-    control_change(LFO_OSC_AMT    , g_preset_table_LFO_OSC_AMT    [program_number]);
-    control_change(LFO_OSC_DST    , g_preset_table_LFO_OSC_DST    [program_number]);
-    control_change(LFO_FILTER_AMT , g_preset_table_LFO_FILTER_AMT [program_number]);
-    control_change(AMP_GAIN       , g_preset_table_AMP_GAIN       [program_number]);
-
-    control_change(AMP_ATTACK     , g_preset_table_AMP_ATTACK     [program_number]);
-    control_change(AMP_DECAY      , g_preset_table_AMP_DECAY      [program_number]);
-    control_change(AMP_SUSTAIN    , g_preset_table_AMP_SUSTAIN    [program_number]);
-    control_change(AMP_RELEASE    , g_preset_table_AMP_RELEASE    [program_number]);
-
-    control_change(FILTER_MODE    , g_preset_table_FILTER_MODE    [program_number]);
-    control_change(EG_AMP_MOD     , g_preset_table_EG_AMP_MOD     [program_number]);
-    control_change(REL_EQ_DECAY   , g_preset_table_REL_EQ_DECAY   [program_number]);
-    control_change(P_BEND_RANGE   , g_preset_table_P_BEND_RANGE   [program_number]);
-
-    control_change(BTH_FILTER_AMT , g_preset_table_BTH_FILTER_AMT [program_number]);
-    control_change(BTH_AMP_MOD    , g_preset_table_BTH_AMP_MOD    [program_number]);
-    control_change(EG_VEL_SENS    , g_preset_table_EG_VEL_SENS    [program_number]);
-    control_change(AMP_VEL_SENS   , g_preset_table_AMP_VEL_SENS   [program_number]);
-
-    control_change(CHORUS_MIX     , g_preset_table_CHORUS_MIX     [program_number]);
-    control_change(CHORUS_RATE    , g_preset_table_CHORUS_RATE    [program_number]);
-    control_change(CHORUS_DEPTH   , g_preset_table_CHORUS_DEPTH   [program_number]);
-
-
-    control_change(DELAY_FEEDBACK , g_preset_table_DELAY_FEEDBACK [program_number]);
-    control_change(DELAY_TIME     , g_preset_table_DELAY_TIME     [program_number]);
-    control_change(DELAY_MODE     , g_preset_table_DELAY_MODE     [program_number]);
-
+    for (uint32_t control_number = 0; control_number < 128; ++control_number) {
+      uint8_t controller_value = m_program_table[control_number][program_number];
+      if (controller_value < 128) {
+        control_change(control_number, controller_value);
+      }
+    }
   }
 
   INLINE int16_t process(int16_t& right_level) {
