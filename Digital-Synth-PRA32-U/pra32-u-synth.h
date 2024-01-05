@@ -53,6 +53,8 @@ class PRA32_U_Synth {
   uint8_t           m_controller_value_eg_amp_mod;
   uint8_t           m_controller_value_rel_eq_decay;
 
+  uint8_t           m_program_select_to_write;
+  uint8_t           m_wr_prog_to_flash_cc_value;
   uint8_t           m_sp_prog_chg_cc_values[8];
   uint8_t           m_current_controller_value_table[128];
   uint8_t           m_program_table[128][PROGRAM_NUMBER_MAX + 1];
@@ -103,6 +105,8 @@ public:
   , m_controller_value_eg_amp_mod(0)
   , m_controller_value_rel_eq_decay(0)
 
+  , m_program_select_to_write(PRESET_PROGRAM_NUMBER_MAX + 1)
+  , m_wr_prog_to_flash_cc_value(1)
   , m_sp_prog_chg_cc_values()
   , m_current_controller_value_table()
   , m_program_table()
@@ -749,6 +753,83 @@ public:
 
     case RESET_ALL_CTRLS:
       reset_all_controllers();
+      break;
+
+    // Write Program
+    case PROG_SEL_TO_W  :
+      {
+        if (controller_value < (PROGRAM_NUMBER_MAX - PRESET_PROGRAM_NUMBER_MAX)) {
+          m_program_select_to_write = controller_value + (PRESET_PROGRAM_NUMBER_MAX + 1);
+        }
+      }
+      break;
+    case W_PROG_TO_FLASH:
+      {
+        uint8_t old_value = m_wr_prog_to_flash_cc_value;
+        m_wr_prog_to_flash_cc_value = controller_value;
+
+        if ((old_value == 0) && (controller_value == 1)) {
+          m_program_table[OSC_1_WAVE     ][m_program_select_to_write] = m_current_controller_value_table[OSC_1_WAVE     ];
+          m_program_table[OSC_1_SHAPE    ][m_program_select_to_write] = m_current_controller_value_table[OSC_1_SHAPE    ];
+          m_program_table[OSC_1_MORPH    ][m_program_select_to_write] = m_current_controller_value_table[OSC_1_MORPH    ];
+          m_program_table[MIXER_SUB_OSC  ][m_program_select_to_write] = m_current_controller_value_table[MIXER_SUB_OSC  ];
+
+          m_program_table[OSC_2_WAVE     ][m_program_select_to_write] = m_current_controller_value_table[OSC_2_WAVE     ];
+          m_program_table[OSC_2_COARSE   ][m_program_select_to_write] = m_current_controller_value_table[OSC_2_COARSE   ];
+          m_program_table[OSC_2_PITCH    ][m_program_select_to_write] = m_current_controller_value_table[OSC_2_PITCH    ];
+          m_program_table[MIXER_OSC_MIX  ][m_program_select_to_write] = m_current_controller_value_table[MIXER_OSC_MIX  ];
+
+          m_program_table[FILTER_CUTOFF  ][m_program_select_to_write] = m_current_controller_value_table[FILTER_CUTOFF  ];
+          m_program_table[FILTER_RESO    ][m_program_select_to_write] = m_current_controller_value_table[FILTER_RESO    ];
+          m_program_table[FILTER_EG_AMT  ][m_program_select_to_write] = m_current_controller_value_table[FILTER_EG_AMT  ];
+          m_program_table[FILTER_KEY_TRK ][m_program_select_to_write] = m_current_controller_value_table[FILTER_KEY_TRK ];
+
+          m_program_table[EG_ATTACK      ][m_program_select_to_write] = m_current_controller_value_table[EG_ATTACK      ];
+          m_program_table[EG_DECAY       ][m_program_select_to_write] = m_current_controller_value_table[EG_DECAY       ];
+          m_program_table[EG_SUSTAIN     ][m_program_select_to_write] = m_current_controller_value_table[EG_SUSTAIN     ];
+          m_program_table[EG_RELEASE     ][m_program_select_to_write] = m_current_controller_value_table[EG_RELEASE     ];
+
+          m_program_table[EG_OSC_AMT     ][m_program_select_to_write] = m_current_controller_value_table[EG_OSC_AMT     ];
+          m_program_table[EG_OSC_DST     ][m_program_select_to_write] = m_current_controller_value_table[EG_OSC_DST     ];
+          m_program_table[VOICE_MODE     ][m_program_select_to_write] = m_current_controller_value_table[VOICE_MODE     ];
+          m_program_table[PORTAMENTO     ][m_program_select_to_write] = m_current_controller_value_table[PORTAMENTO     ];
+
+          m_program_table[LFO_WAVE       ][m_program_select_to_write] = m_current_controller_value_table[LFO_WAVE       ];
+          m_program_table[LFO_RATE       ][m_program_select_to_write] = m_current_controller_value_table[LFO_RATE       ];
+          m_program_table[LFO_DEPTH      ][m_program_select_to_write] = m_current_controller_value_table[LFO_DEPTH      ];
+          m_program_table[LFO_FADE_TIME  ][m_program_select_to_write] = m_current_controller_value_table[LFO_FADE_TIME  ];
+
+          m_program_table[LFO_OSC_AMT    ][m_program_select_to_write] = m_current_controller_value_table[LFO_OSC_AMT    ];
+          m_program_table[LFO_OSC_DST    ][m_program_select_to_write] = m_current_controller_value_table[LFO_OSC_DST    ];
+          m_program_table[LFO_FILTER_AMT ][m_program_select_to_write] = m_current_controller_value_table[LFO_FILTER_AMT ];
+          m_program_table[AMP_GAIN       ][m_program_select_to_write] = m_current_controller_value_table[AMP_GAIN       ];
+
+          m_program_table[AMP_ATTACK     ][m_program_select_to_write] = m_current_controller_value_table[AMP_ATTACK     ];
+          m_program_table[AMP_DECAY      ][m_program_select_to_write] = m_current_controller_value_table[AMP_DECAY      ];
+          m_program_table[AMP_SUSTAIN    ][m_program_select_to_write] = m_current_controller_value_table[AMP_SUSTAIN    ];
+          m_program_table[AMP_RELEASE    ][m_program_select_to_write] = m_current_controller_value_table[AMP_RELEASE    ];
+
+          m_program_table[FILTER_MODE    ][m_program_select_to_write] = m_current_controller_value_table[FILTER_MODE    ];
+          m_program_table[EG_AMP_MOD     ][m_program_select_to_write] = m_current_controller_value_table[EG_AMP_MOD     ];
+          m_program_table[REL_EQ_DECAY   ][m_program_select_to_write] = m_current_controller_value_table[REL_EQ_DECAY   ];
+          m_program_table[P_BEND_RANGE   ][m_program_select_to_write] = m_current_controller_value_table[P_BEND_RANGE   ];
+
+          m_program_table[BTH_FILTER_AMT ][m_program_select_to_write] = m_current_controller_value_table[BTH_FILTER_AMT ];
+          m_program_table[BTH_AMP_MOD    ][m_program_select_to_write] = m_current_controller_value_table[BTH_AMP_MOD    ];
+          m_program_table[EG_VEL_SENS    ][m_program_select_to_write] = m_current_controller_value_table[EG_VEL_SENS    ];
+          m_program_table[AMP_VEL_SENS   ][m_program_select_to_write] = m_current_controller_value_table[AMP_VEL_SENS   ];
+
+          m_program_table[CHORUS_MIX     ][m_program_select_to_write] = m_current_controller_value_table[CHORUS_MIX     ];
+          m_program_table[CHORUS_RATE    ][m_program_select_to_write] = m_current_controller_value_table[CHORUS_RATE    ];
+          m_program_table[CHORUS_DEPTH   ][m_program_select_to_write] = m_current_controller_value_table[CHORUS_DEPTH   ];
+
+
+          m_program_table[DELAY_FEEDBACK ][m_program_select_to_write] = m_current_controller_value_table[DELAY_FEEDBACK ];
+          m_program_table[DELAY_TIME     ][m_program_select_to_write] = m_current_controller_value_table[DELAY_TIME     ];
+          m_program_table[DELAY_MODE     ][m_program_select_to_write] = m_current_controller_value_table[DELAY_MODE     ];
+
+        }
+      }
       break;
 
     // Program Change by CC

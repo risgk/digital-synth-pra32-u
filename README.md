@@ -17,6 +17,8 @@
 
 ## Change History
 
+- v2.1.0:
+    - Add the function of writing user programs to the flash
 - v2.0.1:
     - Fix Ping Pong Delay to start from the left
     - Fix Parameter Guide (Filter Resonance)

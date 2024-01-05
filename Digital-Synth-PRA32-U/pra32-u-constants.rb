@@ -114,6 +114,8 @@ DELAY_TIME      = 90
 DELAY_MODE      = 35
 
 
+PROG_SEL_TO_W   = 93
+W_PROG_TO_FLASH = 105
 PC_BY_CC_8      = 112
 PC_BY_CC_9      = 113
 PC_BY_CC_10     = 114
