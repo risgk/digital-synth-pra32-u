@@ -17,12 +17,14 @@
     - 4, 100 (89-114): Pulse Wave (Shape adjustable)
     - 5, 127 (115-127): Pulse Wave (Shape adjustable)
 - Osc 1 Shape $$
+    - Sine Wave (Phase Modulation): Modulation Index
     - Pulse Wave (= 1st Saw + Phase Shifted 2nd Saw)
         - 0: Pulse Width 50%, or 2nd Saw Phase 50% (min)
         - 64: Pulse Width 25%, or 2nd Saw Phase 25%
         - 96: Pulse Width 12.5%, or 2nd Saw Phase 12.5%
         - 127: Pulse Width 0.4%, or 2nd Saw Phase 99.6% (max)
 - Osc 1 Morph $$
+    - Sine Wave (Phase Modulation): Frequency Ratio of Modulator
     - Pulse Wave
         - 0: Pulse 100% = Saw 100% + Reverse Saw 100% (min)
         - 32: Pulse 50% + Saw 50% = Saw 100% + Reverse Saw 50%

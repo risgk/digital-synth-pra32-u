@@ -442,8 +442,8 @@ function afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceModeOrEGAmpModOrRelEqDecay() 
 
   var valueOsc1Wave = localStorage.getItem("keyOSC_1_WAVE     ");
   var indexOsc1Wave = Math.floor(((valueOsc1Wave * 10) + 127) / 254);
-  if ((valueOsc1Wave == 4) || (valueOsc1Wave == 5) || (indexOsc1Wave == 4) || (indexOsc1Wave == 5)) {
-//  if ((indexOsc1Wave == 4) || (indexOsc1Wave == 5)) {
+  if ((valueOsc1Wave == 1) || (valueOsc1Wave == 4) || (valueOsc1Wave == 5) || (indexOsc1Wave == 1) || (indexOsc1Wave == 4) || (indexOsc1Wave == 5)) {
+//  if ((indexOsc1Wave == 1) || (indexOsc1Wave == 4) || (indexOsc1Wave == 5)) {
     document.getElementById("spanOSC_1_SHAPE    ").style.color = 'black';
     document.getElementById("spanOSC_1_MORPH    ").style.color = 'black';
   } else {

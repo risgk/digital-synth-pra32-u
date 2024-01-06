@@ -18,6 +18,7 @@
 ## Change History
 
 - v2.1.0:
+    - Support Osc 1 Sine Wave Phase Modulation (Osc 1 Shape and Osc 1 Morph)
     - Modify programs #8-15 in the main unit;
 - v2.0.1:
     - Fix Ping Pong Delay to start from the left
