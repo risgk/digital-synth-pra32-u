@@ -119,15 +119,15 @@ void __not_in_flash_func(setup1)() {
   MIDI.begin(MIDI_CHANNEL_OMNI);
   MIDI.turnThruOff();
 #if defined(USE_SERIAL1_MIDI)
+  Serial1.setTX(0);
+  Serial1.setRX(1);
   Serial1.begin(SERIAL1_MIDI_SPEED);
 #endif // defined(USE_SERIAL1_MIDI)
 
 #if defined(DEBUG_PRINT)
-#if defined(USE_SERIAL1_MIDI)
-  Serial.begin(0);  // Select USB Stack: "Pico SDK" in the Arduino IDE "Tools" menu
-#else // defined(USE_SERIAL1_MIDI)
-  Serial1.begin(115200);
-#endif // defined(USE_SERIAL1_MIDI)
+  Serial2.setTX(4);
+  Serial2.setRX(5);
+  Serial2.begin(115200);
 #endif // defined(DEBUG_PRINT)
 
   pinMode(LED_BUILTIN, OUTPUT);
@@ -199,19 +199,12 @@ void __not_in_flash_func(loop1)() {
   static uint32_t s_debug_loop_counter = 0;
   if (++s_debug_loop_counter == 4000) {
     s_debug_loop_counter = 0;
-#if defined(USE_SERIAL1_MIDI)
-    Serial.println(debug_measurement_elapsed1_us);
-    Serial.println(s_debug_measurement_max1_us);
-    Serial.println(debug_measurement_elapsed0_us);
-    Serial.println(s_debug_measurement_max0_us);
-    Serial.println();
-#else // defined(USE_SERIAL1_MIDI)
-    Serial1.println(debug_measurement_elapsed1_us);
-    Serial1.println(s_debug_measurement_max1_us);
-    Serial1.println(debug_measurement_elapsed0_us);
-    Serial1.println(s_debug_measurement_max0_us);
-    Serial1.println();
-#endif // defined(USE_SERIAL1_MIDI)
+
+    Serial2.println(debug_measurement_elapsed1_us);
+    Serial2.println(s_debug_measurement_max1_us);
+    Serial2.println(debug_measurement_elapsed0_us);
+    Serial2.println(s_debug_measurement_max0_us);
+    Serial2.println();
   }
 #endif // defined(DEBUG_PRINT)
 }
