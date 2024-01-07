@@ -119,8 +119,6 @@ void __not_in_flash_func(setup1)() {
   MIDI.begin(MIDI_CHANNEL_OMNI);
   MIDI.turnThruOff();
 #if defined(USE_SERIAL1_MIDI)
-  Serial1.setTX(0);
-  Serial1.setRX(1);
   Serial1.begin(SERIAL1_MIDI_SPEED);
 #endif // defined(USE_SERIAL1_MIDI)
 
