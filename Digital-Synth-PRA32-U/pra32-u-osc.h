@@ -44,10 +44,10 @@ class PRA32_U_Osc {
   int16_t        m_osc2_detune;
 
   uint8_t        m_phase_high;
-  int8_t         m_osc1_shape_control;
-  int8_t         m_osc1_shape_control_effective;
-  int8_t         m_osc1_morph_control;
-  int8_t         m_osc1_morph_control_effective;
+  uint8_t        m_osc1_shape_control;
+  uint8_t        m_osc1_shape_control_effective;
+  uint8_t        m_osc1_morph_control;
+  uint8_t        m_osc1_morph_control_effective;
   int32_t        m_osc1_shape[4];
   int32_t        m_osc1_shape_effective[4];
   uint16_t       m_osc1_phase_modulation_depth[4];
@@ -220,11 +220,11 @@ public:
   }
 
   INLINE void set_osc1_shape_control(uint8_t controller_value) {
-    m_osc1_shape_control = -controller_value;
+    m_osc1_shape_control = controller_value;
   }
 
   INLINE void set_osc1_morph_control(uint8_t controller_value) {
-    m_osc1_morph_control = -(((controller_value - 63) >> 1) << 1);
+    m_osc1_morph_control = controller_value;
   }
 
   INLINE void set_mixer_sub_osc_control(uint8_t controller_value) {
@@ -469,21 +469,16 @@ private:
     if (m_waveform[0] == WAVEFORM_SINE) {
       // For Sine Wave (wave_3)
 
-      // phase_modulation_depth_candidate = clamp(m_osc1_shape_effective[N] - (128 << 8), (0 << 8), (127 << 8))
+      // phase_modulation_depth_candidate = max(m_osc1_shape_effective[N] - (128 << 8), 0)
       volatile int32_t phase_modulation_depth_candidate = m_osc1_shape_effective[N] - (128 << 8);
-      phase_modulation_depth_candidate = phase_modulation_depth_candidate - (127 << 8);
-      phase_modulation_depth_candidate = (phase_modulation_depth_candidate < 0) * phase_modulation_depth_candidate + (127 << 8) - (0 << 8);
-      phase_modulation_depth_candidate = (phase_modulation_depth_candidate > 0) * phase_modulation_depth_candidate + (0 << 8);
+      phase_modulation_depth_candidate = (phase_modulation_depth_candidate > 0) * phase_modulation_depth_candidate;
 
-      // phase_modulation_frequency_ratio_candidate = max((-m_osc1_morph_control_effective + 64) >> 1, 1);
-      volatile int32_t phase_modulation_frequency_ratio_candidate = (-m_osc1_morph_control_effective + 64) >> 1;
-      phase_modulation_frequency_ratio_candidate = phase_modulation_frequency_ratio_candidate - 1;
-      phase_modulation_frequency_ratio_candidate = (phase_modulation_frequency_ratio_candidate > 0) * phase_modulation_frequency_ratio_candidate + 1;
+      volatile int32_t phase_modulation_frequency_ratio_candidate = m_osc1_morph_control_effective + 4;
 
       m_osc1_phase_modulation_depth[N]           = (m_osc1_phase_modulation_depth[N]           * (1 - new_period_osc1)) + (phase_modulation_depth_candidate           * new_period_osc1);
       m_osc1_phase_modulation_frequency_ratio[N] = (m_osc1_phase_modulation_frequency_ratio[N] * (1 - new_period_osc1)) + (phase_modulation_frequency_ratio_candidate * new_period_osc1);
 
-      uint32_t phase_3 = ((m_phase[N] & 0x03FFFFFF) * m_osc1_phase_modulation_frequency_ratio[N]) >> 2;
+      uint32_t phase_3 = (((m_phase[N] >> 1) & 0x01FFFFFF) * m_osc1_phase_modulation_frequency_ratio[N]) >> 1;
       const int16_t* wave_table_sine = get_wave_table(WAVEFORM_SINE, 60);
       int16_t wave_3 = get_wave_level(wave_table_sine, phase_3);
 
@@ -501,7 +496,7 @@ private:
       m_wave_table[N + 8] = reinterpret_cast<const int16_t*>( reinterpret_cast<const uint8_t*>( m_wave_table[N + 8]) +
                                                              (reinterpret_cast<const uintptr_t>(m_wave_table_temp[N]) * new_period_osc1_add));
       int16_t wave_3 = get_wave_level(m_wave_table[N + 8], phase_3);
-      result += ((((wave_3 * osc1_gain * m_osc_gain_effective[N]) >> 10) * -m_osc1_morph_control_effective) >> 6) * (m_waveform[0] == WAVEFORM_1_PULSE);
+      result += ((((wave_3 * osc1_gain * m_osc_gain_effective[N]) >> 10) * (((m_osc1_morph_control_effective - 63) >> 1) << 1)) >> 6) * (m_waveform[0] == WAVEFORM_1_PULSE);
     }
 
     if (m_mixer_noise_sub_osc_control_effective >= 0) {
@@ -651,7 +646,7 @@ private:
 
   template <uint8_t N>
   INLINE void update_osc1_shape(int16_t lfo_level, int16_t eg_level) {
-    volatile int32_t osc1_shape = (128 << 8) - (m_osc1_shape_control_effective << 8)
+    volatile int32_t osc1_shape = (128 << 8) + (m_osc1_shape_control_effective << 8)
                                   + ((eg_level * m_shape_eg_amt) >> 5) - ((lfo_level * m_shape_lfo_amt) >> 5);
 
     // osc1_shape = clamp(y_0, (0 << 8), (256 << 8))

@@ -21,7 +21,8 @@
     - Support Osc 1 Sine Wave Phase Modulation (Osc 1 Shape and Osc 1 Morph);
     - Modify programs #8-15 in the main unit;
     - Add JSON files for PRA32-U CTRL;
-    - Use Serial2 for DEBUG_PRINT
+    - Use Serial2 for DEBUG_PRINT;
+    - Raspberry Pi Pico/RP2040 core version 3.6.3 is recommended
 - v2.0.1:
     - Fix Ping Pong Delay to start from the left
     - Fix Parameter Guide (Filter Resonance)
@@ -76,7 +77,7 @@
 - Please install Arduino-Pico = **Raspberry Pi Pico/RP2040** (by Earle F. Philhower, III) core
     - Additional Board Manager URL: <https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json>
     - Info: <https://github.com/earlephilhower/arduino-pico>
-    - Raspberry Pi Pico/RP2040 core **version 3.6.2** is recommended
+    - Raspberry Pi Pico/RP2040 core **version 3.6.3** is recommended
 - Please install **MIDI Library** (by Francois Best, lathoub)
     - Info: <https://github.com/FortySevenEffects/arduino_midi_library>
     - MIDI Library **version 5.0.2** is recommended
