@@ -21,6 +21,7 @@
     - Support Osc 1 Sine Wave Phase Modulation (Osc 1 Shape and Osc 1 Morph);
     - Modify programs #8-15 in the main unit;
     - Add JSON files for PRA32-U CTRL;
+    - Use core 0 for main processing;
     - Use Serial2 for DEBUG_PRINT;
     - Raspberry Pi Pico/RP2040 core version 3.6.3 is recommended
 - v2.0.1:
