@@ -473,7 +473,7 @@ private:
       volatile int32_t phase_modulation_depth_candidate = m_osc1_shape_effective[N] - (128 << 8);
       phase_modulation_depth_candidate = (phase_modulation_depth_candidate > 0) * phase_modulation_depth_candidate;
 
-      volatile int32_t phase_modulation_frequency_ratio_candidate = m_osc1_morph_control_effective + 4;
+      volatile int32_t phase_modulation_frequency_ratio_candidate = ((m_osc1_morph_control_effective + 1) >> 1) + 2;
 
       m_osc1_phase_modulation_depth[N]           = (m_osc1_phase_modulation_depth[N]           * (1 - new_period_osc1)) + (phase_modulation_depth_candidate           * new_period_osc1);
       m_osc1_phase_modulation_frequency_ratio[N] = (m_osc1_phase_modulation_frequency_ratio[N] * (1 - new_period_osc1)) + (phase_modulation_frequency_ratio_candidate * new_period_osc1);
