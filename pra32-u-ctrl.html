@@ -514,7 +514,7 @@ function onMIDIMessage(event) {
       var oldValue = specialProgramChangeCCValues[programIndex];
       specialProgramChangeCCValues[programIndex] = value;
       if (oldValue <= 63 && value >= 64) {
-        loadControllers(programIndex + 8);
+        recallParameters(programIndex + 8);
         return;
       }
     } else if (number == SP_RAND_CTRL   ) {
@@ -535,7 +535,7 @@ function onMIDIMessage(event) {
       preset(number);
       return;
     } else if (number >= 8 && number <= 15) {
-      loadControllers(number);
+      recallParameters(number);
       return;
     } else if (number == 127) {
       // Program #127: Random Control
@@ -755,7 +755,7 @@ function rand(n) {
   return Math.floor(Math.random() * n);
 }
 
-function loadControllers(number) {
+function recallParameters(number) {
   var value;
   controllersInLocalStorage.forEach(function(i) {
     value = localStorage.getItem("keyMemory" + String(number) + controlNumberToStringMap.get(i));
@@ -766,7 +766,7 @@ function loadControllers(number) {
   });
 }
 
-function saveControllers(number) {
+function storeParameters(number) {
   var r = confirm("Store the current parameters to the program #" + String(number) + "?");
   if (r == false) {
     return;
@@ -785,7 +785,7 @@ function sendProgramChange(number) {
   }
 }
 
-function writeProgram(number) {
+function writeParameters(number) {
   var r = confirm("Write the current parameters to the program #" + String(number) + "?");
   if (r == false) {
     return;
@@ -1075,23 +1075,23 @@ function getStoredCCValueString(index, number) {
 <table>
 <tr><td>Recall</td>
     <td></td>
-    <td><input type="button" value="#12"     onclick="loadControllers(12)"></td>
+    <td><input type="button" value="#12"     onclick="recallParameters(12)"></td>
     <td></td>
-    <td><input type="button" value="#13"     onclick="loadControllers(13)"></td>
+    <td><input type="button" value="#13"     onclick="recallParameters(13)"></td>
     <td></td>
-    <td><input type="button" value="#14"     onclick="loadControllers(14)"></td>
+    <td><input type="button" value="#14"     onclick="recallParameters(14)"></td>
     <td></td>
-    <td><input type="button" value="#15"     onclick="loadControllers(15)"></td>
+    <td><input type="button" value="#15"     onclick="recallParameters(15)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>Store</td>
     <td></td>
-    <td><input type="button" value="#12"     onclick="saveControllers(12)"></td>
+    <td><input type="button" value="#12"     onclick="storeParameters(12)"></td>
     <td></td>
-    <td><input type="button" value="#13"     onclick="saveControllers(13)"></td>
+    <td><input type="button" value="#13"     onclick="storeParameters(13)"></td>
     <td></td>
-    <td><input type="button" value="#14"     onclick="saveControllers(14)"></td>
+    <td><input type="button" value="#14"     onclick="storeParameters(14)"></td>
     <td></td>
-    <td><input type="button" value="#15"     onclick="saveControllers(15)"></td>
+    <td><input type="button" value="#15"     onclick="storeParameters(15)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>Import</td>
     <td></td>
@@ -1102,23 +1102,23 @@ function getStoredCCValueString(index, number) {
         <input type="button" value="Current" onclick="fileImportCurrent()"></td></tr>
 <tr><td>(from Browser)</td>
     <td></td>
-    <td><input type="button" value="#8 "     onclick="loadControllers(8)" ></td>
+    <td><input type="button" value="#8 "     onclick="recallParameters(8)" ></td>
     <td></td>
-    <td><input type="button" value="#9 "     onclick="loadControllers(9)" ></td>
+    <td><input type="button" value="#9 "     onclick="recallParameters(9)" ></td>
     <td></td>
-    <td><input type="button" value="#10"     onclick="loadControllers(10)"></td>
+    <td><input type="button" value="#10"     onclick="recallParameters(10)"></td>
     <td></td>
-    <td><input type="button" value="#11"     onclick="loadControllers(11)"></td>
+    <td><input type="button" value="#11"     onclick="recallParameters(11)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>(to Browser)</td>
     <td></td>
-    <td><input type="button" value="#8 "     onclick="saveControllers(8)" ></td>
+    <td><input type="button" value="#8 "     onclick="storeParameters(8)" ></td>
     <td></td>
-    <td><input type="button" value="#9 "     onclick="saveControllers(9)" ></td>
+    <td><input type="button" value="#9 "     onclick="storeParameters(9)" ></td>
     <td></td>
-    <td><input type="button" value="#10"     onclick="saveControllers(10)"></td>
+    <td><input type="button" value="#10"     onclick="storeParameters(10)"></td>
     <td></td>
-    <td><input type="button" value="#11"     onclick="saveControllers(11)"></td>
+    <td><input type="button" value="#11"     onclick="storeParameters(11)"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>Export</td>
     <td></td>
@@ -1127,15 +1127,15 @@ function getStoredCCValueString(index, number) {
 </table>
 
 <table>
-<tr><td><font color="green">Write Program</font></td>
+<tr><td><font color="green">Write</font></td>
     <td></td>
-    <td><input type="button" value="#12"     onclick="writeProgram(12)" style="color:green"></td>
+    <td><input type="button" value="#12"     onclick="writeParameters(12)" style="color:green"></td>
     <td></td>
-    <td><input type="button" value="#13"     onclick="writeProgram(13)" style="color:green"></td>
+    <td><input type="button" value="#13"     onclick="writeParameters(13)" style="color:green"></td>
     <td></td>
-    <td><input type="button" value="#14"     onclick="writeProgram(14)" style="color:green"></td>
+    <td><input type="button" value="#14"     onclick="writeParameters(14)" style="color:green"></td>
     <td></td>
-    <td><input type="button" value="#15"     onclick="writeProgram(15)" style="color:green"></td>
+    <td><input type="button" value="#15"     onclick="writeParameters(15)" style="color:green"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td><font color="green">Program Change</font></td>
     <td></td>
@@ -1158,13 +1158,13 @@ function getStoredCCValueString(index, number) {
     </tr>
 <tr><td><font color="green">(to PRA32-U)</font></td>
     <td></td>
-    <td><input type="button" value="#8 "     onclick="writeProgram(8)"  style="color:green"></td>
+    <td><input type="button" value="#8 "     onclick="writeParameters(8)"  style="color:green"></td>
     <td></td>
-    <td><input type="button" value="#9 "     onclick="writeProgram(9)"  style="color:green"></td>
+    <td><input type="button" value="#9 "     onclick="writeParameters(9)"  style="color:green"></td>
     <td></td>
-    <td><input type="button" value="#10"     onclick="writeProgram(10)" style="color:green"></td>
+    <td><input type="button" value="#10"     onclick="writeParameters(10)" style="color:green"></td>
     <td></td>
-    <td><input type="button" value="#11"     onclick="writeProgram(11)" style="color:green"></td>
+    <td><input type="button" value="#11"     onclick="writeParameters(11)" style="color:green"></td>
     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td><font color="green">(to PRA32-U)</font></td>
     <td></td>
