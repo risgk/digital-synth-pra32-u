@@ -19,7 +19,6 @@
 
 - v2.1.0:
     - Support Osc 1 Sine Wave Phase Modulation (Osc 1 Shape and Osc 1 Morph);
-    - Modify programs #8-15 in the main unit;
     - Add JSON files for PRA32-U CTRL;
     - Add the function of writing the parameters to Program #8-15 and the flash
         - **NOTE**: To avoid noise, the data will not be written to the flash if I2S_DAC_MUTE_OFF_PIN is not defined
