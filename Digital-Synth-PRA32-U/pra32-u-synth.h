@@ -831,10 +831,10 @@ public:
       break;
 
     // Write Program
-    case PROG_NUM_TO_W  :
+    case PROG_N_TO_W_TO :
       m_program_number_to_write = controller_value % (PROGRAM_NUMBER_MAX + 1);
       break;
-    case WRITE_PROG_TO_F:
+    case WRITE_P_TO_PROG:
       {
         uint8_t old_value = m_wr_prog_to_flash_cc_value;
         m_wr_prog_to_flash_cc_value = controller_value;

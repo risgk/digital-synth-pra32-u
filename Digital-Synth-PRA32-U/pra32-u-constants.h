@@ -114,8 +114,8 @@ const uint8_t   DELAY_TIME      = 90;
 const uint8_t   DELAY_MODE      = 35;
 
 
-const uint8_t   PROG_NUM_TO_W   = 87;
-const uint8_t   WRITE_PROG_TO_F = 106;
+const uint8_t   PROG_N_TO_W_TO  = 87;
+const uint8_t   WRITE_P_TO_PROG = 106;
 const uint8_t   PC_BY_CC_8      = 112;
 const uint8_t   PC_BY_CC_9      = 113;
 const uint8_t   PC_BY_CC_10     = 114;

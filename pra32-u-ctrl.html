@@ -118,8 +118,8 @@ const DELAY_TIME      = 90;
 const DELAY_MODE      = 35;
 
 
-const PROG_NUM_TO_W   = 87;
-const WRITE_PROG_TO_F = 106;
+const PROG_N_TO_W_TO  = 87;
+const WRITE_P_TO_PROG = 106;
 const PC_BY_CC_8      = 112;
 const PC_BY_CC_9      = 113;
 const PC_BY_CC_10     = 114;
@@ -792,11 +792,11 @@ function writeProgram(number) {
   }
 
   if (midiOutput) {
-    midiOutput.send([(CONTROL_CHANGE | MIDI_CH), PROG_NUM_TO_W,   number]);
+    midiOutput.send([(CONTROL_CHANGE | MIDI_CH), PROG_N_TO_W_TO,  number]);
     sleep(0);
-    midiOutput.send([(CONTROL_CHANGE | MIDI_CH), WRITE_PROG_TO_F, 0]);
+    midiOutput.send([(CONTROL_CHANGE | MIDI_CH), WRITE_P_TO_PROG, 0]);
     sleep(0);
-    midiOutput.send([(CONTROL_CHANGE | MIDI_CH), WRITE_PROG_TO_F, 1]);
+    midiOutput.send([(CONTROL_CHANGE | MIDI_CH), WRITE_P_TO_PROG, 1]);
     sleep(0);
   }
 }
