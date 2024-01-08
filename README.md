@@ -22,6 +22,7 @@
     - Add JSON files for PRA32-U CTRL;
     - Add the function of writing the parameters to Program #8-15 and the flash
         - **NOTE**: To avoid noise, the data will not be written to the flash if I2S_DAC_MUTE_OFF_PIN is not defined
+    - Enable Serial MIDI to be used at the same time as USB MIDI
     - Use core 0 for main processing;
     - Use Serial2 for DEBUG_PRINT;
     - Raspberry Pi Pico/RP2040 core version 3.6.3 is recommended
@@ -97,11 +98,10 @@
 
 #### Serial MIDI Input (Optional)
 
-- Serial MIDI can also be used instead of USB MIDI
-- Comment out `#define USE_USB_MIDI` and uncomment out `//#define USE_SERIAL1_MIDI`
-  in "Digital-Synth-PRA32-U.ino" and modify `SERIAL1_MIDI_SPEED`
+- Serial MIDI can also be used
+- Uncomment out `//#define USE_SERIAL1_MIDI` in "Digital-Synth-PRA32-U.ino" and modify `SERIAL1_MIDI_SPEED`
 - Speed: 31.25 kbps (default) or 38.4 kbps
-- GP0 and GP1 pins are used by UART0 TX and UART0 RX
+- GP0 and GP1 pins are used by UART0 TX and UART0 RX by default
 - DIN/TRS MIDI is available by using (and modifying) Adafruit MIDI FeatherWing Kit, for example
     - Adafruit [MIDI FeatherWing Kit](https://www.adafruit.com/product/4740)
     - 木下研究所 [MIDI-UARTインターフェースさん キット](https://www.switch-science.com/products/8117) (Shipping to Japan only)

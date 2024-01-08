@@ -5,10 +5,14 @@
 //#define DEBUG_PRINT
 
 #define USE_USB_MIDI      // Select USB Stack: "Adafruit TinyUSB" in the Arduino IDE "Tools" menu
+
 //#define USE_SERIAL1_MIDI
 
 #define SERIAL1_MIDI_SPEED              (31250)
 //#define SERIAL1_MIDI_SPEED              (38400)
+
+#define SERIAL1_TX_PIN                  (0)
+#define SERIAL1_RX_PIN                  (1)
 
 #define MIDI_CH                         (0)  // 0-based
 
@@ -42,9 +46,11 @@ PRA32_U_Synth g_synth;
 #if defined(USE_USB_MIDI)
 #include <Adafruit_TinyUSB.h>
 Adafruit_USBD_MIDI usbd_midi;
-MIDI_CREATE_INSTANCE(Adafruit_USBD_MIDI, usbd_midi, MIDI);
-#elif defined(USE_SERIAL1_MIDI)
-MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
+MIDI_CREATE_INSTANCE(Adafruit_USBD_MIDI, usbd_midi, USB_MIDI);
+#endif // defined(USE_USB_MIDI)
+
+#if defined(USE_SERIAL1_MIDI)
+MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, SERIAL1_MIDI);
 #endif
 
 #if defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
@@ -110,15 +116,25 @@ void __not_in_flash_func(setup)() {
   TinyUSB_Device_Init(0);
   USBDevice.setManufacturerDescriptor("ISGK Instruments");
   USBDevice.setProductDescriptor("Digital Synth PRA32-U");
+  USB_MIDI.setHandleNoteOn(handleNoteOn);
+  USB_MIDI.setHandleNoteOff(handleNoteOff);
+  USB_MIDI.setHandleControlChange(handleControlChange);
+  USB_MIDI.setHandleProgramChange(handleHandleProgramChange);
+  USB_MIDI.setHandlePitchBend(handleHandlePitchBend);
+  USB_MIDI.begin(MIDI_CHANNEL_OMNI);
+  USB_MIDI.turnThruOff();
 #endif // defined(USE_USB_MIDI)
-  MIDI.setHandleNoteOn(handleNoteOn);
-  MIDI.setHandleNoteOff(handleNoteOff);
-  MIDI.setHandleControlChange(handleControlChange);
-  MIDI.setHandleProgramChange(handleHandleProgramChange);
-  MIDI.setHandlePitchBend(handleHandlePitchBend);
-  MIDI.begin(MIDI_CHANNEL_OMNI);
-  MIDI.turnThruOff();
+
 #if defined(USE_SERIAL1_MIDI)
+  Serial1.setTX(SERIAL1_TX_PIN);
+  Serial1.setRX(SERIAL1_RX_PIN);
+  SERIAL1_MIDI.setHandleNoteOn(handleNoteOn);
+  SERIAL1_MIDI.setHandleNoteOff(handleNoteOff);
+  SERIAL1_MIDI.setHandleControlChange(handleControlChange);
+  SERIAL1_MIDI.setHandleProgramChange(handleHandleProgramChange);
+  SERIAL1_MIDI.setHandlePitchBend(handleHandlePitchBend);
+  SERIAL1_MIDI.begin(MIDI_CHANNEL_OMNI);
+  SERIAL1_MIDI.turnThruOff();
   Serial1.begin(SERIAL1_MIDI_SPEED);
 #endif // defined(USE_SERIAL1_MIDI)
 
@@ -149,7 +165,13 @@ void __not_in_flash_func(loop)() {
 #endif // defined(DEBUG_PRINT)
 
   for (uint32_t i = 0; i < (I2S_BUFFER_WORDS + 15) / 16; i++) {
-    MIDI.read();
+#if defined(USE_USB_MIDI)
+    USB_MIDI.read();
+#endif // defined(USE_USB_MIDI)
+
+#if defined(USE_SERIAL1_MIDI)
+    SERIAL1_MIDI.read();
+#endif
   }
 
 #if defined(DEBUG_PRINT)
