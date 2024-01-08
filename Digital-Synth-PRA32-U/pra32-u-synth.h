@@ -907,8 +907,6 @@ public:
       return;
     }
 
-    program_number = program_number & PROGRAM_NUMBER_MAX;
-
     for (uint32_t i = 0; i < sizeof(s_program_table_parameters) / sizeof(s_program_table_parameters[0]); ++i) {
       uint32_t control_number = s_program_table_parameters[i];
       control_change(control_number, m_program_table[control_number][program_number]);
