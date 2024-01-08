@@ -138,6 +138,8 @@ void __not_in_flash_func(setup)() {
   digitalWrite(I2S_DAC_MUTE_OFF_PIN, HIGH);
 #endif // defined(I2S_DAC_MUTE_OFF_PIN)
 #endif // defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
+
+  g_synth.initialize();
 }
 
 void __not_in_flash_func(loop)() {
