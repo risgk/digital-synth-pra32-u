@@ -18,6 +18,68 @@
 #include <algorithm>
 #include <cstring>
 
+static const uint8_t s_program_table_parameters[] = {
+  OSC_1_WAVE     ,
+  OSC_1_SHAPE    ,
+  OSC_1_MORPH    ,
+  MIXER_SUB_OSC  ,
+
+  OSC_2_WAVE     ,
+  OSC_2_COARSE   ,
+  OSC_2_PITCH    ,
+  MIXER_OSC_MIX  ,
+
+  FILTER_CUTOFF  ,
+  FILTER_RESO    ,
+  FILTER_EG_AMT  ,
+  FILTER_KEY_TRK ,
+
+  EG_ATTACK      ,
+  EG_DECAY       ,
+  EG_SUSTAIN     ,
+  EG_RELEASE     ,
+
+  EG_OSC_AMT     ,
+  EG_OSC_DST     ,
+  VOICE_MODE     ,
+  PORTAMENTO     ,
+
+  LFO_WAVE       ,
+  LFO_RATE       ,
+  LFO_DEPTH      ,
+  LFO_FADE_TIME  ,
+
+  LFO_OSC_AMT    ,
+  LFO_OSC_DST    ,
+  LFO_FILTER_AMT ,
+  AMP_GAIN       ,
+
+  AMP_ATTACK     ,
+  AMP_DECAY      ,
+  AMP_SUSTAIN    ,
+  AMP_RELEASE    ,
+
+  FILTER_MODE    ,
+  EG_AMP_MOD     ,
+  REL_EQ_DECAY   ,
+  P_BEND_RANGE   ,
+
+  BTH_FILTER_AMT ,
+  BTH_AMP_MOD    ,
+  EG_VEL_SENS    ,
+  AMP_VEL_SENS   ,
+
+  CHORUS_MIX     ,
+  CHORUS_RATE    ,
+  CHORUS_DEPTH   ,
+
+
+  DELAY_FEEDBACK ,
+  DELAY_TIME     ,
+  DELAY_MODE     ,
+
+};
+
 class PRA32_U_Synth {
   PRA32_U_Osc       m_osc;
   PRA32_U_Filter    m_filter[4];
@@ -210,65 +272,10 @@ public:
 
     for (uint32_t program_number = (PRESET_PROGRAM_NUMBER_MAX + 1); program_number <= PROGRAM_NUMBER_MAX; ++program_number) {
       if ((EEPROM.read(program_number * 128) == 'U') && (EEPROM.read(program_number * 128 + 1) == program_number)) {
-        m_program_table[OSC_1_WAVE     ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + OSC_1_WAVE     ));
-        m_program_table[OSC_1_SHAPE    ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + OSC_1_SHAPE    ));
-        m_program_table[OSC_1_MORPH    ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + OSC_1_MORPH    ));
-        m_program_table[MIXER_SUB_OSC  ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + MIXER_SUB_OSC  ));
-
-        m_program_table[OSC_2_WAVE     ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + OSC_2_WAVE     ));
-        m_program_table[OSC_2_COARSE   ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + OSC_2_COARSE   ));
-        m_program_table[OSC_2_PITCH    ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + OSC_2_PITCH    ));
-        m_program_table[MIXER_OSC_MIX  ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + MIXER_OSC_MIX  ));
-
-        m_program_table[FILTER_CUTOFF  ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + FILTER_CUTOFF  ));
-        m_program_table[FILTER_RESO    ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + FILTER_RESO    ));
-        m_program_table[FILTER_EG_AMT  ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + FILTER_EG_AMT  ));
-        m_program_table[FILTER_KEY_TRK ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + FILTER_KEY_TRK ));
-
-        m_program_table[EG_ATTACK      ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + EG_ATTACK      ));
-        m_program_table[EG_DECAY       ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + EG_DECAY       ));
-        m_program_table[EG_SUSTAIN     ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + EG_SUSTAIN     ));
-        m_program_table[EG_RELEASE     ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + EG_RELEASE     ));
-
-        m_program_table[EG_OSC_AMT     ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + EG_OSC_AMT     ));
-        m_program_table[EG_OSC_DST     ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + EG_OSC_DST     ));
-        m_program_table[VOICE_MODE     ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + VOICE_MODE     ));
-        m_program_table[PORTAMENTO     ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + PORTAMENTO     ));
-
-        m_program_table[LFO_WAVE       ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + LFO_WAVE       ));
-        m_program_table[LFO_RATE       ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + LFO_RATE       ));
-        m_program_table[LFO_DEPTH      ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + LFO_DEPTH      ));
-        m_program_table[LFO_FADE_TIME  ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + LFO_FADE_TIME  ));
-
-        m_program_table[LFO_OSC_AMT    ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + LFO_OSC_AMT    ));
-        m_program_table[LFO_OSC_DST    ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + LFO_OSC_DST    ));
-        m_program_table[LFO_FILTER_AMT ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + LFO_FILTER_AMT ));
-        m_program_table[AMP_GAIN       ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + AMP_GAIN       ));
-
-        m_program_table[AMP_ATTACK     ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + AMP_ATTACK     ));
-        m_program_table[AMP_DECAY      ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + AMP_DECAY      ));
-        m_program_table[AMP_SUSTAIN    ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + AMP_SUSTAIN    ));
-        m_program_table[AMP_RELEASE    ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + AMP_RELEASE    ));
-
-        m_program_table[FILTER_MODE    ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + FILTER_MODE    ));
-        m_program_table[EG_AMP_MOD     ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + EG_AMP_MOD     ));
-        m_program_table[REL_EQ_DECAY   ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + REL_EQ_DECAY   ));
-        m_program_table[P_BEND_RANGE   ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + P_BEND_RANGE   ));
-
-        m_program_table[BTH_FILTER_AMT ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + BTH_FILTER_AMT ));
-        m_program_table[BTH_AMP_MOD    ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + BTH_AMP_MOD    ));
-        m_program_table[EG_VEL_SENS    ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + EG_VEL_SENS    ));
-        m_program_table[AMP_VEL_SENS   ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + AMP_VEL_SENS   ));
-
-        m_program_table[CHORUS_MIX     ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + CHORUS_MIX     ));
-        m_program_table[CHORUS_RATE    ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + CHORUS_RATE    ));
-        m_program_table[CHORUS_DEPTH   ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + CHORUS_DEPTH   ));
-
-
-        m_program_table[DELAY_FEEDBACK ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + DELAY_FEEDBACK ));
-        m_program_table[DELAY_TIME     ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + DELAY_TIME     ));
-        m_program_table[DELAY_MODE     ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + DELAY_MODE     ));
-
+        for (uint32_t i = 0; i < sizeof(s_program_table_parameters) / sizeof(s_program_table_parameters[0]); ++i) {
+          uint32_t control_number = s_program_table_parameters[i];
+          m_program_table[control_number][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + control_number));
+        }
       }
     }
 #endif
@@ -841,126 +848,16 @@ public:
 
         if (m_program_number_to_write >= (PRESET_PROGRAM_NUMBER_MAX + 1)) {
           if ((old_value == 0) && (controller_value == 1)) {
-            m_program_table[OSC_1_WAVE     ][m_program_number_to_write] = m_current_controller_value_table[OSC_1_WAVE     ];
-            m_program_table[OSC_1_SHAPE    ][m_program_number_to_write] = m_current_controller_value_table[OSC_1_SHAPE    ];
-            m_program_table[OSC_1_MORPH    ][m_program_number_to_write] = m_current_controller_value_table[OSC_1_MORPH    ];
-            m_program_table[MIXER_SUB_OSC  ][m_program_number_to_write] = m_current_controller_value_table[MIXER_SUB_OSC  ];
-
-            m_program_table[OSC_2_WAVE     ][m_program_number_to_write] = m_current_controller_value_table[OSC_2_WAVE     ];
-            m_program_table[OSC_2_COARSE   ][m_program_number_to_write] = m_current_controller_value_table[OSC_2_COARSE   ];
-            m_program_table[OSC_2_PITCH    ][m_program_number_to_write] = m_current_controller_value_table[OSC_2_PITCH    ];
-            m_program_table[MIXER_OSC_MIX  ][m_program_number_to_write] = m_current_controller_value_table[MIXER_OSC_MIX  ];
-
-            m_program_table[FILTER_CUTOFF  ][m_program_number_to_write] = m_current_controller_value_table[FILTER_CUTOFF  ];
-            m_program_table[FILTER_RESO    ][m_program_number_to_write] = m_current_controller_value_table[FILTER_RESO    ];
-            m_program_table[FILTER_EG_AMT  ][m_program_number_to_write] = m_current_controller_value_table[FILTER_EG_AMT  ];
-            m_program_table[FILTER_KEY_TRK ][m_program_number_to_write] = m_current_controller_value_table[FILTER_KEY_TRK ];
-
-            m_program_table[EG_ATTACK      ][m_program_number_to_write] = m_current_controller_value_table[EG_ATTACK      ];
-            m_program_table[EG_DECAY       ][m_program_number_to_write] = m_current_controller_value_table[EG_DECAY       ];
-            m_program_table[EG_SUSTAIN     ][m_program_number_to_write] = m_current_controller_value_table[EG_SUSTAIN     ];
-            m_program_table[EG_RELEASE     ][m_program_number_to_write] = m_current_controller_value_table[EG_RELEASE     ];
-
-            m_program_table[EG_OSC_AMT     ][m_program_number_to_write] = m_current_controller_value_table[EG_OSC_AMT     ];
-            m_program_table[EG_OSC_DST     ][m_program_number_to_write] = m_current_controller_value_table[EG_OSC_DST     ];
-            m_program_table[VOICE_MODE     ][m_program_number_to_write] = m_current_controller_value_table[VOICE_MODE     ];
-            m_program_table[PORTAMENTO     ][m_program_number_to_write] = m_current_controller_value_table[PORTAMENTO     ];
-
-            m_program_table[LFO_WAVE       ][m_program_number_to_write] = m_current_controller_value_table[LFO_WAVE       ];
-            m_program_table[LFO_RATE       ][m_program_number_to_write] = m_current_controller_value_table[LFO_RATE       ];
-            m_program_table[LFO_DEPTH      ][m_program_number_to_write] = m_current_controller_value_table[LFO_DEPTH      ];
-            m_program_table[LFO_FADE_TIME  ][m_program_number_to_write] = m_current_controller_value_table[LFO_FADE_TIME  ];
-
-            m_program_table[LFO_OSC_AMT    ][m_program_number_to_write] = m_current_controller_value_table[LFO_OSC_AMT    ];
-            m_program_table[LFO_OSC_DST    ][m_program_number_to_write] = m_current_controller_value_table[LFO_OSC_DST    ];
-            m_program_table[LFO_FILTER_AMT ][m_program_number_to_write] = m_current_controller_value_table[LFO_FILTER_AMT ];
-            m_program_table[AMP_GAIN       ][m_program_number_to_write] = m_current_controller_value_table[AMP_GAIN       ];
-
-            m_program_table[AMP_ATTACK     ][m_program_number_to_write] = m_current_controller_value_table[AMP_ATTACK     ];
-            m_program_table[AMP_DECAY      ][m_program_number_to_write] = m_current_controller_value_table[AMP_DECAY      ];
-            m_program_table[AMP_SUSTAIN    ][m_program_number_to_write] = m_current_controller_value_table[AMP_SUSTAIN    ];
-            m_program_table[AMP_RELEASE    ][m_program_number_to_write] = m_current_controller_value_table[AMP_RELEASE    ];
-
-            m_program_table[FILTER_MODE    ][m_program_number_to_write] = m_current_controller_value_table[FILTER_MODE    ];
-            m_program_table[EG_AMP_MOD     ][m_program_number_to_write] = m_current_controller_value_table[EG_AMP_MOD     ];
-            m_program_table[REL_EQ_DECAY   ][m_program_number_to_write] = m_current_controller_value_table[REL_EQ_DECAY   ];
-            m_program_table[P_BEND_RANGE   ][m_program_number_to_write] = m_current_controller_value_table[P_BEND_RANGE   ];
-
-            m_program_table[BTH_FILTER_AMT ][m_program_number_to_write] = m_current_controller_value_table[BTH_FILTER_AMT ];
-            m_program_table[BTH_AMP_MOD    ][m_program_number_to_write] = m_current_controller_value_table[BTH_AMP_MOD    ];
-            m_program_table[EG_VEL_SENS    ][m_program_number_to_write] = m_current_controller_value_table[EG_VEL_SENS    ];
-            m_program_table[AMP_VEL_SENS   ][m_program_number_to_write] = m_current_controller_value_table[AMP_VEL_SENS   ];
-
-            m_program_table[CHORUS_MIX     ][m_program_number_to_write] = m_current_controller_value_table[CHORUS_MIX     ];
-            m_program_table[CHORUS_RATE    ][m_program_number_to_write] = m_current_controller_value_table[CHORUS_RATE    ];
-            m_program_table[CHORUS_DEPTH   ][m_program_number_to_write] = m_current_controller_value_table[CHORUS_DEPTH   ];
-
-
-            m_program_table[DELAY_FEEDBACK ][m_program_number_to_write] = m_current_controller_value_table[DELAY_FEEDBACK ];
-            m_program_table[DELAY_TIME     ][m_program_number_to_write] = m_current_controller_value_table[DELAY_TIME     ];
-            m_program_table[DELAY_MODE     ][m_program_number_to_write] = m_current_controller_value_table[DELAY_MODE     ];
-
+            for (uint32_t i = 0; i < sizeof(s_program_table_parameters) / sizeof(s_program_table_parameters[0]); ++i) {
+              uint32_t control_number = s_program_table_parameters[i];
+              m_program_table[control_number][m_program_number_to_write] = m_current_controller_value_table[control_number];
+            }
 
 #if defined(ARDUINO_ARCH_RP2040)
-            EEPROM.write(m_program_number_to_write * 128 + OSC_1_WAVE     , m_current_controller_value_table[OSC_1_WAVE     ]);
-            EEPROM.write(m_program_number_to_write * 128 + OSC_1_SHAPE    , m_current_controller_value_table[OSC_1_SHAPE    ]);
-            EEPROM.write(m_program_number_to_write * 128 + OSC_1_MORPH    , m_current_controller_value_table[OSC_1_MORPH    ]);
-            EEPROM.write(m_program_number_to_write * 128 + MIXER_SUB_OSC  , m_current_controller_value_table[MIXER_SUB_OSC  ]);
-
-            EEPROM.write(m_program_number_to_write * 128 + OSC_2_WAVE     , m_current_controller_value_table[OSC_2_WAVE     ]);
-            EEPROM.write(m_program_number_to_write * 128 + OSC_2_COARSE   , m_current_controller_value_table[OSC_2_COARSE   ]);
-            EEPROM.write(m_program_number_to_write * 128 + OSC_2_PITCH    , m_current_controller_value_table[OSC_2_PITCH    ]);
-            EEPROM.write(m_program_number_to_write * 128 + MIXER_OSC_MIX  , m_current_controller_value_table[MIXER_OSC_MIX  ]);
-
-            EEPROM.write(m_program_number_to_write * 128 + FILTER_CUTOFF  , m_current_controller_value_table[FILTER_CUTOFF  ]);
-            EEPROM.write(m_program_number_to_write * 128 + FILTER_RESO    , m_current_controller_value_table[FILTER_RESO    ]);
-            EEPROM.write(m_program_number_to_write * 128 + FILTER_EG_AMT  , m_current_controller_value_table[FILTER_EG_AMT  ]);
-            EEPROM.write(m_program_number_to_write * 128 + FILTER_KEY_TRK , m_current_controller_value_table[FILTER_KEY_TRK ]);
-
-            EEPROM.write(m_program_number_to_write * 128 + EG_ATTACK      , m_current_controller_value_table[EG_ATTACK      ]);
-            EEPROM.write(m_program_number_to_write * 128 + EG_DECAY       , m_current_controller_value_table[EG_DECAY       ]);
-            EEPROM.write(m_program_number_to_write * 128 + EG_SUSTAIN     , m_current_controller_value_table[EG_SUSTAIN     ]);
-            EEPROM.write(m_program_number_to_write * 128 + EG_RELEASE     , m_current_controller_value_table[EG_RELEASE     ]);
-
-            EEPROM.write(m_program_number_to_write * 128 + EG_OSC_AMT     , m_current_controller_value_table[EG_OSC_AMT     ]);
-            EEPROM.write(m_program_number_to_write * 128 + EG_OSC_DST     , m_current_controller_value_table[EG_OSC_DST     ]);
-            EEPROM.write(m_program_number_to_write * 128 + VOICE_MODE     , m_current_controller_value_table[VOICE_MODE     ]);
-            EEPROM.write(m_program_number_to_write * 128 + PORTAMENTO     , m_current_controller_value_table[PORTAMENTO     ]);
-
-            EEPROM.write(m_program_number_to_write * 128 + LFO_WAVE       , m_current_controller_value_table[LFO_WAVE       ]);
-            EEPROM.write(m_program_number_to_write * 128 + LFO_RATE       , m_current_controller_value_table[LFO_RATE       ]);
-            EEPROM.write(m_program_number_to_write * 128 + LFO_DEPTH      , m_current_controller_value_table[LFO_DEPTH      ]);
-            EEPROM.write(m_program_number_to_write * 128 + LFO_FADE_TIME  , m_current_controller_value_table[LFO_FADE_TIME  ]);
-
-            EEPROM.write(m_program_number_to_write * 128 + LFO_OSC_AMT    , m_current_controller_value_table[LFO_OSC_AMT    ]);
-            EEPROM.write(m_program_number_to_write * 128 + LFO_OSC_DST    , m_current_controller_value_table[LFO_OSC_DST    ]);
-            EEPROM.write(m_program_number_to_write * 128 + LFO_FILTER_AMT , m_current_controller_value_table[LFO_FILTER_AMT ]);
-            EEPROM.write(m_program_number_to_write * 128 + AMP_GAIN       , m_current_controller_value_table[AMP_GAIN       ]);
-
-            EEPROM.write(m_program_number_to_write * 128 + AMP_ATTACK     , m_current_controller_value_table[AMP_ATTACK     ]);
-            EEPROM.write(m_program_number_to_write * 128 + AMP_DECAY      , m_current_controller_value_table[AMP_DECAY      ]);
-            EEPROM.write(m_program_number_to_write * 128 + AMP_SUSTAIN    , m_current_controller_value_table[AMP_SUSTAIN    ]);
-            EEPROM.write(m_program_number_to_write * 128 + AMP_RELEASE    , m_current_controller_value_table[AMP_RELEASE    ]);
-
-            EEPROM.write(m_program_number_to_write * 128 + FILTER_MODE    , m_current_controller_value_table[FILTER_MODE    ]);
-            EEPROM.write(m_program_number_to_write * 128 + EG_AMP_MOD     , m_current_controller_value_table[EG_AMP_MOD     ]);
-            EEPROM.write(m_program_number_to_write * 128 + REL_EQ_DECAY   , m_current_controller_value_table[REL_EQ_DECAY   ]);
-            EEPROM.write(m_program_number_to_write * 128 + P_BEND_RANGE   , m_current_controller_value_table[P_BEND_RANGE   ]);
-
-            EEPROM.write(m_program_number_to_write * 128 + BTH_FILTER_AMT , m_current_controller_value_table[BTH_FILTER_AMT ]);
-            EEPROM.write(m_program_number_to_write * 128 + BTH_AMP_MOD    , m_current_controller_value_table[BTH_AMP_MOD    ]);
-            EEPROM.write(m_program_number_to_write * 128 + EG_VEL_SENS    , m_current_controller_value_table[EG_VEL_SENS    ]);
-            EEPROM.write(m_program_number_to_write * 128 + AMP_VEL_SENS   , m_current_controller_value_table[AMP_VEL_SENS   ]);
-
-            EEPROM.write(m_program_number_to_write * 128 + CHORUS_MIX     , m_current_controller_value_table[CHORUS_MIX     ]);
-            EEPROM.write(m_program_number_to_write * 128 + CHORUS_RATE    , m_current_controller_value_table[CHORUS_RATE    ]);
-            EEPROM.write(m_program_number_to_write * 128 + CHORUS_DEPTH   , m_current_controller_value_table[CHORUS_DEPTH   ]);
-
-
-            EEPROM.write(m_program_number_to_write * 128 + DELAY_FEEDBACK , m_current_controller_value_table[DELAY_FEEDBACK ]);
-            EEPROM.write(m_program_number_to_write * 128 + DELAY_TIME     , m_current_controller_value_table[DELAY_TIME     ]);
-            EEPROM.write(m_program_number_to_write * 128 + DELAY_MODE     , m_current_controller_value_table[DELAY_MODE     ]);
-
+            for (uint32_t i = 0; i < sizeof(s_program_table_parameters) / sizeof(s_program_table_parameters[0]); ++i) {
+              uint32_t control_number = s_program_table_parameters[i];
+              EEPROM.write(m_program_number_to_write * 128 + control_number, m_current_controller_value_table[control_number]);
+            }
 
             EEPROM.write(m_program_number_to_write * 128,     'U');
             EEPROM.write(m_program_number_to_write * 128 + 1, m_program_number_to_write);
@@ -1012,65 +909,10 @@ public:
 
     program_number = program_number & PROGRAM_NUMBER_MAX;
 
-    control_change(OSC_1_WAVE     , m_program_table[OSC_1_WAVE     ][program_number]);
-    control_change(OSC_1_SHAPE    , m_program_table[OSC_1_SHAPE    ][program_number]);
-    control_change(OSC_1_MORPH    , m_program_table[OSC_1_MORPH    ][program_number]);
-    control_change(MIXER_SUB_OSC  , m_program_table[MIXER_SUB_OSC  ][program_number]);
-
-    control_change(OSC_2_WAVE     , m_program_table[OSC_2_WAVE     ][program_number]);
-    control_change(OSC_2_COARSE   , m_program_table[OSC_2_COARSE   ][program_number]);
-    control_change(OSC_2_PITCH    , m_program_table[OSC_2_PITCH    ][program_number]);
-    control_change(MIXER_OSC_MIX  , m_program_table[MIXER_OSC_MIX  ][program_number]);
-
-    control_change(FILTER_CUTOFF  , m_program_table[FILTER_CUTOFF  ][program_number]);
-    control_change(FILTER_RESO    , m_program_table[FILTER_RESO    ][program_number]);
-    control_change(FILTER_EG_AMT  , m_program_table[FILTER_EG_AMT  ][program_number]);
-    control_change(FILTER_KEY_TRK , m_program_table[FILTER_KEY_TRK ][program_number]);
-
-    control_change(EG_ATTACK      , m_program_table[EG_ATTACK      ][program_number]);
-    control_change(EG_DECAY       , m_program_table[EG_DECAY       ][program_number]);
-    control_change(EG_SUSTAIN     , m_program_table[EG_SUSTAIN     ][program_number]);
-    control_change(EG_RELEASE     , m_program_table[EG_RELEASE     ][program_number]);
-
-    control_change(EG_OSC_AMT     , m_program_table[EG_OSC_AMT     ][program_number]);
-    control_change(EG_OSC_DST     , m_program_table[EG_OSC_DST     ][program_number]);
-    control_change(VOICE_MODE     , m_program_table[VOICE_MODE     ][program_number]);
-    control_change(PORTAMENTO     , m_program_table[PORTAMENTO     ][program_number]);
-
-    control_change(LFO_WAVE       , m_program_table[LFO_WAVE       ][program_number]);
-    control_change(LFO_RATE       , m_program_table[LFO_RATE       ][program_number]);
-    control_change(LFO_DEPTH      , m_program_table[LFO_DEPTH      ][program_number]);
-    control_change(LFO_FADE_TIME  , m_program_table[LFO_FADE_TIME  ][program_number]);
-
-    control_change(LFO_OSC_AMT    , m_program_table[LFO_OSC_AMT    ][program_number]);
-    control_change(LFO_OSC_DST    , m_program_table[LFO_OSC_DST    ][program_number]);
-    control_change(LFO_FILTER_AMT , m_program_table[LFO_FILTER_AMT ][program_number]);
-    control_change(AMP_GAIN       , m_program_table[AMP_GAIN       ][program_number]);
-
-    control_change(AMP_ATTACK     , m_program_table[AMP_ATTACK     ][program_number]);
-    control_change(AMP_DECAY      , m_program_table[AMP_DECAY      ][program_number]);
-    control_change(AMP_SUSTAIN    , m_program_table[AMP_SUSTAIN    ][program_number]);
-    control_change(AMP_RELEASE    , m_program_table[AMP_RELEASE    ][program_number]);
-
-    control_change(FILTER_MODE    , m_program_table[FILTER_MODE    ][program_number]);
-    control_change(EG_AMP_MOD     , m_program_table[EG_AMP_MOD     ][program_number]);
-    control_change(REL_EQ_DECAY   , m_program_table[REL_EQ_DECAY   ][program_number]);
-    control_change(P_BEND_RANGE   , m_program_table[P_BEND_RANGE   ][program_number]);
-
-    control_change(BTH_FILTER_AMT , m_program_table[BTH_FILTER_AMT ][program_number]);
-    control_change(BTH_AMP_MOD    , m_program_table[BTH_AMP_MOD    ][program_number]);
-    control_change(EG_VEL_SENS    , m_program_table[EG_VEL_SENS    ][program_number]);
-    control_change(AMP_VEL_SENS   , m_program_table[AMP_VEL_SENS   ][program_number]);
-
-    control_change(CHORUS_MIX     , m_program_table[CHORUS_MIX     ][program_number]);
-    control_change(CHORUS_RATE    , m_program_table[CHORUS_RATE    ][program_number]);
-    control_change(CHORUS_DEPTH   , m_program_table[CHORUS_DEPTH   ][program_number]);
-
-
-    control_change(DELAY_FEEDBACK , m_program_table[DELAY_FEEDBACK ][program_number]);
-    control_change(DELAY_TIME     , m_program_table[DELAY_TIME     ][program_number]);
-    control_change(DELAY_MODE     , m_program_table[DELAY_MODE     ][program_number]);
-
+    for (uint32_t i = 0; i < sizeof(s_program_table_parameters) / sizeof(s_program_table_parameters[0]); ++i) {
+      uint32_t control_number = s_program_table_parameters[i];
+      control_change(control_number, m_program_table[control_number][program_number]);
+    }
   }
 
   INLINE int16_t process(int16_t& right_level) {
