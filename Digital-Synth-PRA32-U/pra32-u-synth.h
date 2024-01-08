@@ -267,7 +267,7 @@ public:
 
 
 #if defined(ARDUINO_ARCH_RP2040)
-#if 1
+#if defined(USE_EMULATED_EEPROM)
     EEPROM.begin(2048);
 
     for (uint32_t program_number = (PRESET_PROGRAM_NUMBER_MAX + 1); program_number <= PROGRAM_NUMBER_MAX; ++program_number) {
@@ -278,7 +278,7 @@ public:
         }
       }
     }
-#endif
+#endif // defined(USE_EMULATED_EEPROM)
 #endif // defined(ARDUINO_ARCH_RP2040)
 
     program_change(PROGRAM_NUMBER_DEFAULT);
@@ -854,6 +854,7 @@ public:
             }
 
 #if defined(ARDUINO_ARCH_RP2040)
+#if defined(USE_EMULATED_EEPROM)
             for (uint32_t i = 0; i < sizeof(s_program_table_parameters) / sizeof(s_program_table_parameters[0]); ++i) {
               uint32_t control_number = s_program_table_parameters[i];
               EEPROM.write(m_program_number_to_write * 128 + control_number, m_current_controller_value_table[control_number]);
@@ -870,6 +871,7 @@ public:
 
             digitalWrite(I2S_DAC_MUTE_OFF_PIN, HIGH);
 #endif // defined(I2S_DAC_MUTE_OFF_PIN)
+#endif // defined(USE_EMULATED_EEPROM)
 #endif // defined(ARDUINO_ARCH_RP2040)
           }
         }

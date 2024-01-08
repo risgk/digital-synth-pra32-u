@@ -35,6 +35,8 @@
 
 #define USE_2_CORES_FOR_SIGNAL_PROCESSING
 
+#define USE_EMULATED_EEPROM
+
 ////////////////////////////////////////////////////////////////
 
 #include "pra32-u-common.h"
