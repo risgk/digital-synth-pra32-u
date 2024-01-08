@@ -114,9 +114,11 @@
 | Notes                         | $ : Disabled in Paraphonic Mode                                     |
 |                               | $$ : Disabled if Osc 1 Wave is not Pls (Pulse)                      |
 |                               | $$$ : Mixer Noise is disabled if Osc 2 Wave is Nos (Noise)          |
-|                               | $$$$ : To write the current parameters to Program #8-15 in the      |
+|                               | $$$$ : To write the current parameters to Program #8-15 and the     |
 |                               |        flash, set "Program Number to Write" (# is the value mod 16) |
 |                               |        and then change "Write Program to Flash" from 0 to 1         |
+|                               |        (To avoid noise, the data will not be written to the flash   |
+|                               |         if I2S_DAC_MUTE_OFF_PIN is not defined)                     |
 +-------------------------------+---------------------------------------------------------------------+
   Mode 1: Omni On,  Poly          Mode 2: Omni On,  Mono          o: Yes                               
   Mode 3: Omni Off, Poly          Mode 4: Omni Off, Mono          x: No                                

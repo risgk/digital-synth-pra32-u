@@ -209,67 +209,65 @@ public:
     EEPROM.begin(2048);
 
     for (uint32_t program_number = (PRESET_PROGRAM_NUMBER_MAX + 1); program_number <= PROGRAM_NUMBER_MAX; ++program_number) {
-      EEPROM.write(program_number * 128, 1);
+      if ((EEPROM.read(program_number * 128) == 'U') && (EEPROM.read(program_number * 128 + 1) == program_number)) {
+        m_program_table[OSC_1_WAVE     ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + OSC_1_WAVE     ));
+        m_program_table[OSC_1_SHAPE    ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + OSC_1_SHAPE    ));
+        m_program_table[OSC_1_MORPH    ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + OSC_1_MORPH    ));
+        m_program_table[MIXER_SUB_OSC  ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + MIXER_SUB_OSC  ));
 
-      if (EEPROM.read(program_number * 128) == 1) {
-        m_program_table[OSC_1_WAVE     ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + OSC_1_WAVE     ));
-        m_program_table[OSC_1_SHAPE    ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + OSC_1_SHAPE    ));
-        m_program_table[OSC_1_MORPH    ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + OSC_1_MORPH    ));
-        m_program_table[MIXER_SUB_OSC  ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + MIXER_SUB_OSC  ));
+        m_program_table[OSC_2_WAVE     ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + OSC_2_WAVE     ));
+        m_program_table[OSC_2_COARSE   ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + OSC_2_COARSE   ));
+        m_program_table[OSC_2_PITCH    ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + OSC_2_PITCH    ));
+        m_program_table[MIXER_OSC_MIX  ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + MIXER_OSC_MIX  ));
 
-        m_program_table[OSC_2_WAVE     ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + OSC_2_WAVE     ));
-        m_program_table[OSC_2_COARSE   ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + OSC_2_COARSE   ));
-        m_program_table[OSC_2_PITCH    ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + OSC_2_PITCH    ));
-        m_program_table[MIXER_OSC_MIX  ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + MIXER_OSC_MIX  ));
+        m_program_table[FILTER_CUTOFF  ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + FILTER_CUTOFF  ));
+        m_program_table[FILTER_RESO    ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + FILTER_RESO    ));
+        m_program_table[FILTER_EG_AMT  ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + FILTER_EG_AMT  ));
+        m_program_table[FILTER_KEY_TRK ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + FILTER_KEY_TRK ));
 
-        m_program_table[FILTER_CUTOFF  ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + FILTER_CUTOFF  ));
-        m_program_table[FILTER_RESO    ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + FILTER_RESO    ));
-        m_program_table[FILTER_EG_AMT  ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + FILTER_EG_AMT  ));
-        m_program_table[FILTER_KEY_TRK ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + FILTER_KEY_TRK ));
+        m_program_table[EG_ATTACK      ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + EG_ATTACK      ));
+        m_program_table[EG_DECAY       ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + EG_DECAY       ));
+        m_program_table[EG_SUSTAIN     ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + EG_SUSTAIN     ));
+        m_program_table[EG_RELEASE     ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + EG_RELEASE     ));
 
-        m_program_table[EG_ATTACK      ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + EG_ATTACK      ));
-        m_program_table[EG_DECAY       ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + EG_DECAY       ));
-        m_program_table[EG_SUSTAIN     ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + EG_SUSTAIN     ));
-        m_program_table[EG_RELEASE     ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + EG_RELEASE     ));
+        m_program_table[EG_OSC_AMT     ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + EG_OSC_AMT     ));
+        m_program_table[EG_OSC_DST     ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + EG_OSC_DST     ));
+        m_program_table[VOICE_MODE     ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + VOICE_MODE     ));
+        m_program_table[PORTAMENTO     ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + PORTAMENTO     ));
 
-        m_program_table[EG_OSC_AMT     ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + EG_OSC_AMT     ));
-        m_program_table[EG_OSC_DST     ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + EG_OSC_DST     ));
-        m_program_table[VOICE_MODE     ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + VOICE_MODE     ));
-        m_program_table[PORTAMENTO     ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + PORTAMENTO     ));
+        m_program_table[LFO_WAVE       ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + LFO_WAVE       ));
+        m_program_table[LFO_RATE       ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + LFO_RATE       ));
+        m_program_table[LFO_DEPTH      ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + LFO_DEPTH      ));
+        m_program_table[LFO_FADE_TIME  ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + LFO_FADE_TIME  ));
 
-        m_program_table[LFO_WAVE       ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + LFO_WAVE       ));
-        m_program_table[LFO_RATE       ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + LFO_RATE       ));
-        m_program_table[LFO_DEPTH      ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + LFO_DEPTH      ));
-        m_program_table[LFO_FADE_TIME  ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + LFO_FADE_TIME  ));
+        m_program_table[LFO_OSC_AMT    ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + LFO_OSC_AMT    ));
+        m_program_table[LFO_OSC_DST    ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + LFO_OSC_DST    ));
+        m_program_table[LFO_FILTER_AMT ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + LFO_FILTER_AMT ));
+        m_program_table[AMP_GAIN       ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + AMP_GAIN       ));
 
-        m_program_table[LFO_OSC_AMT    ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + LFO_OSC_AMT    ));
-        m_program_table[LFO_OSC_DST    ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + LFO_OSC_DST    ));
-        m_program_table[LFO_FILTER_AMT ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + LFO_FILTER_AMT ));
-        m_program_table[AMP_GAIN       ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + AMP_GAIN       ));
+        m_program_table[AMP_ATTACK     ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + AMP_ATTACK     ));
+        m_program_table[AMP_DECAY      ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + AMP_DECAY      ));
+        m_program_table[AMP_SUSTAIN    ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + AMP_SUSTAIN    ));
+        m_program_table[AMP_RELEASE    ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + AMP_RELEASE    ));
 
-        m_program_table[AMP_ATTACK     ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + AMP_ATTACK     ));
-        m_program_table[AMP_DECAY      ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + AMP_DECAY      ));
-        m_program_table[AMP_SUSTAIN    ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + AMP_SUSTAIN    ));
-        m_program_table[AMP_RELEASE    ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + AMP_RELEASE    ));
+        m_program_table[FILTER_MODE    ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + FILTER_MODE    ));
+        m_program_table[EG_AMP_MOD     ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + EG_AMP_MOD     ));
+        m_program_table[REL_EQ_DECAY   ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + REL_EQ_DECAY   ));
+        m_program_table[P_BEND_RANGE   ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + P_BEND_RANGE   ));
 
-        m_program_table[FILTER_MODE    ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + FILTER_MODE    ));
-        m_program_table[EG_AMP_MOD     ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + EG_AMP_MOD     ));
-        m_program_table[REL_EQ_DECAY   ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + REL_EQ_DECAY   ));
-        m_program_table[P_BEND_RANGE   ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + P_BEND_RANGE   ));
+        m_program_table[BTH_FILTER_AMT ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + BTH_FILTER_AMT ));
+        m_program_table[BTH_AMP_MOD    ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + BTH_AMP_MOD    ));
+        m_program_table[EG_VEL_SENS    ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + EG_VEL_SENS    ));
+        m_program_table[AMP_VEL_SENS   ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + AMP_VEL_SENS   ));
 
-        m_program_table[BTH_FILTER_AMT ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + BTH_FILTER_AMT ));
-        m_program_table[BTH_AMP_MOD    ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + BTH_AMP_MOD    ));
-        m_program_table[EG_VEL_SENS    ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + EG_VEL_SENS    ));
-        m_program_table[AMP_VEL_SENS   ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + AMP_VEL_SENS   ));
-
-        m_program_table[CHORUS_MIX     ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + CHORUS_MIX     ));
-        m_program_table[CHORUS_RATE    ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + CHORUS_RATE    ));
-        m_program_table[CHORUS_DEPTH   ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + CHORUS_DEPTH   ));
+        m_program_table[CHORUS_MIX     ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + CHORUS_MIX     ));
+        m_program_table[CHORUS_RATE    ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + CHORUS_RATE    ));
+        m_program_table[CHORUS_DEPTH   ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + CHORUS_DEPTH   ));
 
 
-        m_program_table[DELAY_FEEDBACK ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + DELAY_FEEDBACK ));
-        m_program_table[DELAY_TIME     ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + DELAY_TIME     ));
-        m_program_table[DELAY_MODE     ][program_number] = std::max<uint8_t>(127, EEPROM.read(program_number * 128 + DELAY_MODE     ));
+        m_program_table[DELAY_FEEDBACK ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + DELAY_FEEDBACK ));
+        m_program_table[DELAY_TIME     ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + DELAY_TIME     ));
+        m_program_table[DELAY_MODE     ][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + DELAY_MODE     ));
 
       }
     }
@@ -904,8 +902,6 @@ public:
 
 
 #if defined(ARDUINO_ARCH_RP2040)
-            digitalWrite(LED_BUILTIN, LOW);
-
             EEPROM.write(m_program_number_to_write * 128 + OSC_1_WAVE     , m_current_controller_value_table[OSC_1_WAVE     ]);
             EEPROM.write(m_program_number_to_write * 128 + OSC_1_SHAPE    , m_current_controller_value_table[OSC_1_SHAPE    ]);
             EEPROM.write(m_program_number_to_write * 128 + OSC_1_MORPH    , m_current_controller_value_table[OSC_1_MORPH    ]);
@@ -966,19 +962,17 @@ public:
             EEPROM.write(m_program_number_to_write * 128 + DELAY_MODE     , m_current_controller_value_table[DELAY_MODE     ]);
 
 
-            EEPROM.write(m_program_number_to_write * 128, 1);
+            EEPROM.write(m_program_number_to_write * 128,     'U');
+            EEPROM.write(m_program_number_to_write * 128 + 1, m_program_number_to_write);
 
 #if defined(I2S_DAC_MUTE_OFF_PIN)
+            // To avoid noise, the data will not be written to the flash if I2S_DAC_MUTE_OFF_PIN is not defined
             digitalWrite(I2S_DAC_MUTE_OFF_PIN, LOW);
-#endif // defined(I2S_DAC_MUTE_OFF_PIN)
 
             EEPROM.commit();
 
-#if defined(I2S_DAC_MUTE_OFF_PIN)
             digitalWrite(I2S_DAC_MUTE_OFF_PIN, HIGH);
 #endif // defined(I2S_DAC_MUTE_OFF_PIN)
-
-            digitalWrite(LED_BUILTIN, HIGH);
 #endif // defined(ARDUINO_ARCH_RP2040)
           }
         }

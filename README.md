@@ -21,7 +21,8 @@
     - Support Osc 1 Sine Wave Phase Modulation (Osc 1 Shape and Osc 1 Morph);
     - Modify programs #8-15 in the main unit;
     - Add JSON files for PRA32-U CTRL;
-    - Add the function of writing user programs to the flash (Program Number to Write and Write Program to Flash);
+    - Add the function of writing the parameters to Program #8-15 and the flash
+        - **NOTE**: To avoid noise, the data will not be written to the flash if I2S_DAC_MUTE_OFF_PIN is not defined
     - Use core 0 for main processing;
     - Use Serial2 for DEBUG_PRINT;
     - Raspberry Pi Pico/RP2040 core version 3.6.3 is recommended
