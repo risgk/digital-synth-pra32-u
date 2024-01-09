@@ -847,7 +847,7 @@ public:
         m_wr_prog_to_flash_cc_value = controller_value;
 
         if (m_program_number_to_write >= (PRESET_PROGRAM_NUMBER_MAX + 1)) {
-          if ((old_value == 0) && (controller_value == 1)) {
+          if ((old_value == 0) && (controller_value >= 1)) {
             for (uint32_t i = 0; i < sizeof(s_program_table_parameters) / sizeof(s_program_table_parameters[0]); ++i) {
               uint32_t control_number = s_program_table_parameters[i];
               m_program_table[control_number][m_program_number_to_write] = m_current_controller_value_table[control_number];

@@ -116,7 +116,7 @@
 |                               | $$$ : Mixer Noise is disabled if Osc 2 Wave is Nos (Noise)          |
 |                               | $$$$ : To write the current parameters to Program #8-15 and the     |
 |                               |   flash, set "Program Number to Write to" (# is the value mod 16)   |
-|                               |   and then change "Write Parameters to Program" from 0 to 1         |
+|                               |   and then change "Write Parameters to Program" from 0 to 1-127     |
 |                               |   (To avoid noise, the data will not be written to the flash        |
 |                               |   if I2S_DAC_MUTE_OFF_PIN is not defined)                           |
 +-------------------------------+---------------------------------------------------------------------+
