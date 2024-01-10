@@ -42,7 +42,7 @@
 #include "pra32-u-common.h"
 #include "pra32-u-synth.h"
 
-#define RT6150_PS_PIN                   (2)
+#define RT6150_PS_PIN                   (23)
 
 PRA32_U_Synth g_synth;
 
