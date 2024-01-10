@@ -9,8 +9,10 @@
 - 4 Voice Polyphonic/Paraphonic Synthesizer for Raspberry Pi Pico/RP2040
     - Built-in Chorus and Delay FX
     - Controlled by MIDI -- PRA32-U is a MIDI sound module
+    - Having the function of writing the parameters to the user programs and the flash
 - Modifiable with Arduino IDE and Arduino-Pico (by Earle F. Philhower, III)
 - An **I2S DAC** hardware (e.g. Pimoroni Pico Audio Pack and Waveshare Pico-Audio) is required
+    - PWM Audio can also be used instead of I2S
 - Prebuilt UF2 files ("bin")
     - "Digital-Synth-PRA32-U-2.0.1-Pimoroni-Pico-Audio-Pack.uf2" is for Raspberry Pi Pico and Pimoroni Pico Audio Pack
 
@@ -22,7 +24,6 @@
     - Support Osc 1 Sine Wave Phase Modulation (Osc 1 Shape and Osc 1 Morph);
     - Add JSON files for PRA32-U CTRL;
     - Add the function of writing the parameters to Program #8-15 and the flash
-        - **NOTE**: To avoid noise, the data will not be written to the flash if I2S_DAC_MUTE_OFF_PIN is not defined
     - Officially support PWM audio output option;
     - Enable Serial MIDI to be used at the same time as USB MIDI
     - Use core 0 for main processing;
