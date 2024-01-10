@@ -42,6 +42,8 @@
 #include "pra32-u-common.h"
 #include "pra32-u-synth.h"
 
+#define RT6150_PS_PIN                   (2)
+
 PRA32_U_Synth g_synth;
 
 #include <MIDI.h>
@@ -148,6 +150,9 @@ void __not_in_flash_func(setup)() {
 
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
+
+  pinMode(RT6150_PS_PIN, OUTPUT);
+  digitalWrite(RT6150_PS_PIN, HIGH);
 
 #if defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
 #else // defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)

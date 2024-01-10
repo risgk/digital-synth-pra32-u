@@ -22,6 +22,7 @@
     - Add JSON files for PRA32-U CTRL;
     - Add the function of writing the parameters to Program #8-15 and the flash
         - **NOTE**: To avoid noise, the data will not be written to the flash if I2S_DAC_MUTE_OFF_PIN is not defined
+    - Officially support PWM audio output option;
     - Enable Serial MIDI to be used at the same time as USB MIDI
     - Use core 0 for main processing;
     - Use Serial2 for DEBUG_PRINT;
@@ -116,6 +117,7 @@
 - **NOTE**: The RP2040 system clock (sysclk) changes to overclocked 147.6 MHz by I2S Audio Library setSysClk()
 - Modify `I2S_DAC_MUTE_OFF_PIN`, `I2S_DATA_PIN`, `I2S_MCLK_PIN`, `I2S_MCLK_MULT`, `I2S_BCLK_PIN`, and `I2S_SWAP_BCLK_AND_LRCLK_PINS`
   in "Digital-Synth-PRA32-U.ino" to match the hardware configuration
+    - **NOTE**: To avoid noise, the parameters will not be written to the flash if `I2S_DAC_MUTE_OFF_PIN` is not defined
 - The default setting is for Pimoroni [Pico Audio Pack](https://shop.pimoroni.com/products/pico-audio-pack) (PIM544)
 ```
 #define I2S_DAC_MUTE_OFF_PIN            (22)
@@ -155,10 +157,10 @@
 ```
 
 
-#### PWM Audio Output (Optional) (Experimental)
+#### PWM Audio Output (Optional)
 
 - PWM Audio can also be used instead of I2S
-    - If PWM Audio is selected, Polyphonic Mode is disabled and Paraphonic Mode is used instead (due to lack of CPU power)
+    - **NOTE**: To avoid noise, the parameters will not be written to the flash when using PWM audio output
     - See "PWM audio" in [Hardware design with RP2040](https://datasheets.raspberrypi.com/rp2040/hardware-design-with-rp2040.pdf)
       for details on PWM audio
 - Uncomment out `//#define USE_PWM_AUDIO_INSTEAD_OF_I2S`

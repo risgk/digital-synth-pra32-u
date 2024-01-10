@@ -268,6 +268,7 @@ public:
 
 #if defined(ARDUINO_ARCH_RP2040)
 #if defined(USE_EMULATED_EEPROM)
+#if defined(I2S_DAC_MUTE_OFF_PIN) && !defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
     EEPROM.begin(2048);
 
     for (uint32_t program_number = (PRESET_PROGRAM_NUMBER_MAX + 1); program_number <= PROGRAM_NUMBER_MAX; ++program_number) {
@@ -278,6 +279,7 @@ public:
         }
       }
     }
+#endif // defined(I2S_DAC_MUTE_OFF_PIN) && !defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
 #endif // defined(USE_EMULATED_EEPROM)
 #endif // defined(ARDUINO_ARCH_RP2040)
 
@@ -855,6 +857,9 @@ public:
 
 #if defined(ARDUINO_ARCH_RP2040)
 #if defined(USE_EMULATED_EEPROM)
+#if defined(I2S_DAC_MUTE_OFF_PIN) && !defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
+            // To avoid noise, the data will not be written to the flash
+            // if I2S_DAC_MUTE_OFF_PIN is not defined or USE_PWM_AUDIO_INSTEAD_OF_I2S is defined
             for (uint32_t i = 0; i < sizeof(s_program_table_parameters) / sizeof(s_program_table_parameters[0]); ++i) {
               uint32_t control_number = s_program_table_parameters[i];
               EEPROM.write(m_program_number_to_write * 128 + control_number, m_current_controller_value_table[control_number]);
@@ -863,14 +868,12 @@ public:
             EEPROM.write(m_program_number_to_write * 128,     'U');
             EEPROM.write(m_program_number_to_write * 128 + 1, m_program_number_to_write);
 
-#if defined(I2S_DAC_MUTE_OFF_PIN)
-            // To avoid noise, the data will not be written to the flash if I2S_DAC_MUTE_OFF_PIN is not defined
             digitalWrite(I2S_DAC_MUTE_OFF_PIN, LOW);
 
             EEPROM.commit();
 
             digitalWrite(I2S_DAC_MUTE_OFF_PIN, HIGH);
-#endif // defined(I2S_DAC_MUTE_OFF_PIN)
+#endif // defined(I2S_DAC_MUTE_OFF_PIN) && !defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
 #endif // defined(USE_EMULATED_EEPROM)
 #endif // defined(ARDUINO_ARCH_RP2040)
           }
@@ -1150,12 +1153,6 @@ private:
       new_voice_mode = voice_mode_table[controller_value];
     }
 #endif
-#if defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
-    // due to CPU power shortage
-    if (new_voice_mode == VOICE_POLYPHONIC) {
-      new_voice_mode = VOICE_PARAPHONIC;
-    }
-#endif // defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
     if (m_voice_mode != new_voice_mode) {
       m_voice_mode = new_voice_mode;
       all_sound_off();
