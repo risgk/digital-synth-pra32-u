@@ -163,6 +163,8 @@
 
 - PWM Audio can also be used instead of I2S
     - **NOTE**: To avoid noise, the parameters will not be written to the flash when using PWM audio output
+    - We recommend adding RC filter (post LPF) circuits to reduce PWM ripples
+        - A 1st-order LPFs with a cutoff frequency 7.2 kHz (R = 220 ohm, C = 100 nF) works well
     - See "PWM audio" in [Hardware design with RP2040](https://datasheets.raspberrypi.com/rp2040/hardware-design-with-rp2040.pdf)
       for details on PWM audio
 - Uncomment out `//#define USE_PWM_AUDIO_INSTEAD_OF_I2S`
