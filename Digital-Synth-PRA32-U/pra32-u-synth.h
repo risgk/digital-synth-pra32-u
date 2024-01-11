@@ -1060,8 +1060,14 @@ public:
     int16_t delay_fx_output_r;
     int16_t delay_fx_output_l = m_delay_fx.process(chorus_fx_output_l, chorus_fx_output_r, delay_fx_output_r);
 
+#if defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
+    // Dithering
+    right_level = delay_fx_output_r + ((noise_int15 + 16384) >> 11);
+    return        delay_fx_output_l + ((noise_int15 + 16384) >> 11);
+#else // defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
     right_level = delay_fx_output_r;
     return        delay_fx_output_l;
+#endif // defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
   }
 
   INLINE void secondary_core_process() {
