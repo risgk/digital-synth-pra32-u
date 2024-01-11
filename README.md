@@ -23,9 +23,9 @@
     - Reduce noise from PMIC (Turn off RT6150 Power Save);
     - Support Osc 1 Sine Wave Phase Modulation (Osc 1 Shape and Osc 1 Morph);
     - Add JSON files for PRA32-U CTRL;
-    - Add the function of writing the parameters to Program #8-15 and the flash
+    - Add the function of writing the parameters to Program #8-15 and the flash;
     - Officially support PWM audio output option;
-    - Enable Serial MIDI to be used at the same time as USB MIDI
+    - Enable Serial MIDI to be used at the same time as USB MIDI;
     - Use core 0 for main processing;
     - Use Serial2 for DEBUG_PRINT;
     - Raspberry Pi Pico/RP2040 core version 3.6.3 is recommended
