@@ -157,7 +157,7 @@ void __not_in_flash_func(setup)() {
 #endif  // defined(ARDUINO_RASPBERRY_PI_PICO) || defined(ARDUINO_RASPBERRY_PI_PICO_W)
 
 #if defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
-#else  //  defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+#else  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
 #if defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN)
   pinMode(PRA32_U_I2S_DAC_MUTE_OFF_PIN, OUTPUT);
   digitalWrite(PRA32_U_I2S_DAC_MUTE_OFF_PIN, HIGH);
