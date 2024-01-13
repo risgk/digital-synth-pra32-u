@@ -42,8 +42,6 @@
 #include "pra32-u-common.h"
 #include "pra32-u-synth.h"
 
-#define RT6150_PS_PIN                   (23)
-
 PRA32_U_Synth g_synth;
 
 #include <MIDI.h>
@@ -51,7 +49,7 @@ PRA32_U_Synth g_synth;
 #include <Adafruit_TinyUSB.h>
 Adafruit_USBD_MIDI usbd_midi;
 MIDI_CREATE_INSTANCE(Adafruit_USBD_MIDI, usbd_midi, USB_MIDI);
-#endif // defined(PRA32_U_USE_USB_MIDI)
+#endif  // defined(PRA32_U_USE_USB_MIDI)
 
 #if defined(PRA32_U_USE_UART_MIDI)
 MIDI_CREATE_INSTANCE(HardwareSerial, Serial2, SERIAL_MIDI);
@@ -61,7 +59,7 @@ MIDI_CREATE_INSTANCE(HardwareSerial, Serial2, SERIAL_MIDI);
 #include <PWMAudio.h>
 PWMAudio g_pwm_l(PRA32_U_PWM_AUDIO_L_PIN);
 PWMAudio g_pwm_r(PRA32_U_PWM_AUDIO_R_PIN);
-#endif // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+#endif  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
 
 #include <I2S.h>
 I2S g_i2s_output(OUTPUT);
@@ -100,13 +98,13 @@ void __not_in_flash_func(setup)() {
   g_pwm_l.begin();
   g_pwm_r.begin();
 #endif
-#else // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+#else  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
   g_i2s_output.setFrequency(SAMPLING_RATE);
   g_i2s_output.setDATA(PRA32_U_I2S_DATA_PIN);
 #if defined(PRA32_U_I2S_MCLK_PIN)
   g_i2s_output.setMCLK(PRA32_U_I2S_MCLK_PIN);
   g_i2s_output.setMCLKmult(PRA32_U_I2S_MCLK_MULT);
-#endif // defined(PRA32_U_I2S_MCLK_PIN)
+#endif  // defined(PRA32_U_I2S_MCLK_PIN)
   g_i2s_output.setBCLK(PRA32_U_I2S_BCLK_PIN);
   if (PRA32_U_I2S_SWAP_BCLK_AND_LRCLK_PINS) {
     g_i2s_output.swapClocks();
@@ -114,7 +112,7 @@ void __not_in_flash_func(setup)() {
   g_i2s_output.setBitsPerSample(16);
   g_i2s_output.setBuffers(PRA32_U_I2S_BUFFERS, PRA32_U_I2S_BUFFER_WORDS);
   g_i2s_output.begin();
-#endif // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+#endif  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
 
 #if defined(PRA32_U_USE_USB_MIDI)
   TinyUSB_Device_Init(0);
@@ -127,7 +125,7 @@ void __not_in_flash_func(setup)() {
   USB_MIDI.setHandlePitchBend(handleHandlePitchBend);
   USB_MIDI.begin(MIDI_CHANNEL_OMNI);
   USB_MIDI.turnThruOff();
-#endif // defined(PRA32_U_USE_USB_MIDI)
+#endif  // defined(PRA32_U_USE_USB_MIDI)
 
 #if defined(PRA32_U_USE_UART_MIDI)
   Serial2.setTX(SERIAL1_TX_PIN);
@@ -140,27 +138,31 @@ void __not_in_flash_func(setup)() {
   SERIAL_MIDI.begin(MIDI_CHANNEL_OMNI);
   SERIAL_MIDI.turnThruOff();
   Serial2.begin(PRA32_U_UART_MIDI_SPEED);
-#endif // defined(PRA32_U_USE_UART_MIDI)
+#endif  // defined(PRA32_U_USE_UART_MIDI)
 
 #if defined(PRA32_U_USE_DEBUG_PRINT)
   Serial1.setTX(4);
   Serial1.setRX(5);
   Serial1.begin(115200);
-#endif // defined(PRA32_U_USE_DEBUG_PRINT)
+#endif  // defined(PRA32_U_USE_DEBUG_PRINT)
 
+#if defined(ARDUINO_RASPBERRY_PI_PICO)
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
+#endif  // defined(ARDUINO_RASPBERRY_PI_PICO)
 
-  pinMode(RT6150_PS_PIN, OUTPUT);
-  digitalWrite(RT6150_PS_PIN, HIGH);
+#if defined(ARDUINO_RASPBERRY_PI_PICO) || defined(ARDUINO_RASPBERRY_PI_PICO_W)
+  pinMode(23, OUTPUT);  // RT6150 (PMIC) Power Save Pin
+  digitalWrite(23, HIGH);
+#endif  // defined(ARDUINO_RASPBERRY_PI_PICO) || defined(ARDUINO_RASPBERRY_PI_PICO_W)
 
 #if defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
-#else // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+#else  //  defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
 #if defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN)
   pinMode(PRA32_U_I2S_DAC_MUTE_OFF_PIN, OUTPUT);
   digitalWrite(PRA32_U_I2S_DAC_MUTE_OFF_PIN, HIGH);
-#endif // defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN)
-#endif // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+#endif  // defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN)
+#endif  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
 
   g_synth.initialize();
 }
@@ -169,12 +171,12 @@ void __not_in_flash_func(loop)() {
 
 #if defined(PRA32_U_USE_DEBUG_PRINT)
   uint32_t debug_measurement_start0_us = micros();
-#endif // defined(PRA32_U_USE_DEBUG_PRINT)
+#endif  // defined(PRA32_U_USE_DEBUG_PRINT)
 
   for (uint32_t i = 0; i < (PRA32_U_I2S_BUFFER_WORDS + 15) / 16; i++) {
 #if defined(PRA32_U_USE_USB_MIDI)
     USB_MIDI.read();
-#endif // defined(PRA32_U_USE_USB_MIDI)
+#endif  // defined(PRA32_U_USE_USB_MIDI)
 
 #if defined(PRA32_U_USE_UART_MIDI)
     SERIAL_MIDI.read();
@@ -183,7 +185,7 @@ void __not_in_flash_func(loop)() {
 
 #if defined(PRA32_U_USE_DEBUG_PRINT)
   uint32_t debug_measurement_start1_us = micros();
-#endif // defined(PRA32_U_USE_DEBUG_PRINT)
+#endif  // defined(PRA32_U_USE_DEBUG_PRINT)
 
   int16_t left_buffer[PRA32_U_I2S_BUFFER_WORDS];
   int16_t right_buffer[PRA32_U_I2S_BUFFER_WORDS];
@@ -193,7 +195,7 @@ void __not_in_flash_func(loop)() {
 
 #if defined(PRA32_U_USE_DEBUG_PRINT)
   uint32_t debug_measurement_end_us = micros();
-#endif // defined(PRA32_U_USE_DEBUG_PRINT)
+#endif  // defined(PRA32_U_USE_DEBUG_PRINT)
 
 #if defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
   for (uint32_t i = 0; i < PRA32_U_I2S_BUFFER_WORDS; i++) {
@@ -208,11 +210,11 @@ void __not_in_flash_func(loop)() {
     g_pwm_r.write(right_buffer[i]);
 #endif
   }
-#else // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+#else  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
   for (uint32_t i = 0; i < PRA32_U_I2S_BUFFER_WORDS; i++) {
     g_i2s_output.write16(left_buffer[i], right_buffer[i]);
   }
-#endif // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+#endif  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
 
 #if defined(PRA32_U_USE_DEBUG_PRINT)
   static uint32_t s_debug_measurement_max0_us = 0;
@@ -235,7 +237,7 @@ void __not_in_flash_func(loop)() {
     Serial1.println(s_debug_measurement_max0_us);
     Serial1.println();
   }
-#endif // defined(PRA32_U_USE_DEBUG_PRINT)
+#endif  // defined(PRA32_U_USE_DEBUG_PRINT)
 }
 
 void __not_in_flash_func(handleNoteOn)(byte channel, byte pitch, byte velocity)
