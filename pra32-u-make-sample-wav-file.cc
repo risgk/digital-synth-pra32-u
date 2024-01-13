@@ -1,4 +1,4 @@
-#define MIDI_CH (0)  // 0-based
+#define PRA32_U_MIDI_CH (0)  // 0-based
 
 
 #include <stdint.h>

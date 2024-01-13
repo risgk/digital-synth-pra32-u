@@ -25,9 +25,11 @@
     - Add JSON files for PRA32-U CTRL;
     - Add the function of writing the parameters to Program #8-15 and the flash;
     - Officially support PWM audio output option;
-    - Enable Serial MIDI to be used at the same time as USB MIDI;
+    - Enable UART MIDI to be used at the same time as USB MIDI;
     - Use core 0 for main processing;
-    - Use Serial2 for DEBUG_PRINT;
+    - Use Serial1 for Debug Print and Serial2 for UART MIDI;
+    - Rename constant macros;
+    - Rename Serial MIDI to UART MIDI;
     - Raspberry Pi Pico/RP2040 core version 3.6.3 is recommended
 - v2.0.1:
     - Fix Ping Pong Delay to start from the left
@@ -99,10 +101,10 @@
 - **NOTE**: Select USB Stack: "Adafruit TinyUSB" in the Arduino IDE "Tools" menu
 
 
-#### Serial MIDI Input (Optional)
+#### UART MIDI Input (Optional)
 
-- Serial MIDI can also be used
-- Uncomment out `//#define USE_SERIAL1_MIDI` in "Digital-Synth-PRA32-U.ino" and modify `SERIAL1_MIDI_SPEED`
+- UART MIDI can also be used
+- Uncomment out `//#define PRA32_U_USE_UART_MIDI` in "Digital-Synth-PRA32-U.ino" and modify `PRA32_U_UART_MIDI_SPEED`
 - Speed: 31.25 kbps (default) or 38.4 kbps
 - GP0 and GP1 pins are used by UART0 TX and UART0 RX by default
 - DIN/TRS MIDI is available by using (and modifying) Adafruit MIDI FeatherWing Kit, for example
@@ -117,45 +119,46 @@
 
 - Use an I2S DAC (e.g. Texas Instruments PCM5100A and Cirrus Logic CS4344), Sampling Rate: 48 kHz, Bit Depth: 16 bit
 - **NOTE**: The RP2040 system clock (sysclk) changes to overclocked 147.6 MHz by I2S Audio Library setSysClk()
-- Modify `I2S_DAC_MUTE_OFF_PIN`, `I2S_DATA_PIN`, `I2S_MCLK_PIN`, `I2S_MCLK_MULT`, `I2S_BCLK_PIN`, and `I2S_SWAP_BCLK_AND_LRCLK_PINS`
+- Modify `PRA32_U_I2S_DAC_MUTE_OFF_PIN`, `PRA32_U_I2S_DATA_PIN`, `PRA32_U_I2S_MCLK_PIN`, `PRA32_U_I2S_MCLK_MULT`,
+  `PRA32_U_I2S_BCLK_PIN`, and `PRA32_U_I2S_SWAP_BCLK_AND_LRCLK_PINS`
   in "Digital-Synth-PRA32-U.ino" to match the hardware configuration
-    - **NOTE**: To avoid noise, the parameters will not be written to the flash if `I2S_DAC_MUTE_OFF_PIN` is not defined
+    - **NOTE**: To avoid noise, the parameters will not be written to the flash if `PRA32_U_I2S_DAC_MUTE_OFF_PIN` is not defined
 - The default setting is for Pimoroni [Pico Audio Pack](https://shop.pimoroni.com/products/pico-audio-pack) (PIM544)
 ```
-#define I2S_DAC_MUTE_OFF_PIN            (22)
-#define I2S_DATA_PIN                    (9)
-//#define I2S_MCLK_PIN                    (0)
-//#define I2S_MCLK_MULT                   (0)
-#define I2S_BCLK_PIN                    (10)  // I2S_LRCLK_PIN is I2S_BCLK_PIN + 1
-#define I2S_SWAP_BCLK_AND_LRCLK_PINS    (false)
+#define PRA32_U_I2S_DAC_MUTE_OFF_PIN          (22)
+#define PRA32_U_I2S_DATA_PIN                  (9)
+//#define PRA32_U_I2S_MCLK_PIN                  (0)
+//#define PRA32_U_I2S_MCLK_MULT                 (0)
+#define PRA32_U_I2S_BCLK_PIN                  (10)  // PRA32_U_I2S_LRCLK_PIN is PRA32_U_I2S_BCLK_PIN + 1
+#define PRA32_U_I2S_SWAP_BCLK_AND_LRCLK_PINS  (false)
 ```
 - The following is setting is for [Pimoroni Pico VGA Demo Base](https://shop.pimoroni.com/products/pimoroni-pico-vga-demo-base) (PIM553)
   and [Pimoroni Pico DV Demo Base](https://shop.pimoroni.com/products/pimoroni-pico-dv-demo-base) (PIM588)
 ```
-//#define I2S_DAC_MUTE_OFF_PIN            (0)
-#define I2S_DATA_PIN                    (26)
-//#define I2S_MCLK_PIN                    (0)
-//#define I2S_MCLK_MULT                   (0)
-#define I2S_BCLK_PIN                    (27)  // I2S_LRCLK_PIN is I2S_BCLK_PIN + 1
-#define I2S_SWAP_BCLK_AND_LRCLK_PINS    (false)
+//#define PRA32_U_I2S_DAC_MUTE_OFF_PIN          (0)
+#define PRA32_U_I2S_DATA_PIN                  (26)
+//#define PRA32_U_I2S_MCLK_PIN                  (0)
+//#define PRA32_U_I2S_MCLK_MULT                 (0)
+#define PRA32_U_I2S_BCLK_PIN                  (27)  // PRA32_U_I2S_LRCLK_PIN is PRA32_U_I2S_BCLK_PIN + 1
+#define PRA32_U_I2S_SWAP_BCLK_AND_LRCLK_PINS  (false)
 ```
 - The following is setting is for Waveshare Pico-Audio Initial Version (WAVESHARE-20167)
 ```
-//#define I2S_DAC_MUTE_OFF_PIN            (0)
-#define I2S_DATA_PIN                    (26)
-//#define I2S_MCLK_PIN                    (0)
-//#define I2S_MCLK_MULT                   (0)
-#define I2S_BCLK_PIN                    (27)  // I2S_LRCLK_PIN is I2S_BCLK_PIN + 1
-#define I2S_SWAP_BCLK_AND_LRCLK_PINS    (false)
+//#define PRA32_U_I2S_DAC_MUTE_OFF_PIN          (0)
+#define PRA32_U_I2S_DATA_PIN                  (26)
+//#define PRA32_U_I2S_MCLK_PIN                  (0)
+//#define PRA32_U_I2S_MCLK_MULT                 (0)
+#define PRA32_U_I2S_BCLK_PIN                  (27)  // PRA32_U_I2S_LRCLK_PIN is PRA32_U_I2S_BCLK_PIN + 1
+#define PRA32_U_I2S_SWAP_BCLK_AND_LRCLK_PINS  (false)
 ```
 - The following is setting is for [Waveshare Pico-Audio](https://www.waveshare.com/wiki/Pico-Audio) Rev2.1 Version (WAVESHARE-20167)
 ```
-//#define I2S_DAC_MUTE_OFF_PIN            (0)
-#define I2S_DATA_PIN                    (22)
-#define I2S_MCLK_PIN                    (26)
-#define I2S_MCLK_MULT                   (256)
-#define I2S_BCLK_PIN                    (27)  // I2S_LRCLK_PIN is I2S_BCLK_PIN + 1
-#define I2S_SWAP_BCLK_AND_LRCLK_PINS    (true)
+//#define PRA32_U_I2S_DAC_MUTE_OFF_PIN          (0)
+#define PRA32_U_I2S_DATA_PIN                  (22)
+#define PRA32_U_I2S_MCLK_PIN                  (26)
+#define PRA32_U_I2S_MCLK_MULT                 (256)
+#define PRA32_U_I2S_BCLK_PIN                  (27)  // PRA32_U_I2S_LRCLK_PIN is PRA32_U_I2S_BCLK_PIN + 1
+#define PRA32_U_I2S_SWAP_BCLK_AND_LRCLK_PINS  (true)
 ```
 
 
@@ -167,19 +170,19 @@
         - A 1st-order LPFs with a cutoff frequency 7.2 kHz (R = 220 ohm, C = 100 nF) works well
     - See "PWM audio" in [Hardware design with RP2040](https://datasheets.raspberrypi.com/rp2040/hardware-design-with-rp2040.pdf)
       for details on PWM audio
-- Uncomment out `//#define USE_PWM_AUDIO_INSTEAD_OF_I2S`
-  in "Digital-Synth-PRA32-U.ino" and modify `PWM_AUDIO_L_PIN` and `PWM_AUDIO_R_PIN`
+- Uncomment out `//#define PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S`
+  in "Digital-Synth-PRA32-U.ino" and modify `PRA32_U_PWM_AUDIO_L_PIN` and `PRA32_U_PWM_AUDIO_R_PIN`
 - The following is setting is for Pimoroni Pico VGA Demo Base (PIM553)
 ```
-#define PWM_AUDIO_L_PIN                 (28)
-#define PWM_AUDIO_R_PIN                 (27)
+#define PRA32_U_PWM_AUDIO_L_PIN               (28)
+#define PRA32_U_PWM_AUDIO_R_PIN               (27)
 ```
 
 
 ## Files
 
 - "Digital-Synth-PRA32-U.ino" is a Arduino sketch for Raspberry Pi Pico/RP2040 core
-    - Modify `MIDI_CH` to change the MIDI Channel
+    - Modify `PRA32_U_MIDI_CH` to change the MIDI Channel
 - "pra32-u-make-sample-wav-file.cc" is for debugging on PC
     - GCC (g++) for PC is required
     - "pra32-u-make-sample-wav-file-cc.bat" makes a sample WAV file (working on Windows)
@@ -190,7 +193,7 @@
 ## PRA32-U CTRL
 
 - "pra32-u-ctrl.html": MIDI Controller (Editor) Application for PRA32-U, HTML App (Web App)
-    - Modify `MIDI_CH` to change the MIDI Channel
+    - Modify `PRA32_U_MIDI_CH` to change the MIDI Channel
 - We recommend using Google Chrome, which implements Web MIDI API
 - Select "Digital Synth PRA32-U" in the list "MIDI Out"
 - Functions

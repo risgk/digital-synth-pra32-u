@@ -1,25 +1,25 @@
 require_relative 'Digital-Synth-PRA32-U/pra32-u-constants'
 
-MIDI_CH = 0  # 0-based
+PRA32_U_MIDI_CH = 0  # 0-based
 
 $file = File.open("pra32-u-sample-midi-stream.bin", "wb")
 
 def control_change(control_number, value)
-  $file.write([(CONTROL_CHANGE | MIDI_CH), control_number, value].pack("C*"))
+  $file.write([(CONTROL_CHANGE | PRA32_U_MIDI_CH), control_number, value].pack("C*"))
   wait(10)
 end
 
 def program_change(program_number)
-  $file.write([(PROGRAM_CHANGE | MIDI_CH), program_number].pack("C*"))
+  $file.write([(PROGRAM_CHANGE | PRA32_U_MIDI_CH), program_number].pack("C*"))
   wait(800)
 end
 
 def note_on(note_number, velocity)
-  $file.write([(NOTE_ON  | MIDI_CH), note_number, velocity].pack("C*"))
+  $file.write([(NOTE_ON  | PRA32_U_MIDI_CH), note_number, velocity].pack("C*"))
 end
 
 def note_off(note_number)
-  $file.write([(NOTE_OFF | MIDI_CH), note_number, 64].pack("C*"))
+  $file.write([(NOTE_OFF | PRA32_U_MIDI_CH), note_number, 64].pack("C*"))
 end
 
 def wait(length)
