@@ -203,6 +203,14 @@
     - When Program Change #127 is entered or Control Change #111 is changed from Off (63 or lower) to On (64 or higher), "Rand Ctrl" is processed
     - PRA32-U CTRL stores the current control values and the user programs (#8-15) in a Web browser (localStorage)
     - Current parameter values and user programs (#8-15) can be imported/exported from/to JSON files
+- When not using PRA32-U CTRL
+    - PRA32-U can also be controlled by MIDI without using PRA32-U CTRL
+    - Refer to "PRA32-U-MIDI-Implementation-Chart.txt" for the supported functions
+    - The default program is #0
+    - Preset programs #0-15 can be modified by editing "pra32-u-program-table.h"
+    - PRA32-U CTRL functions related to parameter writing
+        - Write: Write the current parameters to PRA32-U (Program #8-15 and the flash)
+        - Program Change: Send Program Change to PRA32-U
 
 
 ## [Parameter Guide](/PRA32-U-Parameter-Guide.md)
