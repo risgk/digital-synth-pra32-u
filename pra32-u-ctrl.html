@@ -844,7 +844,7 @@ function fileReaderImportAllLoad(event) {
     controllersInLocalStorage.forEach(function(i) {
       var line = obj[controlNumberToStringMap.get(i)];
       if (line != null) {
-        var value = line[1][number];
+        var value = line[1][number - 8];
         if (value != null) {
           localStorage.setItem("keyMemory" + String(number) + controlNumberToStringMap.get(i), value);
         }
