@@ -81,7 +81,7 @@
 ## Preparation for modification
 
 - Please install **Arduino IDE**
-    - **NOTE**: Large noise is generated during the sketch upload if other than Update Method: "Default (UF2)" is used
+    - NOTE: Large noise is generated during the sketch upload if other than Update Method: "Default (UF2)" is used
     - Info: <https://www.arduino.cc/en/software>
 - Please install Arduino-Pico = **Raspberry Pi Pico/RP2040** (by Earle F. Philhower, III) core
     - Additional Board Manager URL: <https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json>
@@ -99,7 +99,7 @@
 #### USB MIDI Input (Default)
 
 - MIDI Device Name: "Digital Synth PRA32-U"
-- **NOTE**: Select USB Stack: "Adafruit TinyUSB" in the Arduino IDE "Tools" menu
+- NOTE: Select USB Stack: "Adafruit TinyUSB" in the Arduino IDE "Tools" menu
 
 
 #### UART MIDI Input (Optional)
@@ -120,11 +120,11 @@
 #### I2S Audio Output (Default)
 
 - Use an I2S DAC (e.g. Texas Instruments PCM5100A and Cirrus Logic CS4344), Sampling Rate: 48 kHz, Bit Depth: 16 bit
-- **NOTE**: The RP2040 system clock (sysclk) changes to overclocked 147.6 MHz by I2S Audio Library setSysClk()
+- NOTE: The RP2040 system clock (sysclk) changes to overclocked 147.6 MHz by I2S Audio Library setSysClk()
 - Modify `PRA32_U_I2S_DAC_MUTE_OFF_PIN`, `PRA32_U_I2S_DATA_PIN`, `PRA32_U_I2S_MCLK_PIN`, `PRA32_U_I2S_MCLK_MULT`,
   `PRA32_U_I2S_BCLK_PIN`, and `PRA32_U_I2S_SWAP_BCLK_AND_LRCLK_PINS`
   in "Digital-Synth-PRA32-U.ino" to match the hardware configuration
-    - **NOTE**: To avoid noise, the parameters will not be written to the flash if `PRA32_U_I2S_DAC_MUTE_OFF_PIN` is not defined
+    - NOTE: To avoid noise, the parameters will not be written to the flash if `PRA32_U_I2S_DAC_MUTE_OFF_PIN` is not defined
 - The default setting is for Pimoroni [Pico Audio Pack](https://shop.pimoroni.com/products/pico-audio-pack) (PIM544)
 ```
 #define PRA32_U_I2S_DAC_MUTE_OFF_PIN          (22)
@@ -167,7 +167,7 @@
 #### PWM Audio Output (Optional)
 
 - PWM Audio can also be used instead of I2S
-    - **NOTE**: To avoid noise, the parameters will not be written to the flash when using PWM audio output
+    - NOTE: To avoid noise, the parameters will not be written to the flash when using PWM audio output
     - We recommend adding RC filter (post LPF) circuits to reduce PWM ripples
         - A 1st-order LPFs with a cutoff frequency 7.2 kHz (R = 220 ohm, C = 100 nF) works well
     - See "PWM audio" in [Hardware design with RP2040](https://datasheets.raspberrypi.com/rp2040/hardware-design-with-rp2040.pdf)
@@ -210,7 +210,8 @@
     - Programs #0-15 can be modified by editing "pra32-u-program-table.h"
     - PRA32-U CTRL functions related to parameter writing
         - Write: Write the current parameters to PRA32-U (Program #8-15 and the flash)
-        - Program Change: Send Program Change to PRA32-U
+        - Program Change: Send Program Change to PRA32-U directry
+          (NOTE: The current parameters of PRA32-U will not be updated)
 
 
 ## [Parameter Guide](/PRA32-U-Parameter-Guide.md)
