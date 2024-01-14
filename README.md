@@ -94,15 +94,15 @@
 
 ## Features
 
-### MIDI Input
+### MIDI (Input)
 
-#### USB MIDI Input (Default)
+#### USB MIDI Device (Default)
 
 - MIDI Device Name: "Digital Synth PRA32-U"
 - NOTE: Select USB Stack: "Adafruit TinyUSB" in the Arduino IDE "Tools" menu
 
 
-#### UART MIDI Input (Optional)
+#### UART MIDI (Optional)
 
 - UART MIDI can also be used
 - Uncomment out `//#define PRA32_U_USE_UART_MIDI` in "Digital-Synth-PRA32-U.ino"
@@ -115,9 +115,9 @@
     - necobit電子 [MIDI Unit for GROVE](https://necobit.com/denshi/grove-midi-unit/) (Shipping to Japan only)
 
 
-### Audio Output
+### Audio (Output)
 
-#### I2S Audio Output (Default)
+#### I2S (Default)
 
 - Use an I2S DAC (e.g. Texas Instruments PCM5100A and Cirrus Logic CS4344), Sampling Rate: 48 kHz, Bit Depth: 16 bit
 - NOTE: The RP2040 system clock (sysclk) changes to overclocked 147.6 MHz by I2S Audio Library setSysClk()
@@ -164,10 +164,10 @@
 ```
 
 
-#### PWM Audio Output (Optional)
+#### PWM Audio (Optional)
 
 - PWM Audio can also be used instead of I2S
-    - NOTE: To avoid noise, the parameters will not be written to the flash when using PWM audio output
+    - NOTE: To avoid noise, the parameters will not be written to the flash when using PWM audio
     - We recommend adding RC filter (post LPF) circuits to reduce PWM ripples
         - A 1st-order LPFs with a cutoff frequency 7.2 kHz (R = 220 ohm, C = 100 nF) works well
     - See "PWM audio" in [Hardware design with RP2040](https://datasheets.raspberrypi.com/rp2040/hardware-design-with-rp2040.pdf)
@@ -212,6 +212,13 @@
         - Write: Write the current parameters to PRA32-U (Program #8-15 and the flash)
         - Program Change: Send Program Change to PRA32-U directry
           (NOTE: The current parameters of PRA32-U will not be updated)
+
+
+## Examples of Option Combinations
+
+- PRA32-U (USB MIDI Device, I2S), Default
+- PRA32-U (USB MIDI Device, UART MIDI, I2S)
+- PRA32-U (USB MIDI Device, PWM Audio)
 
 
 ## [Parameter Guide](/PRA32-U-Parameter-Guide.md)
