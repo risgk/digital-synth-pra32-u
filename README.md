@@ -19,7 +19,7 @@
 
 ## Change History
 
-- v2.1.0:
+- v2.1.0 (2024-**-**):
     - Reduce noise from PMIC (Turn off RT6150 Power Save);
     - Support Osc 1 Sine Wave Phase Modulation (Osc 1 Shape and Osc 1 Morph);
     - Add the function of writing the parameters to Program #8-15 and the flash;
@@ -32,10 +32,10 @@
     - Enable UART MIDI to be used at the same time as USB MIDI;
     - Use Serial1 for Debug Print and Serial2 for UART MIDI;
     - Raspberry Pi Pico/RP2040 core version 3.6.3 is recommended
-- v2.0.1:
+- v2.0.1 (2024-01-05):
     - Fix Ping Pong Delay to start from the left
     - Fix Parameter Guide (Filter Resonance)
-- v2.0.0:
+- v2.0.0 (2024-01-04):
     - Add Delay Mode (Ping Pong Delay);
     - Support Breath Controller (Breath Filter Amt and Breath Amp Mod);
     - Support Note ON Velocity (EG Velocity Sensitivity and Amp Velocity Sensitivity);
