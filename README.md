@@ -11,7 +11,7 @@
     - Controlled by MIDI -- PRA32-U is a MIDI sound module
     - Having the function of writing the parameters to the user programs and the flash
 - Modifiable with Arduino IDE and Arduino-Pico (by Earle F. Philhower, III)
-- An **I2S DAC** hardware (e.g. Pimoroni Pico Audio Pack and Waveshare Pico-Audio) is required
+- An **I2S DAC** hardware (e.g. Pimoroni Pico Audio Pack) is required
     - PWM Audio can also be used instead of I2S
 - Prebuilt UF2 files ("bin")
     - "Digital-Synth-PRA32-U-2.0.1-Pimoroni-Pico-Audio-Pack.uf2" is for Raspberry Pi Pico and Pimoroni Pico Audio Pack
@@ -130,7 +130,7 @@
 #define PRA32_U_I2S_DATA_PIN                  (9)
 //#define PRA32_U_I2S_MCLK_PIN                  (0)
 //#define PRA32_U_I2S_MCLK_MULT                 (0)
-#define PRA32_U_I2S_BCLK_PIN                  (10)  // PRA32_U_I2S_LRCLK_PIN is PRA32_U_I2S_BCLK_PIN + 1
+#define PRA32_U_I2S_BCLK_PIN                  (10)  // LRCLK Pin is PRA32_U_I2S_BCLK_PIN + 1
 #define PRA32_U_I2S_SWAP_BCLK_AND_LRCLK_PINS  (false)
 ```
 - The following is setting is for [Pimoroni Pico VGA Demo Base](https://shop.pimoroni.com/products/pimoroni-pico-vga-demo-base) (PIM553)
@@ -140,7 +140,7 @@
 #define PRA32_U_I2S_DATA_PIN                  (26)
 //#define PRA32_U_I2S_MCLK_PIN                  (0)
 //#define PRA32_U_I2S_MCLK_MULT                 (0)
-#define PRA32_U_I2S_BCLK_PIN                  (27)  // PRA32_U_I2S_LRCLK_PIN is PRA32_U_I2S_BCLK_PIN + 1
+#define PRA32_U_I2S_BCLK_PIN                  (27)  // LRCLK Pin is is PRA32_U_I2S_BCLK_PIN + 1
 #define PRA32_U_I2S_SWAP_BCLK_AND_LRCLK_PINS  (false)
 ```
 - The following is setting is for Waveshare Pico-Audio Initial Version (WAVESHARE-20167)
@@ -149,7 +149,7 @@
 #define PRA32_U_I2S_DATA_PIN                  (26)
 //#define PRA32_U_I2S_MCLK_PIN                  (0)
 //#define PRA32_U_I2S_MCLK_MULT                 (0)
-#define PRA32_U_I2S_BCLK_PIN                  (27)  // PRA32_U_I2S_LRCLK_PIN is PRA32_U_I2S_BCLK_PIN + 1
+#define PRA32_U_I2S_BCLK_PIN                  (27)  // LRCLK Pin is is PRA32_U_I2S_BCLK_PIN + 1
 #define PRA32_U_I2S_SWAP_BCLK_AND_LRCLK_PINS  (false)
 ```
 - The following is setting is for [Waveshare Pico-Audio](https://www.waveshare.com/wiki/Pico-Audio) Rev2.1 Version (WAVESHARE-20167)
@@ -158,7 +158,7 @@
 #define PRA32_U_I2S_DATA_PIN                  (22)
 #define PRA32_U_I2S_MCLK_PIN                  (26)
 #define PRA32_U_I2S_MCLK_MULT                 (256)
-#define PRA32_U_I2S_BCLK_PIN                  (27)  // PRA32_U_I2S_LRCLK_PIN is PRA32_U_I2S_BCLK_PIN + 1
+#define PRA32_U_I2S_BCLK_PIN                  (27)  // LRCLK Pin is is PRA32_U_I2S_BCLK_PIN + 1
 #define PRA32_U_I2S_SWAP_BCLK_AND_LRCLK_PINS  (true)
 ```
 
