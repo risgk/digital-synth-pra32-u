@@ -11,8 +11,8 @@
 #define PRA32_U_UART_MIDI_SPEED               (31250)
 //#define PRA32_U_UART_MIDI_SPEED               (38400)
 
-#define SERIAL1_TX_PIN                        (0)
-#define SERIAL1_RX_PIN                        (1)
+#define PRA32_U_UART_MIDI_TX_PIN              (4)
+#define PRA32_U_UART_MIDI_RX_PIN              (5)
 
 #define PRA32_U_MIDI_CH                       (0)  // 0-based
 
@@ -128,8 +128,8 @@ void __not_in_flash_func(setup)() {
 #endif  // defined(PRA32_U_USE_USB_MIDI)
 
 #if defined(PRA32_U_USE_UART_MIDI)
-  Serial2.setTX(SERIAL1_TX_PIN);
-  Serial2.setRX(SERIAL1_RX_PIN);
+  Serial2.setTX(PRA32_U_UART_MIDI_TX_PIN);
+  Serial2.setRX(PRA32_U_UART_MIDI_RX_PIN);
   SERIAL_MIDI.setHandleNoteOn(handleNoteOn);
   SERIAL_MIDI.setHandleNoteOff(handleNoteOff);
   SERIAL_MIDI.setHandleControlChange(handleControlChange);
@@ -141,8 +141,8 @@ void __not_in_flash_func(setup)() {
 #endif  // defined(PRA32_U_USE_UART_MIDI)
 
 #if defined(PRA32_U_USE_DEBUG_PRINT)
-  Serial1.setTX(4);
-  Serial1.setRX(5);
+  Serial1.setTX(0);
+  Serial1.setRX(1);
   Serial1.begin(115200);
 #endif  // defined(PRA32_U_USE_DEBUG_PRINT)
 
