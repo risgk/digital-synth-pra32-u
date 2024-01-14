@@ -284,6 +284,26 @@ graph LR
 ```
 
 
+## Circuit Diagram (PWM Audio)
+
+![Circuit Diagram](./pra32-u-pwm-audio-circuit-diagram.png)
+
+- This image was created with Fritzing.
+
+- Adding 10 uF electrolytic capacitors (AC coupling capacitors) will cut
+  the DC components of the audio outputs.
+
+- NOTE: Connect an amplifier or an active speaker to the audio jack.
+  Connecting a headphone or a passive speaker may cause a large current to flow and damage the devices.
+
+
+## Actual Wiring Diagram (PWM Audio)
+
+![Actual Wiring Diagram](./pra32-u-pwm-audio-bread-board.png)
+
+- This image was created with Fritzing.
+
+
 ## License
 
 ![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)
