@@ -36,7 +36,7 @@ const uint8_t g_preset_table_LFO_FADE_TIME  [] = {0  , 0  , 0  , 0  , 0  , 0  , 
 const uint8_t g_preset_table_LFO_OSC_AMT    [] = {96 , 96 , 64 , 64 , 64 , 96 , 64 , 64 ,   96 , 96 , 64 , 64 , 64 , 96 , 64 , 64 };
 const uint8_t g_preset_table_LFO_OSC_DST    [] = {0  , 0  , 0  , 0  , 0  , 127, 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 127, 0  , 0  };
 const uint8_t g_preset_table_LFO_FILTER_AMT [] = {64 , 64 , 88 , 88 , 88 , 64 , 88 , 64 ,   64 , 64 , 88 , 88 , 88 , 64 , 88 , 64 };
-const uint8_t g_preset_table_AMP_GAIN       [] = {90 , 90 , 90 , 90 , 90 , 90 , 127, 90 ,   90 , 90 , 90 , 90 , 90 , 90 , 127, 90 };
+const uint8_t g_preset_table_AMP_GAIN       [] = {100, 100, 100, 100, 100, 100, 127, 100,   100, 100, 100, 100, 100, 100, 127, 100};
 
 const uint8_t g_preset_table_AMP_ATTACK     [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
 const uint8_t g_preset_table_AMP_DECAY      [] = {0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ,   0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  };
