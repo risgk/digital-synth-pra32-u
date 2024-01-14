@@ -284,7 +284,7 @@ graph LR
 ```
 
 
-## Circuit Diagram (PWM Audio)
+## Circuit Diagram (Simple Circuit for PWM Audio)
 
 ![Circuit Diagram](./pra32-u-pwm-audio-circuit-diagram.png)
 
@@ -297,7 +297,7 @@ graph LR
   Connecting a headphone or a passive speaker may cause a large current to flow and damage the devices.
 
 
-## Actual Wiring Diagram (PWM Audio)
+## Actual Wiring Diagram (Simple Circuit for PWM Audio)
 
 ![Actual Wiring Diagram](./pra32-u-pwm-audio-bread-board.png)
 
