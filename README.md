@@ -22,14 +22,15 @@
 - v2.1.0:
     - Reduce noise from PMIC (Turn off RT6150 Power Save);
     - Support Osc 1 Sine Wave Phase Modulation (Osc 1 Shape and Osc 1 Morph);
-    - Add JSON files for PRA32-U CTRL;
     - Add the function of writing the parameters to Program #8-15 and the flash;
-    - Officially support PWM audio output option;
-    - Enable UART MIDI to be used at the same time as USB MIDI;
+    - Modify Presets;
+    - Add JSON files for PRA32-U CTRL;
     - Use core 0 for main processing;
-    - Use Serial1 for Debug Print and Serial2 for UART MIDI;
     - Rename constant macros;
+    - Officially support PWM audio output option;
     - Rename Serial MIDI to UART MIDI;
+    - Enable UART MIDI to be used at the same time as USB MIDI;
+    - Use Serial1 for Debug Print and Serial2 for UART MIDI;
     - Raspberry Pi Pico/RP2040 core version 3.6.3 is recommended
 - v2.0.1:
     - Fix Ping Pong Delay to start from the left
