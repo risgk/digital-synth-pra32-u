@@ -105,7 +105,7 @@
 
 - UART MIDI can also be used
 - Uncomment out `//#define PRA32_U_USE_UART_MIDI` in "Digital-Synth-PRA32-U.ino" and modify `PRA32_U_UART_MIDI_SPEED`
-- Speed: 31.25 kbps (default) or 38.4 kbps
+- Speed: 31250 bps (default, for DIN/TRS MIDI) or 38400 bps
 - GP0 and GP1 pins are used by UART0 TX and UART0 RX by default
 - DIN/TRS MIDI is available by using (and modifying) Adafruit MIDI FeatherWing Kit, for example
     - Adafruit [MIDI FeatherWing Kit](https://www.adafruit.com/product/4740)
