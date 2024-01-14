@@ -35,7 +35,7 @@ public:
         // do nothing
       } else if (m_system_data_remaining != 0) {
         --m_system_data_remaining;
-      } else if (m_running_status == (NOTE_ON | MIDI_CH)) {
+      } else if (m_running_status == (NOTE_ON | PRA32_U_MIDI_CH)) {
         if (!is_data_byte(m_first_data)) {
           m_first_data = b;
         } else if (b == 0) {
@@ -45,28 +45,28 @@ public:
           m_synth->note_on(m_first_data, b);
           m_first_data = DATA_BYTE_INVALID;
         }
-      } else if (m_running_status == (NOTE_OFF | MIDI_CH)) {
+      } else if (m_running_status == (NOTE_OFF | PRA32_U_MIDI_CH)) {
         if (!is_data_byte(m_first_data)) {
           m_first_data = b;
         } else {
           m_synth->note_off(m_first_data);
           m_first_data = DATA_BYTE_INVALID;
         }
-      } else if (m_running_status == (CONTROL_CHANGE | MIDI_CH)) {
+      } else if (m_running_status == (CONTROL_CHANGE | PRA32_U_MIDI_CH)) {
         if (!is_data_byte(m_first_data)) {
           m_first_data = b;
         } else {
           m_synth->control_change(m_first_data, b);
           m_first_data = DATA_BYTE_INVALID;
         }
-      } else if (m_running_status == (PITCH_BEND | MIDI_CH)) {
+      } else if (m_running_status == (PITCH_BEND | PRA32_U_MIDI_CH)) {
         if (!is_data_byte(m_first_data)) {
           m_first_data = b;
         } else {
           m_synth->pitch_bend(m_first_data, b);
           m_first_data = DATA_BYTE_INVALID;
         }
-      } else if (m_running_status == (PROGRAM_CHANGE | MIDI_CH)) {
+      } else if (m_running_status == (PROGRAM_CHANGE | PRA32_U_MIDI_CH)) {
         m_synth->program_change(b);
       }
     } else if (is_system_message(b)) {

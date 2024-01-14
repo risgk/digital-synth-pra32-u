@@ -1,6 +1,6 @@
 ```
-  [Polyphonic/Paraphonic Synthesizer]                             Date: 2024-01-05                     
-  Model: Digital Synth PRA32-U    MIDI Implementation Chart       Version: 2.0.1                       
+  [Polyphonic/Paraphonic Synthesizer]                             Date: 2024-01-14                     
+  Model: Digital Synth PRA32-U    MIDI Implementation Chart       Version: 2.1.0                       
 +-------------------------------+---------------+---------------+-------------------------------------+
 | Function...                   | Transmitted   | Recognized    | Remarks                             |
 +-------------------------------+---------------+---------------+-------------------------------------+
@@ -86,11 +86,13 @@
 |                            35 | x             | o             | Delay Mode [S|P]                    |
 |                               |               |               |                                     |
 |                               |               |               |                                     |
+|                            87 | x             | o             | Program Number to Write to $$$$     |
+|                           106 | x             | o             | Write Parameters to Program $$$$    |
 |                       112-119 |               |               | Program Change #8-15 by CC          |
 |                           111 | x             | x             | [Reserved]                          |
 +-------------------------------+---------------+---------------+-------------------------------------+
 | Program                       | x             | o             |                                     |
-| Change       : True #         | ************* | 0-15          |                                     |
+| Change       : True #         | ************* | 0-15          | Default 0                           |
 +-------------------------------+---------------+---------------+-------------------------------------+
 | System Exclusive              | x             | x             |                                     |
 +-------------------------------+---------------+---------------+-------------------------------------+
@@ -112,6 +114,9 @@
 | Notes                         | $ : Disabled in Paraphonic Mode                                     |
 |                               | $$ : Disabled if Osc 1 Wave is not Pls (Pulse)                      |
 |                               | $$$ : Mixer Noise is disabled if Osc 2 Wave is Nos (Noise)          |
+|                               | $$$$ : To write the current parameters to Program #8-15 and the     |
+|                               |   flash, set "Program Number to Write to" (# is the value mod 16)   |
+|                               |   and then change "Write Parameters to Program" from 0 to 1-127     |
 +-------------------------------+---------------------------------------------------------------------+
   Mode 1: Omni On,  Poly          Mode 2: Omni On,  Mono          o: Yes                               
   Mode 3: Omni Off, Poly          Mode 4: Omni Off, Mono          x: No                                

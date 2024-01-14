@@ -44,12 +44,14 @@ class PRA32_U_Osc {
   int16_t        m_osc2_detune;
 
   uint8_t        m_phase_high;
-  int8_t         m_osc1_shape_control;
-  int8_t         m_osc1_shape_control_effective;
-  int8_t         m_osc1_morph_control;
-  int8_t         m_osc1_morph_control_effective;
+  uint8_t        m_osc1_shape_control;
+  uint8_t        m_osc1_shape_control_effective;
+  uint8_t        m_osc1_morph_control;
+  uint8_t        m_osc1_morph_control_effective;
   int32_t        m_osc1_shape[4];
   int32_t        m_osc1_shape_effective[4];
+  uint16_t       m_osc1_phase_modulation_depth[4];
+  uint16_t       m_osc1_phase_modulation_frequency_ratio[4];
   int8_t         m_mixer_noise_sub_osc_control;
   int8_t         m_mixer_noise_sub_osc_control_effective;
   int16_t        m_mix_table[OSC_MIX_TABLE_LENGTH];
@@ -91,6 +93,8 @@ public:
   , m_osc1_morph_control_effective()
   , m_osc1_shape()
   , m_osc1_shape_effective()
+  , m_osc1_phase_modulation_depth()
+  , m_osc1_phase_modulation_frequency_ratio()
   , m_mixer_noise_sub_osc_control()
   , m_mixer_noise_sub_osc_control_effective()
   , m_mix_table()
@@ -163,14 +167,14 @@ public:
     m_freq_base[7] = g_osc_freq_table[0];
     m_osc_level = 72;
 
-    m_osc1_shape[0]           = 0x8000;
-    m_osc1_shape[1]           = 0x8000;
-    m_osc1_shape[2]           = 0x8000;
-    m_osc1_shape[3]           = 0x8000;
-    m_osc1_shape_effective[0] = 0x8000;
-    m_osc1_shape_effective[1] = 0x8000;
-    m_osc1_shape_effective[2] = 0x8000;
-    m_osc1_shape_effective[3] = 0x8000;
+    m_osc1_shape[0]           = 0;
+    m_osc1_shape[1]           = 0;
+    m_osc1_shape[2]           = 0;
+    m_osc1_shape[3]           = 0;
+    m_osc1_shape_effective[0] = 0;
+    m_osc1_shape_effective[1] = 0;
+    m_osc1_shape_effective[2] = 0;
+    m_osc1_shape_effective[3] = 0;
 
     for (uint8_t i = 0; i < OSC_MIX_TABLE_LENGTH; ++i) {
       m_mix_table[i] = static_cast<int16_t>(sqrtf(static_cast<float>(i) /
@@ -216,11 +220,11 @@ public:
   }
 
   INLINE void set_osc1_shape_control(uint8_t controller_value) {
-    m_osc1_shape_control = -controller_value;
+    m_osc1_shape_control = controller_value;
   }
 
   INLINE void set_osc1_morph_control(uint8_t controller_value) {
-    m_osc1_morph_control = -(((controller_value - 63) >> 1) << 1);
+    m_osc1_morph_control = controller_value;
   }
 
   INLINE void set_mixer_sub_osc_control(uint8_t controller_value) {
@@ -462,17 +466,36 @@ private:
     m_wave_table[N + 12] = reinterpret_cast<const int16_t*>((reinterpret_cast<const uintptr_t>(m_wave_table[N + 12]) * (1 - new_period_osc1)));
     m_wave_table[N + 12] = reinterpret_cast<const int16_t*>( reinterpret_cast<const uint8_t*>( m_wave_table[N + 12]) +
                                                             (reinterpret_cast<const uintptr_t>(m_wave_table_temp[N + 8]) * new_period_osc1));
-    int32_t wave_0 = get_wave_level(m_wave_table[N], m_phase[N]);
-    result += (wave_0 * osc1_gain * m_osc_gain_effective[N]) >> 10;
+    if (m_waveform[0] == WAVEFORM_SINE) {
+      // For Sine Wave (wave_3)
 
-    // For Pulse Wave (wave_3)
-    uint32_t phase_3 = m_phase[N] + (m_osc1_shape_effective[N] << 8);
-    boolean new_period_osc1_add = ((phase_3 + 0x00800000) & 0x00FFFFFF) < (m_freq[N] + 0x00010000); // crossing the middle of a saw wave
-    m_wave_table[N + 8] = reinterpret_cast<const int16_t*>((reinterpret_cast<const uintptr_t>(m_wave_table[N + 8]) * (1 - new_period_osc1_add)));
-    m_wave_table[N + 8] = reinterpret_cast<const int16_t*>( reinterpret_cast<const uint8_t*>( m_wave_table[N + 8]) +
-                                                           (reinterpret_cast<const uintptr_t>(m_wave_table_temp[N]) * new_period_osc1_add));
-    int16_t wave_3 = get_wave_level(m_wave_table[N + 8], phase_3);
-    result += ((((wave_3 * osc1_gain * m_osc_gain_effective[N]) >> 10) * -m_osc1_morph_control_effective) >> 6) * (m_waveform[0] == WAVEFORM_1_PULSE);
+      // phase_modulation_depth_candidate = max(m_osc1_shape_effective[N] - (128 << 8), 0)
+      volatile int32_t phase_modulation_depth_candidate = m_osc1_shape_effective[N] - (128 << 8);
+      phase_modulation_depth_candidate = (phase_modulation_depth_candidate > 0) * phase_modulation_depth_candidate;
+
+      m_osc1_phase_modulation_depth[N] = phase_modulation_depth_candidate;
+      m_osc1_phase_modulation_frequency_ratio[N] = ((m_osc1_morph_control_effective + 1) >> 1) + 2;
+
+      uint32_t phase_3 = (((m_phase[N] >> 1) & 0x01FFFFFF) * m_osc1_phase_modulation_frequency_ratio[N]) >> 1;
+      const int16_t* wave_table_sine = get_wave_table(WAVEFORM_SINE, 60);
+      int16_t wave_3 = get_wave_level(wave_table_sine, phase_3);
+
+      uint32_t phase_0 = m_phase[N] + ((wave_3 * m_osc1_phase_modulation_depth[N]) >> 4);
+      int32_t wave_0 = get_wave_level(wave_table_sine, phase_0);
+      result += (wave_0 * osc1_gain * m_osc_gain_effective[N]) >> 10;
+    } else {
+      int32_t wave_0 = get_wave_level(m_wave_table[N], m_phase[N]);
+      result += (wave_0 * osc1_gain * m_osc_gain_effective[N]) >> 10;
+
+      // For Pulse Wave (wave_3)
+      uint32_t phase_3 = m_phase[N] + (m_osc1_shape_effective[N] << 8);
+      boolean new_period_osc1_add = ((phase_3 + 0x00800000) & 0x00FFFFFF) < (m_freq[N] + 0x00010000); // crossing the middle of a saw wave
+      m_wave_table[N + 8] = reinterpret_cast<const int16_t*>((reinterpret_cast<const uintptr_t>(m_wave_table[N + 8]) * (1 - new_period_osc1_add)));
+      m_wave_table[N + 8] = reinterpret_cast<const int16_t*>( reinterpret_cast<const uint8_t*>( m_wave_table[N + 8]) +
+                                                             (reinterpret_cast<const uintptr_t>(m_wave_table_temp[N]) * new_period_osc1_add));
+      int16_t wave_3 = get_wave_level(m_wave_table[N + 8], phase_3);
+      result += ((((wave_3 * osc1_gain * m_osc_gain_effective[N]) >> 10) * (((m_osc1_morph_control_effective - 63) >> 1) << 1)) >> 6) * (m_waveform[0] == WAVEFORM_1_PULSE);
+    }
 
     if (m_mixer_noise_sub_osc_control_effective >= 0) {
       // Sub Osc (wave_1)
@@ -621,7 +644,7 @@ private:
 
   template <uint8_t N>
   INLINE void update_osc1_shape(int16_t lfo_level, int16_t eg_level) {
-    volatile int32_t osc1_shape = (128 << 8) - (m_osc1_shape_control_effective << 8)
+    volatile int32_t osc1_shape = (128 << 8) + (m_osc1_shape_control_effective << 8)
                                   + ((eg_level * m_shape_eg_amt) >> 5) - ((lfo_level * m_shape_lfo_amt) >> 5);
 
     // osc1_shape = clamp(y_0, (0 << 8), (256 << 8))

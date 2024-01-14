@@ -11,6 +11,75 @@
 #include "pra32-u-delay-fx.h"
 #include "pra32-u-program-table.h"
 
+#if defined(ARDUINO_ARCH_RP2040)
+#include <EEPROM.h>
+#endif  // defined(ARDUINO_ARCH_RP2040)
+
+#include <algorithm>
+#include <cstring>
+
+static const uint8_t s_program_table_parameters[] = {
+  OSC_1_WAVE     ,
+  OSC_1_SHAPE    ,
+  OSC_1_MORPH    ,
+  MIXER_SUB_OSC  ,
+
+  OSC_2_WAVE     ,
+  OSC_2_COARSE   ,
+  OSC_2_PITCH    ,
+  MIXER_OSC_MIX  ,
+
+  FILTER_CUTOFF  ,
+  FILTER_RESO    ,
+  FILTER_EG_AMT  ,
+  FILTER_KEY_TRK ,
+
+  EG_ATTACK      ,
+  EG_DECAY       ,
+  EG_SUSTAIN     ,
+  EG_RELEASE     ,
+
+  EG_OSC_AMT     ,
+  EG_OSC_DST     ,
+  VOICE_MODE     ,
+  PORTAMENTO     ,
+
+  LFO_WAVE       ,
+  LFO_RATE       ,
+  LFO_DEPTH      ,
+  LFO_FADE_TIME  ,
+
+  LFO_OSC_AMT    ,
+  LFO_OSC_DST    ,
+  LFO_FILTER_AMT ,
+  AMP_GAIN       ,
+
+  AMP_ATTACK     ,
+  AMP_DECAY      ,
+  AMP_SUSTAIN    ,
+  AMP_RELEASE    ,
+
+  FILTER_MODE    ,
+  EG_AMP_MOD     ,
+  REL_EQ_DECAY   ,
+  P_BEND_RANGE   ,
+
+  BTH_FILTER_AMT ,
+  BTH_AMP_MOD    ,
+  EG_VEL_SENS    ,
+  AMP_VEL_SENS   ,
+
+  CHORUS_MIX     ,
+  CHORUS_RATE    ,
+  CHORUS_DEPTH   ,
+
+
+  DELAY_FEEDBACK ,
+  DELAY_TIME     ,
+  DELAY_MODE     ,
+
+};
+
 class PRA32_U_Synth {
   PRA32_U_Osc       m_osc;
   PRA32_U_Filter    m_filter[4];
@@ -51,7 +120,11 @@ class PRA32_U_Synth {
   uint8_t           m_controller_value_eg_amp_mod;
   uint8_t           m_controller_value_rel_eq_decay;
 
+  uint8_t           m_program_number_to_write;
+  uint8_t           m_wr_prog_to_flash_cc_value;
   uint8_t           m_sp_prog_chg_cc_values[8];
+  uint8_t           m_current_controller_value_table[128];
+  uint8_t           m_program_table[128][PROGRAM_NUMBER_MAX + 1];
 
   volatile int32_t  m_secondary_core_processing_argument;
   volatile uint32_t m_secondary_core_processing_request;
@@ -99,7 +172,11 @@ public:
   , m_controller_value_eg_amp_mod(0)
   , m_controller_value_rel_eq_decay(0)
 
+  , m_program_number_to_write(0)
+  , m_wr_prog_to_flash_cc_value(0)
   , m_sp_prog_chg_cc_values()
+  , m_current_controller_value_table()
+  , m_program_table()
 
   , m_secondary_core_processing_argument()
   , m_secondary_core_processing_request()
@@ -123,6 +200,88 @@ public:
 
     m_eg_osc_amt = 64;
     m_lfo_osc_amt = 64;
+  }
+
+  INLINE void initialize() {
+    std::memset(m_current_controller_value_table, sizeof(m_current_controller_value_table), 255);
+    std::memset(m_program_table, sizeof(m_program_table), 255);
+
+    std::memcpy(m_program_table[OSC_1_WAVE     ], g_preset_table_OSC_1_WAVE     , sizeof(m_program_table[0]));
+    std::memcpy(m_program_table[OSC_1_SHAPE    ], g_preset_table_OSC_1_SHAPE    , sizeof(m_program_table[0]));
+    std::memcpy(m_program_table[OSC_1_MORPH    ], g_preset_table_OSC_1_MORPH    , sizeof(m_program_table[0]));
+    std::memcpy(m_program_table[MIXER_SUB_OSC  ], g_preset_table_MIXER_SUB_OSC  , sizeof(m_program_table[0]));
+
+    std::memcpy(m_program_table[OSC_2_WAVE     ], g_preset_table_OSC_2_WAVE     , sizeof(m_program_table[0]));
+    std::memcpy(m_program_table[OSC_2_COARSE   ], g_preset_table_OSC_2_COARSE   , sizeof(m_program_table[0]));
+    std::memcpy(m_program_table[OSC_2_PITCH    ], g_preset_table_OSC_2_PITCH    , sizeof(m_program_table[0]));
+    std::memcpy(m_program_table[MIXER_OSC_MIX  ], g_preset_table_MIXER_OSC_MIX  , sizeof(m_program_table[0]));
+
+    std::memcpy(m_program_table[FILTER_CUTOFF  ], g_preset_table_FILTER_CUTOFF  , sizeof(m_program_table[0]));
+    std::memcpy(m_program_table[FILTER_RESO    ], g_preset_table_FILTER_RESO    , sizeof(m_program_table[0]));
+    std::memcpy(m_program_table[FILTER_EG_AMT  ], g_preset_table_FILTER_EG_AMT  , sizeof(m_program_table[0]));
+    std::memcpy(m_program_table[FILTER_KEY_TRK ], g_preset_table_FILTER_KEY_TRK , sizeof(m_program_table[0]));
+
+    std::memcpy(m_program_table[EG_ATTACK      ], g_preset_table_EG_ATTACK      , sizeof(m_program_table[0]));
+    std::memcpy(m_program_table[EG_DECAY       ], g_preset_table_EG_DECAY       , sizeof(m_program_table[0]));
+    std::memcpy(m_program_table[EG_SUSTAIN     ], g_preset_table_EG_SUSTAIN     , sizeof(m_program_table[0]));
+    std::memcpy(m_program_table[EG_RELEASE     ], g_preset_table_EG_RELEASE     , sizeof(m_program_table[0]));
+
+    std::memcpy(m_program_table[EG_OSC_AMT     ], g_preset_table_EG_OSC_AMT     , sizeof(m_program_table[0]));
+    std::memcpy(m_program_table[EG_OSC_DST     ], g_preset_table_EG_OSC_DST     , sizeof(m_program_table[0]));
+    std::memcpy(m_program_table[VOICE_MODE     ], g_preset_table_VOICE_MODE     , sizeof(m_program_table[0]));
+    std::memcpy(m_program_table[PORTAMENTO     ], g_preset_table_PORTAMENTO     , sizeof(m_program_table[0]));
+
+    std::memcpy(m_program_table[LFO_WAVE       ], g_preset_table_LFO_WAVE       , sizeof(m_program_table[0]));
+    std::memcpy(m_program_table[LFO_RATE       ], g_preset_table_LFO_RATE       , sizeof(m_program_table[0]));
+    std::memcpy(m_program_table[LFO_DEPTH      ], g_preset_table_LFO_DEPTH      , sizeof(m_program_table[0]));
+    std::memcpy(m_program_table[LFO_FADE_TIME  ], g_preset_table_LFO_FADE_TIME  , sizeof(m_program_table[0]));
+
+    std::memcpy(m_program_table[LFO_OSC_AMT    ], g_preset_table_LFO_OSC_AMT    , sizeof(m_program_table[0]));
+    std::memcpy(m_program_table[LFO_OSC_DST    ], g_preset_table_LFO_OSC_DST    , sizeof(m_program_table[0]));
+    std::memcpy(m_program_table[LFO_FILTER_AMT ], g_preset_table_LFO_FILTER_AMT , sizeof(m_program_table[0]));
+    std::memcpy(m_program_table[AMP_GAIN       ], g_preset_table_AMP_GAIN       , sizeof(m_program_table[0]));
+
+    std::memcpy(m_program_table[AMP_ATTACK     ], g_preset_table_AMP_ATTACK     , sizeof(m_program_table[0]));
+    std::memcpy(m_program_table[AMP_DECAY      ], g_preset_table_AMP_DECAY      , sizeof(m_program_table[0]));
+    std::memcpy(m_program_table[AMP_SUSTAIN    ], g_preset_table_AMP_SUSTAIN    , sizeof(m_program_table[0]));
+    std::memcpy(m_program_table[AMP_RELEASE    ], g_preset_table_AMP_RELEASE    , sizeof(m_program_table[0]));
+
+    std::memcpy(m_program_table[FILTER_MODE    ], g_preset_table_FILTER_MODE    , sizeof(m_program_table[0]));
+    std::memcpy(m_program_table[EG_AMP_MOD     ], g_preset_table_EG_AMP_MOD     , sizeof(m_program_table[0]));
+    std::memcpy(m_program_table[REL_EQ_DECAY   ], g_preset_table_REL_EQ_DECAY   , sizeof(m_program_table[0]));
+    std::memcpy(m_program_table[P_BEND_RANGE   ], g_preset_table_P_BEND_RANGE   , sizeof(m_program_table[0]));
+
+    std::memcpy(m_program_table[BTH_FILTER_AMT ], g_preset_table_BTH_FILTER_AMT , sizeof(m_program_table[0]));
+    std::memcpy(m_program_table[BTH_AMP_MOD    ], g_preset_table_BTH_AMP_MOD    , sizeof(m_program_table[0]));
+    std::memcpy(m_program_table[EG_VEL_SENS    ], g_preset_table_EG_VEL_SENS    , sizeof(m_program_table[0]));
+    std::memcpy(m_program_table[AMP_VEL_SENS   ], g_preset_table_AMP_VEL_SENS   , sizeof(m_program_table[0]));
+
+    std::memcpy(m_program_table[CHORUS_MIX     ], g_preset_table_CHORUS_MIX     , sizeof(m_program_table[0]));
+    std::memcpy(m_program_table[CHORUS_RATE    ], g_preset_table_CHORUS_RATE    , sizeof(m_program_table[0]));
+    std::memcpy(m_program_table[CHORUS_DEPTH   ], g_preset_table_CHORUS_DEPTH   , sizeof(m_program_table[0]));
+
+
+    std::memcpy(m_program_table[DELAY_FEEDBACK ], g_preset_table_DELAY_FEEDBACK , sizeof(m_program_table[0]));
+    std::memcpy(m_program_table[DELAY_TIME     ], g_preset_table_DELAY_TIME     , sizeof(m_program_table[0]));
+    std::memcpy(m_program_table[DELAY_MODE     ], g_preset_table_DELAY_MODE     , sizeof(m_program_table[0]));
+
+
+#if defined(ARDUINO_ARCH_RP2040)
+#if defined(PRA32_U_USE_EMULATED_EEPROM)
+#if defined(I2S_DAC_MUTE_OFF_PIN) && !defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+    EEPROM.begin(2048);
+
+    for (uint32_t program_number = (PRESET_PROGRAM_NUMBER_MAX + 1); program_number <= PROGRAM_NUMBER_MAX; ++program_number) {
+      if ((EEPROM.read(program_number * 128) == 'U') && (EEPROM.read(program_number * 128 + 1) == program_number)) {
+        for (uint32_t i = 0; i < sizeof(s_program_table_parameters) / sizeof(s_program_table_parameters[0]); ++i) {
+          uint32_t control_number = s_program_table_parameters[i];
+          m_program_table[control_number][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + control_number));
+        }
+      }
+    }
+#endif  // defined(I2S_DAC_MUTE_OFF_PIN) && !defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+#endif  // defined(PRA32_U_USE_EMULATED_EEPROM)
+#endif  // defined(ARDUINO_ARCH_RP2040)
 
     program_change(PROGRAM_NUMBER_DEFAULT);
   }
@@ -436,8 +595,10 @@ public:
     set_sustain_pedal(0);
   }
 
-  INLINE void control_change(uint8_t controller_number, uint8_t controller_value) {
-    switch (controller_number) {
+  INLINE void control_change(uint8_t control_number, uint8_t controller_value) {
+    m_current_controller_value_table[control_number] = controller_value;
+
+    switch (control_number) {
     case MODULATION     :
       m_lfo.set_lfo_depth<1>(controller_value);
       break;
@@ -678,6 +839,48 @@ public:
       reset_all_controllers();
       break;
 
+    // Write Program
+    case PROG_N_TO_W_TO :
+      m_program_number_to_write = controller_value % (PROGRAM_NUMBER_MAX + 1);
+      break;
+    case WRITE_P_TO_PROG:
+      {
+        uint8_t old_value = m_wr_prog_to_flash_cc_value;
+        m_wr_prog_to_flash_cc_value = controller_value;
+
+        if (m_program_number_to_write >= (PRESET_PROGRAM_NUMBER_MAX + 1)) {
+          if ((old_value == 0) && (controller_value >= 1)) {
+            for (uint32_t i = 0; i < sizeof(s_program_table_parameters) / sizeof(s_program_table_parameters[0]); ++i) {
+              uint32_t control_number = s_program_table_parameters[i];
+              m_program_table[control_number][m_program_number_to_write] = m_current_controller_value_table[control_number];
+            }
+
+#if defined(ARDUINO_ARCH_RP2040)
+#if defined(PRA32_U_USE_EMULATED_EEPROM)
+#if defined(I2S_DAC_MUTE_OFF_PIN) && !defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+            // To avoid noise, the data will not be written to the flash
+            // if I2S_DAC_MUTE_OFF_PIN is not defined or PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S is defined
+            for (uint32_t i = 0; i < sizeof(s_program_table_parameters) / sizeof(s_program_table_parameters[0]); ++i) {
+              uint32_t control_number = s_program_table_parameters[i];
+              EEPROM.write(m_program_number_to_write * 128 + control_number, m_current_controller_value_table[control_number]);
+            }
+
+            EEPROM.write(m_program_number_to_write * 128,     'U');
+            EEPROM.write(m_program_number_to_write * 128 + 1, m_program_number_to_write);
+
+            digitalWrite(I2S_DAC_MUTE_OFF_PIN, LOW);
+
+            EEPROM.commit();
+
+            digitalWrite(I2S_DAC_MUTE_OFF_PIN, HIGH);
+#endif  // defined(I2S_DAC_MUTE_OFF_PIN) && !defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+#endif  // defined(PRA32_U_USE_EMULATED_EEPROM)
+#endif  // defined(ARDUINO_ARCH_RP2040)
+          }
+        }
+      }
+      break;
+
     // Program Change by CC
     case PC_BY_CC_8     :
     case PC_BY_CC_9     :
@@ -688,7 +891,7 @@ public:
     case PC_BY_CC_14    :
     case PC_BY_CC_15    :
       {
-        uint8_t program_index = controller_number - PC_BY_CC_8;
+        uint8_t program_index = control_number - PC_BY_CC_8;
         uint8_t old_value = m_sp_prog_chg_cc_values[program_index];
         m_sp_prog_chg_cc_values[program_index] = controller_value;
         if ((old_value < 64) && (controller_value >= 64)) {
@@ -709,67 +912,10 @@ public:
       return;
     }
 
-    program_number = program_number & PROGRAM_NUMBER_MAX;
-
-    control_change(OSC_1_WAVE     , g_preset_table_OSC_1_WAVE     [program_number]);
-    control_change(OSC_1_SHAPE    , g_preset_table_OSC_1_SHAPE    [program_number]);
-    control_change(OSC_1_MORPH    , g_preset_table_OSC_1_MORPH    [program_number]);
-    control_change(MIXER_SUB_OSC  , g_preset_table_MIXER_SUB_OSC  [program_number]);
-
-    control_change(OSC_2_WAVE     , g_preset_table_OSC_2_WAVE     [program_number]);
-    control_change(OSC_2_COARSE   , g_preset_table_OSC_2_COARSE   [program_number]);
-    control_change(OSC_2_PITCH    , g_preset_table_OSC_2_PITCH    [program_number]);
-    control_change(MIXER_OSC_MIX  , g_preset_table_MIXER_OSC_MIX  [program_number]);
-
-    control_change(FILTER_CUTOFF  , g_preset_table_FILTER_CUTOFF  [program_number]);
-    control_change(FILTER_RESO    , g_preset_table_FILTER_RESO    [program_number]);
-    control_change(FILTER_EG_AMT  , g_preset_table_FILTER_EG_AMT  [program_number]);
-    control_change(FILTER_KEY_TRK , g_preset_table_FILTER_KEY_TRK [program_number]);
-
-    control_change(EG_ATTACK      , g_preset_table_EG_ATTACK      [program_number]);
-    control_change(EG_DECAY       , g_preset_table_EG_DECAY       [program_number]);
-    control_change(EG_SUSTAIN     , g_preset_table_EG_SUSTAIN     [program_number]);
-    control_change(EG_RELEASE     , g_preset_table_EG_RELEASE     [program_number]);
-
-    control_change(EG_OSC_AMT     , g_preset_table_EG_OSC_AMT     [program_number]);
-    control_change(EG_OSC_DST     , g_preset_table_EG_OSC_DST     [program_number]);
-    control_change(VOICE_MODE     , g_preset_table_VOICE_MODE     [program_number]);
-    control_change(PORTAMENTO     , g_preset_table_PORTAMENTO     [program_number]);
-
-    control_change(LFO_WAVE       , g_preset_table_LFO_WAVE       [program_number]);
-    control_change(LFO_RATE       , g_preset_table_LFO_RATE       [program_number]);
-    control_change(LFO_DEPTH      , g_preset_table_LFO_DEPTH      [program_number]);
-    control_change(LFO_FADE_TIME  , g_preset_table_LFO_FADE_TIME  [program_number]);
-
-    control_change(LFO_OSC_AMT    , g_preset_table_LFO_OSC_AMT    [program_number]);
-    control_change(LFO_OSC_DST    , g_preset_table_LFO_OSC_DST    [program_number]);
-    control_change(LFO_FILTER_AMT , g_preset_table_LFO_FILTER_AMT [program_number]);
-    control_change(AMP_GAIN       , g_preset_table_AMP_GAIN       [program_number]);
-
-    control_change(AMP_ATTACK     , g_preset_table_AMP_ATTACK     [program_number]);
-    control_change(AMP_DECAY      , g_preset_table_AMP_DECAY      [program_number]);
-    control_change(AMP_SUSTAIN    , g_preset_table_AMP_SUSTAIN    [program_number]);
-    control_change(AMP_RELEASE    , g_preset_table_AMP_RELEASE    [program_number]);
-
-    control_change(FILTER_MODE    , g_preset_table_FILTER_MODE    [program_number]);
-    control_change(EG_AMP_MOD     , g_preset_table_EG_AMP_MOD     [program_number]);
-    control_change(REL_EQ_DECAY   , g_preset_table_REL_EQ_DECAY   [program_number]);
-    control_change(P_BEND_RANGE   , g_preset_table_P_BEND_RANGE   [program_number]);
-
-    control_change(BTH_FILTER_AMT , g_preset_table_BTH_FILTER_AMT [program_number]);
-    control_change(BTH_AMP_MOD    , g_preset_table_BTH_AMP_MOD    [program_number]);
-    control_change(EG_VEL_SENS    , g_preset_table_EG_VEL_SENS    [program_number]);
-    control_change(AMP_VEL_SENS   , g_preset_table_AMP_VEL_SENS   [program_number]);
-
-    control_change(CHORUS_MIX     , g_preset_table_CHORUS_MIX     [program_number]);
-    control_change(CHORUS_RATE    , g_preset_table_CHORUS_RATE    [program_number]);
-    control_change(CHORUS_DEPTH   , g_preset_table_CHORUS_DEPTH   [program_number]);
-
-
-    control_change(DELAY_FEEDBACK , g_preset_table_DELAY_FEEDBACK [program_number]);
-    control_change(DELAY_TIME     , g_preset_table_DELAY_TIME     [program_number]);
-    control_change(DELAY_MODE     , g_preset_table_DELAY_MODE     [program_number]);
-
+    for (uint32_t i = 0; i < sizeof(s_program_table_parameters) / sizeof(s_program_table_parameters[0]); ++i) {
+      uint32_t control_number = s_program_table_parameters[i];
+      control_change(control_number, m_program_table[control_number][program_number]);
+    }
   }
 
   INLINE int16_t process(int16_t& right_level) {
@@ -836,10 +982,10 @@ public:
     int16_t amp_output   [4];
     int16_t voice_mixer_output;
     if (m_voice_mode == VOICE_POLYPHONIC) {
-#if defined(USE_2_CORES_FOR_SIGNAL_PROCESSING)
+#if defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
       m_secondary_core_processing_argument = noise_int15;
       m_secondary_core_processing_request = 1;
-#endif // defined(USE_2_CORES_FOR_SIGNAL_PROCESSING)
+#endif  // defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
 
       osc_output   [0] = m_osc      .process<0>(noise_int15);
       filter_output[0] = m_filter[0].process(osc_output   [0] << 2);
@@ -851,12 +997,12 @@ public:
 
       int32_t amp_output_sum_a = amp_output[0] + amp_output[1];
 
-#if defined(USE_2_CORES_FOR_SIGNAL_PROCESSING)
+#if defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
       while (m_secondary_core_processing_request) {
         ;
       }
       int32_t amp_output_sum_b = m_secondary_core_processing_result;
-#else // defined(USE_2_CORES_FOR_SIGNAL_PROCESSING)
+#else  // defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
       osc_output   [2] = m_osc      .process<2>(noise_int15);
       filter_output[2] = m_filter[2].process(osc_output   [2] << 2);
       amp_output   [2] = m_amp   [2].process(filter_output[2]);
@@ -866,31 +1012,31 @@ public:
       amp_output   [3] = m_amp   [3].process(filter_output[3]);
 
       int32_t amp_output_sum_b = amp_output[2] + amp_output[3];
-#endif // defined(USE_2_CORES_FOR_SIGNAL_PROCESSING)
+#endif  // defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
 
       voice_mixer_output = (amp_output_sum_a + amp_output_sum_b) >> 2;
     } else if (m_voice_mode == VOICE_PARAPHONIC) {
-#if defined(USE_2_CORES_FOR_SIGNAL_PROCESSING)
+#if defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
       m_secondary_core_processing_argument = noise_int15;
       m_secondary_core_processing_request = 1;
-#endif // defined(USE_2_CORES_FOR_SIGNAL_PROCESSING)
+#endif  // defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
 
       osc_output[0] = m_osc.process<0>(noise_int15);
       osc_output[1] = m_osc.process<1>(noise_int15);
 
       int32_t osc_output_sum_a = osc_output[0] + osc_output[1];
 
-#if defined(USE_2_CORES_FOR_SIGNAL_PROCESSING)
+#if defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
       while (m_secondary_core_processing_request) {
         ;
       }
       int16_t osc_output_sum_b = m_secondary_core_processing_result;
-#else // defined(USE_2_CORES_FOR_SIGNAL_PROCESSING)
+#else  // defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
       osc_output[2] = m_osc.process<2>(noise_int15);
       osc_output[3] = m_osc.process<3>(noise_int15);
 
       int16_t osc_output_sum_b = osc_output[2] + osc_output[3];
-#endif // defined(USE_2_CORES_FOR_SIGNAL_PROCESSING)
+#endif  // defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
 
       int16_t osc_mixer_output = (osc_output_sum_a + osc_output_sum_b);
 
@@ -914,12 +1060,18 @@ public:
     int16_t delay_fx_output_r;
     int16_t delay_fx_output_l = m_delay_fx.process(chorus_fx_output_l, chorus_fx_output_r, delay_fx_output_r);
 
+#if defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+    // Dithering
+    right_level = delay_fx_output_r + ((noise_int15 + 16384) >> 11);
+    return        delay_fx_output_l + ((noise_int15 + 16384) >> 11);
+#else  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
     right_level = delay_fx_output_r;
     return        delay_fx_output_l;
+#endif  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
   }
 
   INLINE void secondary_core_process() {
-#if defined(USE_2_CORES_FOR_SIGNAL_PROCESSING)
+#if defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
     if (m_secondary_core_processing_request == 1) {
       int16_t noise_int15 = static_cast<int16_t>(m_secondary_core_processing_argument);
 
@@ -946,7 +1098,7 @@ public:
 
       m_secondary_core_processing_request = 0;
     }
-#endif // defined(USE_2_CORES_FOR_SIGNAL_PROCESSING)
+#endif  // defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
   }
 
 private:
@@ -1007,12 +1159,6 @@ private:
       new_voice_mode = voice_mode_table[controller_value];
     }
 #endif
-#if defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
-    // due to CPU power shortage
-    if (new_voice_mode == VOICE_POLYPHONIC) {
-      new_voice_mode = VOICE_PARAPHONIC;
-    }
-#endif // defined(USE_PWM_AUDIO_INSTEAD_OF_I2S)
     if (m_voice_mode != new_voice_mode) {
       m_voice_mode = new_voice_mode;
       all_sound_off();

@@ -1,4 +1,4 @@
-#define MIDI_CH (0)  // 0-based
+#define PRA32_U_MIDI_CH (0)  // 0-based
 
 
 #include <stdint.h>
@@ -25,6 +25,7 @@ int main(int argc, char *argv[]) {
   g_midi_in.open(g_synth);
   FILE* bin_file = ::fopen(argv[1], "rb");
   g_wav_file_out.open(argv[2], RECORDING_SEC);
+  g_synth.initialize();
 
   // loop
   int c;
