@@ -804,7 +804,7 @@ function updateDisplayOfControl(number, value) {
 
   document.getElementById("span" + controlNumberToStringMap.get(number)).innerHTML = value;
   if (String(value) != dispValue) {
-    document.getElementById("span2" + controlNumberToStringMap.get(number)).innerHTML = "(" + dispValue + ")";
+    document.getElementById("span2" + controlNumberToStringMap.get(number)).innerHTML = "[" + dispValue + "]";
   } else {
     document.getElementById("span2" + controlNumberToStringMap.get(number)).innerHTML = "";
   }
