@@ -461,7 +461,7 @@ function afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceModeOrEGAmpModOrRelEqDecay() 
   }
 
   var valueOsc2Wave = localStorage.getItem("keyOSC_2_WAVE     ");
-  var indexOsc2Wave = Math.floor(((valueOsc2Wave * 10) + 127) / 254)
+  var indexOsc2Wave = Math.floor(((valueOsc2Wave * 10) + 127) / 254);
   var valueMixerSubOsc = localStorage.getItem("keyMIXER_SUB_OSC  ");
   if (((valueOsc2Wave == 4) || (indexOsc2Wave == 4)) && (valueMixerSubOsc < 64)) {
 //  if ((indexOsc2Wave == 4) && (valueMixerSubOsc < 64)) {
@@ -699,7 +699,6 @@ function updateDisplayOfControl(number, value) {
   dispValue = String(value);
 
   switch (number) {
-  case MIXER_SUB_OSC   :
   case OSC_2_COARSE    :
   case OSC_2_PITCH     :
   case FILTER_EG_AMT   :
@@ -711,6 +710,94 @@ function updateDisplayOfControl(number, value) {
       dispValue = "+" + String(value - 64);
     } else {
       dispValue = String(value - 64);
+    }
+    break;
+  case MIXER_SUB_OSC   :
+    if (value >= 64) {
+      dispValue = "S" + String(value - 64);
+    } else {
+      dispValue = "N" + String(64 - value);
+    }
+    break;
+  case OSC_1_WAVE      :
+    {
+      var ary = ["Saw","Sin","-","Tri","-","Pls"];
+      var index = Math.floor(((value * 10) + 127) / 254);
+      if (value < 6) { index = value; }
+      dispValue = ary[index];
+    }
+    break;
+  case OSC_2_WAVE      :
+    {
+      var ary = ["Saw","Sin","-","Tri","Nos","Sqr"];
+      var index = Math.floor(((value * 10) + 127) / 254);
+      if (value < 6) { index = value; }
+      dispValue = ary[index];
+    }
+    break;
+  case FILTER_KEY_TRK  :
+    {
+      var ary = ["0.0","0.5","1.0"];
+      var index = Math.floor(((value * 4) + 127) / 254);
+      dispValue = ary[index];
+    }
+    break;
+  case EG_OSC_DST      :
+  case LFO_OSC_DST     :
+    {
+      var ary = ["P","2P","1S"];
+      var index = Math.floor(((value * 4) + 127) / 254);
+      if (value < 3) { index = value; }
+      dispValue = ary[index];
+    }
+    break;
+  case VOICE_MODE      :
+    {
+      var ary = ["Pol","Par","-","Mon","LP","Lgt"];
+      var index = Math.floor(((value * 10) + 127) / 254);
+      if (value < 6) { index = value; }
+      dispValue = ary[index];
+    }
+    break;
+  case LFO_WAVE        :
+    {
+      var ary = ["Tri","Sin","-","Saw","SH","Sqr"];
+      var index = Math.floor(((value * 10) + 127) / 254);
+      if (value < 6) { index = value; }
+      dispValue = ary[index];
+    }
+    break;
+  case FILTER_MODE     :
+    {
+      var ary = ["LP","HP"];
+      var index = Math.floor(((value * 2) + 127) / 254);
+      if (value < 2) { index = value; }
+      dispValue = ary[index];
+    }
+    break;
+  case EG_AMP_MOD      :
+  case REL_EQ_DECAY    :
+    {
+      var ary = ["Off","On"];
+      var index = Math.floor(((value * 2) + 127) / 254);
+      if (value < 2) { index = value; }
+      dispValue = ary[index];
+    }
+    break;
+  case BTH_AMP_MOD     :
+    {
+      var ary = ["Off","Qad","Lin"];
+      var index = Math.floor(((value * 4) + 127) / 254);
+      if (value < 3) { index = value; }
+      dispValue = ary[index];
+    }
+    break;
+  case DELAY_MODE      :
+    {
+      var ary = ["S","P"];
+      var index = Math.floor(((value * 2) + 127) / 254);
+      if (value < 2) { index = value; }
+      dispValue = ary[index];
     }
     break;
   }
