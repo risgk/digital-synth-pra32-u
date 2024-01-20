@@ -1062,8 +1062,8 @@ public:
 
 #if defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
     // Dithering
-    right_level = delay_fx_output_r + ((noise_int15 + 16384) >> 11);
-    return        delay_fx_output_l + ((noise_int15 + 16384) >> 11);
+    right_level = delay_fx_output_r + (((noise_int15 + 16384) >> 11) - 8);
+    return        delay_fx_output_l + (((noise_int15 + 16384) >> 11) - 8);
 #else  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
     right_level = delay_fx_output_r;
     return        delay_fx_output_l;

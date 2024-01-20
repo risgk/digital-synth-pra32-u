@@ -20,6 +20,7 @@
 ## Change History
 
 - v2.2.0 (2024-xx-xx):
+    - Eliminate noise when PWM audio output is silent
     - Change the display of PRA32-U CTRL
 - v2.1.0 (2024-01-14):
     - Reduce noise from PMIC (Turn off RT6150 Power Save);
