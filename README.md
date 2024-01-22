@@ -88,11 +88,14 @@
     - Info: <https://www.arduino.cc/en/software>
 - Please install Arduino-Pico = **Raspberry Pi Pico/RP2040** (by Earle F. Philhower, III) core
     - Additional Board Manager URL: <https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json>
+    - PRA32-U is tested with version **3.6.3**: <https://github.com/earlephilhower/arduino-pico/releases/tag/3.6.3>
     - Info: <https://github.com/earlephilhower/arduino-pico>
-    - Raspberry Pi Pico/RP2040 core **version 3.6.3** is recommended
-- Please install **MIDI Library** (by Francois Best, lathoub)
+- Please install **Adafruit TinyUSB Library** for Arduino (by Adafruit)
+    - PRA32-U is tested with version **2.3.1**: <https://github.com/adafruit/Adafruit_TinyUSB_Arduino/releases/tag/2.3.1>
+    - Info: <https://github.com/adafruit/Adafruit_TinyUSB_Arduino>
+- Please install Arduino **MIDI Library** (by Francois Best, lathoub)
+    - PRA32-U is tested with version **5.0.2**: <https://github.com/FortySevenEffects/arduino_midi_library/releases/tag/5.0.2>
     - Info: <https://github.com/FortySevenEffects/arduino_midi_library>
-    - MIDI Library **version 5.0.2** is recommended
 
 
 ## Features
