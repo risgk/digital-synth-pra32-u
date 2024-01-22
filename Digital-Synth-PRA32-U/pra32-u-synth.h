@@ -1061,9 +1061,30 @@ public:
     int16_t delay_fx_output_l = m_delay_fx.process(chorus_fx_output_l, chorus_fx_output_r, delay_fx_output_r);
 
 #if defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+#if defined(PRA32_U_USE_PWM_AUDIO_DITHERING_INSTEAD_OF_ERROR_DIFFUSION)
     // Dithering
     right_level = delay_fx_output_r + (((noise_int15 + 16384) >> 11) - 8);
     return        delay_fx_output_l + (((noise_int15 + 16384) >> 11) - 8);
+#else  // defined(PRA32_U_USE_PWM_AUDIO_DITHERING_INSTEAD_OF_ERROR_DIFFUSION)
+    // Error diffusion
+    static uint16_t s_output_error_l = 0;
+    static uint16_t s_output_error_r = 0;
+
+    uint32_t pwm_audio_l = delay_fx_output_l + 0x8000;
+    uint32_t pwm_audio_r = delay_fx_output_r + 0x8000;
+    pwm_audio_l *= 3075;
+    pwm_audio_r *= 3075;
+    pwm_audio_l += s_output_error_l;
+    pwm_audio_r += s_output_error_r;
+
+    volatile uint16_t prev_output_error_l = s_output_error_l;
+    volatile uint16_t prev_output_error_r = s_output_error_r;
+    s_output_error_l = pwm_audio_l & 0xFFFF;
+    s_output_error_r = pwm_audio_r & 0xFFFF;
+
+    right_level = delay_fx_output_r + (prev_output_error_r > s_output_error_r) * 22;
+    return        delay_fx_output_l + (prev_output_error_l > s_output_error_l) * 22;
+#endif  // defined(PRA32_U_USE_PWM_AUDIO_DITHERING_INSTEAD_OF_ERROR_DIFFUSION)
 #else  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
     right_level = delay_fx_output_r;
     return        delay_fx_output_l;

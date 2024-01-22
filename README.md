@@ -20,6 +20,7 @@
 ## Change History
 
 - v2.2.0 (2024-xx-xx):
+    - Use error diffusion for PWM audio output by default
     - Eliminate noise when PWM audio output is silent
     - Change the display of PRA32-U CTRL
 - v2.1.0 (2024-01-14):
