@@ -1072,6 +1072,8 @@ public:
 
     uint32_t pwm_audio_l = delay_fx_output_l + 0x8000;
     uint32_t pwm_audio_r = delay_fx_output_r + 0x8000;
+    pwm_audio_l +=  ((noise_int15 + 16384) >> 14);
+    pwm_audio_r += !((noise_int15 + 16384) >> 14);
     pwm_audio_l *= 3075;
     pwm_audio_r *= 3075;
     pwm_audio_l += s_output_error_l;
