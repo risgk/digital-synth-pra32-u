@@ -33,6 +33,8 @@
 #define PRA32_U_PWM_AUDIO_L_PIN               (28)
 #define PRA32_U_PWM_AUDIO_R_PIN               (27)
 
+//#define PRA32_U_USE_PWM_AUDIO_DITHERING_INSTEAD_OF_ERROR_DIFFUSION
+
 #define PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING
 
 #define PRA32_U_USE_EMULATED_EEPROM
@@ -52,7 +54,7 @@ MIDI_CREATE_INSTANCE(Adafruit_USBD_MIDI, usbd_midi, USB_MIDI);
 #endif  // defined(PRA32_U_USE_USB_MIDI)
 
 #if defined(PRA32_U_USE_UART_MIDI)
-MIDI_CREATE_INSTANCE(HardwareSerial, Serial2, SERIAL_MIDI);
+MIDI_CREATE_INSTANCE(HardwareSerial, Serial2, UART_MIDI);
 #endif
 
 #if defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
@@ -130,13 +132,13 @@ void __not_in_flash_func(setup)() {
 #if defined(PRA32_U_USE_UART_MIDI)
   Serial2.setTX(PRA32_U_UART_MIDI_TX_PIN);
   Serial2.setRX(PRA32_U_UART_MIDI_RX_PIN);
-  SERIAL_MIDI.setHandleNoteOn(handleNoteOn);
-  SERIAL_MIDI.setHandleNoteOff(handleNoteOff);
-  SERIAL_MIDI.setHandleControlChange(handleControlChange);
-  SERIAL_MIDI.setHandleProgramChange(handleHandleProgramChange);
-  SERIAL_MIDI.setHandlePitchBend(handleHandlePitchBend);
-  SERIAL_MIDI.begin(MIDI_CHANNEL_OMNI);
-  SERIAL_MIDI.turnThruOff();
+  UART_MIDI.setHandleNoteOn(handleNoteOn);
+  UART_MIDI.setHandleNoteOff(handleNoteOff);
+  UART_MIDI.setHandleControlChange(handleControlChange);
+  UART_MIDI.setHandleProgramChange(handleHandleProgramChange);
+  UART_MIDI.setHandlePitchBend(handleHandlePitchBend);
+  UART_MIDI.begin(MIDI_CHANNEL_OMNI);
+  UART_MIDI.turnThruOff();
   Serial2.begin(PRA32_U_UART_MIDI_SPEED);
 #endif  // defined(PRA32_U_USE_UART_MIDI)
 
@@ -179,7 +181,7 @@ void __not_in_flash_func(loop)() {
 #endif  // defined(PRA32_U_USE_USB_MIDI)
 
 #if defined(PRA32_U_USE_UART_MIDI)
-    SERIAL_MIDI.read();
+    UART_MIDI.read();
 #endif
   }
 

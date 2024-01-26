@@ -41,7 +41,7 @@ td.keyh {
 }
 </style>
 <script>
-const APP_NAME_VERSION = "PRA32-U CTRL v2.1.0";
+const APP_NAME_VERSION = "PRA32-U CTRL v2.2.0";
 
 const PRA32_U_MIDI_CH = 0;  // 0-based
 
@@ -279,7 +279,7 @@ presetControllers[OSC_2_COARSE   ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
 presetControllers[OSC_2_PITCH    ] = [109, 72 , 72 , 72 , 72 , 72 , 72 , 72 ];
 presetControllers[MIXER_OSC_MIX  ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 0  ];
 
-presetControllers[FILTER_CUTOFF  ] = [115, 115, 91 , 103, 55 , 115, 79 , 127];
+presetControllers[FILTER_CUTOFF  ] = [115, 115, 91 , 103, 55 , 115, 67 , 127];
 presetControllers[FILTER_RESO    ] = [64 , 0  , 32 , 32 , 64 , 64 , 32 , 0  ];
 presetControllers[FILTER_EG_AMT  ] = [64 , 64 , 88 , 16 , 112, 64 , 64 , 64 ];
 presetControllers[FILTER_KEY_TRK ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 0  ];
@@ -302,7 +302,7 @@ presetControllers[LFO_FADE_TIME  ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 presetControllers[LFO_OSC_AMT    ] = [96 , 96 , 64 , 64 , 64 , 96 , 64 , 64 ];
 presetControllers[LFO_OSC_DST    ] = [0  , 0  , 0  , 0  , 0  , 127, 0  , 0  ];
 presetControllers[LFO_FILTER_AMT ] = [64 , 64 , 88 , 88 , 88 , 64 , 88 , 64 ];
-presetControllers[AMP_GAIN       ] = [100, 100, 100, 100, 100, 100, 127, 100];
+presetControllers[AMP_GAIN       ] = [90 , 90 , 90 , 90 , 90 , 90 , 127, 90 ];
 
 presetControllers[AMP_ATTACK     ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 presetControllers[AMP_DECAY      ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
@@ -435,11 +435,13 @@ function afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceModeOrEGAmpModOrRelEqDecay() 
   if (valueVoiceMode == 1 || Math.floor(((valueVoiceMode * 10) + 127) / 254) == 1) {
 //  if (Math.floor(((valueVoiceMode * 10) + 127) / 254) == 1) {
     targetCCNumbers.forEach(function(i) {
-      document.getElementById("span" + controlNumberToStringMap.get(i)).style.color = 'lightgray';
+      document.getElementById( "span" + controlNumberToStringMap.get(i)).style.color = 'lightgray';
+      document.getElementById("span2" + controlNumberToStringMap.get(i)).style.color = 'lightgray';
     });
   } else {
     targetCCNumbers.forEach(function(i) {
-      document.getElementById("span" + controlNumberToStringMap.get(i)).style.color = 'black';
+      document.getElementById( "span" + controlNumberToStringMap.get(i)).style.color = 'black';
+      document.getElementById("span2" + controlNumberToStringMap.get(i)).style.color = 'black';
     });
   }
 
@@ -447,51 +449,70 @@ function afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceModeOrEGAmpModOrRelEqDecay() 
   var indexOsc1Wave = Math.floor(((valueOsc1Wave * 10) + 127) / 254);
   if ((valueOsc1Wave == 1) || (valueOsc1Wave == 4) || (valueOsc1Wave == 5) || (indexOsc1Wave == 1) || (indexOsc1Wave == 4) || (indexOsc1Wave == 5)) {
 //  if ((indexOsc1Wave == 1) || (indexOsc1Wave == 4) || (indexOsc1Wave == 5)) {
-    document.getElementById("spanOSC_1_SHAPE    ").style.color = 'black';
-    document.getElementById("spanOSC_1_MORPH    ").style.color = 'black';
+    document.getElementById( "spanOSC_1_SHAPE    ").style.color = 'black';
+    document.getElementById("span2OSC_1_SHAPE    ").style.color = 'black';
+    document.getElementById( "spanOSC_1_MORPH    ").style.color = 'black';
+    document.getElementById("span2OSC_1_MORPH    ").style.color = 'black';
   } else {
-    document.getElementById("spanOSC_1_SHAPE    ").style.color = 'lightgray';
-    document.getElementById("spanOSC_1_MORPH    ").style.color = 'lightgray';
+    document.getElementById( "spanOSC_1_SHAPE    ").style.color = 'lightgray';
+    document.getElementById("span2OSC_1_SHAPE    ").style.color = 'lightgray';
+    document.getElementById( "spanOSC_1_MORPH    ").style.color = 'lightgray';
+    document.getElementById("span2OSC_1_MORPH    ").style.color = 'lightgray';
   }
 
   var valueOsc2Wave = localStorage.getItem("keyOSC_2_WAVE     ");
-  var indexOsc2Wave = Math.floor(((valueOsc2Wave * 10) + 127) / 254)
+  var indexOsc2Wave = Math.floor(((valueOsc2Wave * 10) + 127) / 254);
   var valueMixerSubOsc = localStorage.getItem("keyMIXER_SUB_OSC  ");
   if (((valueOsc2Wave == 4) || (indexOsc2Wave == 4)) && (valueMixerSubOsc < 64)) {
 //  if ((indexOsc2Wave == 4) && (valueMixerSubOsc < 64)) {
-    document.getElementById("spanMIXER_SUB_OSC  ").style.color = 'lightgray';
+    document.getElementById( "spanMIXER_SUB_OSC  ").style.color = 'lightgray';
+    document.getElementById("span2MIXER_SUB_OSC  ").style.color = 'lightgray';
   } else {
-    document.getElementById("spanMIXER_SUB_OSC  ").style.color = 'black';
+    document.getElementById( "spanMIXER_SUB_OSC  ").style.color = 'black';
+    document.getElementById("span2MIXER_SUB_OSC  ").style.color = 'black';
   }
 
   var valueEGAmpMod = localStorage.getItem("keyEG_AMP_MOD     ");
   if (valueEGAmpMod == 1 || valueEGAmpMod >= 64) {
 //  if (valueEGAmpMod >= 64) {
-    document.getElementById("spanAMP_ATTACK     ").style.color = 'lightgray';
-    document.getElementById("spanAMP_DECAY      ").style.color = 'lightgray';
-    document.getElementById("spanAMP_SUSTAIN    ").style.color = 'lightgray';
-    document.getElementById("spanAMP_RELEASE    ").style.color = 'lightgray';
+    document.getElementById( "spanAMP_ATTACK     ").style.color = 'lightgray';
+    document.getElementById("span2AMP_ATTACK     ").style.color = 'lightgray';
+    document.getElementById( "spanAMP_DECAY      ").style.color = 'lightgray';
+    document.getElementById("span2AMP_DECAY      ").style.color = 'lightgray';
+    document.getElementById( "spanAMP_SUSTAIN    ").style.color = 'lightgray';
+    document.getElementById("span2AMP_SUSTAIN    ").style.color = 'lightgray';
+    document.getElementById( "spanAMP_RELEASE    ").style.color = 'lightgray';
+    document.getElementById("span2AMP_RELEASE    ").style.color = 'lightgray';
 
     var valueRelEqDecay = localStorage.getItem("keyREL_EQ_DECAY   ");
     if (valueRelEqDecay == 1 || valueRelEqDecay >= 64) {
 //    if (valueRelEqDecay >= 64) {
-      document.getElementById("spanEG_RELEASE     ").style.color = 'lightgray';
+      document.getElementById( "spanEG_RELEASE     ").style.color = 'lightgray';
+      document.getElementById("span2EG_RELEASE     ").style.color = 'lightgray';
     } else {
-      document.getElementById("spanEG_RELEASE     ").style.color = 'black';
+      document.getElementById( "spanEG_RELEASE     ").style.color = 'black';
+      document.getElementById("span2EG_RELEASE     ").style.color = 'black';
     }
   } else {
-    document.getElementById("spanAMP_ATTACK     ").style.color = 'black';
-    document.getElementById("spanAMP_DECAY      ").style.color = 'black';
-    document.getElementById("spanAMP_SUSTAIN    ").style.color = 'black';
+    document.getElementById( "spanAMP_ATTACK     ").style.color = 'black';
+    document.getElementById("span2AMP_ATTACK     ").style.color = 'black';
+    document.getElementById( "spanAMP_DECAY      ").style.color = 'black';
+    document.getElementById("span2AMP_DECAY      ").style.color = 'black';
+    document.getElementById( "spanAMP_SUSTAIN    ").style.color = 'black';
+    document.getElementById("span2AMP_SUSTAIN    ").style.color = 'black';
 
     var valueRelEqDecay = localStorage.getItem("keyREL_EQ_DECAY   ");
     if (valueRelEqDecay == 1 || valueRelEqDecay >= 64) {
 //    if (valueRelEqDecay >= 64) {
-      document.getElementById("spanEG_RELEASE     ").style.color = 'lightgray';
-      document.getElementById("spanAMP_RELEASE    ").style.color = 'lightgray';
+      document.getElementById( "spanEG_RELEASE     ").style.color = 'lightgray';
+      document.getElementById("span2EG_RELEASE     ").style.color = 'lightgray';
+      document.getElementById( "spanAMP_RELEASE    ").style.color = 'lightgray';
+      document.getElementById("span2AMP_RELEASE    ").style.color = 'lightgray';
     } else {
-      document.getElementById("spanEG_RELEASE     ").style.color = 'black';
-      document.getElementById("spanAMP_RELEASE    ").style.color = 'black';
+      document.getElementById( "spanEG_RELEASE     ").style.color = 'black';
+      document.getElementById("span2EG_RELEASE     ").style.color = 'black';
+      document.getElementById( "spanAMP_RELEASE    ").style.color = 'black';
+      document.getElementById("span2AMP_RELEASE    ").style.color = 'black';
     }
   }
 }
@@ -675,8 +696,9 @@ function onChangeOutputPort() {
 function updateDisplayOfControl(number, value) {
   document.getElementById("input" + controlNumberToStringMap.get(number)).value = parseInt(value);
 
+  dispValue = String(value);
+
   switch (number) {
-  case MIXER_SUB_OSC   :
   case OSC_2_COARSE    :
   case OSC_2_PITCH     :
   case FILTER_EG_AMT   :
@@ -685,14 +707,106 @@ function updateDisplayOfControl(number, value) {
   case LFO_FILTER_AMT  :
   case BTH_FILTER_AMT  :
     if (value >= 64) {
-      document.getElementById("span" + controlNumberToStringMap.get(number)).innerHTML = "+" + String(value - 64);
+      dispValue = "+" + String(value - 64);
     } else {
-      document.getElementById("span" + controlNumberToStringMap.get(number)).innerHTML = value - 64;
+      dispValue = String(value - 64);
     }
     break;
-  default:
-    document.getElementById("span" + controlNumberToStringMap.get(number)).innerHTML = value;
+  case MIXER_SUB_OSC   :
+    if (value >= 64) {
+      dispValue = "S" + String(value - 64);
+    } else {
+      dispValue = "N" + String(64 - value);
+    }
     break;
+  case OSC_1_WAVE      :
+    {
+      var ary = ["Saw","Sin","-","Tri","-","Pls"];
+      var index = Math.floor(((value * 10) + 127) / 254);
+      if (value < 6) { index = value; }
+      dispValue = ary[index];
+    }
+    break;
+  case OSC_2_WAVE      :
+    {
+      var ary = ["Saw","Sin","-","Tri","Nos","Sqr"];
+      var index = Math.floor(((value * 10) + 127) / 254);
+      if (value < 6) { index = value; }
+      dispValue = ary[index];
+    }
+    break;
+  case FILTER_KEY_TRK  :
+    {
+      var ary = ["0.0","0.5","1.0"];
+      var index = Math.floor(((value * 4) + 127) / 254);
+      dispValue = ary[index];
+    }
+    break;
+  case EG_OSC_DST      :
+  case LFO_OSC_DST     :
+    {
+      var ary = ["P","2P","1S"];
+      var index = Math.floor(((value * 4) + 127) / 254);
+      if (value < 3) { index = value; }
+      dispValue = ary[index];
+    }
+    break;
+  case VOICE_MODE      :
+    {
+      var ary = ["Pol","Par","-","Mon","LP","Lgt"];
+      var index = Math.floor(((value * 10) + 127) / 254);
+      if (value < 6) { index = value; }
+      dispValue = ary[index];
+    }
+    break;
+  case LFO_WAVE        :
+    {
+      var ary = ["Tri","Sin","-","Saw","SH","Sqr"];
+      var index = Math.floor(((value * 10) + 127) / 254);
+      if (value < 6) { index = value; }
+      dispValue = ary[index];
+    }
+    break;
+  case FILTER_MODE     :
+    {
+      var ary = ["LP","HP"];
+      var index = Math.floor(((value * 2) + 127) / 254);
+      if (value < 2) { index = value; }
+      dispValue = ary[index];
+    }
+    break;
+  case EG_AMP_MOD      :
+  case REL_EQ_DECAY    :
+    {
+      var ary = ["Off","On"];
+      var index = Math.floor(((value * 2) + 127) / 254);
+      if (value < 2) { index = value; }
+      dispValue = ary[index];
+    }
+    break;
+  case BTH_AMP_MOD     :
+    {
+      var ary = ["Off","Qad","Lin"];
+      var index = Math.floor(((value * 4) + 127) / 254);
+      if (value < 3) { index = value; }
+      dispValue = ary[index];
+    }
+    break;
+  case DELAY_MODE      :
+    {
+      var ary = ["S","P"];
+      var index = Math.floor(((value * 2) + 127) / 254);
+      if (value < 2) { index = value; }
+      dispValue = ary[index];
+    }
+    break;
+  }
+
+  document.getElementById("span" + controlNumberToStringMap.get(number)).innerHTML = value;
+  if (String(value) != dispValue) {
+    document.getElementById("span2" + controlNumberToStringMap.get(number)).innerHTML = "[" + dispValue + "]";
+  } else {
+    document.getElementById("span2" + controlNumberToStringMap.get(number)).innerHTML = "";
   }
 
   localStorage.setItem("key" + controlNumberToStringMap.get(number), value);
@@ -1189,226 +1303,276 @@ function getStoredCCValueString(index, number) {
 
 <table>
 <tr>
-<td colspan="8"><hr></td>
+<td colspan="12"><hr></td>
 </tr>
 <tr>
-<td colspan="2"><b>Osc 1</b> Wave [Saw|Sin|-|Tri|-|Pls]</td>
-<td colspan="2"><b>Osc 1</b> Shape                     </td>
-<td colspan="2"><b>Osc 1</b> Morph                     </td>
-<td colspan="2"><b>Mixer</b> Noise/Sub Osc [N|S]       </td>
+<td colspan="3"><b>Osc 1</b> Wave [Saw|Sin|-|Tri|-|Pls]</td>
+<td colspan="3"><b>Osc 1</b> Shape                     </td>
+<td colspan="3"><b>Osc 1</b> Morph                     </td>
+<td colspan="3"><b>Mixer</b> Noise/Sub Osc [N|S]       </td>
 </tr>
 <tr>
 <td><input  id="inputOSC_1_WAVE     "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_1_WAVE     , value)"></td>
 <td><span    id="spanOSC_1_WAVE     " >-</span></td>
+<td><span   id="span2OSC_1_WAVE     " >-</span></td>
 <td><input  id="inputOSC_1_SHAPE    "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_1_SHAPE    , value)"></td>
 <td><span    id="spanOSC_1_SHAPE    " >-</span></td>
+<td><span   id="span2OSC_1_SHAPE    " >-</span></td>
 <td><input  id="inputOSC_1_MORPH    "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_1_MORPH    , value)"></td>
 <td><span    id="spanOSC_1_MORPH    " >-</span></td>
+<td><span   id="span2OSC_1_MORPH    " >-</span></td>
 <td><input  id="inputMIXER_SUB_OSC  "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(MIXER_SUB_OSC  , value)"></td>
 <td><span    id="spanMIXER_SUB_OSC  " >-</span></td>
+<td><span   id="span2MIXER_SUB_OSC  " >-</span></td>
 <tr>
-<td colspan="2"><b>Osc 2</b> Wave [Saw|Sin|-|Tri|Nos|Sqr]</td>
-<td colspan="2"><b>Osc 2</b> Coarse [-|+]              </td>
-<td colspan="2"><b>Osc 2</b> Pitch [-|+]               </td>
-<td colspan="2"><b>Mixer</b> Osc Mix [1|2]             </td>
+<td colspan="3"><b>Osc 2</b> Wave [Saw|Sin|-|Tri|Nos|Sqr]</td>
+<td colspan="3"><b>Osc 2</b> Coarse [-|+]              </td>
+<td colspan="3"><b>Osc 2</b> Pitch [-|+]               </td>
+<td colspan="3"><b>Mixer</b> Osc Mix [1|2]             </td>
 </tr>
 <tr>
 <td><input  id="inputOSC_2_WAVE     "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_2_WAVE     , value)"></td>
 <td><span    id="spanOSC_2_WAVE     " >-</span></td>
+<td><span   id="span2OSC_2_WAVE     " >-</span></td>
 <td><input  id="inputOSC_2_COARSE   "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_2_COARSE   , value)"></td>
 <td><span    id="spanOSC_2_COARSE   " >-</span></td>
+<td><span   id="span2OSC_2_COARSE   " >-</span></td>
 <td><input  id="inputOSC_2_PITCH    "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(OSC_2_PITCH    , value)"></td>
 <td><span    id="spanOSC_2_PITCH    " >-</span></td>
+<td><span   id="span2OSC_2_PITCH    " >-</span></td>
 <td><input  id="inputMIXER_OSC_MIX  "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(MIXER_OSC_MIX  , value)"></td>
 <td><span    id="spanMIXER_OSC_MIX  " >-</span></td>
+<td><span   id="span2MIXER_OSC_MIX  " >-</span></td>
 </tr>
 <tr>
-<td colspan="2"><b>Filter</b> Cutoff                   </td>
-<td colspan="2"><b>Filter</b> Resonance                </td>
-<td colspan="2"><b>Filter</b> EG Amt [-|+]             </td>
-<td colspan="2"><b>Filter</b> Key Track [0.0|0.5|1.0]  </td>
+<td colspan="3"><b>Filter</b> Cutoff                   </td>
+<td colspan="3"><b>Filter</b> Resonance                </td>
+<td colspan="3"><b>Filter</b> EG Amt [-|+]             </td>
+<td colspan="3"><b>Filter</b> Key Track [0.0|0.5|1.0]  </td>
 </tr>
 <tr>
 <td><input  id="inputFILTER_CUTOFF  "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(FILTER_CUTOFF  , value)"></td>
 <td><span    id="spanFILTER_CUTOFF  " >-</span></td>
+<td><span   id="span2FILTER_CUTOFF  " >-</span></td>
 <td><input  id="inputFILTER_RESO    "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(FILTER_RESO    , value)"></td>
 <td><span    id="spanFILTER_RESO    " >-</span></td>
+<td><span   id="span2FILTER_RESO    " >-</span></td>
 <td><input  id="inputFILTER_EG_AMT  "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(FILTER_EG_AMT  , value)"></td>
 <td><span    id="spanFILTER_EG_AMT  " >-</span></td>
+<td><span   id="span2FILTER_EG_AMT  " >-</span></td>
 <td><input  id="inputFILTER_KEY_TRK "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(FILTER_KEY_TRK , value)"></td>
 <td><span    id="spanFILTER_KEY_TRK " >-</span></td>
+<td><span   id="span2FILTER_KEY_TRK " >-</span></td>
 </tr>
 <tr>
-<td colspan="2"><b>EG</b> Attack                       </td>
-<td colspan="2"><b>EG</b> Decay                        </td>
-<td colspan="2"><b>EG</b> Sustain                      </td>
-<td colspan="2"><b>EG</b> Release                      </td>
+<td colspan="3"><b>EG</b> Attack                       </td>
+<td colspan="3"><b>EG</b> Decay                        </td>
+<td colspan="3"><b>EG</b> Sustain                      </td>
+<td colspan="3"><b>EG</b> Release                      </td>
 </tr>
 <tr>
 <td><input  id="inputEG_ATTACK      "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_ATTACK      , value)"></td>
 <td><span    id="spanEG_ATTACK      " >-</span></td>
+<td><span   id="span2EG_ATTACK      " >-</span></td>
 <td><input  id="inputEG_DECAY       "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_DECAY       , value)"></td>
 <td><span    id="spanEG_DECAY       " >-</span></td>
+<td><span   id="span2EG_DECAY       " >-</span></td>
 <td><input  id="inputEG_SUSTAIN     "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_SUSTAIN     , value)"></td>
 <td><span    id="spanEG_SUSTAIN     " >-</span></td>
+<td><span   id="span2EG_SUSTAIN     " >-</span></td>
 <td><input  id="inputEG_RELEASE     "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_RELEASE     , value)"></td>
 <td><span    id="spanEG_RELEASE     " >-</span></td>
+<td><span   id="span2EG_RELEASE     " >-</span></td>
 </tr>
 <tr>
-<td colspan="8"><hr></td>
+<td colspan="12"><hr></td>
 </tr>
 <tr>
-<td colspan="2"><b>EG</b> Osc Amt [-|+]                  </td>
-<td colspan="2"><b>EG</b> Osc Dst [P|2P|1S]              </td>
-<td colspan="2">Voice Mode [Pol|Par|-|Mon|LP|Lgt] </td>
-<td colspan="2">Portamento                        </td>
+<td colspan="3"><b>EG</b> Osc Amt [-|+]                  </td>
+<td colspan="3"><b>EG</b> Osc Dst [P|2P|1S]              </td>
+<td colspan="3">Voice Mode [Pol|Par|-|Mon|LP|Lgt] </td>
+<td colspan="3">Portamento                        </td>
 </tr>
 <tr>
 <td><input  id="inputEG_OSC_AMT     "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_OSC_AMT     , value)"></td>
 <td><span    id="spanEG_OSC_AMT     " >-</span></td>
+<td><span   id="span2EG_OSC_AMT     " >-</span></td>
 <td><input  id="inputEG_OSC_DST     "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_OSC_DST     , value)"></td>
 <td><span    id="spanEG_OSC_DST     " >-</span></td>
+<td><span   id="span2EG_OSC_DST     " >-</span></td>
 <td><input  id="inputVOICE_MODE     "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(VOICE_MODE     , value)"></td>
 <td><span    id="spanVOICE_MODE     " >-</span></td>
+<td><span   id="span2VOICE_MODE     " >-</span></td>
 <td><input  id="inputPORTAMENTO     "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(PORTAMENTO     , value)"></td>
 <td><span    id="spanPORTAMENTO     " >-</span></td>
+<td><span   id="span2PORTAMENTO     " >-</span></td>
 </tr>
 <tr>
-<td colspan="2"><b>LFO</b> Wave [Tri|Sin|-|Saw|SH|Sqr] </td>
-<td colspan="2"><b>LFO</b> Rate                        </td>
-<td colspan="2"><b>LFO</b> Depth                       </td>
-<td colspan="2"><b>LFO</b> Fade Time                   </td>
+<td colspan="3"><b>LFO</b> Wave [Tri|Sin|-|Saw|SH|Sqr] </td>
+<td colspan="3"><b>LFO</b> Rate                        </td>
+<td colspan="3"><b>LFO</b> Depth                       </td>
+<td colspan="3"><b>LFO</b> Fade Time                   </td>
 </tr>
 <tr>
 <td><input  id="inputLFO_WAVE       "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_WAVE       , value)"></td>
 <td><span    id="spanLFO_WAVE       " >-</span></td>
+<td><span   id="span2LFO_WAVE       " >-</span></td>
 <td><input  id="inputLFO_RATE       "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_RATE       , value)"></td>
 <td><span    id="spanLFO_RATE       " >-</span></td>
+<td><span   id="span2LFO_RATE       " >-</span></td>
 <td><input  id="inputLFO_DEPTH      "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_DEPTH      , value)"></td>
 <td><span    id="spanLFO_DEPTH      " >-</span></td>
+<td><span   id="span2LFO_DEPTH      " >-</span></td>
 <td><input  id="inputLFO_FADE_TIME  "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_FADE_TIME  , value)"></td>
 <td><span    id="spanLFO_FADE_TIME  " >-</span></td>
+<td><span   id="span2LFO_FADE_TIME  " >-</span></td>
 </tr>
 <tr>
-<td colspan="2"><b>LFO</b> Osc Amt [-|+]               </td>
-<td colspan="2"><b>LFO</b> Osc Dst [P|2P|1S]           </td>
-<td colspan="2"><b>LFO</b> Filter Amt [-|+]            </td>
-<td colspan="2"><b>Amp</b> Gain                        </td>
+<td colspan="3"><b>LFO</b> Osc Amt [-|+]               </td>
+<td colspan="3"><b>LFO</b> Osc Dst [P|2P|1S]           </td>
+<td colspan="3"><b>LFO</b> Filter Amt [-|+]            </td>
+<td colspan="3"><b>Amp</b> Gain                        </td>
 </tr>
 <tr>
 <td><input  id="inputLFO_OSC_AMT    "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_OSC_AMT    , value)"></td>
 <td><span    id="spanLFO_OSC_AMT    " >-</span></td>
+<td><span   id="span2LFO_OSC_AMT    " >-</span></td>
 <td><input  id="inputLFO_OSC_DST    "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_OSC_DST    , value)"></td>
 <td><span    id="spanLFO_OSC_DST    " >-</span></td>
+<td><span   id="span2LFO_OSC_DST    " >-</span></td>
 <td><input  id="inputLFO_FILTER_AMT "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(LFO_FILTER_AMT , value)"></td>
 <td><span    id="spanLFO_FILTER_AMT " >-</span></td>
+<td><span   id="span2LFO_FILTER_AMT " >-</span></td>
 <td><input  id="inputAMP_GAIN       "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(AMP_GAIN       , value)"></td>
 <td><span    id="spanAMP_GAIN       " >-</span></td>
+<td><span   id="span2AMP_GAIN       " >-</span></td>
 </tr>
 <tr>
-<td colspan="2"><b>Amp</b> Attack                      </td>
-<td colspan="2"><b>Amp</b> Decay                       </td>
-<td colspan="2"><b>Amp</b> Sustain                     </td>
-<td colspan="2"><b>Amp</b> Release                     </td>
+<td colspan="3"><b>Amp</b> Attack                      </td>
+<td colspan="3"><b>Amp</b> Decay                       </td>
+<td colspan="3"><b>Amp</b> Sustain                     </td>
+<td colspan="3"><b>Amp</b> Release                     </td>
 </tr>
 <tr>
 <td><input  id="inputAMP_ATTACK     "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(AMP_ATTACK     , value)"></td>
 <td><span    id="spanAMP_ATTACK     " >-</span></td>
+<td><span   id="span2AMP_ATTACK     " >-</span></td>
 <td><input  id="inputAMP_DECAY      "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(AMP_DECAY      , value)"></td>
 <td><span    id="spanAMP_DECAY      " >-</span></td>
+<td><span   id="span2AMP_DECAY      " >-</span></td>
 <td><input  id="inputAMP_SUSTAIN    "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(AMP_SUSTAIN    , value)"></td>
 <td><span    id="spanAMP_SUSTAIN    " >-</span></td>
+<td><span   id="span2AMP_SUSTAIN    " >-</span></td>
 <td><input  id="inputAMP_RELEASE    "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(AMP_RELEASE    , value)"></td>
 <td><span    id="spanAMP_RELEASE    " >-</span></td>
+<td><span   id="span2AMP_RELEASE    " >-</span></td>
 </tr>
 <tr>
-<td colspan="8"><hr></td>
+<td colspan="12"><hr></td>
 </tr>
 <tr>
-<td colspan="2"><b>Filter</b> Mode [LP|HP]             </td>
-<td colspan="2"><b>EG</b> Amp Mod [Off|On]             </td>
-<td colspan="2">Release = Decay [Off|On]        </td>
-<td colspan="2">Pitch Bend Range                </td>
+<td colspan="3"><b>Filter</b> Mode [LP|HP]             </td>
+<td colspan="3"><b>EG</b> Amp Mod [Off|On]             </td>
+<td colspan="3">Release = Decay [Off|On]        </td>
+<td colspan="3">Pitch Bend Range                </td>
 </tr>
 <tr>
 <td><input  id="inputFILTER_MODE    "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(FILTER_MODE    , value)"></td>
 <td><span    id="spanFILTER_MODE    " >-</span></td>
+<td><span   id="span2FILTER_MODE    " >-</span></td>
 <td><input  id="inputEG_AMP_MOD     "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_AMP_MOD     , value)"></td>
 <td><span    id="spanEG_AMP_MOD     " >-</span></td>
+<td><span   id="span2EG_AMP_MOD     " >-</span></td>
 <td><input  id="inputREL_EQ_DECAY   "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(REL_EQ_DECAY   , value)"></td>
 <td><span    id="spanREL_EQ_DECAY   " >-</span></td>
+<td><span   id="span2REL_EQ_DECAY   " >-</span></td>
 <td><input  id="inputP_BEND_RANGE   "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(P_BEND_RANGE   , value)"></td>
 <td><span    id="spanP_BEND_RANGE   " >-</span></td>
+<td><span   id="span2P_BEND_RANGE   " >-</span></td>
 </tr>
 <tr>
-<td colspan="2"><b>Breath</b> Filter Amt [-|+]         </td>
-<td colspan="2"><b>Breath</b> Amp Mod [Off|Qad|Lin]    </td>
-<td colspan="2"><b>EG</b> Velocity Sensitivity         </td>
-<td colspan="2"><b>Amp</b> Velocity Sensitivity        </td>
+<td colspan="3"><b>Breath</b> Filter Amt [-|+]         </td>
+<td colspan="3"><b>Breath</b> Amp Mod [Off|Qad|Lin]    </td>
+<td colspan="3"><b>EG</b> Velocity Sensitivity         </td>
+<td colspan="3"><b>Amp</b> Velocity Sensitivity        </td>
 </tr>
 <tr>
 <td><input  id="inputBTH_FILTER_AMT "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(BTH_FILTER_AMT , value)"></td>
 <td><span    id="spanBTH_FILTER_AMT " >-</span></td>
+<td><span   id="span2BTH_FILTER_AMT " >-</span></td>
 <td><input  id="inputBTH_AMP_MOD    "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(BTH_AMP_MOD    , value)"></td>
 <td><span    id="spanBTH_AMP_MOD    " >-</span></td>
+<td><span   id="span2BTH_AMP_MOD    " >-</span></td>
 <td><input  id="inputEG_VEL_SENS    "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(EG_VEL_SENS    , value)"></td>
 <td><span    id="spanEG_VEL_SENS    " >-</span></td>
+<td><span   id="span2EG_VEL_SENS    " >-</span></td>
 <td><input  id="inputAMP_VEL_SENS   "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(AMP_VEL_SENS   , value)"></td>
 <td><span    id="spanAMP_VEL_SENS   " >-</span></td>
+<td><span   id="span2AMP_VEL_SENS   " >-</span></td>
 </tr>
 <tr>
-<td colspan="8"><hr></td>
+<td colspan="12"><hr></td>
 </tr>
 <tr>
-<td colspan="2"><b>Chorus</b> Mix [Dry|Wet]            </td>
-<td colspan="2"><b>Chorus</b> Rate                     </td>
-<td colspan="2"><b>Chorus</b> Depth                    </td>
-<td colspan="2">                                </td>
+<td colspan="3"><b>Chorus</b> Mix [Dry|Wet]            </td>
+<td colspan="3"><b>Chorus</b> Rate                     </td>
+<td colspan="3"><b>Chorus</b> Depth                    </td>
+<td colspan="3">                                </td>
 </tr>
 <tr>
 <td><input  id="inputCHORUS_MIX     "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_MIX     , value)"></td>
 <td><span    id="spanCHORUS_MIX     " >-</span></td>
+<td><span   id="span2CHORUS_MIX     " >-</span></td>
 <td><input  id="inputCHORUS_RATE    "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_RATE    , value)"></td>
 <td><span    id="spanCHORUS_RATE    " >-</span></td>
+<td><span   id="span2CHORUS_RATE    " >-</span></td>
 <td><input  id="inputCHORUS_DEPTH   "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(CHORUS_DEPTH   , value)"></td>
 <td><span    id="spanCHORUS_DEPTH   " >-</span></td>
+<td><span   id="span2CHORUS_DEPTH   " >-</span></td>
+<td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td colspan="2"><b>Delay</b> Feedback                  </td>
-<td colspan="2"><b>Delay</b> Time                      </td>
-<td colspan="2"><b>Delay</b> Mode [S|P]                </td>
-<td colspan="2">                                </td>
+<td colspan="3"><b>Delay</b> Feedback                  </td>
+<td colspan="3"><b>Delay</b> Time                      </td>
+<td colspan="3"><b>Delay</b> Mode [S|P]                </td>
+<td colspan="3">                                </td>
 </tr>
 <tr>
 <td><input  id="inputDELAY_FEEDBACK "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(DELAY_FEEDBACK , value)"></td>
 <td><span    id="spanDELAY_FEEDBACK " >-</span></td>
+<td><span   id="span2DELAY_FEEDBACK " >-</span></td>
 <td><input  id="inputDELAY_TIME     "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(DELAY_TIME     , value)"></td>
 <td><span    id="spanDELAY_TIME     " >-</span></td>
+<td><span   id="span2DELAY_TIME     " >-</span></td>
 <td><input  id="inputDELAY_MODE     "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(DELAY_MODE     , value)"></td>
 <td><span    id="spanDELAY_MODE     " >-</span></td>
+<td><span   id="span2DELAY_MODE     " >-</span></td>
+<td></td>
 <td></td>
 <td></td>
 </tr>
 <tr>
-<td colspan="8"><hr></td>
+<td colspan="12"><hr></td>
 </tr>
 <tr>
-<td>&nbsp;</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-<td>&nbsp;</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-<td>&nbsp;</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-<td>&nbsp;</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td>&nbsp;</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td>&nbsp;</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td>&nbsp;</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td>&nbsp;</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 </tr>
 </table>
 
 <table>
-<tr><td colspan="2">Software Kbd Transpose</td>
+<tr><td colspan="3">Software Kbd Transpose</td>
     </tr>
 <tr><td><input id="inputTranspose" type="range" min="-48" max="48" step="12" oninput="onChangeTranspose(value)" ></td>
     <td><span id="spanTranspose" >-</span></td></tr>
 <tr>
-    <td>&nbsp;</td><td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td></td>
 </tr>
 
 </table>
