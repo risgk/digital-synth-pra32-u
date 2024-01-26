@@ -4,6 +4,7 @@
     - Use error diffusion for PWM audio output by default
     - Eliminate noise when PWM audio output is silent
     - Change the display of PRA32-U CTRL
+    - Tested with Adafruit TinyUSB Library version 2.3.3
 - v2.1.0 (2024-01-14):
     - Reduce noise from PMIC (Turn off RT6150 Power Save);
     - Support Osc 1 Sine Wave Phase Modulation (Osc 1 Shape and Osc 1 Morph);
