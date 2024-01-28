@@ -29,9 +29,6 @@
     - Additional Board Manager URL: <https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json>
     - This sketch is tested with version **3.6.3**: <https://github.com/earlephilhower/arduino-pico/releases/tag/3.6.3>
     - Info: <https://github.com/earlephilhower/arduino-pico>
-- Please install **Adafruit TinyUSB Library** for Arduino (by Adafruit)
-    - This sketch is tested with version **2.3.3**: <https://github.com/adafruit/Adafruit_TinyUSB_Arduino/releases/tag/2.3.3>
-    - Info: <https://github.com/adafruit/Adafruit_TinyUSB_Arduino>
 - Please install Arduino **MIDI Library** (by Francois Best, lathoub)
     - This sketch is tested with version **5.0.2**: <https://github.com/FortySevenEffects/arduino_midi_library/releases/tag/5.0.2>
     - Info: <https://github.com/FortySevenEffects/arduino_midi_library>
