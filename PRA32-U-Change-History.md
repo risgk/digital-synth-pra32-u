@@ -1,5 +1,7 @@
 ## Digital Synth PRA32-U Change History
 
+- v2.2.1 (2024-02-04):
+    - No more need to install Adafruit TinyUSB Library separately from Arduino-Pico
 - v2.2.0 (2024-01-26):
     - Use error diffusion for PWM audio output by default
     - Eliminate noise when PWM audio output is silent
