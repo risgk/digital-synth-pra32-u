@@ -1,5 +1,7 @@
 ## Digital Synth PRA32-U Change History
 
+- v2.2.2 (2024-**-**):
+    - Tested with Arduino-Pico version 3.7.0
 - v2.2.1 (2024-02-04):
     - No more need to install Adafruit TinyUSB Library separately from Arduino-Pico
 - v2.2.0 (2024-01-26):
