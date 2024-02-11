@@ -67,6 +67,11 @@ PWMAudio g_pwm_r(PRA32_U_PWM_AUDIO_R_PIN);
 #include <I2S.h>
 I2S g_i2s_output(OUTPUT);
 
+static volatile uint32_t s_debug_measurement_elapsed0_us = 0;
+static volatile uint32_t s_debug_measurement_max0_us     = 0;
+static volatile uint32_t s_debug_measurement_elapsed1_us = 0;
+static volatile uint32_t s_debug_measurement_max1_us     = 0;
+
 void handleNoteOn(byte channel, byte pitch, byte velocity);
 void handleNoteOff(byte channel, byte pitch, byte velocity);
 void handleControlChange(byte channel, byte number, byte value);
@@ -75,10 +80,36 @@ void handleHandlePitchBend(byte channel, int bend);
 void writeProgramsToFlashAndEndSketch();
 
 void __not_in_flash_func(setup1)() {
+#if defined(PRA32_U_USE_DEBUG_PRINT)
+  Serial1.setTX(0);
+  Serial1.setRX(1);
+  Serial1.begin(115200);
+#endif  // defined(PRA32_U_USE_DEBUG_PRINT)
 }
 
 void __not_in_flash_func(loop1)() {
-  g_synth.secondary_core_process();
+  boolean processed = g_synth.secondary_core_process();
+  if (processed) {
+    static uint32_t s_ui_counter = 0;
+    s_ui_counter++;
+    if (s_ui_counter >= 64 * 750) {
+      s_ui_counter = 0;
+    }
+
+#if defined(PRA32_U_USE_DEBUG_PRINT)
+    static uint32_t s_debug_loop_counter = 0;
+    s_debug_loop_counter++;
+    if (s_debug_loop_counter >= 64 * 3000) {
+      s_debug_loop_counter = 0;
+
+      Serial1.println(s_debug_measurement_elapsed1_us);
+      Serial1.println(s_debug_measurement_max1_us);
+      Serial1.println(s_debug_measurement_elapsed0_us);
+      Serial1.println(s_debug_measurement_max0_us);
+      Serial1.println();
+    }
+#endif  // defined(PRA32_U_USE_DEBUG_PRINT)
+  }
 }
 
 void __not_in_flash_func(setup)() {
@@ -144,12 +175,6 @@ void __not_in_flash_func(setup)() {
   Serial2.begin(PRA32_U_UART_MIDI_SPEED);
 #endif  // defined(PRA32_U_USE_UART_MIDI)
 
-#if defined(PRA32_U_USE_DEBUG_PRINT)
-  Serial1.setTX(0);
-  Serial1.setRX(1);
-  Serial1.begin(115200);
-#endif  // defined(PRA32_U_USE_DEBUG_PRINT)
-
 #if defined(ARDUINO_RASPBERRY_PI_PICO)
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
@@ -181,14 +206,14 @@ void __not_in_flash_func(loop)() {
 #if !defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
 #elif (defined(PRA32_U_USE_EMULATED_EEPROM_PRESS_BOOTSEL_TO_WRITE_USER_PROGRAMS) \
       && (defined(ARDUINO_RASPBERRY_PI_PICO) || defined(ARDUINO_RASPBERRY_PI_PICO_W)))
-  static uint32_t s_bootsel_count = 0;
+  static uint32_t s_bootsel_counter = 0;
   if (BOOTSEL) {
-    s_bootsel_count++;
-    if (s_bootsel_count >= (3 * SAMPLING_RATE) / PRA32_U_I2S_BUFFER_WORDS) {
+    s_bootsel_counter++;
+    if (s_bootsel_counter >= (3 * SAMPLING_RATE) / PRA32_U_I2S_BUFFER_WORDS) {
       writeUserProgramsToFlashAndShutDown();
     }
   } else {
-    s_bootsel_count = 0;
+    s_bootsel_counter = 0;
   }
 #endif
 #endif  // defined(PRA32_U_USE_EMULATED_EEPROM)
@@ -241,26 +266,13 @@ void __not_in_flash_func(loop)() {
 #endif  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
 
 #if defined(PRA32_U_USE_DEBUG_PRINT)
-  static uint32_t s_debug_measurement_max0_us = 0;
-  uint32_t debug_measurement_elapsed0_us = debug_measurement_end_us - debug_measurement_start0_us;
-  s_debug_measurement_max0_us += (debug_measurement_elapsed0_us > s_debug_measurement_max0_us) *
-                                 (debug_measurement_elapsed0_us - s_debug_measurement_max0_us);
+  s_debug_measurement_elapsed0_us = debug_measurement_end_us - debug_measurement_start0_us;
+  s_debug_measurement_max0_us += (s_debug_measurement_elapsed0_us > s_debug_measurement_max0_us) *
+                                 (s_debug_measurement_elapsed0_us - s_debug_measurement_max0_us);
 
-  static uint32_t s_debug_measurement_max1_us = 0;
-  uint32_t debug_measurement_elapsed1_us = debug_measurement_end_us - debug_measurement_start1_us;
-  s_debug_measurement_max1_us += (debug_measurement_elapsed1_us > s_debug_measurement_max1_us) *
-                                 (debug_measurement_elapsed1_us - s_debug_measurement_max1_us);
-
-  static uint32_t s_debug_loop_counter = 0;
-  if (++s_debug_loop_counter == 4000) {
-    s_debug_loop_counter = 0;
-
-    Serial1.println(debug_measurement_elapsed1_us);
-    Serial1.println(s_debug_measurement_max1_us);
-    Serial1.println(debug_measurement_elapsed0_us);
-    Serial1.println(s_debug_measurement_max0_us);
-    Serial1.println();
-  }
+  s_debug_measurement_elapsed1_us = debug_measurement_end_us - debug_measurement_start1_us;
+  s_debug_measurement_max1_us += (s_debug_measurement_elapsed1_us > s_debug_measurement_max1_us) *
+                                 (s_debug_measurement_elapsed1_us - s_debug_measurement_max1_us);
 #endif  // defined(PRA32_U_USE_DEBUG_PRINT)
 }
 

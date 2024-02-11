@@ -1058,6 +1058,11 @@ public:
 
       voice_mixer_output = amp_output[0];
     } else {
+#if defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
+      m_secondary_core_processing_argument = 0;
+      m_secondary_core_processing_request = 1;
+#endif  // defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
+
       osc_output[0] = m_osc.process<0>(noise_int15);
       int16_t osc_mixer_output = osc_output[0] << 1;
 
@@ -1065,6 +1070,12 @@ public:
       amp_output   [0] = m_amp   [0].process(filter_output[0]);
 
       voice_mixer_output = amp_output[0];
+
+#if defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
+      while (m_secondary_core_processing_request) {
+        ;
+      }
+#endif  // defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
     }
 
     int16_t chorus_fx_output_r;
@@ -1106,7 +1117,9 @@ public:
 #endif  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
   }
 
-  INLINE void secondary_core_process() {
+  INLINE boolean secondary_core_process() {
+    boolean processed = false;
+
 #if defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
     if (m_secondary_core_processing_request == 1) {
       int16_t noise_int15 = static_cast<int16_t>(m_secondary_core_processing_argument);
@@ -1130,11 +1143,16 @@ public:
         osc_output[3] = m_osc.process<3>(noise_int15);
 
         m_secondary_core_processing_result = osc_output[2] + osc_output[3];
+      } else {
+        m_secondary_core_processing_result = 0;
       }
 
       m_secondary_core_processing_request = 0;
+      processed = true;
     }
 #endif  // defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
+
+    return processed;
   }
 
 private:

@@ -4,6 +4,7 @@
     - Allow user programs to be written to the flash when using I2S DAC without mute-off pin
     - Add the option to write user programs to the flash when using PWM audio (for Raspberry Pi Pico/H/W/WH)
     - Add the option PRA32_U_I2S_SWAP_LEFT_AND_RIGHT
+    - Use core 1 for Debug Print
 - v2.2.2 (2024-02-10):
     - Fix a bug that the parameters are not written to the flash when using I2S DAC, even if PRA32_U_I2S_DAC_MUTE_OFF_PIN is defined
     - Tested with Arduino-Pico version 3.7.0
