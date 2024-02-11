@@ -867,9 +867,7 @@ public:
             EEPROM.write(m_program_number_to_write * 128,     'U');
             EEPROM.write(m_program_number_to_write * 128 + 1, m_program_number_to_write);
 
-#if (defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN) && !defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)) \
-    || (defined(PRA32_U_USE_EMULATED_EEPROM_BOOTSEL_LONG_PRESS_TO_WRITE_USER_PROGRAMS_AND_STOP_PROCESSING) \
-       && (defined(ARDUINO_RASPBERRY_PI_PICO) || defined(ARDUINO_RASPBERRY_PI_PICO_W)))
+#if (defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN) && !defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S))
             // To avoid noise, the data will not be written to the flash
             // if PRA32_U_I2S_DAC_MUTE_OFF_PIN is not defined or PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S is defined
             digitalWrite(PRA32_U_I2S_DAC_MUTE_OFF_PIN, LOW);
