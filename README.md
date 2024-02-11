@@ -67,7 +67,6 @@
 - Modify `PRA32_U_I2S_DAC_MUTE_OFF_PIN`, `PRA32_U_I2S_DATA_PIN`, `PRA32_U_I2S_MCLK_PIN`, `PRA32_U_I2S_MCLK_MULT`,
   `PRA32_U_I2S_BCLK_PIN`, and `PRA32_U_I2S_SWAP_BCLK_AND_LRCLK_PINS`
   in "Digital-Synth-PRA32-U.ino" to match the hardware configuration
-    - NOTE: To avoid noise, the parameters will not be written to the flash if `PRA32_U_I2S_DAC_MUTE_OFF_PIN` is not defined
 - The default setting is for Pimoroni [Pico Audio Pack](https://shop.pimoroni.com/products/pico-audio-pack) (PIM544)
 ```
 #define PRA32_U_I2S_DAC_MUTE_OFF_PIN          (22)
@@ -155,7 +154,7 @@
         - Write: Write the current parameters to PRA32-U (Program #8-15 and the flash)
         - Program Change: Send Program Change to PRA32-U directry
           (NOTE: The current parameters of PRA32-U will not be updated)
-    - Optional: Write Program #8-15 to the flash when using I2S DAC without a mute off pin or PWM audio (for Raspberry Pi Pico/H/W/WH)
+    - Optional: Write Program #8-15 to the flash when using PWM audio (for Raspberry Pi Pico/H/W/WH)
         - Uncomment out `//#define PRA32_U_USE_EMULATED_EEPROM_BOOTSEL_LONG_PRESS_TO_WRITE_USER_PROGRAMS_AND_STOP_PROCESSING`
         - Write the current parameters to Program #8-15
         - Press BOOTSEL button for 3 seconds to write the user program to flash and stop audio processing (Pico needs to be rebooted!)

@@ -179,7 +179,7 @@ void __not_in_flash_func(loop)() {
 #endif  // defined(PRA32_U_USE_DEBUG_PRINT)
 
 #if defined(PRA32_U_USE_EMULATED_EEPROM)
-#if (defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN) && !defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S))
+#if !defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
 #elif (defined(PRA32_U_USE_EMULATED_EEPROM_BOOTSEL_LONG_PRESS_TO_WRITE_USER_PROGRAMS_AND_STOP_PROCESSING) \
       && (defined(ARDUINO_RASPBERRY_PI_PICO) || defined(ARDUINO_RASPBERRY_PI_PICO_W)))
   static uint32_t s_bootsel_count = 0;
