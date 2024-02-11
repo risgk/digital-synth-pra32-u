@@ -184,7 +184,7 @@ void __not_in_flash_func(loop)() {
       && (defined(ARDUINO_RASPBERRY_PI_PICO) || defined(ARDUINO_RASPBERRY_PI_PICO_W)))
   static uint32_t s_bootsel_count = 0;
   if (BOOTSEL) {
-    ++s_bootsel_count;
+    s_bootsel_count++;
     if (s_bootsel_count >= (3 * SAMPLING_RATE) / PRA32_U_I2S_BUFFER_WORDS) {
       writeUserProgramsToFlashAndStopProcessing();
     }
@@ -304,6 +304,19 @@ void __not_in_flash_func(handleHandlePitchBend)(byte channel, int bend)
 void writeUserProgramsToFlashAndStopProcessing()
 {
 #if defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+  for (int16_t i = 0; i > -32768; i--) {
+#if ((PRA32_U_PWM_AUDIO_L_PIN + 1) == PRA32_U_PWM_AUDIO_R_PIN) && ((PRA32_U_PWM_AUDIO_L_PIN % 2) == 0)
+    g_pwm_l.write(i);
+    g_pwm_l.write(i);
+#elif ((PRA32_U_PWM_AUDIO_R_PIN + 1) == PRA32_U_PWM_AUDIO_L_PIN) && ((PRA32_U_PWM_AUDIO_R_PIN % 2) == 0)
+    g_pwm_r.write(i);
+    g_pwm_r.write(i);
+#else
+    g_pwm_l.write(i);
+    g_pwm_r.write(i);
+#endif
+  }
+
   g_pwm_l.end();
   g_pwm_r.end();
 #else  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
