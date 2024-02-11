@@ -39,6 +39,8 @@
 
 #define PRA32_U_USE_EMULATED_EEPROM
 
+#define PRA32_U_USE_EMULATED_EEPROM_BOOTSEL_LONG_PRESS_TO_WRITE_USER_PROGRAMS_AND_STOP_PROCESSING
+
 ////////////////////////////////////////////////////////////////
 
 #include "pra32-u-common.h"
@@ -71,6 +73,7 @@ void handleNoteOff(byte channel, byte pitch, byte velocity);
 void handleControlChange(byte channel, byte number, byte value);
 void handleHandleProgramChange(byte channel, byte number);
 void handleHandlePitchBend(byte channel, int bend);
+void writeProgramsToFlashAndEndSketch();
 
 void __not_in_flash_func(setup1)() {
 }
@@ -174,6 +177,23 @@ void __not_in_flash_func(loop)() {
 #if defined(PRA32_U_USE_DEBUG_PRINT)
   uint32_t debug_measurement_start0_us = micros();
 #endif  // defined(PRA32_U_USE_DEBUG_PRINT)
+
+#if defined(PRA32_U_USE_EMULATED_EEPROM)
+#if (defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN) && !defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)) \
+    || (defined(PRA32_U_USE_EMULATED_EEPROM_BOOTSEL_LONG_PRESS_TO_WRITE_USER_PROGRAMS_AND_STOP_PROCESSING) \
+       && (defined(ARDUINO_RASPBERRY_PI_PICO) || defined(ARDUINO_RASPBERRY_PI_PICO_W)))
+#else
+  static uint32_t s_bootsel_count = 0;
+  if (BOOTSEL) {
+    ++s_bootsel_count;
+    if (s_bootsel_count >= (3 * SAMPLING_RATE) / PRA32_U_I2S_BUFFER_WORDS) {
+      writeUserProgramsToFlashAndStopProcessing();
+    }
+  } else {
+    s_bootsel_count = 0;
+  }
+#endif
+#endif  // defined(PRA32_U_USE_EMULATED_EEPROM)
 
   for (uint32_t i = 0; i < (PRA32_U_I2S_BUFFER_WORDS + 15) / 16; i++) {
 #if defined(PRA32_U_USE_USB_MIDI)
@@ -279,5 +299,26 @@ void __not_in_flash_func(handleHandlePitchBend)(byte channel, int bend)
 {
   if ((channel - 1) == PRA32_U_MIDI_CH) {
     g_synth.pitch_bend((bend + 8192) & 0x7F, (bend + 8192) >> 7);
+  }
+}
+
+void writeUserProgramsToFlashAndStopProcessing()
+{
+#if defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+  g_pwm_l.end();
+  g_pwm_r.end();
+#else  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+  g_i2s_output.end();
+#endif  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+
+  EEPROM.commit();
+
+  while (true) {
+#if defined(ARDUINO_RASPBERRY_PI_PICO)
+    digitalWrite(LED_BUILTIN, LOW);
+    delay(500);
+    digitalWrite(LED_BUILTIN, HIGH);
+#endif  // defined(ARDUINO_RASPBERRY_PI_PICO)
+    delay(500);
   }
 }
