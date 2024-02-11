@@ -150,7 +150,7 @@
     - Optional: Write Program #8-15 to the flash when using PWM audio (for Raspberry Pi Pico/H/W/WH)
         - Uncomment out `//#define PRA32_U_USE_EMULATED_EEPROM_PRESS_BOOTSEL_TO_WRITE_USER_PROGRAMS`
         - Write the current parameters to Program #8-15
-        - Press BOOTSEL button for 3 seconds to write the user program to flash and stop audio processing (Pico needs to be rebooted!)
+        - Press BOOTSEL button for 3 seconds to write user programs to the flash and shut down (Pico needs to be rebooted!)
 
 
 ## Examples of Option Combinations
