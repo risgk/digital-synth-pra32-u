@@ -185,7 +185,7 @@ void __not_in_flash_func(loop)() {
   if (BOOTSEL) {
     s_bootsel_count++;
     if (s_bootsel_count >= (3 * SAMPLING_RATE) / PRA32_U_I2S_BUFFER_WORDS) {
-      writeUserProgramsToFlashAndStopProcessing();
+      writeUserProgramsToFlashAndShutDown();
     }
   } else {
     s_bootsel_count = 0;
@@ -304,7 +304,7 @@ void __not_in_flash_func(handleHandlePitchBend)(byte channel, int bend)
   }
 }
 
-void writeUserProgramsToFlashAndStopProcessing()
+void writeUserProgramsToFlashAndShutDown()
 {
 #if defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
   for (int16_t i = 0; i > -32768; i--) {
