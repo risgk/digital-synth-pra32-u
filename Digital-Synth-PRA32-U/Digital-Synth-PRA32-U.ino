@@ -16,7 +16,7 @@
 
 #define PRA32_U_MIDI_CH                       (0)  // 0-based
 
-// for Pimoroni Pico Audio Pack [PIM544]
+// for Pimoroni Pico Audio Pack (PIM544)
 #define PRA32_U_I2S_DAC_MUTE_OFF_PIN          (22)
 #define PRA32_U_I2S_DATA_PIN                  (9)
 //#define PRA32_U_I2S_MCLK_PIN                  (0)
@@ -33,8 +33,6 @@
 // for Pimoroni Pico VGA Demo Base (PIM553)
 #define PRA32_U_PWM_AUDIO_L_PIN               (28)
 #define PRA32_U_PWM_AUDIO_R_PIN               (27)
-
-//#define PRA32_U_USE_PWM_AUDIO_DITHERING_INSTEAD_OF_ERROR_DIFFUSION
 
 #define PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING
 
