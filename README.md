@@ -148,7 +148,7 @@
         - Program Change: Send Program Change to PRA32-U directry
           (NOTE: The current parameters of PRA32-U will not be updated)
     - Optional: Write Program #8-15 to the flash when using PWM audio (for Raspberry Pi Pico/H/W/WH)
-        - Uncomment out `//#define PRA32_U_USE_EMULATED_EEPROM_BOOTSEL_LONG_PRESS_TO_WRITE_USER_PROGRAMS_AND_STOP_PROCESSING`
+        - Uncomment out `//#define PRA32_U_USE_EMULATED_EEPROM_PRESS_BOOTSEL_TO_WRITE_USER_PROGRAMS`
         - Write the current parameters to Program #8-15
         - Press BOOTSEL button for 3 seconds to write the user program to flash and stop audio processing (Pico needs to be rebooted!)
 
