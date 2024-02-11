@@ -23,6 +23,7 @@
 //#define PRA32_U_I2S_MCLK_MULT                 (0)
 #define PRA32_U_I2S_BCLK_PIN                  (10)  // LRCLK Pin is PRA32_U_I2S_BCLK_PIN + 1
 #define PRA32_U_I2S_SWAP_BCLK_AND_LRCLK_PINS  (false)
+#define PRA32_U_I2S_SWAP_LEFT_AND_RIGHT       (false)
 
 #define PRA32_U_I2S_BUFFERS                   (4)
 #define PRA32_U_I2S_BUFFER_WORDS              (64)
@@ -233,7 +234,11 @@ void __not_in_flash_func(loop)() {
   }
 #else  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
   for (uint32_t i = 0; i < PRA32_U_I2S_BUFFER_WORDS; i++) {
-    g_i2s_output.write16(left_buffer[i], right_buffer[i]);
+    if (PRA32_U_I2S_SWAP_LEFT_AND_RIGHT) {
+      g_i2s_output.write16(right_buffer[i], left_buffer[i]);
+    } else {
+      g_i2s_output.write16(left_buffer[i], right_buffer[i]);
+    }
   }
 #endif  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
 
