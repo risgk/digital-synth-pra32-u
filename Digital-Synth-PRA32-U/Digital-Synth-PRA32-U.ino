@@ -2,7 +2,7 @@
  * Digital Synth PRA32-U
  */
 
-//#define PRA32_U_USE_DEBUG_PRINT               // Serial1
+#define PRA32_U_USE_DEBUG_PRINT               // Serial1
 
 #define PRA32_U_USE_USB_MIDI                  // Select USB Stack: "Adafruit TinyUSB" in the Arduino IDE "Tools" menu
 
@@ -99,14 +99,19 @@ void __not_in_flash_func(loop1)() {
 #if defined(PRA32_U_USE_DEBUG_PRINT)
     static uint32_t s_debug_loop_counter = 0;
     s_debug_loop_counter++;
-    if (s_debug_loop_counter >= 64 * 3000) {
+    if        (s_debug_loop_counter == 16 * 3000) {
+      Serial1.print("\e[10;1H\e[K");
+      Serial1.print(s_debug_measurement_elapsed1_us);
+    } else if (s_debug_loop_counter == 32 * 3000) {
+      Serial1.print("\e[11;1H\e[K");
+      Serial1.print(s_debug_measurement_max1_us);
+    } else if (s_debug_loop_counter == 48 * 3000) {
+      Serial1.print("\e[13;1H\e[K");
+      Serial1.print(s_debug_measurement_elapsed0_us);
+    } else if (s_debug_loop_counter == 64 * 3000) {
+      Serial1.print("\e[14;1H\e[K");
+      Serial1.print(s_debug_measurement_max0_us);
       s_debug_loop_counter = 0;
-
-      Serial1.println(s_debug_measurement_elapsed1_us);
-      Serial1.println(s_debug_measurement_max1_us);
-      Serial1.println(s_debug_measurement_elapsed0_us);
-      Serial1.println(s_debug_measurement_max0_us);
-      Serial1.println();
     }
 #endif  // defined(PRA32_U_USE_DEBUG_PRINT)
   }
