@@ -336,11 +336,7 @@ void __not_in_flash_func(loop)() {
 void __not_in_flash_func(handleNoteOn)(byte channel, byte pitch, byte velocity)
 {
   if ((channel - 1) == PRA32_U_MIDI_CH) {
-    if (velocity > 0) {
-      g_synth.note_on(pitch, velocity);
-    } else {
-      g_synth.note_off(pitch);
-    }
+    g_synth.note_on(pitch, velocity);
   }
 }
 
