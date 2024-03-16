@@ -290,7 +290,7 @@ public:
     program_change(PROGRAM_NUMBER_DEFAULT);
   }
 
-  INLINE void note_on(uint8_t note_number, uint8_t velocity) {
+  /* INLINE */ void note_on(uint8_t note_number, uint8_t velocity) {
     if (m_note_on_total_count == 255) {
       return;
     }
@@ -450,7 +450,7 @@ public:
     }
   }
 
-  INLINE void note_off(uint8_t note_number) {
+  /* INLINE */ void note_off(uint8_t note_number) {
     if (m_note_on_total_count == 0) {
       return;
     }
@@ -599,7 +599,7 @@ public:
     set_sustain_pedal(0);
   }
 
-  INLINE void control_change(uint8_t control_number, uint8_t controller_value) {
+  /* INLINE */ void control_change(uint8_t control_number, uint8_t controller_value) {
     m_current_controller_value_table[control_number] = controller_value;
 
     switch (control_number) {
@@ -915,7 +915,7 @@ public:
     }
   }
 
-  INLINE void pitch_bend(uint8_t lsb, uint8_t msb) {
+  /* INLINE */ void pitch_bend(uint8_t lsb, uint8_t msb) {
     int16_t pitch_bend = ((static_cast<uint16_t>(msb) << 8) >> 1) + lsb - 8192;
     m_osc.set_pitch_bend(pitch_bend);
   }
