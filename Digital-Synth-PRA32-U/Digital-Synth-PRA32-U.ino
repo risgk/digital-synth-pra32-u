@@ -42,6 +42,7 @@
 
 #define PRA32_U_USE_CONTROL_PANEL
 #define PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT  // ADC0, ADC1, ADC2
+#define PRA32_U_USE_CONTROL_PANEL_OLED_DISPLAY  // I2C1 (SSD1306)
 
 ////////////////////////////////////////////////////////////////
 
@@ -98,32 +99,29 @@ void __not_in_flash_func(setup1)() {
 void __not_in_flash_func(loop1)() {
   boolean processed = g_synth.secondary_core_process();
   if (processed) {
-    static uint32_t s_panel_loop_counter = 0;
-    s_panel_loop_counter++;
-    if (s_panel_loop_counter >= 64 * 750) {
-      s_panel_loop_counter = 0;
+    static uint32_t s_loop_counter = 0;
+    s_loop_counter++;
+    if (s_loop_counter >= 16 * 750) {
+      s_loop_counter = 0;
     }
 
-    PRA32_U_ControlPanel_update(s_panel_loop_counter);
+    PRA32_U_ControlPanel_update(s_loop_counter);
 
 #if defined(PRA32_U_USE_DEBUG_PRINT)
-    static uint32_t s_debug_loop_counter = 0;
-    s_debug_loop_counter++;
-    if        (s_debug_loop_counter ==  4 * 3000) {
+    if        (s_loop_counter ==  1 * 750) {
       Serial1.print("\e[1;1H\e[K");
       Serial1.print(s_debug_measurement_elapsed1_us);
-    } else if (s_debug_loop_counter ==  8 * 3000) {
+    } else if (s_loop_counter ==  2 * 750) {
       Serial1.print("\e[2;1H\e[K");
       Serial1.print(s_debug_measurement_max1_us);
-    } else if (s_debug_loop_counter == 12 * 3000) {
+    } else if (s_loop_counter ==  3 * 750) {
       Serial1.print("\e[4;1H\e[K");
       Serial1.print(s_debug_measurement_elapsed0_us);
-    } else if (s_debug_loop_counter == 16 * 3000) {
+    } else if (s_loop_counter ==  4 * 750) {
       Serial1.print("\e[5;1H\e[K");
       Serial1.print(s_debug_measurement_max0_us);
-      s_debug_loop_counter = 0;
     } else {
-      PRA32_U_ControlPanel_debug_print(s_debug_loop_counter);
+      PRA32_U_ControlPanel_debug_print(s_loop_counter);
     }
 #endif  // defined(PRA32_U_USE_DEBUG_PRINT)
   }
