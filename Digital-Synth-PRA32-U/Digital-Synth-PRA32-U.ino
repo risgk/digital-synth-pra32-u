@@ -108,20 +108,26 @@ void __not_in_flash_func(loop1)() {
     PRA32_U_ControlPanel_update(s_loop_counter);
 
 #if defined(PRA32_U_USE_DEBUG_PRINT)
-    if        (s_loop_counter ==  1 * 750) {
+    switch (s_loop_counter) {
+    case  1 * 750:
       Serial1.print("\e[1;1H\e[K");
       Serial1.print(s_debug_measurement_elapsed1_us);
-    } else if (s_loop_counter ==  2 * 750) {
+      break;
+    case  2 * 750:
       Serial1.print("\e[2;1H\e[K");
       Serial1.print(s_debug_measurement_max1_us);
-    } else if (s_loop_counter ==  3 * 750) {
+      break;
+    case  3 * 750:
       Serial1.print("\e[4;1H\e[K");
       Serial1.print(s_debug_measurement_elapsed0_us);
-    } else if (s_loop_counter ==  4 * 750) {
+      break;
+    case  4 * 750:
       Serial1.print("\e[5;1H\e[K");
       Serial1.print(s_debug_measurement_max0_us);
-    } else {
+      break;
+    default:
       PRA32_U_ControlPanel_debug_print(s_loop_counter);
+      break;
     }
 #endif  // defined(PRA32_U_USE_DEBUG_PRINT)
   }
