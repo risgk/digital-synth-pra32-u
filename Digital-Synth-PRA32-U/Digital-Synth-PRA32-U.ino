@@ -40,8 +40,8 @@
 
 //#define PRA32_U_USE_EMULATED_EEPROM_PRESS_BOOTSEL_TO_WRITE_USER_PROGRAMS
 
-#define PRA32_U_USE_PANEL
-#define PRA32_U_USE_PANEL_ANALOG_INPUT
+#define PRA32_U_USE_CONTROL_PANEL
+#define PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT  // ADC0, ADC1, ADC2
 
 ////////////////////////////////////////////////////////////////
 
@@ -49,6 +49,7 @@
 
 #include "pra32-u-common.h"
 #include "pra32-u-synth.h"
+#include "pra32-u-control-panel.h"
 
 PRA32_U_Synth g_synth;
 
@@ -85,12 +86,7 @@ void handleHandlePitchBend(byte channel, int bend);
 void writeProgramsToFlashAndEndSketch();
 
 void __not_in_flash_func(setup1)() {
-#if defined(PRA32_U_USE_PANEL) && defined(PRA32_U_USE_PANEL_ANALOG_INPUT)
-  adc_init();
-  adc_gpio_init(26);
-  adc_gpio_init(27);
-  adc_gpio_init(28);
-#endif
+  PRA32_U_ControlPanel_setup();
 
 #if defined(PRA32_U_USE_DEBUG_PRINT)
   Serial1.setTX(0);
@@ -102,68 +98,32 @@ void __not_in_flash_func(setup1)() {
 void __not_in_flash_func(loop1)() {
   boolean processed = g_synth.secondary_core_process();
   if (processed) {
-    static uint32_t s_ui_counter = 0;
-    s_ui_counter++;
-    if (s_ui_counter >= 64 * 750) {
-      s_ui_counter = 0;
+    static uint32_t s_panel_loop_counter = 0;
+    s_panel_loop_counter++;
+    if (s_panel_loop_counter >= 64 * 750) {
+      s_panel_loop_counter = 0;
     }
 
-    static uint32_t a0 = 0;
-    static uint32_t a1 = 0;
-    static uint32_t a2 = 0;
-
-#if defined(PRA32_U_USE_PANEL) && defined(PRA32_U_USE_PANEL_ANALOG_INPUT)
-    if        ((s_ui_counter & 0x3F) == 0x10) {
-      adc_select_input(0);
-      a0 = (adc_read() + adc_read() + adc_read() + adc_read() +
-            adc_read() + adc_read() + adc_read() + adc_read()) >> 7;
-    } else if ((s_ui_counter & 0x3F) == 0x20) {
-      adc_select_input(1);
-      a1 = (adc_read() + adc_read() + adc_read() + adc_read() +
-            adc_read() + adc_read() + adc_read() + adc_read()) >> 7;
-    } else if ((s_ui_counter & 0x3F) == 0x30) {
-      adc_select_input(2);
-      a2 = (adc_read() + adc_read() + adc_read() + adc_read() +
-            adc_read() + adc_read() + adc_read() + adc_read()) >> 7;
-    }
-#endif
+    PRA32_U_ControlPanel_update(s_panel_loop_counter);
 
 #if defined(PRA32_U_USE_DEBUG_PRINT)
     static uint32_t s_debug_loop_counter = 0;
     s_debug_loop_counter++;
     if        (s_debug_loop_counter ==  4 * 3000) {
-      Serial1.print("\e[10;1H\e[K");
+      Serial1.print("\e[1;1H\e[K");
       Serial1.print(s_debug_measurement_elapsed1_us);
     } else if (s_debug_loop_counter ==  8 * 3000) {
-      Serial1.print("\e[11;1H\e[K");
+      Serial1.print("\e[2;1H\e[K");
       Serial1.print(s_debug_measurement_max1_us);
     } else if (s_debug_loop_counter == 12 * 3000) {
-      Serial1.print("\e[13;1H\e[K");
+      Serial1.print("\e[4;1H\e[K");
       Serial1.print(s_debug_measurement_elapsed0_us);
     } else if (s_debug_loop_counter == 16 * 3000) {
-      Serial1.print("\e[14;1H\e[K");
+      Serial1.print("\e[5;1H\e[K");
       Serial1.print(s_debug_measurement_max0_us);
       s_debug_loop_counter = 0;
-#if defined(PRA32_U_USE_PANEL) && defined(PRA32_U_USE_PANEL_ANALOG_INPUT)
-    } else if ((s_debug_loop_counter ==  1 * 3000) ||
-               (s_debug_loop_counter ==  5 * 3000) ||
-               (s_debug_loop_counter ==  9 * 3000) ||
-               (s_debug_loop_counter == 13 * 3000)) {
-      Serial1.print("\e[16;1H\e[K");
-      Serial1.print(a0);
-    } else if ((s_debug_loop_counter ==  2 * 3000) ||
-               (s_debug_loop_counter ==  6 * 3000) ||
-               (s_debug_loop_counter == 10 * 3000) ||
-               (s_debug_loop_counter == 14 * 3000)) {
-      Serial1.print("\e[17;1H\e[K");
-      Serial1.print(a1);
-    } else if ((s_debug_loop_counter ==  3 * 3000) ||
-               (s_debug_loop_counter ==  7 * 3000) ||
-               (s_debug_loop_counter == 11 * 3000) ||
-               (s_debug_loop_counter == 15 * 3000)) {
-      Serial1.print("\e[18;1H\e[K");
-      Serial1.print(a2);
-#endif
+    } else {
+      PRA32_U_ControlPanel_debug_print(s_debug_loop_counter);
     }
 #endif  // defined(PRA32_U_USE_DEBUG_PRINT)
   }
