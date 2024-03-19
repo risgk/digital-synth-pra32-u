@@ -40,8 +40,13 @@
 
 //#define PRA32_U_USE_EMULATED_EEPROM_PRESS_BOOTSEL_TO_WRITE_USER_PROGRAMS
 
+////////////////////////////////////////////////////////////////
+
 #define PRA32_U_USE_CONTROL_PANEL
+
 #define PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT  // ADC0, ADC1, ADC2
+#define PRA32_U_CONTROL_PANEL_REVERSE_ANALOG_INPUT (true)
+
 #define PRA32_U_USE_CONTROL_PANEL_OLED_DISPLAY  // I2C1 (SSD1306)
 
 ////////////////////////////////////////////////////////////////
@@ -105,7 +110,7 @@ void __not_in_flash_func(loop1)() {
       s_loop_counter = 0;
     }
 
-    PRA32_U_ControlPanel_update(s_loop_counter);
+    PRA32_U_ControlPanel_update_input(s_loop_counter);
 
 #if defined(PRA32_U_USE_DEBUG_PRINT)
     switch (s_loop_counter) {
@@ -248,6 +253,8 @@ void __not_in_flash_func(loop)() {
     UART_MIDI.read();
 #endif
   }
+
+  PRA32_U_ControlPanel_update_control();
 
 #if defined(PRA32_U_USE_DEBUG_PRINT)
   uint32_t debug_measurement_start1_us = micros();
