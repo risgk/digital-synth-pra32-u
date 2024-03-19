@@ -48,14 +48,18 @@
 #### UART MIDI (Optional)
 
 - UART MIDI can also be used
+    - Noise caused by USB communication can be avoided
 - Uncomment out `//#define PRA32_U_USE_UART_MIDI` in "Digital-Synth-PRA32-U.ino"
   and modify `PRA32_U_UART_MIDI_SPEED`, `PRA32_U_UART_MIDI_TX_PIN`, and `PRA32_U_UART_MIDI_RX_PIN`
-- Speed: 31250 bps (default, for DIN/TRS MIDI) or 38400 bps
-- GP4 and GP5 pins are used by UART1 TX and UART1 RX by default
+    - Speed: 31250 bps (default, for DIN/TRS MIDI) or 38400 bps (for PC)
+    - GP4 and GP5 pins are used by UART1 TX and UART1 RX by default
 - DIN/TRS MIDI is available by using (and modifying) Adafruit MIDI FeatherWing Kit, for example
     - Adafruit [MIDI FeatherWing Kit](https://www.adafruit.com/product/4740)
     - 木下研究所 [MIDI-UARTインターフェースさん キット](https://www.switch-science.com/products/8117) (Shipping to Japan only)
     - necobit電子 [MIDI Unit for GROVE](https://necobit.com/denshi/grove-midi-unit/) (Shipping to Japan only)
+- We recommend using [Hairless MIDI<->Serial Bridge](https://projectgus.github.io/hairless-midiserial/) on PC
+    - On Windows, We recommend using [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html) (virtual loopback MIDI cable)
+    - On Mac, a virtual MIDI bus (port) can be created by using the IAC bus
 
 
 ### Audio (Output)
