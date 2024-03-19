@@ -55,9 +55,10 @@
 
 #include "pra32-u-common.h"
 #include "pra32-u-synth.h"
-#include "pra32-u-control-panel.h"
 
 PRA32_U_Synth g_synth;
+
+#include "pra32-u-control-panel.h"
 
 #include <MIDI.h>
 #if defined(PRA32_U_USE_USB_MIDI)

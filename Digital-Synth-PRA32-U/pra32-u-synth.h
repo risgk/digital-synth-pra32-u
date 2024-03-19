@@ -125,7 +125,11 @@ class PRA32_U_Synth {
   uint8_t           m_program_number_to_write;
   uint8_t           m_wr_prog_to_flash_cc_value;
   uint8_t           m_sp_prog_chg_cc_values[8];
+
+public:
   uint8_t           m_current_controller_value_table[128];
+
+private:
   uint8_t           m_program_table[128][PROGRAM_NUMBER_MAX + 1];
 
   volatile int32_t  m_secondary_core_processing_argument;
