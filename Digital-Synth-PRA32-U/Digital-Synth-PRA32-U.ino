@@ -42,15 +42,18 @@
 
 ////////////////////////////////////////////////////////////////
 
-#define PRA32_U_USE_CONTROL_PANEL                       // Experimental
+#define PRA32_U_USE_CONTROL_PANEL               // Experimental
 
-#define PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT          // ADC0, ADC1, ADC2
-#define PRA32_U_CONTROL_PANEL_ANALOG_INPUT_REVERSED     (true)
+#define PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT  // Use ADC0, ADC1, and ADC2
+#define PRA32_U_ANALOG_INPUT_REVERSED           (true)
 
-#define PRA32_U_USE_CONTROL_PANEL_OLED_DISPLAY          // I2C1 (SSD1306)
-#define PRA32_U_CONTROL_PANEL_OLED_DISPLAY_I2C_DEVICE   (i2c1)
-#define PRA32_U_CONTROL_PANEL_OLED_DISPLAY_I2C_SDA_PIN  (6)
-#define PRA32_U_CONTROL_PANEL_OLED_DISPLAY_I2C_SCL_PIN  (7)
+#define PRA32_U_USE_CONTROL_PANEL_OLED_DISPLAY  // Use SSD1306 monochrome 128x64 OLED
+#define PRA32_U_OLED_DISPLAY_I2C                (i2c1)
+#define PRA32_U_OLED_DISPLAY_I2C_SDA_PIN        (6)
+#define PRA32_U_OLED_DISPLAY_I2C_SCL_PIN        (7)
+#define PRA32_U_OLED_DISPLAY_I2C_ADDRESS        (0x3C)
+#define PRA32_U_OLED_DISPLAY_CONTRAST           (0xFF)
+#define PRA32_U_OLED_DISPLAY_ROTATION           (true)
 
 ////////////////////////////////////////////////////////////////
 
