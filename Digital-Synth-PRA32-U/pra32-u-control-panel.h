@@ -20,7 +20,7 @@ static char s_display_buffer[8][21 + 1] = {
   "                     ",
   "           Filter    ",
   "           EG Amt    ",
-  "           C    [   ]",
+  "           C         ",
 };
 
 static INLINE uint8_t PRA32_U_ControlPanel_adc_control_value_candidate(uint32_t adc_number) {
@@ -228,7 +228,7 @@ INLINE void PRA32_U_ControlPanel_update_display(uint32_t loop_counter) {
 
 #if defined(PRA32_U_USE_CONTROL_PANEL_OLED_DISPLAY)
   static uint32_t s_display_draw_counter = 0;
-  if ((loop_counter & 0x7F) == 0x00) {
+  if ((loop_counter & 0x7F) == 0x40) {
     ++s_display_draw_counter;
     if (s_display_draw_counter >= 31) {
       s_display_draw_counter = 0;
@@ -237,7 +237,7 @@ INLINE void PRA32_U_ControlPanel_update_display(uint32_t loop_counter) {
     uint8_t x = (s_display_draw_counter % 21) + ((s_display_draw_counter >= 21) * 11);
     uint8_t y = ((s_display_draw_counter >= 21) * 4) + 3;
     PRA32_U_ControlPanel_set_draw_position(x, y);
-  } else if ((loop_counter & 0x7F) == 0x40) {
+  } else if ((loop_counter & 0x7F) == 0x00) {
     uint8_t x = (s_display_draw_counter % 21) + ((s_display_draw_counter >= 21) * 11);
     uint8_t y = ((s_display_draw_counter >= 21) * 4) + 3;
     PRA32_U_ControlPanel_draw_character(s_display_buffer[y][x]);
