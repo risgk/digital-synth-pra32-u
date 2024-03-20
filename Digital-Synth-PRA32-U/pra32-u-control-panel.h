@@ -3,7 +3,7 @@
 #include "pra32-u-common.h"
 #include "pra32-u-control-panel-font-table.h"
 
-#include <Wire.h>
+#include "hardware/i2c.h"
 
 #include <cstdio>
 
@@ -33,16 +33,15 @@ INLINE void PRA32_U_ControlPanel_setup() {
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
 
 #if defined(PRA32_U_USE_CONTROL_PANEL_OLED_DISPLAY)
-  Wire1.setSDA(6);
-  Wire1.setSCL(7);
-  Wire1.begin();
+  i2c_init(PRA32_U_CONTROL_PANEL_OLED_DISPLAY_I2C_DEVICE, 400 * 1000);
+  i2c_set_slave_mode(PRA32_U_CONTROL_PANEL_OLED_DISPLAY_I2C_DEVICE, false, 0);
+  gpio_set_function(PRA32_U_CONTROL_PANEL_OLED_DISPLAY_I2C_SDA_PIN, GPIO_FUNC_I2C);
+  gpio_pull_up(PRA32_U_CONTROL_PANEL_OLED_DISPLAY_I2C_SDA_PIN);
+  gpio_set_function(PRA32_U_CONTROL_PANEL_OLED_DISPLAY_I2C_SCL_PIN, GPIO_FUNC_I2C);
+  gpio_pull_up(PRA32_U_CONTROL_PANEL_OLED_DISPLAY_I2C_SCL_PIN);
 
-  Wire1.beginTransmission(0x3C);
-  Wire1.write(0x00);
-  Wire1.write(0x8D);
-  Wire1.write(0x14);
-  Wire1.write(0xAF);
-  Wire1.endTransmission();
+  uint8_t send_data[] = {0x00, 0x8D, 0x14, 0xAF};
+  i2c_write_blocking(PRA32_U_CONTROL_PANEL_OLED_DISPLAY_I2C_DEVICE, 0x3C, send_data, 4, false);
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL_OLED_DISPLAY)
 
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL)
@@ -100,11 +99,11 @@ INLINE void PRA32_U_ControlPanel_update_input(uint32_t loop_counter) {
 }
 
 static INLINE uint8_t PRA32_U_ControlPanel_adc_control_value_candidate(uint32_t adc_number) {
-#if defined(PRA32_U_CONTROL_PANEL_REVERSE_ANALOG_INPUT)
+#if defined(PRA32_U_CONTROL_PANEL_ANALOG_INPUT_REVERSED)
   return (127 - (s_adc_current_value[adc_number] >> 2));
-#else  // defined(PRA32_U_CONTROL_PANEL_REVERSE_ANALOG_INPUT)
+#else  // defined(PRA32_U_CONTROL_PANEL_ANALOG_INPUT_REVERSED)
   return (s_adc_current_value[adc_number] >> 2);
-#endif  // defined(PRA32_U_CONTROL_PANEL_REVERSE_ANALOG_INPUT)
+#endif  // defined(PRA32_U_CONTROL_PANEL_ANALOG_INPUT_REVERSED)
 }
 
 static INLINE boolean PRA32_U_ControlPanel_update_adc_control(uint32_t adc_number) {
