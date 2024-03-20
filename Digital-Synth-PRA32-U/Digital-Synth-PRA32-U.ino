@@ -110,7 +110,7 @@ void __not_in_flash_func(loop1)() {
   if (processed) {
     static uint32_t s_loop_counter = 0;
     s_loop_counter++;
-    if (s_loop_counter >= 16 * 375 * 8) {
+    if (s_loop_counter >= 16 * 375) {
       s_loop_counter = 0;
     }
 
@@ -119,7 +119,7 @@ void __not_in_flash_func(loop1)() {
     PRA32_U_ControlPanel_update_display(s_loop_counter);
 
 #if defined(PRA32_U_USE_DEBUG_PRINT)
-    switch (s_loop_counter >> 3) {
+    switch (s_loop_counter) {
     case  1 * 375:
       Serial1.print("\e[1;1H\e[K");
       Serial1.print(s_debug_measurement_elapsed1_us);
