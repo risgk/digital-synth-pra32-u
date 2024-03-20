@@ -23,8 +23,6 @@ static char s_display_buffer[8][21 + 1] = {
   "           C    [   ]",
 };
 
-static uint32_t s_display_draw_counter = 0;
-
 static INLINE uint8_t PRA32_U_ControlPanel_adc_control_value_candidate(uint32_t adc_number) {
 #if defined(PRA32_U_ANALOG_INPUT_REVERSED)
   return (127 - (s_adc_current_value[adc_number] >> 2));
@@ -229,6 +227,7 @@ INLINE void PRA32_U_ControlPanel_update_display(uint32_t loop_counter) {
 #if defined(PRA32_U_USE_CONTROL_PANEL)
 
 #if defined(PRA32_U_USE_CONTROL_PANEL_OLED_DISPLAY)
+  static uint32_t s_display_draw_counter = 0;
   if ((loop_counter & 0x7F) == 0x00) {
     ++s_display_draw_counter;
     if (s_display_draw_counter >= 31) {
@@ -252,48 +251,48 @@ INLINE void PRA32_U_ControlPanel_debug_print(uint32_t loop_counter) {
 #if defined(PRA32_U_USE_DEBUG_PRINT)
 #if defined(PRA32_U_USE_CONTROL_PANEL)
   switch (loop_counter) {
-  case  5 * 375:
+  case  5 * 400:
     Serial1.print("\e[7;1H\e[K");
     Serial1.print(static_cast<char*>(s_display_buffer[0]));
     break;
-  case  6 * 375:
+  case  6 * 400:
     Serial1.print("\e[8;1H\e[K");
     Serial1.print(static_cast<char*>(s_display_buffer[1]));
     break;
-  case  7 * 375:
+  case  7 * 400:
     Serial1.print("\e[9;1H\e[K");
     Serial1.print(static_cast<char*>(s_display_buffer[2]));
     break;
-  case  8 * 375:
+  case  8 * 400:
     Serial1.print("\e[10;1H\e[K");
     Serial1.print(static_cast<char*>(s_display_buffer[3]));
     break;
-  case  9 * 375:
+  case  9 * 400:
     Serial1.print("\e[11;1H\e[K");
     Serial1.print(static_cast<char*>(s_display_buffer[4]));
     break;
-  case 10 * 375:
+  case 10 * 400:
     Serial1.print("\e[12;1H\e[K");
     Serial1.print(static_cast<char*>(s_display_buffer[5]));
     break;
-  case 11 * 375:
+  case 11 * 400:
     Serial1.print("\e[13;1H\e[K");
     Serial1.print(static_cast<char*>(s_display_buffer[6]));
     break;
-  case 12 * 375:
+  case 12 * 400:
     Serial1.print("\e[14;1H\e[K");
     Serial1.print(static_cast<char*>(s_display_buffer[7]));
     break;
 #if defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
-  case 13 * 375:
+  case 13 * 400:
     Serial1.print("\e[16;1H\e[K");
     Serial1.print(s_adc_control_value[0]);
     break;
-  case 14 * 375:
+  case 14 * 400:
     Serial1.print("\e[17;1H\e[K");
     Serial1.print(s_adc_control_value[1]);
     break;
-  case 15 * 375:
+  case 15 * 400:
     Serial1.print("\e[18;1H\e[K");
     Serial1.print(s_adc_control_value[2]);
     break;
