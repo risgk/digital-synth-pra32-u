@@ -231,16 +231,16 @@ INLINE void PRA32_U_ControlPanel_update_display(uint32_t loop_counter) {
 #if defined(PRA32_U_USE_CONTROL_PANEL_OLED_DISPLAY)
   if ((loop_counter & 0x7F) == 0x00) {
     ++s_display_draw_counter;
-    if (s_display_draw_counter >= 8 * 21) {
+    if (s_display_draw_counter >= 2 * 21) {
       s_display_draw_counter = 0;
     }
 
     uint8_t x = s_display_draw_counter % 21;
-    uint8_t y = s_display_draw_counter / 21;
+    uint8_t y = ((s_display_draw_counter < 21) * 4) + 3;
     PRA32_U_ControlPanel_set_draw_position(x, y);
   } else if ((loop_counter & 0x7F) == 0x40) {
     uint8_t x = s_display_draw_counter % 21;
-    uint8_t y = s_display_draw_counter / 21;
+    uint8_t y = ((s_display_draw_counter < 21) * 4) + 3;
     PRA32_U_ControlPanel_draw_character(s_display_buffer[y][x]);
   }
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL_OLED_DISPLAY)
