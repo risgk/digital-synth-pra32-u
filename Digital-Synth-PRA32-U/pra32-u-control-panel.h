@@ -6,6 +6,7 @@
 #include "hardware/i2c.h"
 
 #include <cstdio>
+#include <cstring>
 
 static volatile uint32_t s_adc_current_value[3];
 static volatile uint32_t s_adc_control_value[3];
@@ -40,8 +41,8 @@ INLINE void PRA32_U_ControlPanel_setup() {
   gpio_set_function(PRA32_U_CONTROL_PANEL_OLED_DISPLAY_I2C_SCL_PIN, GPIO_FUNC_I2C);
   gpio_pull_up(PRA32_U_CONTROL_PANEL_OLED_DISPLAY_I2C_SCL_PIN);
 
-  uint8_t send_data[] = {0x00, 0x8D, 0x14, 0xAF};
-  i2c_write_blocking(PRA32_U_CONTROL_PANEL_OLED_DISPLAY_I2C_DEVICE, 0x3C, send_data, 4, false);
+  uint8_t commands[] = {0x00,  0x81, 0xFF,  0xA1, 0xC8,  0x8D, 0x14,  0xAF};
+  i2c_write_blocking(PRA32_U_CONTROL_PANEL_OLED_DISPLAY_I2C_DEVICE, 0x3C, commands, sizeof(commands), false);
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL_OLED_DISPLAY)
 
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL)
@@ -184,10 +185,39 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL)
 }
 
+static INLINE void PRA32_U_ControlPanel_draw_character(uint8_t x, uint8_t y, uint8_t c) {
+  uint8_t commands[] = {0x00,  static_cast<uint8_t>(0xB0 + y), 
+                               static_cast<uint8_t>(0x10 + ((x * 6) >> 4)),
+                               static_cast<uint8_t>(0x00 + ((x * 6) & 0x0F))};
+  i2c_write_blocking(PRA32_U_CONTROL_PANEL_OLED_DISPLAY_I2C_DEVICE, 0x3C, commands, sizeof(commands), false);
+
+  uint8_t data[] = {0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  std::memcpy(&data[1], g_font_table[c], 6);
+  i2c_write_blocking(PRA32_U_CONTROL_PANEL_OLED_DISPLAY_I2C_DEVICE, 0x3C, data, sizeof(data), false);
+}
+
+INLINE void PRA32_U_ControlPanel_update_display(uint32_t loop_counter) {
+#if defined(PRA32_U_USE_CONTROL_PANEL)
+#if defined(PRA32_U_USE_CONTROL_PANEL_OLED_DISPLAY)
+  if ((loop_counter & 0x3F) == 0x00) {
+    static uint32_t s_display_draw_counter = 0;
+    if (s_display_draw_counter >= 8 * 21) {
+      s_display_draw_counter = 0;
+    }
+    s_display_draw_counter++;
+
+    uint8_t x = s_display_draw_counter % 21;
+    uint8_t y = s_display_draw_counter / 21;
+    PRA32_U_ControlPanel_draw_character(x, y, s_display_buffer[y][x]);
+  }
+#endif  // defined(PRA32_U_USE_CONTROL_PANEL_OLED_DISPLAY)
+#endif  // defined(PRA32_U_USE_CONTROL_PANEL)
+}
+
 INLINE void PRA32_U_ControlPanel_debug_print(uint32_t loop_counter) {
 #if defined(PRA32_U_USE_DEBUG_PRINT)
 #if defined(PRA32_U_USE_CONTROL_PANEL)
-  switch (loop_counter) {
+  switch (loop_counter >> 3) {
   case  5 * 375:
     Serial1.print("\e[7;1H\e[K");
     Serial1.print(static_cast<char*>(s_display_buffer[0]));
