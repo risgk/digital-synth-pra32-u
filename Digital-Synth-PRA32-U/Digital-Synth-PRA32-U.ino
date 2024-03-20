@@ -107,27 +107,28 @@ void __not_in_flash_func(loop1)() {
   if (processed) {
     static uint32_t s_loop_counter = 0;
     s_loop_counter++;
-    if (s_loop_counter >= 16 * 750) {
+    if (s_loop_counter >= 16 * 375) {
       s_loop_counter = 0;
     }
 
     PRA32_U_ControlPanel_update_input(s_loop_counter);
+    PRA32_U_ControlPanel_update_display_buffer(s_loop_counter);
 
 #if defined(PRA32_U_USE_DEBUG_PRINT)
     switch (s_loop_counter) {
-    case  1 * 750:
+    case  1 * 375:
       Serial1.print("\e[1;1H\e[K");
       Serial1.print(s_debug_measurement_elapsed1_us);
       break;
-    case  2 * 750:
+    case  2 * 375:
       Serial1.print("\e[2;1H\e[K");
       Serial1.print(s_debug_measurement_max1_us);
       break;
-    case  3 * 750:
+    case  3 * 375:
       Serial1.print("\e[4;1H\e[K");
       Serial1.print(s_debug_measurement_elapsed0_us);
       break;
-    case  4 * 750:
+    case  4 * 375:
       Serial1.print("\e[5;1H\e[K");
       Serial1.print(s_debug_measurement_max0_us);
       break;
