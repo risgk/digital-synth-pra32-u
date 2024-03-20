@@ -81,7 +81,7 @@ INLINE void PRA32_U_ControlPanel_update_input(uint32_t loop_counter) {
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL)
 }
 
-static INLINE uint8_t PRA32_U_ControlPanel_adc_control_value_candidate(int adc_number) {
+static INLINE uint8_t PRA32_U_ControlPanel_adc_control_value_candidate(uint32_t adc_number) {
 #if defined(PRA32_U_CONTROL_PANEL_REVERSE_ANALOG_INPUT)
   return (127 - (s_adc_current_value[adc_number] >> 2));
 #else  // defined(PRA32_U_CONTROL_PANEL_REVERSE_ANALOG_INPUT)
@@ -89,12 +89,15 @@ static INLINE uint8_t PRA32_U_ControlPanel_adc_control_value_candidate(int adc_n
 #endif  // defined(PRA32_U_CONTROL_PANEL_REVERSE_ANALOG_INPUT)
 }
 
-static INLINE void PRA32_U_ControlPanel_update_adc_control(int adc_number) {
+static INLINE boolean PRA32_U_ControlPanel_update_adc_control(uint32_t adc_number) {
   uint32_t adc_control_value_candidate = PRA32_U_ControlPanel_adc_control_value_candidate(adc_number);
   if (s_adc_control_value[adc_number] != adc_control_value_candidate) {
     s_adc_control_value[adc_number] = adc_control_value_candidate;
     g_synth.control_change(s_adc_control_target[adc_number], s_adc_control_value[adc_number]);
+    return true;
   }
+
+  return false;
 }
 
 INLINE void PRA32_U_ControlPanel_update_control() {
@@ -109,9 +112,20 @@ INLINE void PRA32_U_ControlPanel_update_control() {
     return;
   }
 
-  PRA32_U_ControlPanel_update_adc_control(0);
-  PRA32_U_ControlPanel_update_adc_control(1);
-  PRA32_U_ControlPanel_update_adc_control(2);
+  static uint32_t s_adc_number_to_check = 0;
+
+  boolean updated = PRA32_U_ControlPanel_update_adc_control(s_adc_number_to_check);
+  s_adc_number_to_check = (s_adc_number_to_check + 1) % 3;
+
+  if (updated == false) {
+    updated = PRA32_U_ControlPanel_update_adc_control(s_adc_number_to_check);
+    s_adc_number_to_check = (s_adc_number_to_check + 1) % 3;
+
+    if (updated == false) {
+      updated = PRA32_U_ControlPanel_update_adc_control(s_adc_number_to_check);
+      s_adc_number_to_check = (s_adc_number_to_check + 1) % 3;
+    }
+  }
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL)
 }
