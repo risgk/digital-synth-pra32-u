@@ -2,6 +2,8 @@
 
 #include "pra32-u-common.h"
 
+#include <Wire.h>
+
 #include <cstdio>
 
 static volatile uint32_t s_adc_current_value[3];
@@ -21,12 +23,27 @@ static char s_display_buffer[8][21 + 1] = {
 
 INLINE void PRA32_U_ControlPanel_setup() {
 #if defined(PRA32_U_USE_CONTROL_PANEL)
+
 #if defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
   adc_init();
   adc_gpio_init(26);
   adc_gpio_init(27);
   adc_gpio_init(28);
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
+
+#if defined(PRA32_U_USE_CONTROL_PANEL_OLED_DISPLAY)
+  Wire1.setSDA(6);
+  Wire1.setSCL(7);
+  Wire1.begin();
+
+  Wire1.beginTransmission(0x3C);
+  Wire1.write(0x00);
+  Wire1.write(0x8D);
+  Wire1.write(0x14);
+  Wire1.write(0xAF);
+  Wire1.endTransmission();
+#endif  // defined(PRA32_U_USE_CONTROL_PANEL_OLED_DISPLAY)
+
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL)
 }
 

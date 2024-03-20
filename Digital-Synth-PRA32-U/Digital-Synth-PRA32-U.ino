@@ -42,7 +42,7 @@
 
 ////////////////////////////////////////////////////////////////
 
-#define PRA32_U_USE_CONTROL_PANEL
+#define PRA32_U_USE_CONTROL_PANEL  // Experimental
 
 #define PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT  // ADC0, ADC1, ADC2
 #define PRA32_U_CONTROL_PANEL_REVERSE_ANALOG_INPUT (true)
