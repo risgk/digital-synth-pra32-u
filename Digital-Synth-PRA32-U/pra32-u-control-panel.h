@@ -1,6 +1,7 @@
 #pragma once
 
 #include "pra32-u-common.h"
+#include "pra32-u-control-panel-font-table.h"
 
 #include <Wire.h>
 
