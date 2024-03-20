@@ -226,6 +226,8 @@ void __not_in_flash_func(setup)() {
 #endif  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
 
   g_synth.initialize();
+
+  delay(100);
 }
 
 void __not_in_flash_func(loop)() {

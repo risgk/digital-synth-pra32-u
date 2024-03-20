@@ -13,7 +13,7 @@ static volatile uint32_t s_adc_control_value[3];
 static volatile uint8_t  s_adc_control_target[3] = {FILTER_CUTOFF  , FILTER_RESO    , FILTER_EG_AMT  };
 
 static char s_display_buffer[8][21 + 1] = {
-  "                    5",
+  "                     ",
   "Filter     Filter    ",
   "Cutoff     Resonance ",
   "A          B         ",
@@ -24,6 +24,38 @@ static char s_display_buffer[8][21 + 1] = {
 };
 
 static uint32_t s_display_draw_counter = 0;
+
+static INLINE uint8_t PRA32_U_ControlPanel_adc_control_value_candidate(uint32_t adc_number) {
+#if defined(PRA32_U_CONTROL_PANEL_ANALOG_INPUT_REVERSED)
+  return (127 - (s_adc_current_value[adc_number] >> 2));
+#else  // defined(PRA32_U_CONTROL_PANEL_ANALOG_INPUT_REVERSED)
+  return (s_adc_current_value[adc_number] >> 2);
+#endif  // defined(PRA32_U_CONTROL_PANEL_ANALOG_INPUT_REVERSED)
+}
+
+static INLINE boolean PRA32_U_ControlPanel_update_adc_control(uint32_t adc_number) {
+  uint32_t adc_control_value_candidate = PRA32_U_ControlPanel_adc_control_value_candidate(adc_number);
+  if (s_adc_control_value[adc_number] != adc_control_value_candidate) {
+    s_adc_control_value[adc_number] = adc_control_value_candidate;
+    g_synth.control_change(s_adc_control_target[adc_number], s_adc_control_value[adc_number]);
+    return true;
+  }
+
+  return false;
+}
+
+static INLINE void PRA32_U_ControlPanel_set_draw_position(uint8_t x, uint8_t y) {
+  uint8_t commands[] = {0x00,  static_cast<uint8_t>(0xB0 + y), 
+                               static_cast<uint8_t>(0x10 + ((x * 6) >> 4)),
+                               static_cast<uint8_t>(0x00 + ((x * 6) & 0x0F))};
+  i2c_write_blocking(PRA32_U_CONTROL_PANEL_OLED_DISPLAY_I2C_DEVICE, 0x3C, commands, sizeof(commands), false);
+}
+
+static INLINE void PRA32_U_ControlPanel_draw_character(uint8_t c) {
+  uint8_t data[] = {0x40,  0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  std::memcpy(&data[1], g_font_table[c], 6);
+  i2c_write_blocking(PRA32_U_CONTROL_PANEL_OLED_DISPLAY_I2C_DEVICE, 0x3C, data, sizeof(data), false);
+}
 
 INLINE void PRA32_U_ControlPanel_setup() {
 #if defined(PRA32_U_USE_CONTROL_PANEL)
@@ -43,8 +75,24 @@ INLINE void PRA32_U_ControlPanel_setup() {
   gpio_set_function(PRA32_U_CONTROL_PANEL_OLED_DISPLAY_I2C_SCL_PIN, GPIO_FUNC_I2C);
   gpio_pull_up(PRA32_U_CONTROL_PANEL_OLED_DISPLAY_I2C_SCL_PIN);
 
-  uint8_t commands[] = {0x00,  0x81, 0xFF,  0xA1, 0xC8,  0x8D, 0x14,  0xAF};
-  i2c_write_blocking(PRA32_U_CONTROL_PANEL_OLED_DISPLAY_I2C_DEVICE, 0x3C, commands, sizeof(commands), false);
+  uint8_t commands_init_0[] = {0x00,  0x81, 0xFF,  0xA1, 0xC8,  0x8D, 0x14};
+  i2c_write_blocking(PRA32_U_CONTROL_PANEL_OLED_DISPLAY_I2C_DEVICE, 0x3C, commands_init_0, sizeof(commands_init_0), false);
+
+  for (uint8_t y = 0; y <= 7; ++y) {
+    for (uint8_t x = 0; x <= 20; ++x) {
+      PRA32_U_ControlPanel_set_draw_position(x, y);
+      PRA32_U_ControlPanel_draw_character(s_display_buffer[y][x]);
+    }
+
+    uint8_t commands[] = {0x00,  static_cast<uint8_t>(0xB0 + y), 0x17, 0x0E};
+    i2c_write_blocking(PRA32_U_CONTROL_PANEL_OLED_DISPLAY_I2C_DEVICE, 0x3C, commands, sizeof(commands), false);
+
+    uint8_t data[] = {0x40,  0x00, 0x00};
+    i2c_write_blocking(PRA32_U_CONTROL_PANEL_OLED_DISPLAY_I2C_DEVICE, 0x3C, data, sizeof(data), false);
+  }
+
+  uint8_t commands_init_1[] = {0x00,  0xAF};
+  i2c_write_blocking(PRA32_U_CONTROL_PANEL_OLED_DISPLAY_I2C_DEVICE, 0x3C, commands_init_1, sizeof(commands_init_1), false);
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL_OLED_DISPLAY)
 
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL)
@@ -52,6 +100,7 @@ INLINE void PRA32_U_ControlPanel_setup() {
 
 INLINE void PRA32_U_ControlPanel_update_input(uint32_t loop_counter) {
 #if defined(PRA32_U_USE_CONTROL_PANEL)
+
 #if defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
   switch (loop_counter & 0x3F) {
   case 0x10:
@@ -98,30 +147,13 @@ INLINE void PRA32_U_ControlPanel_update_input(uint32_t loop_counter) {
     break;
   }
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
+
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL)
-}
-
-static INLINE uint8_t PRA32_U_ControlPanel_adc_control_value_candidate(uint32_t adc_number) {
-#if defined(PRA32_U_CONTROL_PANEL_ANALOG_INPUT_REVERSED)
-  return (127 - (s_adc_current_value[adc_number] >> 2));
-#else  // defined(PRA32_U_CONTROL_PANEL_ANALOG_INPUT_REVERSED)
-  return (s_adc_current_value[adc_number] >> 2);
-#endif  // defined(PRA32_U_CONTROL_PANEL_ANALOG_INPUT_REVERSED)
-}
-
-static INLINE boolean PRA32_U_ControlPanel_update_adc_control(uint32_t adc_number) {
-  uint32_t adc_control_value_candidate = PRA32_U_ControlPanel_adc_control_value_candidate(adc_number);
-  if (s_adc_control_value[adc_number] != adc_control_value_candidate) {
-    s_adc_control_value[adc_number] = adc_control_value_candidate;
-    g_synth.control_change(s_adc_control_target[adc_number], s_adc_control_value[adc_number]);
-    return true;
-  }
-
-  return false;
 }
 
 INLINE void PRA32_U_ControlPanel_update_control() {
 #if defined(PRA32_U_USE_CONTROL_PANEL)
+
 #if defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
   static uint32_t s_initialize_counter = 0;
   if (s_initialize_counter < 2400) {
@@ -147,6 +179,7 @@ INLINE void PRA32_U_ControlPanel_update_control() {
     }
   }
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
+
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL)
 }
 
@@ -187,21 +220,9 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL)
 }
 
-static INLINE void PRA32_U_ControlPanel_set_draw_position(uint8_t x, uint8_t y) {
-  uint8_t commands[] = {0x00,  static_cast<uint8_t>(0xB0 + y), 
-                               static_cast<uint8_t>(0x10 + ((x * 6) >> 4)),
-                               static_cast<uint8_t>(0x00 + ((x * 6) & 0x0F))};
-  i2c_write_blocking(PRA32_U_CONTROL_PANEL_OLED_DISPLAY_I2C_DEVICE, 0x3C, commands, sizeof(commands), false);
-}
-
-static INLINE void PRA32_U_ControlPanel_draw_character(uint8_t c) {
-  uint8_t data[] = {0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-  std::memcpy(&data[1], g_font_table[c], 6);
-  i2c_write_blocking(PRA32_U_CONTROL_PANEL_OLED_DISPLAY_I2C_DEVICE, 0x3C, data, sizeof(data), false);
-}
-
 INLINE void PRA32_U_ControlPanel_update_display(uint32_t loop_counter) {
 #if defined(PRA32_U_USE_CONTROL_PANEL)
+
 #if defined(PRA32_U_USE_CONTROL_PANEL_OLED_DISPLAY)
   if ((loop_counter & 0x7F) == 0x00) {
     if (s_display_draw_counter >= 8 * 21) {
@@ -218,6 +239,7 @@ INLINE void PRA32_U_ControlPanel_update_display(uint32_t loop_counter) {
     PRA32_U_ControlPanel_draw_character(s_display_buffer[y][x]);
   }
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL_OLED_DISPLAY)
+
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL)
 }
 
