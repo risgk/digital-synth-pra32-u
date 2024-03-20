@@ -225,10 +225,10 @@ INLINE void PRA32_U_ControlPanel_update_display(uint32_t loop_counter) {
 
 #if defined(PRA32_U_USE_CONTROL_PANEL_OLED_DISPLAY)
   if ((loop_counter & 0x7F) == 0x00) {
+    ++s_display_draw_counter;
     if (s_display_draw_counter >= 8 * 21) {
       s_display_draw_counter = 0;
     }
-    s_display_draw_counter++;
 
     uint8_t x = s_display_draw_counter % 21;
     uint8_t y = s_display_draw_counter / 21;
