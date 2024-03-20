@@ -190,7 +190,7 @@ INLINE void PRA32_U_ControlPanel_update_control() {
 
 INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
 #if defined(PRA32_U_USE_CONTROL_PANEL)
-  if (loop_counter == 0) {
+  if ((loop_counter & 0x7F) == 0x00) {
     char buff[6];
 
     uint8_t adc_control_target_0 = s_adc_control_target[0];
