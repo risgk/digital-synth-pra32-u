@@ -20,7 +20,7 @@ static char s_display_buffer[8][21 + 1] = {
   "                     ",
   "           Filter    ",
   "           EG Amt    ",
-  "           C         ",
+  "           C    [   ]",
 };
 
 static INLINE uint8_t PRA32_U_ControlPanel_adc_control_value_candidate(uint32_t adc_number) {
@@ -193,7 +193,18 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
 
     uint8_t adc_control_target_0 = s_adc_control_target[0];
     if (adc_control_target_0 <= 127) {
-      std::sprintf(buff, "%3u", g_synth.current_controller_value(adc_control_target_0));
+      uint8_t adc_control_value        = s_adc_control_value[0];
+      uint8_t current_controller_value = g_synth.current_controller_value(adc_control_target_0);
+
+      if        (adc_control_value < current_controller_value) {
+        s_display_buffer[3][ 1] = '<';
+      } else if (adc_control_value > current_controller_value) {
+        s_display_buffer[3][ 1] = '>';
+      } else {
+        s_display_buffer[3][ 1] = '=';
+      }
+
+      std::sprintf(buff, "%3u", current_controller_value);
       s_display_buffer[3][ 2] = buff[0];
       s_display_buffer[3][ 3] = buff[1];
       s_display_buffer[3][ 4] = buff[2];
@@ -201,7 +212,18 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
 
     uint8_t adc_control_target_1 = s_adc_control_target[1];
     if (adc_control_target_1 <= 127) {
-      std::sprintf(buff, "%3u", g_synth.current_controller_value(adc_control_target_1));
+      uint8_t adc_control_value        = s_adc_control_value[1];
+      uint8_t current_controller_value = g_synth.current_controller_value(adc_control_target_1);
+
+      if        (adc_control_value < current_controller_value) {
+        s_display_buffer[3][12] = '<';
+      } else if (adc_control_value > current_controller_value) {
+        s_display_buffer[3][12] = '>';
+      } else {
+        s_display_buffer[3][12] = '=';
+      }
+
+      std::sprintf(buff, "%3u", current_controller_value);
       s_display_buffer[3][13] = buff[0];
       s_display_buffer[3][14] = buff[1];
       s_display_buffer[3][15] = buff[2];
@@ -209,12 +231,23 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
 
     uint8_t adc_control_target_2 = s_adc_control_target[2];
     if (adc_control_target_2 <= 127) {
-      std::sprintf(buff, "%3u", g_synth.current_controller_value(adc_control_target_2));
+      uint8_t adc_control_value        = s_adc_control_value[2];
+      uint8_t current_controller_value = g_synth.current_controller_value(adc_control_target_2);
+
+      if        (adc_control_value < current_controller_value) {
+        s_display_buffer[7][12] = '<';
+      } else if (adc_control_value > current_controller_value) {
+        s_display_buffer[7][12] = '>';
+      } else {
+        s_display_buffer[7][12] = '=';
+      }
+
+      std::sprintf(buff, "%3u", current_controller_value);
       s_display_buffer[7][13] = buff[0];
       s_display_buffer[7][14] = buff[1];
       s_display_buffer[7][15] = buff[2];
 
-      std::sprintf(buff, "%+3d", static_cast<int>(g_synth.current_controller_value(adc_control_target_2)) - 64);
+      std::sprintf(buff, "%+3d", static_cast<int>(current_controller_value) - 64);
       s_display_buffer[7][17] = buff[0];
       s_display_buffer[7][18] = buff[1];
       s_display_buffer[7][19] = buff[2];
