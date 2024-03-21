@@ -102,6 +102,8 @@ INLINE void PRA32_U_ControlPanel_setup() {
 }
 
 INLINE void PRA32_U_ControlPanel_update_input(uint32_t loop_counter) {
+  static_cast<void>(loop_counter);
+
 #if defined(PRA32_U_USE_CONTROL_PANEL)
 
 #if defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
@@ -187,6 +189,8 @@ INLINE void PRA32_U_ControlPanel_update_control() {
 }
 
 INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
+  static_cast<void>(loop_counter);
+
 #if defined(PRA32_U_USE_CONTROL_PANEL)
   if ((loop_counter & 0x7F) == 0x00) {
     char buff[6];
@@ -257,6 +261,8 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
 }
 
 INLINE void PRA32_U_ControlPanel_update_display(uint32_t loop_counter) {
+  static_cast<void>(loop_counter);
+
 #if defined(PRA32_U_USE_CONTROL_PANEL)
 
 #if defined(PRA32_U_USE_CONTROL_PANEL_OLED_DISPLAY)
@@ -281,6 +287,8 @@ INLINE void PRA32_U_ControlPanel_update_display(uint32_t loop_counter) {
 }
 
 INLINE void PRA32_U_ControlPanel_debug_print(uint32_t loop_counter) {
+  static_cast<void>(loop_counter);
+
 #if defined(PRA32_U_USE_DEBUG_PRINT)
 #if defined(PRA32_U_USE_CONTROL_PANEL)
   switch (loop_counter) {
