@@ -18,9 +18,9 @@ static char s_display_buffer[8][21 + 1] = {
   "Cutoff     Resonance ",
   "A          B         ",
   "                     ",
-  "           Filter    ",
+  "Filter A   Filter    ",
   "           EG Amt    ",
-  "           C    [   ]",
+  "Page= 6    C    [   ]",
 };
 
 static INLINE uint8_t PRA32_U_ControlPanel_adc_control_value_candidate(uint32_t adc_number) {
@@ -161,7 +161,7 @@ INLINE void PRA32_U_ControlPanel_update_control() {
 
 #if defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
   static uint32_t s_initialize_counter = 0;
-  if (s_initialize_counter < 2400) {
+  if (s_initialize_counter < 75) {
     ++s_initialize_counter;
     s_adc_control_value[0] = PRA32_U_ControlPanel_adc_control_value_candidate(0);
     s_adc_control_value[1] = PRA32_U_ControlPanel_adc_control_value_candidate(1);
