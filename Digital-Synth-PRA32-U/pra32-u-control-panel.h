@@ -110,66 +110,57 @@ INLINE void PRA32_U_ControlPanel_update_input(uint32_t loop_counter) {
   static uint32_t s_adc_average_value = 0;
   switch (loop_counter & 0x3F) {
   case 0x10:
-    {
-      adc_select_input(0);
-      s_adc_average_value =
-         adc_read() + adc_read() + adc_read() + adc_read() +
-         adc_read() + adc_read() + adc_read() + adc_read();
-    }
+    adc_select_input(0);
+    s_adc_average_value  = adc_read() + adc_read() + adc_read() + adc_read();
+    break;
+  case 0x14:
+    s_adc_average_value += adc_read() + adc_read() + adc_read() + adc_read();
     break;
   case 0x18:
-    {
-      s_adc_average_value +=
-         adc_read() + adc_read() + adc_read() + adc_read() +
-         adc_read() + adc_read() + adc_read() + adc_read();
-
-      if        (s_adc_current_value[0]       >= s_adc_average_value + 256) {
-        s_adc_current_value[0] = s_adc_average_value;
-      } else if (s_adc_current_value[0] + 256 <= s_adc_average_value      ) {
-        s_adc_current_value[0] = s_adc_average_value;
-      }
+    s_adc_average_value += adc_read() + adc_read() + adc_read() + adc_read();
+    break;
+  case 0x1C:
+    s_adc_average_value += adc_read() + adc_read() + adc_read() + adc_read();
+    if        (s_adc_current_value[0]       >= s_adc_average_value + 256) {
+      s_adc_current_value[0] = s_adc_average_value;
+    } else if (s_adc_current_value[0] + 256 <= s_adc_average_value      ) {
+      s_adc_current_value[0] = s_adc_average_value;
     }
     break;
   case 0x20:
-    {
-      adc_select_input(1);
-      s_adc_average_value =
-         adc_read() + adc_read() + adc_read() + adc_read() +
-         adc_read() + adc_read() + adc_read() + adc_read();
-    }
+    adc_select_input(1);
+    s_adc_average_value  = adc_read() + adc_read() + adc_read() + adc_read();
+    break;
+  case 0x24:
+    s_adc_average_value += adc_read() + adc_read() + adc_read() + adc_read();
     break;
   case 0x28:
-    {
-      s_adc_average_value +=
-         adc_read() + adc_read() + adc_read() + adc_read() +
-         adc_read() + adc_read() + adc_read() + adc_read();
-
-      if        (s_adc_current_value[1]       >= s_adc_average_value + 256) {
-        s_adc_current_value[1] = s_adc_average_value;
-      } else if (s_adc_current_value[1] + 256 <= s_adc_average_value      ) {
-        s_adc_current_value[1] = s_adc_average_value;
-      }
+    s_adc_average_value += adc_read() + adc_read() + adc_read() + adc_read();
+    break;
+  case 0x2C:
+    s_adc_average_value += adc_read() + adc_read() + adc_read() + adc_read();
+    if        (s_adc_current_value[1]       >= s_adc_average_value + 256) {
+      s_adc_current_value[1] = s_adc_average_value;
+    } else if (s_adc_current_value[1] + 256 <= s_adc_average_value      ) {
+      s_adc_current_value[1] = s_adc_average_value;
     }
     break;
   case 0x30:
-    {
-      adc_select_input(2);
-      s_adc_average_value =
-         adc_read() + adc_read() + adc_read() + adc_read() +
-         adc_read() + adc_read() + adc_read() + adc_read();
-    }
+    adc_select_input(2);
+    s_adc_average_value  = adc_read() + adc_read() + adc_read() + adc_read();
+    break;
+  case 0x34:
+    s_adc_average_value += adc_read() + adc_read() + adc_read() + adc_read();
     break;
   case 0x38:
-    {
-      s_adc_average_value +=
-         adc_read() + adc_read() + adc_read() + adc_read() +
-         adc_read() + adc_read() + adc_read() + adc_read();
-
-      if        (s_adc_current_value[2]       >= s_adc_average_value + 256) {
-        s_adc_current_value[2] = s_adc_average_value;
-      } else if (s_adc_current_value[2] + 256 <= s_adc_average_value      ) {
-        s_adc_current_value[2] = s_adc_average_value;
-      }
+    s_adc_average_value += adc_read() + adc_read() + adc_read() + adc_read();
+    break;
+  case 0x3C:
+    s_adc_average_value += adc_read() + adc_read() + adc_read() + adc_read();
+    if        (s_adc_current_value[2]       >= s_adc_average_value + 256) {
+      s_adc_current_value[2] = s_adc_average_value;
+    } else if (s_adc_current_value[2] + 256 <= s_adc_average_value      ) {
+      s_adc_current_value[2] = s_adc_average_value;
     }
     break;
   }
