@@ -25,9 +25,9 @@ static char s_display_buffer[8][21 + 1] = {
 
 static INLINE uint8_t PRA32_U_ControlPanel_adc_control_value_candidate(uint32_t adc_number) {
 #if defined(PRA32_U_ANALOG_INPUT_REVERSED)
-  return (127 - (s_adc_current_value[adc_number] >> 2));
+  return (127 - (s_adc_current_value[adc_number] >> 9));
 #else  // defined(PRA32_U_ANALOG_INPUT_REVERSED)
-  return (s_adc_current_value[adc_number] >> 2);
+  return (s_adc_current_value[adc_number] >> 9);
 #endif  // defined(PRA32_U_ANALOG_INPUT_REVERSED)
 }
 
@@ -112,12 +112,14 @@ INLINE void PRA32_U_ControlPanel_update_input(uint32_t loop_counter) {
     {
       adc_select_input(0);
       uint32_t adc_average_value =
-        (adc_read() + adc_read() + adc_read() + adc_read() +
-         adc_read() + adc_read() + adc_read() + adc_read()) >> 6;
+         adc_read() + adc_read() + adc_read() + adc_read() +
+         adc_read() + adc_read() + adc_read() + adc_read() +
+         adc_read() + adc_read() + adc_read() + adc_read() +
+         adc_read() + adc_read() + adc_read() + adc_read();
 
-      if        (s_adc_current_value[0]     >= adc_average_value + 4) {
+      if        (s_adc_current_value[0]       >= adc_average_value + 256) {
         s_adc_current_value[0] = adc_average_value;
-      } else if (s_adc_current_value[0] + 4 <= adc_average_value    ) {
+      } else if (s_adc_current_value[0] + 256 <= adc_average_value    ) {
         s_adc_current_value[0] = adc_average_value;
       }
     }
@@ -126,12 +128,14 @@ INLINE void PRA32_U_ControlPanel_update_input(uint32_t loop_counter) {
     {
       adc_select_input(1);
       uint32_t adc_average_value =
-        (adc_read() + adc_read() + adc_read() + adc_read() +
-         adc_read() + adc_read() + adc_read() + adc_read()) >> 6;
+         adc_read() + adc_read() + adc_read() + adc_read() +
+         adc_read() + adc_read() + adc_read() + adc_read() +
+         adc_read() + adc_read() + adc_read() + adc_read() +
+         adc_read() + adc_read() + adc_read() + adc_read();
 
-      if        (s_adc_current_value[1]     >= adc_average_value + 4) {
+      if        (s_adc_current_value[1]       >= adc_average_value + 256) {
         s_adc_current_value[1] = adc_average_value;
-      } else if (s_adc_current_value[1] + 4 <= adc_average_value    ) {
+      } else if (s_adc_current_value[1] + 256 <= adc_average_value    ) {
         s_adc_current_value[1] = adc_average_value;
       }
     }
@@ -140,12 +144,14 @@ INLINE void PRA32_U_ControlPanel_update_input(uint32_t loop_counter) {
     {
       adc_select_input(2);
       uint32_t adc_average_value =
-        (adc_read() + adc_read() + adc_read() + adc_read() +
-         adc_read() + adc_read() + adc_read() + adc_read()) >> 6;
+         adc_read() + adc_read() + adc_read() + adc_read() +
+         adc_read() + adc_read() + adc_read() + adc_read() +
+         adc_read() + adc_read() + adc_read() + adc_read() +
+         adc_read() + adc_read() + adc_read() + adc_read();
 
-      if        (s_adc_current_value[2]     >= adc_average_value + 4) {
+      if        (s_adc_current_value[2]       >= adc_average_value + 256) {
         s_adc_current_value[2] = adc_average_value;
-      } else if (s_adc_current_value[2] + 4 <= adc_average_value    ) {
+      } else if (s_adc_current_value[2] + 256 <= adc_average_value    ) {
         s_adc_current_value[2] = adc_average_value;
       }
     }
