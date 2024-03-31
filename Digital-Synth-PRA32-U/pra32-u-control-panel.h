@@ -15,8 +15,8 @@
 
 static volatile uint32_t s_current_page_index = 4;
 
-static volatile uint32_t s_adc_current_value[3];
-static volatile uint32_t s_adc_control_value[3];
+static volatile int32_t  s_adc_current_value[3];
+static volatile uint8_t  s_adc_control_value[3];
 static volatile uint8_t  s_adc_control_target[3] = { 0xFF, 0xFF, 0xFF };
 
 static char s_display_buffer[8][21 + 1] = {
@@ -55,11 +55,23 @@ static INLINE void PRA32_U_ControlPanel_update_page() {
 }
 
 static INLINE uint8_t PRA32_U_ControlPanel_adc_control_value_candidate(uint32_t adc_number) {
+  volatile int32_t adc_control_value_candidate;
+
 #if defined(PRA32_U_ANALOG_INPUT_REVERSED)
-  return (127 - (s_adc_current_value[adc_number] >> 9));
+  adc_control_value_candidate = (127 - (s_adc_current_value[adc_number] >> 9));
 #else  // defined(PRA32_U_ANALOG_INPUT_REVERSED)
-  return (s_adc_current_value[adc_number] >> 9);
+  adc_control_value_candidate = (s_adc_current_value[adc_number] >> 9);
 #endif  // defined(PRA32_U_ANALOG_INPUT_REVERSED)
+
+  if (adc_control_value_candidate > 127) {
+    adc_control_value_candidate = 127;
+  }
+
+  if (adc_control_value_candidate < 0) {
+    adc_control_value_candidate = 0;
+  }
+
+  return adc_control_value_candidate;
 }
 
 static INLINE boolean PRA32_U_ControlPanel_update_adc_control(uint32_t adc_number) {
@@ -141,11 +153,12 @@ INLINE void PRA32_U_ControlPanel_update_analog_inputs(uint32_t loop_counter) {
 #if defined(PRA32_U_USE_CONTROL_PANEL)
 
 #if defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
-  static uint32_t s_adc_average_value = 0;
+  static int32_t s_adc_average_value = 0;
   switch (loop_counter & 0x3F) {
   case 0x10:
     adc_select_input(0);
-    s_adc_average_value  = adc_read() + adc_read() + adc_read() + adc_read();
+    s_adc_average_value  = PRA32_U_ANALOG_INPUT_CORRECTION;
+    s_adc_average_value += adc_read() + adc_read() + adc_read() + adc_read();
     break;
   case 0x14:
     s_adc_average_value += adc_read() + adc_read() + adc_read() + adc_read();
@@ -155,15 +168,16 @@ INLINE void PRA32_U_ControlPanel_update_analog_inputs(uint32_t loop_counter) {
     break;
   case 0x1C:
     s_adc_average_value += adc_read() + adc_read() + adc_read() + adc_read();
-    if        (s_adc_current_value[0]       >= s_adc_average_value + 256) {
+    if        (s_adc_current_value[0]       >= s_adc_average_value + 512) {
       s_adc_current_value[0] = s_adc_average_value;
-    } else if (s_adc_current_value[0] + 256 <= s_adc_average_value      ) {
+    } else if (s_adc_current_value[0] + 512 <= s_adc_average_value      ) {
       s_adc_current_value[0] = s_adc_average_value;
     }
     break;
   case 0x20:
     adc_select_input(1);
-    s_adc_average_value  = adc_read() + adc_read() + adc_read() + adc_read();
+    s_adc_average_value  = PRA32_U_ANALOG_INPUT_CORRECTION;
+    s_adc_average_value += adc_read() + adc_read() + adc_read() + adc_read();
     break;
   case 0x24:
     s_adc_average_value += adc_read() + adc_read() + adc_read() + adc_read();
@@ -173,15 +187,16 @@ INLINE void PRA32_U_ControlPanel_update_analog_inputs(uint32_t loop_counter) {
     break;
   case 0x2C:
     s_adc_average_value += adc_read() + adc_read() + adc_read() + adc_read();
-    if        (s_adc_current_value[1]       >= s_adc_average_value + 256) {
+    if        (s_adc_current_value[1]       >= s_adc_average_value + 512) {
       s_adc_current_value[1] = s_adc_average_value;
-    } else if (s_adc_current_value[1] + 256 <= s_adc_average_value      ) {
+    } else if (s_adc_current_value[1] + 512 <= s_adc_average_value      ) {
       s_adc_current_value[1] = s_adc_average_value;
     }
     break;
   case 0x30:
     adc_select_input(2);
-    s_adc_average_value  = adc_read() + adc_read() + adc_read() + adc_read();
+    s_adc_average_value  = PRA32_U_ANALOG_INPUT_CORRECTION;
+    s_adc_average_value += adc_read() + adc_read() + adc_read() + adc_read();
     break;
   case 0x34:
     s_adc_average_value += adc_read() + adc_read() + adc_read() + adc_read();
@@ -191,9 +206,9 @@ INLINE void PRA32_U_ControlPanel_update_analog_inputs(uint32_t loop_counter) {
     break;
   case 0x3C:
     s_adc_average_value += adc_read() + adc_read() + adc_read() + adc_read();
-    if        (s_adc_current_value[2]       >= s_adc_average_value + 256) {
+    if        (s_adc_current_value[2]       >= s_adc_average_value + 512) {
       s_adc_current_value[2] = s_adc_average_value;
-    } else if (s_adc_current_value[2] + 256 <= s_adc_average_value      ) {
+    } else if (s_adc_current_value[2] + 512 <= s_adc_average_value      ) {
       s_adc_current_value[2] = s_adc_average_value;
     }
     break;
@@ -468,15 +483,15 @@ INLINE void PRA32_U_ControlPanel_debug_print(uint32_t loop_counter) {
 #if defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
   case 13 * 400:
     Serial1.print("\e[16;1H\e[K");
-    Serial1.print(s_adc_control_value[0]);
+    Serial1.print(s_adc_current_value[0]);
     break;
   case 14 * 400:
     Serial1.print("\e[17;1H\e[K");
-    Serial1.print(s_adc_control_value[1]);
+    Serial1.print(s_adc_current_value[1]);
     break;
   case 15 * 400:
     Serial1.print("\e[18;1H\e[K");
-    Serial1.print(s_adc_control_value[2]);
+    Serial1.print(s_adc_current_value[2]);
     break;
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
   }

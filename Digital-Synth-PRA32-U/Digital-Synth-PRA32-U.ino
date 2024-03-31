@@ -53,6 +53,7 @@
 
 #define PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT  // Use ADC0, ADC1, and ADC2
 #define PRA32_U_ANALOG_INPUT_REVERSED           (true)
+#define PRA32_U_ANALOG_INPUT_CORRECTION         (-248)
 
 #define PRA32_U_USE_CONTROL_PANEL_OLED_DISPLAY  // Use SSD1306 monochrome 128x64 OLED
 #define PRA32_U_OLED_DISPLAY_I2C                (i2c1)
