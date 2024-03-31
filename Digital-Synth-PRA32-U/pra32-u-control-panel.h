@@ -185,36 +185,49 @@ INLINE void PRA32_U_ControlPanel_update_analog_inputs(uint32_t loop_counter) {
 
 INLINE void PRA32_U_ControlPanel_update_control() {
 #if defined(PRA32_U_USE_CONTROL_PANEL)
+  static uint32_t s_initialize_counter = 0;
+  if (s_initialize_counter < 75) {
+    ++s_initialize_counter;
+#if defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
+    s_adc_control_value[0] = PRA32_U_ControlPanel_adc_control_value_candidate(0);
+    s_adc_control_value[1] = PRA32_U_ControlPanel_adc_control_value_candidate(1);
+    s_adc_control_value[2] = PRA32_U_ControlPanel_adc_control_value_candidate(2);
+#endif  // defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
+    return;
+  }
 
 #if defined(PRA32_U_USE_CONTROL_PANEL_KEY_INPUT)
   static uint32_t s_key_inpuy_counter = 0;
-  s_key_inpuy_counter++;
+  ++s_key_inpuy_counter;
   if (s_key_inpuy_counter - s_prev_key_value_changed_time >= PRA32_U_KEY_ANTI_CHATTERING_WAIT) {
     uint32_t value = digitalRead(PRA32_U_KEY_INPUT_PREV_KEY_PIN) == PRA32_U_KEY_INPUT_ACTIVE_LEVEL;
-    s_prev_key_current_value = value;
+    if (s_prev_key_current_value != value) {
+      s_prev_key_current_value = value;
+      s_prev_key_value_changed_time = s_key_inpuy_counter;
+      return;
+    }
   }
 
-  if (s_key_inpuy_counter - s_prev_key_value_changed_time >= PRA32_U_KEY_ANTI_CHATTERING_WAIT) {
+  if (s_key_inpuy_counter - s_next_key_value_changed_time >= PRA32_U_KEY_ANTI_CHATTERING_WAIT) {
     uint32_t value = digitalRead(PRA32_U_KEY_INPUT_NEXT_KEY_PIN) == PRA32_U_KEY_INPUT_ACTIVE_LEVEL;
-    s_next_key_current_value = value;
+    if (s_next_key_current_value != value) {
+      s_next_key_current_value = value;
+      s_next_key_value_changed_time = s_key_inpuy_counter;
+      return;
+    }
   }
 
-  if (s_key_inpuy_counter - s_prev_key_value_changed_time >= PRA32_U_KEY_ANTI_CHATTERING_WAIT) {
+  if (s_key_inpuy_counter - s_play_key_value_changed_time >= PRA32_U_KEY_ANTI_CHATTERING_WAIT) {
     uint32_t value = digitalRead(PRA32_U_KEY_INPUT_PLAY_KEY_PIN) == PRA32_U_KEY_INPUT_ACTIVE_LEVEL;
-    s_play_key_current_value = value;
+    if (s_play_key_current_value != value) {
+      s_play_key_current_value = value;
+      s_play_key_value_changed_time = s_key_inpuy_counter;
+      return;
+    }
   }
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL_KEY_INPUT)
 
 #if defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
-  static uint32_t s_initialize_counter = 0;
-  if (s_initialize_counter < 75) {
-    ++s_initialize_counter;
-    s_adc_control_value[0] = PRA32_U_ControlPanel_adc_control_value_candidate(0);
-    s_adc_control_value[1] = PRA32_U_ControlPanel_adc_control_value_candidate(1);
-    s_adc_control_value[2] = PRA32_U_ControlPanel_adc_control_value_candidate(2);
-    return;
-  }
-
   static uint32_t s_adc_number_to_check = 0;
 
   boolean updated = PRA32_U_ControlPanel_update_adc_control(s_adc_number_to_check);
