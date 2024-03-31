@@ -270,6 +270,12 @@ INLINE void PRA32_U_ControlPanel_update_control() {
     if (s_play_key_current_value != value) {
       s_play_key_current_value = value;
       s_play_key_value_changed_time = s_key_inpuy_counter;
+
+      if (s_play_key_current_value == 1) {
+        g_synth.note_on(60, 100);
+      } else {
+        g_synth.note_off(60);
+      }
       return;
     }
   }
