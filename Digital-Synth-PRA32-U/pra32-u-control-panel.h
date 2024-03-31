@@ -38,19 +38,19 @@ static INLINE void PRA32_U_ControlPanel_update_page() {
   std::memset(&s_display_buffer[3], ' ', 21);
   std::memset(&s_display_buffer[7], ' ', 21);
 
-  std::memcpy(&s_display_buffer[5][ 0], current_page.page_name_line_0            , 10);
-  std::memcpy(&s_display_buffer[6][ 0], current_page.page_name_line_1            , 10);
+  std::memcpy(&s_display_buffer[1][ 0], current_page.page_name_line_0            , 10);
+  std::memcpy(&s_display_buffer[2][ 0], current_page.page_name_line_1            , 10);
 
-  std::memcpy(&s_display_buffer[1][ 0], current_page.control_target_a_name_line_0, 10);
-  std::memcpy(&s_display_buffer[2][ 0], current_page.control_target_a_name_line_1, 10);
+  std::memcpy(&s_display_buffer[5][ 0], current_page.control_target_a_name_line_0, 10);
+  std::memcpy(&s_display_buffer[6][ 0], current_page.control_target_a_name_line_1, 10);
   s_adc_control_target[0]             = current_page.control_target_a;
 
-  std::memcpy(&s_display_buffer[1][11], current_page.control_target_b_name_line_0, 10);
-  std::memcpy(&s_display_buffer[2][11], current_page.control_target_b_name_line_1, 10);
+  std::memcpy(&s_display_buffer[5][11], current_page.control_target_b_name_line_0, 10);
+  std::memcpy(&s_display_buffer[6][11], current_page.control_target_b_name_line_1, 10);
   s_adc_control_target[1]             = current_page.control_target_b;
 
-  std::memcpy(&s_display_buffer[5][11], current_page.control_target_c_name_line_0, 10);
-  std::memcpy(&s_display_buffer[6][11], current_page.control_target_c_name_line_1, 10);
+  std::memcpy(&s_display_buffer[1][11], current_page.control_target_c_name_line_0, 10);
+  std::memcpy(&s_display_buffer[2][11], current_page.control_target_c_name_line_1, 10);
   s_adc_control_target[2]             = current_page.control_target_c;
 }
 
@@ -233,7 +233,8 @@ INLINE void PRA32_U_ControlPanel_update_control() {
       s_prev_key_current_value = value;
       s_prev_key_value_changed_time = s_key_inpuy_counter;
 
-      if (s_prev_key_current_value == 1) {
+      if (s_prev_key_current_value == 0) {
+        // Prev key released
         if (s_current_page_index == 0) {
           s_current_page_index = NUMBER_OF_PAGES - 1;
         } else {
@@ -252,7 +253,8 @@ INLINE void PRA32_U_ControlPanel_update_control() {
       s_next_key_current_value = value;
       s_next_key_value_changed_time = s_key_inpuy_counter;
 
-      if (s_next_key_current_value == 1) {
+      if (s_next_key_current_value == 0) {
+        // Next key released
         if (s_current_page_index == NUMBER_OF_PAGES - 1) {
           s_current_page_index = 0;
         } else {
@@ -272,8 +274,10 @@ INLINE void PRA32_U_ControlPanel_update_control() {
       s_play_key_value_changed_time = s_key_inpuy_counter;
 
       if (s_play_key_current_value == 1) {
+        // Play key pressed
         g_synth.note_on(60, 100);
       } else {
+        // Play key released
         g_synth.note_off(60);
       }
       return;
@@ -313,19 +317,19 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
       uint8_t adc_control_value        = s_adc_control_value[0];
       uint8_t current_controller_value = g_synth.current_controller_value(adc_control_target_0);
 
-      s_display_buffer[3][ 0] = 'A';
+      s_display_buffer[7][ 0] = 'A';
       if        (adc_control_value < current_controller_value) {
-        s_display_buffer[3][ 1] = '<';
+        s_display_buffer[7][ 1] = '<';
       } else if (adc_control_value > current_controller_value) {
-        s_display_buffer[3][ 1] = '>';
+        s_display_buffer[7][ 1] = '>';
       } else {
-        s_display_buffer[3][ 1] = '=';
+        s_display_buffer[7][ 1] = '=';
       }
 
       std::sprintf(buff, "%3u", current_controller_value);
-      s_display_buffer[3][ 2] = buff[0];
-      s_display_buffer[3][ 3] = buff[1];
-      s_display_buffer[3][ 4] = buff[2];
+      s_display_buffer[7][ 2] = buff[0];
+      s_display_buffer[7][ 3] = buff[1];
+      s_display_buffer[7][ 4] = buff[2];
     }
 
     uint8_t adc_control_target_1 = s_adc_control_target[1];
@@ -333,27 +337,7 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
       uint8_t adc_control_value        = s_adc_control_value[1];
       uint8_t current_controller_value = g_synth.current_controller_value(adc_control_target_1);
 
-      s_display_buffer[3][11] = 'B';
-      if        (adc_control_value < current_controller_value) {
-        s_display_buffer[3][12] = '<';
-      } else if (adc_control_value > current_controller_value) {
-        s_display_buffer[3][12] = '>';
-      } else {
-        s_display_buffer[3][12] = '=';
-      }
-
-      std::sprintf(buff, "%3u", current_controller_value);
-      s_display_buffer[3][13] = buff[0];
-      s_display_buffer[3][14] = buff[1];
-      s_display_buffer[3][15] = buff[2];
-    }
-
-    uint8_t adc_control_target_2 = s_adc_control_target[2];
-    if (adc_control_target_2 <= 127) {
-      uint8_t adc_control_value        = s_adc_control_value[2];
-      uint8_t current_controller_value = g_synth.current_controller_value(adc_control_target_2);
-
-      s_display_buffer[7][11] = 'C';
+      s_display_buffer[7][11] = 'B';
       if        (adc_control_value < current_controller_value) {
         s_display_buffer[7][12] = '<';
       } else if (adc_control_value > current_controller_value) {
@@ -366,12 +350,32 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
       s_display_buffer[7][13] = buff[0];
       s_display_buffer[7][14] = buff[1];
       s_display_buffer[7][15] = buff[2];
+    }
+
+    uint8_t adc_control_target_2 = s_adc_control_target[2];
+    if (adc_control_target_2 <= 127) {
+      uint8_t adc_control_value        = s_adc_control_value[2];
+      uint8_t current_controller_value = g_synth.current_controller_value(adc_control_target_2);
+
+      s_display_buffer[3][11] = 'C';
+      if        (adc_control_value < current_controller_value) {
+        s_display_buffer[3][12] = '<';
+      } else if (adc_control_value > current_controller_value) {
+        s_display_buffer[3][12] = '>';
+      } else {
+        s_display_buffer[3][12] = '=';
+      }
+
+      std::sprintf(buff, "%3u", current_controller_value);
+      s_display_buffer[3][13] = buff[0];
+      s_display_buffer[3][14] = buff[1];
+      s_display_buffer[3][15] = buff[2];
 
 #if 0
       std::sprintf(buff, "%+3d", static_cast<int>(current_controller_value) - 64);
-      s_display_buffer[7][17] = buff[0];
-      s_display_buffer[7][18] = buff[1];
-      s_display_buffer[7][19] = buff[2];
+      s_display_buffer[3][17] = buff[0];
+      s_display_buffer[3][18] = buff[1];
+      s_display_buffer[3][19] = buff[2];
 #endif
     }
   }
