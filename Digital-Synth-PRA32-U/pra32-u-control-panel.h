@@ -2,6 +2,7 @@
 
 #include "pra32-u-common.h"
 #include "pra32-u-control-panel-font-table.h"
+#include "pra32-u-control-panel-page-table.h"
 
 #include "hardware/i2c.h"
 
@@ -63,7 +64,7 @@ static INLINE void PRA32_U_ControlPanel_set_draw_position(uint8_t x, uint8_t y) 
 
 static INLINE void PRA32_U_ControlPanel_draw_character(uint8_t c) {
   uint8_t data[] = {0x40,  0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-  std::memcpy(&data[1], g_font_table[c], 6);
+  std::memcpy(&data[1], g_control_panel_font_table[c], 6);
   i2c_write_blocking(PRA32_U_OLED_DISPLAY_I2C, PRA32_U_OLED_DISPLAY_I2C_ADDRESS, data, sizeof(data), false);
 }
 
@@ -326,6 +327,23 @@ INLINE void PRA32_U_ControlPanel_update_display(uint32_t loop_counter) {
 
 #if defined(PRA32_U_USE_CONTROL_PANEL_OLED_DISPLAY)
   static uint32_t s_display_draw_counter = 0;
+
+#if 1
+  if ((loop_counter & 0x7F) == 0x40) {
+    ++s_display_draw_counter;
+    if (s_display_draw_counter >= 8 * 21) {
+      s_display_draw_counter = 0;
+    }
+
+    uint8_t x = s_display_draw_counter % 21;
+    uint8_t y = s_display_draw_counter / 21;
+    PRA32_U_ControlPanel_set_draw_position(x, y);
+  } else if ((loop_counter & 0x7F) == 0x00) {
+    uint8_t x = s_display_draw_counter % 21;
+    uint8_t y = s_display_draw_counter / 21;
+    PRA32_U_ControlPanel_draw_character(s_display_buffer[y][x]);
+  }
+#else
   if ((loop_counter & 0x7F) == 0x40) {
     ++s_display_draw_counter;
     if (s_display_draw_counter >= 31) {
@@ -340,6 +358,8 @@ INLINE void PRA32_U_ControlPanel_update_display(uint32_t loop_counter) {
     uint8_t y = ((s_display_draw_counter >= 21) * 4) + 3;
     PRA32_U_ControlPanel_draw_character(s_display_buffer[y][x]);
   }
+#endif
+
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL_OLED_DISPLAY)
 
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL)

@@ -1,6 +1,6 @@
 #pragma once
 
-uint8_t g_font_table[128][6] = {
+uint8_t g_control_panel_font_table[128][6] = {
   0b01111111,
   0b01111111,
   0b01111111,
