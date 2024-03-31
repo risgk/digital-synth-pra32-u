@@ -13,7 +13,7 @@
 
 #define NUMBER_OF_PAGES (sizeof(g_control_panel_page_table) / sizeof(g_control_panel_page_table[0]))
 
-static volatile uint32_t s_current_page_index = 5;
+static volatile uint32_t s_current_page_index = 4;
 
 static volatile uint32_t s_adc_current_value[3];
 static volatile uint32_t s_adc_control_value[3];
@@ -21,19 +21,22 @@ static volatile uint8_t  s_adc_control_target[3] = { 0xFF, 0xFF, 0xFF };
 
 static char s_display_buffer[8][21 + 1] = {
   "                     ",
-  "Filter     Filter    ",
-  "Cutoff     Resonance ",
-  "A    [   ] B    [   ]",
   "                     ",
-  "           Filter    ",
-  "           EG Amt    ",
-  "           C    [   ]",
+  "                     ",
+  "                     ",
+  "                     ",
+  "                     ",
+  "                     ",
+  "                     ",
 };
 
 
 
 static INLINE void PRA32_U_ControlPanel_update_page() {
   PRA32_U_ControlPanelPage& current_page = g_control_panel_page_table[s_current_page_index];
+
+  std::memset(&s_display_buffer[3], ' ', 21);
+  std::memset(&s_display_buffer[7], ' ', 21);
 
   std::memcpy(&s_display_buffer[5][ 0], current_page.page_name_line_0            , 10);
   std::memcpy(&s_display_buffer[6][ 0], current_page.page_name_line_1            , 10);
@@ -230,13 +233,15 @@ INLINE void PRA32_U_ControlPanel_update_control() {
       s_prev_key_current_value = value;
       s_prev_key_value_changed_time = s_key_inpuy_counter;
 
-      if (s_current_page_index == 0) {
-        s_current_page_index = NUMBER_OF_PAGES - 1;
-      } else {
-        --s_current_page_index;
-      }
+      if (s_prev_key_current_value == 1) {
+        if (s_current_page_index == 0) {
+          s_current_page_index = NUMBER_OF_PAGES - 1;
+        } else {
+          --s_current_page_index;
+        }
 
-      PRA32_U_ControlPanel_update_page();
+        PRA32_U_ControlPanel_update_page();
+      }
       return;
     }
   }
@@ -247,13 +252,15 @@ INLINE void PRA32_U_ControlPanel_update_control() {
       s_next_key_current_value = value;
       s_next_key_value_changed_time = s_key_inpuy_counter;
 
-      if (s_current_page_index == NUMBER_OF_PAGES - 1) {
-        s_current_page_index = 0;
-      } else {
-        ++s_current_page_index;
-      }
+      if (s_next_key_current_value == 1) {
+        if (s_current_page_index == NUMBER_OF_PAGES - 1) {
+          s_current_page_index = 0;
+        } else {
+          ++s_current_page_index;
+        }
 
-      PRA32_U_ControlPanel_update_page();
+        PRA32_U_ControlPanel_update_page();
+      }
       return;
     }
   }
@@ -300,6 +307,7 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
       uint8_t adc_control_value        = s_adc_control_value[0];
       uint8_t current_controller_value = g_synth.current_controller_value(adc_control_target_0);
 
+      s_display_buffer[3][ 0] = 'A';
       if        (adc_control_value < current_controller_value) {
         s_display_buffer[3][ 1] = '<';
       } else if (adc_control_value > current_controller_value) {
@@ -319,6 +327,7 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
       uint8_t adc_control_value        = s_adc_control_value[1];
       uint8_t current_controller_value = g_synth.current_controller_value(adc_control_target_1);
 
+      s_display_buffer[3][11] = 'B';
       if        (adc_control_value < current_controller_value) {
         s_display_buffer[3][12] = '<';
       } else if (adc_control_value > current_controller_value) {
@@ -338,6 +347,7 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
       uint8_t adc_control_value        = s_adc_control_value[2];
       uint8_t current_controller_value = g_synth.current_controller_value(adc_control_target_2);
 
+      s_display_buffer[7][11] = 'C';
       if        (adc_control_value < current_controller_value) {
         s_display_buffer[7][12] = '<';
       } else if (adc_control_value > current_controller_value) {
