@@ -8,6 +8,16 @@
 #include <cstdio>
 #include <cstring>
 
+
+
+static volatile uint32_t s_prev_key_current_value;
+static volatile uint32_t s_next_key_current_value;
+static volatile uint32_t s_play_key_current_value;
+
+static volatile uint32_t s_prev_key_value_changed_time;
+static volatile uint32_t s_next_key_value_changed_time;
+static volatile uint32_t s_play_key_value_changed_time;
+
 static volatile uint32_t s_adc_current_value[3];
 static volatile uint32_t s_adc_control_value[3];
 static volatile uint8_t  s_adc_control_target[3] = {FILTER_CUTOFF  , FILTER_RESO    , FILTER_EG_AMT  };
@@ -22,6 +32,8 @@ static char s_display_buffer[8][21 + 1] = {
   "           EG Amt    ",
   "Page= 6    C    [   ]",
 };
+
+
 
 static INLINE uint8_t PRA32_U_ControlPanel_adc_control_value_candidate(uint32_t adc_number) {
 #if defined(PRA32_U_ANALOG_INPUT_REVERSED)
@@ -54,6 +66,8 @@ static INLINE void PRA32_U_ControlPanel_draw_character(uint8_t c) {
   std::memcpy(&data[1], g_font_table[c], 6);
   i2c_write_blocking(PRA32_U_OLED_DISPLAY_I2C, PRA32_U_OLED_DISPLAY_I2C_ADDRESS, data, sizeof(data), false);
 }
+
+
 
 INLINE void PRA32_U_ControlPanel_setup() {
 #if defined(PRA32_U_USE_CONTROL_PANEL)
@@ -101,7 +115,7 @@ INLINE void PRA32_U_ControlPanel_setup() {
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL)
 }
 
-INLINE void PRA32_U_ControlPanel_update_input(uint32_t loop_counter) {
+INLINE void PRA32_U_ControlPanel_update_analog_inputs(uint32_t loop_counter) {
   static_cast<void>(loop_counter);
 
 #if defined(PRA32_U_USE_CONTROL_PANEL)
@@ -171,6 +185,25 @@ INLINE void PRA32_U_ControlPanel_update_input(uint32_t loop_counter) {
 
 INLINE void PRA32_U_ControlPanel_update_control() {
 #if defined(PRA32_U_USE_CONTROL_PANEL)
+
+#if defined(PRA32_U_USE_CONTROL_PANEL_KEY_INPUT)
+  static uint32_t s_key_inpuy_counter = 0;
+  s_key_inpuy_counter++;
+  if (s_key_inpuy_counter - s_prev_key_value_changed_time >= PRA32_U_KEY_ANTI_CHATTERING_WAIT) {
+    uint32_t value = digitalRead(PRA32_U_KEY_INPUT_PREV_KEY_PIN) == PRA32_U_KEY_INPUT_ACTIVE_LEVEL;
+    s_prev_key_current_value = value;
+  }
+
+  if (s_key_inpuy_counter - s_prev_key_value_changed_time >= PRA32_U_KEY_ANTI_CHATTERING_WAIT) {
+    uint32_t value = digitalRead(PRA32_U_KEY_INPUT_NEXT_KEY_PIN) == PRA32_U_KEY_INPUT_ACTIVE_LEVEL;
+    s_next_key_current_value = value;
+  }
+
+  if (s_key_inpuy_counter - s_prev_key_value_changed_time >= PRA32_U_KEY_ANTI_CHATTERING_WAIT) {
+    uint32_t value = digitalRead(PRA32_U_KEY_INPUT_PLAY_KEY_PIN) == PRA32_U_KEY_INPUT_ACTIVE_LEVEL;
+    s_play_key_current_value = value;
+  }
+#endif  // defined(PRA32_U_USE_CONTROL_PANEL_KEY_INPUT)
 
 #if defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
   static uint32_t s_initialize_counter = 0;
