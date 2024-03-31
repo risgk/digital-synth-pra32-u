@@ -62,9 +62,9 @@ static INLINE uint8_t PRA32_U_ControlPanel_adc_control_value_candidate(uint32_t 
   volatile int32_t adc_control_value_candidate;
 
 #if defined(PRA32_U_ANALOG_INPUT_REVERSED)
-  adc_control_value_candidate = (127 - (s_adc_current_value[adc_number] >> 9));
+  adc_control_value_candidate = (127 - (s_adc_current_value[adc_number] / PRA32_U_ANALOG_INPUT_DENOMINATOR));
 #else  // defined(PRA32_U_ANALOG_INPUT_REVERSED)
-  adc_control_value_candidate = (s_adc_current_value[adc_number] >> 9);
+  adc_control_value_candidate = (s_adc_current_value[adc_number] / PRA32_U_ANALOG_INPUT_DENOMINATOR);
 #endif  // defined(PRA32_U_ANALOG_INPUT_REVERSED)
 
   if (adc_control_value_candidate > 127) {
@@ -157,63 +157,63 @@ INLINE void PRA32_U_ControlPanel_update_analog_inputs(uint32_t loop_counter) {
 #if defined(PRA32_U_USE_CONTROL_PANEL)
 
 #if defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
-  static int32_t s_adc_average_value = 0;
+  static int32_t s_adc_total_value = 0;
   switch (loop_counter & 0x3F) {
   case 0x10:
     adc_select_input(0);
-    s_adc_average_value  = PRA32_U_ANALOG_INPUT_CORRECTION;
-    s_adc_average_value += adc_read() + adc_read() + adc_read() + adc_read();
+    s_adc_total_value  = PRA32_U_ANALOG_INPUT_CORRECTION;
+    s_adc_total_value += adc_read() + adc_read() + adc_read() + adc_read();
     break;
   case 0x14:
-    s_adc_average_value += adc_read() + adc_read() + adc_read() + adc_read();
+    s_adc_total_value += adc_read() + adc_read() + adc_read() + adc_read();
     break;
   case 0x18:
-    s_adc_average_value += adc_read() + adc_read() + adc_read() + adc_read();
+    s_adc_total_value += adc_read() + adc_read() + adc_read() + adc_read();
     break;
   case 0x1C:
-    s_adc_average_value += adc_read() + adc_read() + adc_read() + adc_read();
-    if        (s_adc_current_value[0]       >= s_adc_average_value + 512) {
-      s_adc_current_value[0] = s_adc_average_value;
-    } else if (s_adc_current_value[0] + 512 <= s_adc_average_value      ) {
-      s_adc_current_value[0] = s_adc_average_value;
+    s_adc_total_value += adc_read() + adc_read() + adc_read() + adc_read();
+    if        (s_adc_current_value[0]                                  >= s_adc_total_value + PRA32_U_ANALOG_INPUT_THRESHOLD) {
+      s_adc_current_value[0] = s_adc_total_value;
+    } else if (s_adc_current_value[0] + PRA32_U_ANALOG_INPUT_THRESHOLD <= s_adc_total_value                                 ) {
+      s_adc_current_value[0] = s_adc_total_value;
     }
     break;
   case 0x20:
     adc_select_input(1);
-    s_adc_average_value  = PRA32_U_ANALOG_INPUT_CORRECTION;
-    s_adc_average_value += adc_read() + adc_read() + adc_read() + adc_read();
+    s_adc_total_value  = PRA32_U_ANALOG_INPUT_CORRECTION;
+    s_adc_total_value += adc_read() + adc_read() + adc_read() + adc_read();
     break;
   case 0x24:
-    s_adc_average_value += adc_read() + adc_read() + adc_read() + adc_read();
+    s_adc_total_value += adc_read() + adc_read() + adc_read() + adc_read();
     break;
   case 0x28:
-    s_adc_average_value += adc_read() + adc_read() + adc_read() + adc_read();
+    s_adc_total_value += adc_read() + adc_read() + adc_read() + adc_read();
     break;
   case 0x2C:
-    s_adc_average_value += adc_read() + adc_read() + adc_read() + adc_read();
-    if        (s_adc_current_value[1]       >= s_adc_average_value + 512) {
-      s_adc_current_value[1] = s_adc_average_value;
-    } else if (s_adc_current_value[1] + 512 <= s_adc_average_value      ) {
-      s_adc_current_value[1] = s_adc_average_value;
+    s_adc_total_value += adc_read() + adc_read() + adc_read() + adc_read();
+    if        (s_adc_current_value[1]                                  >= s_adc_total_value + PRA32_U_ANALOG_INPUT_THRESHOLD) {
+      s_adc_current_value[1] = s_adc_total_value;
+    } else if (s_adc_current_value[1] + PRA32_U_ANALOG_INPUT_THRESHOLD <= s_adc_total_value                                 ) {
+      s_adc_current_value[1] = s_adc_total_value;
     }
     break;
   case 0x30:
     adc_select_input(2);
-    s_adc_average_value  = PRA32_U_ANALOG_INPUT_CORRECTION;
-    s_adc_average_value += adc_read() + adc_read() + adc_read() + adc_read();
+    s_adc_total_value  = PRA32_U_ANALOG_INPUT_CORRECTION;
+    s_adc_total_value += adc_read() + adc_read() + adc_read() + adc_read();
     break;
   case 0x34:
-    s_adc_average_value += adc_read() + adc_read() + adc_read() + adc_read();
+    s_adc_total_value += adc_read() + adc_read() + adc_read() + adc_read();
     break;
   case 0x38:
-    s_adc_average_value += adc_read() + adc_read() + adc_read() + adc_read();
+    s_adc_total_value += adc_read() + adc_read() + adc_read() + adc_read();
     break;
   case 0x3C:
-    s_adc_average_value += adc_read() + adc_read() + adc_read() + adc_read();
-    if        (s_adc_current_value[2]       >= s_adc_average_value + 512) {
-      s_adc_current_value[2] = s_adc_average_value;
-    } else if (s_adc_current_value[2] + 512 <= s_adc_average_value      ) {
-      s_adc_current_value[2] = s_adc_average_value;
+    s_adc_total_value += adc_read() + adc_read() + adc_read() + adc_read();
+    if        (s_adc_current_value[2]                                  >= s_adc_total_value + PRA32_U_ANALOG_INPUT_THRESHOLD) {
+      s_adc_current_value[2] = s_adc_total_value;
+    } else if (s_adc_current_value[2] + PRA32_U_ANALOG_INPUT_THRESHOLD <= s_adc_total_value                                 ) {
+      s_adc_current_value[2] = s_adc_total_value;
     }
     break;
   }
