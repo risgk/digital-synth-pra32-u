@@ -1,6 +1,6 @@
 #pragma once
 
-struct {
+struct PRA32_U_ControlPanelPage {
   char    page_name_line_0            [10 + 1];
   char    page_name_line_1            [10 + 1];
   char    control_target_a_name_line_0[10 + 1];

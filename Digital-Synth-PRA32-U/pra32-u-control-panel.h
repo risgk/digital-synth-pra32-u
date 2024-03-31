@@ -11,30 +11,45 @@
 
 
 
-static volatile uint32_t s_prev_key_current_value;
-static volatile uint32_t s_next_key_current_value;
-static volatile uint32_t s_play_key_current_value;
+#define NUMBER_OF_PAGES (sizeof(g_control_panel_page_table) / sizeof(g_control_panel_page_table[0]))
 
-static volatile uint32_t s_prev_key_value_changed_time;
-static volatile uint32_t s_next_key_value_changed_time;
-static volatile uint32_t s_play_key_value_changed_time;
+static volatile uint32_t s_current_page_index = 5;
 
 static volatile uint32_t s_adc_current_value[3];
 static volatile uint32_t s_adc_control_value[3];
-static volatile uint8_t  s_adc_control_target[3] = {FILTER_CUTOFF  , FILTER_RESO    , FILTER_EG_AMT  };
+static volatile uint8_t  s_adc_control_target[3] = { 0xFF, 0xFF, 0xFF };
 
 static char s_display_buffer[8][21 + 1] = {
   "                     ",
   "Filter     Filter    ",
   "Cutoff     Resonance ",
-  "A          B         ",
+  "A    [   ] B    [   ]",
   "                     ",
-  "Filter A   Filter    ",
+  "           Filter    ",
   "           EG Amt    ",
-  "Page= 6    C    [   ]",
+  "           C    [   ]",
 };
 
 
+
+static INLINE void PRA32_U_ControlPanel_update_page() {
+  PRA32_U_ControlPanelPage& current_page = g_control_panel_page_table[s_current_page_index];
+
+  std::memcpy(&s_display_buffer[5][ 0], current_page.page_name_line_0            , 10);
+  std::memcpy(&s_display_buffer[6][ 0], current_page.page_name_line_1            , 10);
+
+  std::memcpy(&s_display_buffer[1][ 0], current_page.control_target_a_name_line_0, 10);
+  std::memcpy(&s_display_buffer[2][ 0], current_page.control_target_a_name_line_1, 10);
+  s_adc_control_target[0]             = current_page.control_target_a;
+
+  std::memcpy(&s_display_buffer[1][11], current_page.control_target_b_name_line_0, 10);
+  std::memcpy(&s_display_buffer[2][11], current_page.control_target_b_name_line_1, 10);
+  s_adc_control_target[1]             = current_page.control_target_b;
+
+  std::memcpy(&s_display_buffer[5][11], current_page.control_target_c_name_line_0, 10);
+  std::memcpy(&s_display_buffer[6][11], current_page.control_target_c_name_line_1, 10);
+  s_adc_control_target[2]             = current_page.control_target_c;
+}
 
 static INLINE uint8_t PRA32_U_ControlPanel_adc_control_value_candidate(uint32_t adc_number) {
 #if defined(PRA32_U_ANALOG_INPUT_REVERSED)
@@ -72,6 +87,7 @@ static INLINE void PRA32_U_ControlPanel_draw_character(uint8_t c) {
 
 INLINE void PRA32_U_ControlPanel_setup() {
 #if defined(PRA32_U_USE_CONTROL_PANEL)
+  PRA32_U_ControlPanel_update_page();
 
 #if defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
   adc_init();
@@ -198,6 +214,14 @@ INLINE void PRA32_U_ControlPanel_update_control() {
   }
 
 #if defined(PRA32_U_USE_CONTROL_PANEL_KEY_INPUT)
+  static uint32_t s_prev_key_current_value;
+  static uint32_t s_next_key_current_value;
+  static uint32_t s_play_key_current_value;
+
+  static uint32_t s_prev_key_value_changed_time;
+  static uint32_t s_next_key_value_changed_time;
+  static uint32_t s_play_key_value_changed_time;
+
   static uint32_t s_key_inpuy_counter = 0;
   ++s_key_inpuy_counter;
   if (s_key_inpuy_counter - s_prev_key_value_changed_time >= PRA32_U_KEY_ANTI_CHATTERING_WAIT) {
@@ -205,6 +229,14 @@ INLINE void PRA32_U_ControlPanel_update_control() {
     if (s_prev_key_current_value != value) {
       s_prev_key_current_value = value;
       s_prev_key_value_changed_time = s_key_inpuy_counter;
+
+      if (s_current_page_index == 0) {
+        s_current_page_index = NUMBER_OF_PAGES - 1;
+      } else {
+        --s_current_page_index;
+      }
+
+      PRA32_U_ControlPanel_update_page();
       return;
     }
   }
@@ -214,6 +246,14 @@ INLINE void PRA32_U_ControlPanel_update_control() {
     if (s_next_key_current_value != value) {
       s_next_key_current_value = value;
       s_next_key_value_changed_time = s_key_inpuy_counter;
+
+      if (s_current_page_index == NUMBER_OF_PAGES - 1) {
+        s_current_page_index = 0;
+      } else {
+        ++s_current_page_index;
+      }
+
+      PRA32_U_ControlPanel_update_page();
       return;
     }
   }
@@ -311,10 +351,12 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
       s_display_buffer[7][14] = buff[1];
       s_display_buffer[7][15] = buff[2];
 
+#if 0
       std::sprintf(buff, "%+3d", static_cast<int>(current_controller_value) - 64);
       s_display_buffer[7][17] = buff[0];
       s_display_buffer[7][18] = buff[1];
       s_display_buffer[7][19] = buff[2];
+#endif
     }
   }
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL)
