@@ -19,6 +19,8 @@ static volatile int32_t  s_adc_current_value[3];
 static volatile uint8_t  s_adc_control_value[3];
 static volatile uint8_t  s_adc_control_target[3] = { 0xFF, 0xFF, 0xFF };
 
+static volatile uint32_t s_display_draw_counter = 0;
+
 static char s_display_buffer[8][21 + 1] = {
   "                     ",
   "                     ",
@@ -52,6 +54,8 @@ static INLINE void PRA32_U_ControlPanel_update_page() {
   std::memcpy(&s_display_buffer[1][11], current_page.control_target_c_name_line_0, 10);
   std::memcpy(&s_display_buffer[2][11], current_page.control_target_c_name_line_1, 10);
   s_adc_control_target[2]             = current_page.control_target_c;
+
+  s_display_draw_counter = 0;
 }
 
 static INLINE uint8_t PRA32_U_ControlPanel_adc_control_value_candidate(uint32_t adc_number) {
@@ -403,40 +407,44 @@ INLINE void PRA32_U_ControlPanel_update_display(uint32_t loop_counter) {
 #if defined(PRA32_U_USE_CONTROL_PANEL)
 
 #if defined(PRA32_U_USE_CONTROL_PANEL_OLED_DISPLAY)
-  static uint32_t s_display_draw_counter = 0;
+  static uint32_t s_display_draw_position_x = 0;
+  static uint32_t s_display_draw_position_y = 0;
 
-#if 1
   if ((loop_counter & 0x7F) == 0x40) {
-    ++s_display_draw_counter;
-    if (s_display_draw_counter >= 8 * 21) {
-      s_display_draw_counter = 0;
+    uint32_t display_draw_counter = s_display_draw_counter;
+
+    s_display_draw_counter++;
+    if (s_display_draw_counter == 6 * 21) {
+      s_display_draw_counter = 4 * 21;
     }
 
-    uint8_t x = s_display_draw_counter % 21;
-    uint8_t y = s_display_draw_counter / 21;
-    PRA32_U_ControlPanel_set_draw_position(x, y);
-  } else if ((loop_counter & 0x7F) == 0x00) {
-    uint8_t x = s_display_draw_counter % 21;
-    uint8_t y = s_display_draw_counter / 21;
-    PRA32_U_ControlPanel_draw_character(s_display_buffer[y][x]);
-  }
-#else
-  if ((loop_counter & 0x7F) == 0x40) {
-    ++s_display_draw_counter;
-    if (s_display_draw_counter >= 31) {
-      s_display_draw_counter = 0;
+    switch (display_draw_counter / 21) {
+    case 0:
+      s_display_draw_position_y = 1;
+      break;
+    case 1:
+      s_display_draw_position_y = 2;
+      break;
+    case 2:
+      s_display_draw_position_y = 5;
+      break;
+    case 3:
+      s_display_draw_position_y = 6;
+      break;
+    case 4:
+      s_display_draw_position_y = 3;
+      break;
+    case 5:
+      s_display_draw_position_y = 7;
+      break;
     }
 
-    uint8_t x = (s_display_draw_counter % 21) + ((s_display_draw_counter >= 21) * 11);
-    uint8_t y = ((s_display_draw_counter >= 21) * 4) + 3;
-    PRA32_U_ControlPanel_set_draw_position(x, y);
-  } else if ((loop_counter & 0x7F) == 0x00) {
-    uint8_t x = (s_display_draw_counter % 21) + ((s_display_draw_counter >= 21) * 11);
-    uint8_t y = ((s_display_draw_counter >= 21) * 4) + 3;
-    PRA32_U_ControlPanel_draw_character(s_display_buffer[y][x]);
-  }
-#endif
+    s_display_draw_position_x = display_draw_counter % 21;
 
+    PRA32_U_ControlPanel_set_draw_position(s_display_draw_position_x, s_display_draw_position_y);
+  } else if ((loop_counter & 0x7F) == 0x00) {
+    PRA32_U_ControlPanel_draw_character(s_display_buffer[s_display_draw_position_y][s_display_draw_position_x]);
+  }
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL_OLED_DISPLAY)
 
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL)
