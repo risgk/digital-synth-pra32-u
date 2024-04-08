@@ -128,7 +128,6 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
   boolean result = false;
 
   switch (control_target) {
-  case MIXER_SUB_OSC   :  // TODO
   case OSC_2_COARSE    :
   case OSC_2_PITCH     :
   case FILTER_EG_AMT   :
@@ -138,6 +137,23 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
   case BTH_FILTER_AMT  :
     {
       std::sprintf(value_display_text, "%+3d", static_cast<int>(controller_value) - 64);
+      result = true;
+    }
+    break;
+  case MIXER_SUB_OSC   :
+    {
+      std::sprintf(value_display_text, "%+3d", static_cast<int>(controller_value) - 64);
+
+      if        (controller_value < 55) {
+        value_display_text[0] = 'N';
+      } else if (controller_value < 64) {
+        value_display_text[1] = 'N';
+      } else if (controller_value < 74) {
+        value_display_text[1] = 'S';
+      } else {
+        value_display_text[0] = 'S';
+      }
+
       result = true;
     }
     break;

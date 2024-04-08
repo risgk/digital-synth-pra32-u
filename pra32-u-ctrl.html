@@ -699,7 +699,6 @@ function updateDisplayOfControl(number, value) {
   dispValue = String(value);
 
   switch (number) {
-  case MIXER_SUB_OSC   :
   case OSC_2_COARSE    :
   case OSC_2_PITCH     :
   case FILTER_EG_AMT   :
@@ -711,6 +710,13 @@ function updateDisplayOfControl(number, value) {
       dispValue = "+" + String(value - 64);
     } else {
       dispValue = String(value - 64);
+    }
+    break;
+  case MIXER_SUB_OSC   :
+    if (value >= 64) {
+      dispValue = "S" + String(value - 64);
+    } else {
+      dispValue = "N" + String(64 - value);
     }
     break;
   case OSC_1_WAVE      :
