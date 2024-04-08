@@ -332,9 +332,12 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
     char buff[6];
 
     uint8_t adc_control_target_0 = s_adc_control_target[0];
-    if (adc_control_target_0 <= 127) {
+    if (adc_control_target_0 < 0xFF) {
       uint8_t adc_control_value        = s_adc_control_value[0];
-      uint8_t current_controller_value = g_synth.current_controller_value(adc_control_target_0);
+      uint8_t current_controller_value = adc_control_value;
+      if (adc_control_target_0 <= 0x7F) {
+        current_controller_value = g_synth.current_controller_value(adc_control_target_0);
+      }
 
       s_display_buffer[7][ 0] = 'A';
       if        (adc_control_value < current_controller_value) {
@@ -352,9 +355,12 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
     }
 
     uint8_t adc_control_target_1 = s_adc_control_target[1];
-    if (adc_control_target_1 <= 127) {
+    if (adc_control_target_1 < 0xFF) {
       uint8_t adc_control_value        = s_adc_control_value[1];
-      uint8_t current_controller_value = g_synth.current_controller_value(adc_control_target_1);
+      uint8_t current_controller_value = adc_control_value;
+      if (adc_control_target_1 <= 0x7F) {
+        current_controller_value = g_synth.current_controller_value(adc_control_target_1);
+      }
 
       s_display_buffer[7][11] = 'B';
       if        (adc_control_value < current_controller_value) {
@@ -372,9 +378,12 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
     }
 
     uint8_t adc_control_target_2 = s_adc_control_target[2];
-    if (adc_control_target_2 <= 127) {
+    if (adc_control_target_2 < 0xFF) {
       uint8_t adc_control_value        = s_adc_control_value[2];
-      uint8_t current_controller_value = g_synth.current_controller_value(adc_control_target_2);
+      uint8_t current_controller_value = adc_control_value;
+      if (adc_control_target_2 <= 0x7F) {
+        current_controller_value = g_synth.current_controller_value(adc_control_target_2);
+      }
 
       s_display_buffer[3][11] = 'C';
       if        (adc_control_value < current_controller_value) {
