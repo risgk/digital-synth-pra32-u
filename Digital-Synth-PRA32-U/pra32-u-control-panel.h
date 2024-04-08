@@ -78,11 +78,25 @@ static INLINE uint8_t PRA32_U_ControlPanel_adc_control_value_candidate(uint32_t 
   return adc_control_value_candidate;
 }
 
-static INLINE boolean PRA32_U_ControlPanel_update_adc_control(uint32_t adc_number) {
-  uint32_t adc_control_value_candidate = PRA32_U_ControlPanel_adc_control_value_candidate(adc_number);
+static INLINE boolean PRA32_U_ControlPanel_update_control_adc(uint32_t adc_number) {
+  uint8_t adc_control_value_candidate = PRA32_U_ControlPanel_adc_control_value_candidate(adc_number);
+
   if (s_adc_control_value[adc_number] != adc_control_value_candidate) {
+    uint8_t s_adc_control_value_old = s_adc_control_value[adc_number];
     s_adc_control_value[adc_number] = adc_control_value_candidate;
-    g_synth.control_change(s_adc_control_target[adc_number], s_adc_control_value[adc_number]);
+
+    if (s_adc_control_target[adc_number] <= 0x7F) {
+      g_synth.control_change(s_adc_control_target[adc_number], s_adc_control_value[adc_number]);
+    } else if ((s_adc_control_target[adc_number] >= PC_BY_PANEL_0) && (s_adc_control_target[adc_number] <= PC_BY_PANEL_15)) {
+      if ((s_adc_control_value_old < 64) && (s_adc_control_value[adc_number] >= 64)) {
+        g_synth.program_change(s_adc_control_target[adc_number] - PC_BY_PANEL_0);
+      }
+    } else if ((s_adc_control_target[adc_number] >= WR_BY_PANEL_0) && (s_adc_control_target[adc_number] <= WR_BY_PANEL_15)) {
+      if ((s_adc_control_value_old < 64) && (s_adc_control_value[adc_number] >= 64)) {
+        g_synth.write_parameters_to_program(s_adc_control_target[adc_number] - WR_BY_PANEL_0);
+      }
+    }
+
     return true;
   }
 
@@ -307,15 +321,15 @@ INLINE void PRA32_U_ControlPanel_update_control() {
 #if defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
   static uint32_t s_adc_number_to_check = 0;
 
-  boolean updated = PRA32_U_ControlPanel_update_adc_control(s_adc_number_to_check);
+  boolean updated = PRA32_U_ControlPanel_update_control_adc(s_adc_number_to_check);
   s_adc_number_to_check = (s_adc_number_to_check + 1) % 3;
 
   if (updated == false) {
-    updated = PRA32_U_ControlPanel_update_adc_control(s_adc_number_to_check);
+    updated = PRA32_U_ControlPanel_update_control_adc(s_adc_number_to_check);
     s_adc_number_to_check = (s_adc_number_to_check + 1) % 3;
 
     if (updated == false) {
-      updated = PRA32_U_ControlPanel_update_adc_control(s_adc_number_to_check);
+      updated = PRA32_U_ControlPanel_update_control_adc(s_adc_number_to_check);
       s_adc_number_to_check = (s_adc_number_to_check + 1) % 3;
     }
   }

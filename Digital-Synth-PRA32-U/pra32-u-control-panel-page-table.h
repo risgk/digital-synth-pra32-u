@@ -18,6 +18,15 @@ const uint8_t   PC_BY_PANEL_13  = 141;
 const uint8_t   PC_BY_PANEL_14  = 142;
 const uint8_t   PC_BY_PANEL_15  = 143;
 
+const uint8_t   WR_BY_PANEL_0   = 144;  // Invalid
+const uint8_t   WR_BY_PANEL_1   = 145;  // Invalid
+const uint8_t   WR_BY_PANEL_2   = 146;  // Invalid
+const uint8_t   WR_BY_PANEL_3   = 147;  // Invalid
+const uint8_t   WR_BY_PANEL_4   = 148;  // Invalid
+const uint8_t   WR_BY_PANEL_5   = 149;  // Invalid
+const uint8_t   WR_BY_PANEL_6   = 150;  // Invalid
+const uint8_t   WR_BY_PANEL_7   = 151;  // Invalid
+
 const uint8_t   WR_BY_PANEL_8   = 152;
 const uint8_t   WR_BY_PANEL_9   = 153;
 const uint8_t   WR_BY_PANEL_10  = 154;
@@ -57,13 +66,16 @@ struct PRA32_U_ControlPanelPage {
   { "Page=15   ", "Breath    ",   "Breath    ", "Filter Amt", BTH_FILTER_AMT ,   "Breath    ", "Amp Mod   ", BTH_AMP_MOD    ,   "          ", "          ", 0xFF           , },
   { "Page=16   ", "Chorus    ",   "Chorus    ", "Mix       ", CHORUS_MIX     ,   "Chorus    ", "Rate      ", CHORUS_RATE    ,   "Chorus    ", "Depth     ", CHORUS_DEPTH   , },
   { "Page=17   ", "Delay     ",   "Delay     ", "Feedback  ", DELAY_FEEDBACK ,   "Delay     ", "Time      ", DELAY_TIME     ,   "Delay     ", "Mode      ", DELAY_MODE     , },
-  { "Page=18   ", "Program a ",   "Program   ", "Change  #0", PC_BY_PANEL_0  ,   "Program   ", "Change  #1", PC_BY_PANEL_1  ,   "Program   ", "Change  #2", PC_BY_PANEL_2  , },
-  { "Page=19   ", "Program b ",   "Program   ", "Change  #3", PC_BY_PANEL_3  ,   "Program   ", "Change  #4", PC_BY_PANEL_4  ,   "Program   ", "Change  #5", PC_BY_PANEL_5  , },
-  { "Page=20   ", "Program c ",   "Program   ", "Change  #6", PC_BY_PANEL_6  ,   "Program   ", "Change  #7", PC_BY_PANEL_7  ,   "          ", "          ", 0xFF           , },
-  { "Page=21   ", "Program d ",   "Program   ", "Change  #8", PC_BY_PANEL_8  ,   "Program   ", "Change  #9", PC_BY_PANEL_9  ,   "Program   ", "Change #10", PC_BY_PANEL_10 , },
-  { "Page=22   ", "Program e ",   "Program   ", "Change #11", PC_BY_PANEL_11 ,   "Program   ", "Change #12", PC_BY_PANEL_12 ,   "Program   ", "Change #13", PC_BY_PANEL_13 , },
-  { "Page=23   ", "Program f ",   "Program   ", "Change #14", PC_BY_PANEL_14 ,   "Program   ", "Change #15", PC_BY_PANEL_15 ,   "          ", "          ", 0xFF           , },
-  { "Page=24   ", "Program g ",   "Program   ", "Write   #8", WR_BY_PANEL_8  ,   "Program   ", "Write   #9", WR_BY_PANEL_9  ,   "Program   ", "Write  #10", WR_BY_PANEL_10 , },
-  { "Page=25   ", "Program h ",   "Program   ", "Write  #11", WR_BY_PANEL_11 ,   "Program   ", "Write  #12", WR_BY_PANEL_12 ,   "Program   ", "Write  #13", WR_BY_PANEL_13 , },
-  { "Page=26   ", "Program i ",   "Program   ", "Write  #14", WR_BY_PANEL_14 ,   "Program   ", "Write  #15", WR_BY_PANEL_15 ,   "          ", "          ", 0xFF           , },
+  { "Page=18   ", "Program a ",   "Program   ", "Change  #0", PC_BY_PANEL_0  ,   "Program   ", "Change  #1", PC_BY_PANEL_1  ,   "          ", "          ", 0xFF           , },
+  { "Page=19   ", "Program b ",   "Program   ", "Change  #2", PC_BY_PANEL_2  ,   "Program   ", "Change  #3", PC_BY_PANEL_3  ,   "          ", "          ", 0xFF           , },
+  { "Page=20   ", "Program c ",   "Program   ", "Change  #4", PC_BY_PANEL_4  ,   "Program   ", "Change  #5", PC_BY_PANEL_5  ,   "          ", "          ", 0xFF           , },
+  { "Page=21   ", "Program d ",   "Program   ", "Change  #6", PC_BY_PANEL_6  ,   "Program   ", "Change  #7", PC_BY_PANEL_7  ,   "          ", "          ", 0xFF           , },
+  { "Page=22   ", "Program e ",   "Program   ", "Change  #8", PC_BY_PANEL_8  ,   "Program   ", "Change  #9", PC_BY_PANEL_9  ,   "          ", "          ", 0xFF           , },
+  { "Page=23   ", "Program f ",   "Program   ", "Change #10", PC_BY_PANEL_10 ,   "Program   ", "Change #11", PC_BY_PANEL_11 ,   "          ", "          ", 0xFF           , },
+  { "Page=24   ", "Program g ",   "Program   ", "Change #12", PC_BY_PANEL_12 ,   "Program   ", "Change #13", PC_BY_PANEL_13 ,   "          ", "          ", 0xFF           , },
+  { "Page=25   ", "Program h ",   "Program   ", "Change #14", PC_BY_PANEL_14 ,   "Program   ", "Change #15", PC_BY_PANEL_15 ,   "          ", "          ", 0xFF           , },
+  { "Page=26   ", "Program i ",   "Program   ", "Write   #8", WR_BY_PANEL_8  ,   "Program   ", "Write   #9", WR_BY_PANEL_9  ,   "          ", "          ", 0xFF           , },
+  { "Page=27   ", "Program j ",   "Program   ", "Write  #10", WR_BY_PANEL_10 ,   "Program   ", "Write  #11", WR_BY_PANEL_11 ,   "          ", "          ", 0xFF           , },
+  { "Page=28   ", "Program k ",   "Program   ", "Write  #12", WR_BY_PANEL_12 ,   "Program   ", "Write  #13", WR_BY_PANEL_13 ,   "          ", "          ", 0xFF           , },
+  { "Page=29   ", "Program l ",   "Program   ", "Write  #14", WR_BY_PANEL_14 ,   "Program   ", "Write  #15", WR_BY_PANEL_15 ,   "          ", "          ", 0xFF           , },
 };
