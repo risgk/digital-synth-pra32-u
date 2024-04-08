@@ -381,6 +381,8 @@ INLINE void PRA32_U_ControlPanel_update_control() {
 
   static uint32_t s_key_inpuy_counter = 0;
   ++s_key_inpuy_counter;
+
+#if defined(PRA32_U_KEY_INPUT_PREV_KEY_PIN)
   if (s_key_inpuy_counter - s_prev_key_value_changed_time >= PRA32_U_KEY_ANTI_CHATTERING_WAIT) {
     uint32_t value = digitalRead(PRA32_U_KEY_INPUT_PREV_KEY_PIN) == PRA32_U_KEY_INPUT_ACTIVE_LEVEL;
     if (s_prev_key_current_value != value) {
@@ -400,7 +402,9 @@ INLINE void PRA32_U_ControlPanel_update_control() {
       return;
     }
   }
+#endif  // defined(PRA32_U_KEY_INPUT_PREV_KEY_PIN)
 
+#if defined(PRA32_U_KEY_INPUT_NEXT_KEY_PIN)
   if (s_key_inpuy_counter - s_next_key_value_changed_time >= PRA32_U_KEY_ANTI_CHATTERING_WAIT) {
     uint32_t value = digitalRead(PRA32_U_KEY_INPUT_NEXT_KEY_PIN) == PRA32_U_KEY_INPUT_ACTIVE_LEVEL;
     if (s_next_key_current_value != value) {
@@ -420,7 +424,9 @@ INLINE void PRA32_U_ControlPanel_update_control() {
       return;
     }
   }
+#endif  // defined(PRA32_U_KEY_INPUT_NEXT_KEY_PIN)
 
+#if defined(PRA32_U_KEY_INPUT_PLAY_KEY_PIN)
   if (s_key_inpuy_counter - s_play_key_value_changed_time >= PRA32_U_KEY_ANTI_CHATTERING_WAIT) {
     uint32_t value = digitalRead(PRA32_U_KEY_INPUT_PLAY_KEY_PIN) == PRA32_U_KEY_INPUT_ACTIVE_LEVEL;
     if (s_play_key_current_value != value) {
@@ -437,6 +443,8 @@ INLINE void PRA32_U_ControlPanel_update_control() {
       return;
     }
   }
+#endif  // defined(PRA32_U_KEY_INPUT_PLAY_KEY_PIN)
+
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL_KEY_INPUT)
 
 #if defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
