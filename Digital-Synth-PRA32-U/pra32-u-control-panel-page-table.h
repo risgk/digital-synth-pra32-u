@@ -74,8 +74,8 @@ struct PRA32_U_ControlPanelPage {
   { "Page=23   ", "Program f ",   "Program   ", "Change #10", PC_BY_PANEL_10 ,   "Program   ", "Change #11", PC_BY_PANEL_11 ,   "          ", "          ", 0xFF           , },
   { "Page=24   ", "Program g ",   "Program   ", "Change #12", PC_BY_PANEL_12 ,   "Program   ", "Change #13", PC_BY_PANEL_13 ,   "          ", "          ", 0xFF           , },
   { "Page=25   ", "Program h ",   "Program   ", "Change #14", PC_BY_PANEL_14 ,   "Program   ", "Change #15", PC_BY_PANEL_15 ,   "          ", "          ", 0xFF           , },
-  { "Page=26   ", "Program i ",   "Program   ", "Write   #8", WR_BY_PANEL_8  ,   "Program   ", "Write   #9", WR_BY_PANEL_9  ,   "          ", "          ", 0xFF           , },
-  { "Page=27   ", "Program j ",   "Program   ", "Write  #10", WR_BY_PANEL_10 ,   "Program   ", "Write  #11", WR_BY_PANEL_11 ,   "          ", "          ", 0xFF           , },
-  { "Page=28   ", "Program k ",   "Program   ", "Write  #12", WR_BY_PANEL_12 ,   "Program   ", "Write  #13", WR_BY_PANEL_13 ,   "          ", "          ", 0xFF           , },
-  { "Page=29   ", "Program l ",   "Program   ", "Write  #14", WR_BY_PANEL_14 ,   "Program   ", "Write  #15", WR_BY_PANEL_15 ,   "          ", "          ", 0xFF           , },
+  { "Page=26   ", "Write a   ",   "Write     ", "to Pgm  #8", WR_BY_PANEL_8  ,   "Write     ", "to Pgm  #9", WR_BY_PANEL_9  ,   "          ", "          ", 0xFF           , },
+  { "Page=27   ", "Write b   ",   "Write     ", "to Pgm #10", WR_BY_PANEL_10 ,   "Write     ", "to Pgm #11", WR_BY_PANEL_11 ,   "          ", "          ", 0xFF           , },
+  { "Page=28   ", "Write c   ",   "Write     ", "to Pgm #12", WR_BY_PANEL_12 ,   "Write     ", "to Pgm #13", WR_BY_PANEL_13 ,   "          ", "          ", 0xFF           , },
+  { "Page=29   ", "Write d   ",   "Write     ", "to Pgm #14", WR_BY_PANEL_14 ,   "Write     ", "to Pgm #15", WR_BY_PANEL_15 ,   "          ", "          ", 0xFF           , },
 };
