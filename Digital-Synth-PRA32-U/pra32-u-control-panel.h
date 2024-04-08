@@ -414,8 +414,8 @@ INLINE void PRA32_U_ControlPanel_update_display(uint32_t loop_counter) {
     uint32_t display_draw_counter = s_display_draw_counter;
 
     s_display_draw_counter++;
-    if (s_display_draw_counter == 6 * 21) {
-      s_display_draw_counter = 4 * 21;
+    if (s_display_draw_counter == 8 * 21) {
+      s_display_draw_counter = (6 * 21) + 11;
     }
 
     switch (display_draw_counter / 21) {
@@ -426,15 +426,21 @@ INLINE void PRA32_U_ControlPanel_update_display(uint32_t loop_counter) {
       s_display_draw_position_y = 2;
       break;
     case 2:
-      s_display_draw_position_y = 5;
-      break;
-    case 3:
-      s_display_draw_position_y = 6;
-      break;
-    case 4:
       s_display_draw_position_y = 3;
       break;
+    case 3:
+      s_display_draw_position_y = 5;
+      break;
+    case 4:
+      s_display_draw_position_y = 6;
+      break;
     case 5:
+      s_display_draw_position_y = 7;
+      break;
+    case 6:
+      s_display_draw_position_y = 3;
+      break;
+    case 7:
       s_display_draw_position_y = 7;
       break;
     }
