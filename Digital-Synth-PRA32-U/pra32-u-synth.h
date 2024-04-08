@@ -900,7 +900,7 @@ public:
   }
 
   /* INLINE */ void write_parameters_to_program(uint8_t program_number_to_write) {
-    if (m_program_number_to_write < (PRESET_PROGRAM_NUMBER_MAX + 1)) {
+    if (program_number_to_write < (PRESET_PROGRAM_NUMBER_MAX + 1)) {
       return;
     }
 

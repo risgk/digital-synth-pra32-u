@@ -92,8 +92,15 @@ static INLINE boolean PRA32_U_ControlPanel_update_control_adc(uint32_t adc_numbe
         g_synth.program_change(s_adc_control_target[adc_number] - PC_BY_PANEL_0);
       }
     } else if ((s_adc_control_target[adc_number] >= WR_BY_PANEL_0) && (s_adc_control_target[adc_number] <= WR_BY_PANEL_15)) {
-      if ((s_adc_control_value_old < 64) && (s_adc_control_value[adc_number] >= 64)) {
-        g_synth.write_parameters_to_program(s_adc_control_target[adc_number] - WR_BY_PANEL_0);
+      static boolean s_ready_to_write[PROGRAM_NUMBER_MAX + 1] = {};
+
+      uint8_t program_number_to_write = s_adc_control_target[adc_number] - WR_BY_PANEL_0;
+
+      if (s_adc_control_value[adc_number] == 0) {
+        s_ready_to_write[program_number_to_write] = true;
+      } else if (s_ready_to_write[program_number_to_write] && (s_adc_control_value[adc_number] == 127)) {
+        g_synth.write_parameters_to_program(program_number_to_write);
+        s_ready_to_write[program_number_to_write] = false;
       }
     }
 
