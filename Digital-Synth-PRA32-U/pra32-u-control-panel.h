@@ -201,7 +201,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     break;
   case OSC_1_WAVE      :
     {
-      char ary[6][5] = {"Saw","Sin","---","Tri","---","Pls"};
+      char ary[6][5] = {"Saw","Sin","  -","Tri","  -","Pls"};
       uint32_t index = ((controller_value * 10) + 127) / 254;
       if (controller_value < 6) { index = controller_value; }
       std::strcpy(value_display_text, ary[index]);
@@ -210,7 +210,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     break;
   case OSC_2_WAVE      :
     {
-      char ary[6][5] = {"Saw","Sin","---","Tri","Nos","Sqr"};
+      char ary[6][5] = {"Saw","Sin","  -","Tri","Nos","Sqr"};
       uint32_t index = ((controller_value * 10) + 127) / 254;
       if (controller_value < 6) { index = controller_value; }
       std::strcpy(value_display_text, ary[index]);
@@ -228,7 +228,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
   case EG_OSC_DST      :
   case LFO_OSC_DST     :
     {
-      char ary[3][5] = {"P  ","2P ","1S "};
+      char ary[3][5] = {"  P"," 2P"," 1S"};
       uint32_t index = ((controller_value * 4) + 127) / 254;
       if (controller_value < 3) { index = controller_value; }
       std::strcpy(value_display_text, ary[index]);
@@ -237,7 +237,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     break;
   case VOICE_MODE      :
     {
-      char ary[6][5] = {"Pol","Par","---","Mon","LP ","Lgt"};
+      char ary[6][5] = {"Pol","Par","  -","Mon"," LP","Lgt"};
       uint32_t index = ((controller_value * 10) + 127) / 254;
       if (controller_value < 6) { index = controller_value; }
       std::strcpy(value_display_text, ary[index]);
@@ -246,7 +246,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     break;
   case LFO_WAVE        :
     {
-      char ary[6][5] = {"Tri","Sin","---","Saw","SH ","Sqr"};
+      char ary[6][5] = {"Tri","Sin","  -","Saw"," SH","Sqr"};
       uint32_t index = ((controller_value * 10) + 127) / 254;
       if (controller_value < 6) { index = controller_value; }
       std::strcpy(value_display_text, ary[index]);
@@ -255,7 +255,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     break;
   case FILTER_MODE     :
     {
-      char ary[2][5] = {"LP ","HP "};
+      char ary[2][5] = {" LP"," HP"};
       uint32_t index = ((controller_value * 2) + 127) / 254;
       if (controller_value < 2) { index = controller_value; }
       std::strcpy(value_display_text, ary[index]);
@@ -265,7 +265,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
   case EG_AMP_MOD      :
   case REL_EQ_DECAY    :
     {
-      char ary[2][5] = {"Off","On "};
+      char ary[2][5] = {"Off"," On"};
       uint32_t index = ((controller_value * 2) + 127) / 254;
       if (controller_value < 2) { index = controller_value; }
       std::strcpy(value_display_text, ary[index]);
@@ -283,7 +283,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     break;
   case DELAY_MODE      :
     {
-      char ary[2][5] = {"S  ","P  "};
+      char ary[2][5] = {"  S","  P"};
       uint32_t index = ((controller_value * 2) + 127) / 254;
       if (controller_value < 2) { index = controller_value; }
       std::strcpy(value_display_text, ary[index]);
