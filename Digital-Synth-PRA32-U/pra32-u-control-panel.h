@@ -248,6 +248,70 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
       result = true;
     }
     break;
+  case  PC_BY_PANEL_0  :
+  case  PC_BY_PANEL_1  :
+  case  PC_BY_PANEL_2  :
+  case  PC_BY_PANEL_3  :
+  case  PC_BY_PANEL_4  :
+  case  PC_BY_PANEL_5  :
+  case  PC_BY_PANEL_6  :
+  case  PC_BY_PANEL_7  :
+  case  PC_BY_PANEL_8  :
+  case  PC_BY_PANEL_9  :
+  case  PC_BY_PANEL_10 :
+  case  PC_BY_PANEL_11 :
+  case  PC_BY_PANEL_12 :
+  case  PC_BY_PANEL_13 :
+  case  PC_BY_PANEL_14 :
+  case  PC_BY_PANEL_15 :
+    {
+      if        (controller_value < 64) {
+        value_display_text[0] = 'R';
+        value_display_text[1] = 'd';
+        value_display_text[2] = 'y';
+      } else {
+        value_display_text[0] = 'E';
+        value_display_text[1] = 'x';
+        value_display_text[2] = 'e';
+      }
+
+      result = true;
+    }
+    break;
+  case  WR_BY_PANEL_0  :
+  case  WR_BY_PANEL_1  :
+  case  WR_BY_PANEL_2  :
+  case  WR_BY_PANEL_3  :
+  case  WR_BY_PANEL_4  :
+  case  WR_BY_PANEL_5  :
+  case  WR_BY_PANEL_6  :
+  case  WR_BY_PANEL_7  :
+  case  WR_BY_PANEL_8  :
+  case  WR_BY_PANEL_9  :
+  case  WR_BY_PANEL_10 :
+  case  WR_BY_PANEL_11 :
+  case  WR_BY_PANEL_12 :
+  case  WR_BY_PANEL_13 :
+  case  WR_BY_PANEL_14 :
+  case  WR_BY_PANEL_15 :
+    {
+      if        (controller_value == 0) {
+        value_display_text[0] = 'R';
+        value_display_text[1] = 'd';
+        value_display_text[2] = 'y';
+      } else if (controller_value == 127) {
+        value_display_text[0] = 'E';
+        value_display_text[1] = 'x';
+        value_display_text[2] = 'e';
+      } else {
+        value_display_text[0] = '-';
+        value_display_text[1] = '-';
+        value_display_text[2] = '-';
+      }
+
+      result = true;
+    }
+    break;
   }
 
   return result;
