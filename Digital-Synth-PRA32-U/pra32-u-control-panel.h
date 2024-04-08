@@ -129,9 +129,12 @@ static INLINE boolean PRA32_U_ControlPanel_update_control_adc(uint32_t adc_numbe
     } else if (s_adc_control_target[adc_number] == PANEL_PLAY_PIT) {
       s_panel_play_pitch_value = s_adc_control_value[adc_number];
 
-      uint8_t ary[15] = { 48, 50, 52, 53, 55, 57, 59, 60, 62, 64, 65, 67, 69, 71, 72 };
-      uint32_t index = ((s_panel_play_pitch_value * 28) + 127) / 254;
-      uint8_t note_number = ary[index];
+      uint8_t ary_major[48] = { 48, 48, 50, 50, 50, 50, 52, 52, 52, 53, 53, 53,
+                                55, 55, 55, 55, 57, 57, 57, 57, 59, 59, 59, 60,
+                                60, 60, 62, 62, 62, 62, 64, 64, 64, 65, 65, 65,
+                                67, 67, 67, 67, 69, 69, 69, 69, 71, 71, 71, 72, };
+      uint32_t index = ((s_panel_play_pitch_value * 94) + 127) / 254;
+      uint8_t note_number = ary_major[index];
 
       s_panel_play_note_number = note_number;
       if (s_panel_playing_note_number <= 127) {
