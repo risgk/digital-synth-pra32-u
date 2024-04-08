@@ -123,11 +123,12 @@ static INLINE void PRA32_U_ControlPanel_draw_character(uint8_t c) {
   i2c_write_blocking(PRA32_U_OLED_DISPLAY_I2C, PRA32_U_OLED_DISPLAY_I2C_ADDRESS, data, sizeof(data), false);
 }
 
-static INLINE boolean PRA32_U_ControlPanel_calc_value_text(uint8_t control_target, uint8_t controller_value, char value_text[5])
+static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_target, uint8_t controller_value, char value_display_text[5])
 {
   boolean result = false;
 
   switch (control_target) {
+  case MIXER_SUB_OSC   :  // TODO
   case OSC_2_COARSE    :
   case OSC_2_PITCH     :
   case FILTER_EG_AMT   :
@@ -135,8 +136,28 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_text(uint8_t control_targe
   case LFO_OSC_AMT     :
   case LFO_FILTER_AMT  :
   case BTH_FILTER_AMT  :
-    std::sprintf(value_text, "%+3d", static_cast<int>(controller_value) - 64);
-    result = true;
+    {
+      std::sprintf(value_display_text, "%+3d", static_cast<int>(controller_value) - 64);
+      result = true;
+    }
+    break;
+  case OSC_1_WAVE      :
+    {
+      char ary[6][5] = {"Saw","Sin","---","Tri","---","Pls"};
+      uint32_t index = ((controller_value * 10) + 127) / 254;
+      if (controller_value < 6) { index = controller_value; }
+      std::strcpy(value_display_text, ary[index]);
+      result = true;
+    }
+    break;
+  case OSC_2_WAVE      :
+    {
+      char ary[6][5] = {"Saw","Sin","---","Tri","Nos","Sqr"};
+      uint32_t index = ((controller_value * 10) + 127) / 254;
+      if (controller_value < 6) { index = controller_value; }
+      std::strcpy(value_display_text, ary[index]);
+      result = true;
+    }
     break;
   }
 
@@ -394,13 +415,13 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
       s_display_buffer[7][ 3] = buff[1];
       s_display_buffer[7][ 4] = buff[2];
 
-      char value_text[5];
-      boolean exists = PRA32_U_ControlPanel_calc_value_text(adc_control_target_0, current_controller_value, value_text);
+      char value_display_text[5] = {};
+      boolean exists = PRA32_U_ControlPanel_calc_value_display(adc_control_target_0, current_controller_value, value_display_text);
       if (exists) {
         s_display_buffer[7][ 5] = '[';
-        s_display_buffer[7][ 6] = value_text[0];
-        s_display_buffer[7][ 7] = value_text[1];
-        s_display_buffer[7][ 8] = value_text[2];
+        s_display_buffer[7][ 6] = value_display_text[0];
+        s_display_buffer[7][ 7] = value_display_text[1];
+        s_display_buffer[7][ 8] = value_display_text[2];
         s_display_buffer[7][ 9] = ']';
       }
     }
@@ -427,13 +448,13 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
       s_display_buffer[7][14] = buff[1];
       s_display_buffer[7][15] = buff[2];
 
-      char value_text[5];
-      boolean exists = PRA32_U_ControlPanel_calc_value_text(adc_control_target_1, current_controller_value, value_text);
+      char value_display_text[5] = {};
+      boolean exists = PRA32_U_ControlPanel_calc_value_display(adc_control_target_1, current_controller_value, value_display_text);
       if (exists) {
         s_display_buffer[7][16] = '[';
-        s_display_buffer[7][17] = value_text[0];
-        s_display_buffer[7][18] = value_text[1];
-        s_display_buffer[7][19] = value_text[2];
+        s_display_buffer[7][17] = value_display_text[0];
+        s_display_buffer[7][18] = value_display_text[1];
+        s_display_buffer[7][19] = value_display_text[2];
         s_display_buffer[7][20] = ']';
       }
     }
@@ -460,13 +481,13 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
       s_display_buffer[3][14] = buff[1];
       s_display_buffer[3][15] = buff[2];
 
-      char value_text[5];
-      boolean exists = PRA32_U_ControlPanel_calc_value_text(adc_control_target_2, current_controller_value, value_text);
+      char value_display_text[5] = {};
+      boolean exists = PRA32_U_ControlPanel_calc_value_display(adc_control_target_2, current_controller_value, value_display_text);
       if (exists) {
         s_display_buffer[3][16] = '[';
-        s_display_buffer[3][17] = value_text[0];
-        s_display_buffer[3][18] = value_text[1];
-        s_display_buffer[3][19] = value_text[2];
+        s_display_buffer[3][17] = value_display_text[0];
+        s_display_buffer[3][18] = value_display_text[1];
+        s_display_buffer[3][19] = value_display_text[2];
         s_display_buffer[3][20] = ']';
       }
     }
