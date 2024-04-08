@@ -83,6 +83,24 @@ static INLINE uint8_t PRA32_U_ControlPanel_adc_control_value_candidate(uint32_t 
   return adc_control_value_candidate;
 }
 
+static INLINE boolean PRA32_U_ControlPanel_process_reserved_note_off_on() {
+  if (s_reserved_note_off <= 127) {
+    g_synth.note_off(s_reserved_note_off);
+    s_panel_playing_note_pitch = 0xFF;
+    s_reserved_note_off = 0xFF;
+    return true;
+  }
+
+  if (s_reserved_note_on <= 127) {
+    g_synth.note_on(s_reserved_note_on, 100);
+    s_panel_playing_note_pitch = s_reserved_note_on;
+    s_reserved_note_on = 0xFF;
+    return true;
+  }
+
+  return false;
+}
+
 static INLINE boolean PRA32_U_ControlPanel_update_control_adc(uint32_t adc_number) {
   uint8_t adc_control_value_candidate = PRA32_U_ControlPanel_adc_control_value_candidate(adc_number);
 
@@ -108,8 +126,8 @@ static INLINE boolean PRA32_U_ControlPanel_update_control_adc(uint32_t adc_numbe
         s_ready_to_write[program_number_to_write] = false;
       }
     } else if (s_adc_control_target[adc_number] == PANEL_PLAY_PIT) {
-      uint8_t ary[8] = { 60, 62, 64, 65, 67, 69, 71, 72 };
-      uint32_t index = ((s_adc_control_value[adc_number] * 14) + 127) / 254;
+      uint8_t ary[15] = { 48, 50, 52, 53, 55, 57, 59, 60, 62, 64, 65, 67, 69, 71, 72 };
+      uint32_t index = ((s_adc_control_value[adc_number] * 28) + 127) / 254;
       uint8_t note_number = ary[index];
 
       s_panel_play_pitch = note_number;
@@ -117,28 +135,11 @@ static INLINE boolean PRA32_U_ControlPanel_update_control_adc(uint32_t adc_numbe
         if (s_panel_playing_note_pitch != note_number) {
           s_reserved_note_off = s_panel_playing_note_pitch;
           s_reserved_note_on = s_panel_play_pitch;
+          PRA32_U_ControlPanel_process_reserved_note_off_on();
         }
       }
     }
 
-    return true;
-  }
-
-  return false;
-}
-
-static INLINE boolean PRA32_U_ControlPanel_process_reserved_note_off_on() {
-  if (s_reserved_note_off <= 127) {
-    g_synth.note_off(s_reserved_note_off);
-    s_panel_playing_note_pitch = 0xFF;
-    s_reserved_note_off = 0xFF;
-    return true;
-  }
-
-  if (s_reserved_note_on <= 127) {
-    g_synth.note_on(s_reserved_note_on, 100);
-    s_panel_playing_note_pitch = s_reserved_note_on;
-    s_reserved_note_on = 0xFF;
     return true;
   }
 
