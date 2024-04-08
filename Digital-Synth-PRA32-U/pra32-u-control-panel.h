@@ -19,10 +19,11 @@ static volatile int32_t  s_adc_current_value[3];
 static volatile uint8_t  s_adc_control_value[3];
 static volatile uint8_t  s_adc_control_target[3] = { 0xFF, 0xFF, 0xFF };
 
-static volatile uint8_t  s_panel_play_pitch         = 60;
-static volatile uint8_t  s_panel_playing_note_pitch = 0xFF;
-static volatile uint8_t  s_reserved_note_off        = 0xFF;
-static volatile uint8_t  s_reserved_note_on         = 0xFF;
+static volatile uint8_t  s_panel_play_pitch_value    = 64;
+static volatile uint8_t  s_panel_play_note_number    = 60;
+static volatile uint8_t  s_panel_playing_note_number = 0xFF;
+static volatile uint8_t  s_reserved_note_off         = 0xFF;
+static volatile uint8_t  s_reserved_note_on          = 0xFF;
 
 static volatile uint32_t s_display_draw_counter = 0;
 
@@ -86,14 +87,14 @@ static INLINE uint8_t PRA32_U_ControlPanel_adc_control_value_candidate(uint32_t 
 static INLINE boolean PRA32_U_ControlPanel_process_reserved_note_off_on() {
   if (s_reserved_note_off <= 127) {
     g_synth.note_off(s_reserved_note_off);
-    s_panel_playing_note_pitch = 0xFF;
+    s_panel_playing_note_number = 0xFF;
     s_reserved_note_off = 0xFF;
     return true;
   }
 
   if (s_reserved_note_on <= 127) {
     g_synth.note_on(s_reserved_note_on, 100);
-    s_panel_playing_note_pitch = s_reserved_note_on;
+    s_panel_playing_note_number = s_reserved_note_on;
     s_reserved_note_on = 0xFF;
     return true;
   }
@@ -126,15 +127,17 @@ static INLINE boolean PRA32_U_ControlPanel_update_control_adc(uint32_t adc_numbe
         s_ready_to_write[program_number_to_write] = false;
       }
     } else if (s_adc_control_target[adc_number] == PANEL_PLAY_PIT) {
+      s_panel_play_pitch_value = s_adc_control_value[adc_number];
+
       uint8_t ary[15] = { 48, 50, 52, 53, 55, 57, 59, 60, 62, 64, 65, 67, 69, 71, 72 };
-      uint32_t index = ((s_adc_control_value[adc_number] * 28) + 127) / 254;
+      uint32_t index = ((s_panel_play_pitch_value * 28) + 127) / 254;
       uint8_t note_number = ary[index];
 
-      s_panel_play_pitch = note_number;
-      if (s_panel_playing_note_pitch <= 127) {
-        if (s_panel_playing_note_pitch != note_number) {
-          s_reserved_note_off = s_panel_playing_note_pitch;
-          s_reserved_note_on = s_panel_play_pitch;
+      s_panel_play_note_number = note_number;
+      if (s_panel_playing_note_number <= 127) {
+        if (s_panel_playing_note_number != note_number) {
+          s_reserved_note_off = s_panel_playing_note_number;
+          s_reserved_note_on = s_panel_play_note_number;
           PRA32_U_ControlPanel_process_reserved_note_off_on();
         }
       }
@@ -556,10 +559,10 @@ INLINE void PRA32_U_ControlPanel_update_control() {
 
       if (s_play_key_current_value == 1) {
         // Play key pressed
-        s_reserved_note_on = s_panel_play_pitch;
+        s_reserved_note_on = s_panel_play_note_number;
       } else {
         // Play key released
-        s_reserved_note_off = s_panel_playing_note_pitch;
+        s_reserved_note_off = s_panel_playing_note_number;
       }
 
       PRA32_U_ControlPanel_process_reserved_note_off_on();
@@ -601,8 +604,10 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
     if (adc_control_target_0 < 0xFF) {
       uint8_t adc_control_value        = s_adc_control_value[0];
       uint8_t current_controller_value = adc_control_value;
-      if (adc_control_target_0 <= 0x7F) {
+      if        (adc_control_target_0 <= 0x7F) {
         current_controller_value = g_synth.current_controller_value(adc_control_target_0);
+      } else if (adc_control_target_0 == PANEL_PLAY_PIT) {
+        current_controller_value = s_panel_play_pitch_value;
       }
 
       s_display_buffer[7][ 0] = 'A';
@@ -634,8 +639,10 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
     if (adc_control_target_1 < 0xFF) {
       uint8_t adc_control_value        = s_adc_control_value[1];
       uint8_t current_controller_value = adc_control_value;
-      if (adc_control_target_1 <= 0x7F) {
+      if        (adc_control_target_1 <= 0x7F) {
         current_controller_value = g_synth.current_controller_value(adc_control_target_1);
+      } else if (adc_control_target_1 == PANEL_PLAY_PIT) {
+        current_controller_value = s_panel_play_pitch_value;
       }
 
       s_display_buffer[7][11] = 'B';
@@ -667,8 +674,10 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
     if (adc_control_target_2 < 0xFF) {
       uint8_t adc_control_value        = s_adc_control_value[2];
       uint8_t current_controller_value = adc_control_value;
-      if (adc_control_target_2 <= 0x7F) {
+      if        (adc_control_target_2 <= 0x7F) {
         current_controller_value = g_synth.current_controller_value(adc_control_target_2);
+      } else if (adc_control_target_2 == PANEL_PLAY_PIT) {
+        current_controller_value = s_panel_play_pitch_value;
       }
 
       s_display_buffer[3][11] = 'C';
