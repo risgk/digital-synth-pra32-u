@@ -36,6 +36,8 @@ const uint8_t   WR_BY_PANEL_13  = 157;
 const uint8_t   WR_BY_PANEL_14  = 158;
 const uint8_t   WR_BY_PANEL_15  = 159;
 
+const uint8_t   PANEL_PLAY_PIT  = 160;
+
 struct PRA32_U_ControlPanelPage {
   char    page_name_line_0            [10 + 1];
   char    page_name_line_1            [10 + 1];
@@ -78,4 +80,5 @@ struct PRA32_U_ControlPanelPage {
   { "Page=27   ", "Program f ",   "Program   ", "Change #10", PC_BY_PANEL_10 ,   "Program   ", "Change #11", PC_BY_PANEL_11 ,   "          ", "          ", 0xFF           , },
   { "Page=28   ", "Program g ",   "Program   ", "Change #12", PC_BY_PANEL_12 ,   "Program   ", "Change #13", PC_BY_PANEL_13 ,   "          ", "          ", 0xFF           , },
   { "Page=29   ", "Program h ",   "Program   ", "Change #14", PC_BY_PANEL_14 ,   "Program   ", "Change #15", PC_BY_PANEL_15 ,   "          ", "          ", 0xFF           , },
+  { "Page=30   ", "Panel     ",   "Filter    ", "Cutoff    ", FILTER_CUTOFF  ,   "Filter    ", "Resonance ", FILTER_RESO    ,   "Panel     ", "Play Pitch", PANEL_PLAY_PIT , },
 };
