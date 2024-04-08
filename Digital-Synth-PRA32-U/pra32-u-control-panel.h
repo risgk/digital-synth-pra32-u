@@ -123,6 +123,26 @@ static INLINE void PRA32_U_ControlPanel_draw_character(uint8_t c) {
   i2c_write_blocking(PRA32_U_OLED_DISPLAY_I2C, PRA32_U_OLED_DISPLAY_I2C_ADDRESS, data, sizeof(data), false);
 }
 
+static INLINE boolean PRA32_U_ControlPanel_calc_value_text(uint8_t control_target, uint8_t controller_value, char value_text[5])
+{
+  boolean result = false;
+
+  switch (control_target) {
+  case OSC_2_COARSE    :
+  case OSC_2_PITCH     :
+  case FILTER_EG_AMT   :
+  case EG_OSC_AMT      :
+  case LFO_OSC_AMT     :
+  case LFO_FILTER_AMT  :
+  case BTH_FILTER_AMT  :
+    std::sprintf(value_text, "%+3d", static_cast<int>(controller_value) - 64);
+    result = true;
+    break;
+  }
+
+  return result;
+}
+
 
 
 INLINE void PRA32_U_ControlPanel_setup() {
@@ -373,6 +393,16 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
       s_display_buffer[7][ 2] = buff[0];
       s_display_buffer[7][ 3] = buff[1];
       s_display_buffer[7][ 4] = buff[2];
+
+      char value_text[5];
+      boolean exists = PRA32_U_ControlPanel_calc_value_text(adc_control_target_0, current_controller_value, value_text);
+      if (exists) {
+        s_display_buffer[7][ 5] = '[';
+        s_display_buffer[7][ 6] = value_text[0];
+        s_display_buffer[7][ 7] = value_text[1];
+        s_display_buffer[7][ 8] = value_text[2];
+        s_display_buffer[7][ 9] = ']';
+      }
     }
 
     uint8_t adc_control_target_1 = s_adc_control_target[1];
@@ -396,6 +426,16 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
       s_display_buffer[7][13] = buff[0];
       s_display_buffer[7][14] = buff[1];
       s_display_buffer[7][15] = buff[2];
+
+      char value_text[5];
+      boolean exists = PRA32_U_ControlPanel_calc_value_text(adc_control_target_1, current_controller_value, value_text);
+      if (exists) {
+        s_display_buffer[7][16] = '[';
+        s_display_buffer[7][17] = value_text[0];
+        s_display_buffer[7][18] = value_text[1];
+        s_display_buffer[7][19] = value_text[2];
+        s_display_buffer[7][20] = ']';
+      }
     }
 
     uint8_t adc_control_target_2 = s_adc_control_target[2];
@@ -420,12 +460,15 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
       s_display_buffer[3][14] = buff[1];
       s_display_buffer[3][15] = buff[2];
 
-#if 0
-      std::sprintf(buff, "%+3d", static_cast<int>(current_controller_value) - 64);
-      s_display_buffer[3][17] = buff[0];
-      s_display_buffer[3][18] = buff[1];
-      s_display_buffer[3][19] = buff[2];
-#endif
+      char value_text[5];
+      boolean exists = PRA32_U_ControlPanel_calc_value_text(adc_control_target_2, current_controller_value, value_text);
+      if (exists) {
+        s_display_buffer[3][16] = '[';
+        s_display_buffer[3][17] = value_text[0];
+        s_display_buffer[3][18] = value_text[1];
+        s_display_buffer[3][19] = value_text[2];
+        s_display_buffer[3][20] = ']';
+      }
     }
   }
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL)
