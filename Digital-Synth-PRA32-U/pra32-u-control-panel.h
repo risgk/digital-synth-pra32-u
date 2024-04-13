@@ -138,8 +138,23 @@ static INLINE boolean PRA32_U_ControlPanel_update_control_adc(uint32_t adc_numbe
                           55, 55, 55, 55, 57, 57, 57, 57, 59, 59, 59, 60,
                           60, 60, 62, 62, 62, 62, 64, 64, 64, 65, 65, 65,
                           67, 67, 67, 67, 69, 69, 69, 69, 71, 71, 71, 72, 72, 72 };
+
+      uint8_t ary_pentatonic[53] =
+        { 0xFF, 0xFF, 48, 48, 48, 50, 50, 50, 50, 52, 52, 52, 52, 52, 55,
+                          55, 55, 55, 55, 57, 57, 57, 57, 57, 60, 60, 60,
+                          60, 60, 62, 62, 62, 62, 64, 64, 64, 64, 64, 67,
+                          67, 67, 67, 67, 69, 69, 69, 69, 69, 72, 72, 72, 72, 72 };
+
+      uint8_t ary_chromatic[53] =
+        { 0xFF, 0xFF, 48, 48, 49, 49, 50, 50, 51, 51, 52, 52, 53, 53, 54,
+                          54, 55, 55, 56, 56, 57, 57, 58, 58, 59, 59, 60,
+                          60, 61, 61, 62, 62, 63, 63, 64, 64, 65, 65, 66,
+                          66, 67, 67, 68, 68, 69, 69, 70, 70, 71, 71, 72, 72, 72 };
+
       uint32_t index = (((s_panel_play_pitch_value + 3) * 2) + 1) / 5;
       uint8_t note_number = ary_major[index];
+      static_cast<void>(ary_pentatonic);
+      static_cast<void>(ary_chromatic);
 
       s_panel_play_note_number = note_number;
 
