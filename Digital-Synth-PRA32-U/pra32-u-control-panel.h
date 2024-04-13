@@ -19,6 +19,10 @@ static volatile int32_t  s_adc_current_value[3];
 static volatile uint8_t  s_adc_control_value[3];
 static volatile uint8_t  s_adc_control_target[3] = { 0xFF, 0xFF, 0xFF };
 
+static          uint32_t s_prev_key_current_value;
+static          uint32_t s_next_key_current_value;
+static          uint32_t s_play_key_current_value;
+
 static volatile uint8_t  s_panel_play_pitch_value    = 64;
 static volatile uint8_t  s_panel_play_note_number    = 60;
 static volatile uint8_t  s_panel_playing_note_number = 0xFF;
@@ -129,15 +133,17 @@ static INLINE boolean PRA32_U_ControlPanel_update_control_adc(uint32_t adc_numbe
     } else if (s_adc_control_target[adc_number] == PANEL_PLAY_PIT) {
       s_panel_play_pitch_value = s_adc_control_value[adc_number];
 
-      uint8_t ary_major[48] = { 48, 48, 50, 50, 50, 50, 52, 52, 52, 53, 53, 53,
-                                55, 55, 55, 55, 57, 57, 57, 57, 59, 59, 59, 60,
-                                60, 60, 62, 62, 62, 62, 64, 64, 64, 65, 65, 65,
-                                67, 67, 67, 67, 69, 69, 69, 69, 71, 71, 71, 72, };
-      uint32_t index = ((s_panel_play_pitch_value * 94) + 127) / 254;
+      uint8_t ary_major[53] =
+        { 0xFF, 0xFF, 48, 48, 48, 50, 50, 50, 50, 52, 52, 52, 53, 53, 53,
+                          55, 55, 55, 55, 57, 57, 57, 57, 59, 59, 59, 60,
+                          60, 60, 62, 62, 62, 62, 64, 64, 64, 65, 65, 65,
+                          67, 67, 67, 67, 69, 69, 69, 69, 71, 71, 71, 72, 72, 72 };
+      uint32_t index = (((s_panel_play_pitch_value + 3) * 2) + 1) / 5;
       uint8_t note_number = ary_major[index];
 
       s_panel_play_note_number = note_number;
-      if (s_panel_playing_note_number <= 127) {
+
+      if (s_play_key_current_value == 1) {
         if (s_panel_playing_note_number != note_number) {
           s_reserved_note_off = s_panel_playing_note_number;
           s_reserved_note_on = s_panel_play_note_number;
@@ -498,10 +504,6 @@ INLINE void PRA32_U_ControlPanel_update_control() {
   }
 
 #if defined(PRA32_U_USE_CONTROL_PANEL_KEY_INPUT)
-  static uint32_t s_prev_key_current_value;
-  static uint32_t s_next_key_current_value;
-  static uint32_t s_play_key_current_value;
-
   static uint32_t s_prev_key_value_changed_time;
   static uint32_t s_next_key_value_changed_time;
   static uint32_t s_play_key_value_changed_time;
