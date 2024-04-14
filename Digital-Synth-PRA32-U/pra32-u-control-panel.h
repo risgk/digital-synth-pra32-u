@@ -23,7 +23,7 @@ static          uint32_t s_prev_key_current_value;
 static          uint32_t s_next_key_current_value;
 static          uint32_t s_play_key_current_value;
 
-static volatile uint8_t  s_panel_play_pitch_value    = 64;
+static volatile uint8_t  s_panel_play_pitch_value    = 60;
 static volatile uint8_t  s_panel_play_note_number    = 60;
 static volatile uint8_t  s_panel_playing_note_number = 0xFF;
 static volatile uint8_t  s_reserved_note_off         = 0xFF;
@@ -133,33 +133,16 @@ static INLINE boolean PRA32_U_ControlPanel_update_control_adc(uint32_t adc_numbe
     } else if (s_adc_control_target[adc_number] == PANEL_PITCH) {
       s_panel_play_pitch_value = s_adc_control_value[adc_number];
 
-#if 0
-      uint8_t ary_major[53] =
-        { 0xFF, 0xFF, 48, 48, 48, 50, 50, 50, 50, 52, 52, 52, 53, 53, 53,
-                          55, 55, 55, 55, 57, 57, 57, 57, 59, 59, 59, 60,
-                          60, 60, 62, 62, 62, 62, 64, 64, 64, 65, 65, 65,
-                          67, 67, 67, 67, 69, 69, 69, 69, 71, 71, 71, 72, 72, 72 };
+      uint8_t new_note_number = s_panel_play_pitch_value;
 
-      uint8_t ary_pentatonic[53] =
-        { 0xFF, 0xFF, 48, 48, 48, 50, 50, 50, 50, 52, 52, 52, 52, 52, 55,
-                          55, 55, 55, 55, 57, 57, 57, 57, 57, 60, 60, 60,
-                          60, 60, 62, 62, 62, 62, 64, 64, 64, 64, 64, 67,
-                          67, 67, 67, 67, 69, 69, 69, 69, 69, 72, 72, 72, 72, 72 };
-#endif
-
-      uint8_t ary_chromatic[53] =
-        { 0xFF, 0xFF, 48, 48, 49, 49, 50, 50, 51, 51, 52, 52, 53, 53, 54,
-                          54, 55, 55, 56, 56, 57, 57, 58, 58, 59, 59, 60,
-                          60, 61, 61, 62, 62, 63, 63, 64, 64, 65, 65, 66,
-                          66, 67, 67, 68, 68, 69, 69, 70, 70, 71, 71, 72, 72, 72 };
-
-      uint32_t index = (((s_panel_play_pitch_value + 3) * 2) + 1) / 5;
-      uint8_t note_number = ary_chromatic[index];
-
-      s_panel_play_note_number = note_number;
+      bool panel_play_note_number_changed = false;
+      if (s_panel_play_note_number != new_note_number) {
+        s_panel_play_note_number = new_note_number;
+        panel_play_note_number_changed = true;
+      }
 
       if (s_play_key_current_value == 1) {
-        if (s_panel_playing_note_number != note_number) {
+        if (panel_play_note_number_changed) {
           s_reserved_note_off = s_panel_playing_note_number;
           s_reserved_note_on = s_panel_play_note_number;
           PRA32_U_ControlPanel_process_reserved_note_off_on();
@@ -378,13 +361,20 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     break;
   case  PANEL_PITCH    :
     {
-      char ary[53][5] =
-        { "Off", "Off", " C3", " C3", "C#3", "C#3", " D3", " D3", "D#3", "D#3", " E3", " E3", " F3", " F3", "F#3",
-                               "F#3", " G3", " G3", "G#3", "G#3", " A3", " A3", "A#3", "A#3", " B3", " B3", " C4",
-                               " C4", "C#4", "C#4", " D4", " D4", "D#4", "D#4", " E4", " E4", " F4", " F4", "F#4",
-                               "F#4", " G4", " G4", "G#4", "G#4", " A4", " A4", "A#4", "A#4", " B4", " B4", " C5", " C5", " C5" };
-      uint32_t index = (((s_panel_play_pitch_value + 3) * 2) + 1) / 5;
-      std::strcpy(value_display_text, ary[index]);
+      char ary[12][5] = { " C", "C#", " D", "D#", " E", " F", "F#", " G", "G#", " A", "A#", " B" };
+
+      uint32_t quotient  = controller_value / 12;
+      uint32_t remainder = controller_value % 12;
+
+      value_display_text[0] = ary[remainder][0];
+      value_display_text[1] = ary[remainder][1];
+
+      if (quotient == 0) {
+        value_display_text[2] = '-';
+      } else {
+        value_display_text[2] = '0' + quotient - 1;
+      }
+
       result = true;
     }
     break;
