@@ -130,9 +130,10 @@ static INLINE boolean PRA32_U_ControlPanel_update_control_adc(uint32_t adc_numbe
         g_synth.write_parameters_to_program(program_number_to_write);
         s_ready_to_write[program_number_to_write] = false;
       }
-    } else if (s_adc_control_target[adc_number] == PANEL_PLAY_PIT) {
+    } else if (s_adc_control_target[adc_number] == PANEL_PITCH) {
       s_panel_play_pitch_value = s_adc_control_value[adc_number];
 
+#if 0
       uint8_t ary_major[53] =
         { 0xFF, 0xFF, 48, 48, 48, 50, 50, 50, 50, 52, 52, 52, 53, 53, 53,
                           55, 55, 55, 55, 57, 57, 57, 57, 59, 59, 59, 60,
@@ -144,6 +145,7 @@ static INLINE boolean PRA32_U_ControlPanel_update_control_adc(uint32_t adc_numbe
                           55, 55, 55, 55, 57, 57, 57, 57, 57, 60, 60, 60,
                           60, 60, 62, 62, 62, 62, 64, 64, 64, 64, 64, 67,
                           67, 67, 67, 67, 69, 69, 69, 69, 69, 72, 72, 72, 72, 72 };
+#endif
 
       uint8_t ary_chromatic[53] =
         { 0xFF, 0xFF, 48, 48, 49, 49, 50, 50, 51, 51, 52, 52, 53, 53, 54,
@@ -152,9 +154,7 @@ static INLINE boolean PRA32_U_ControlPanel_update_control_adc(uint32_t adc_numbe
                           66, 67, 67, 68, 68, 69, 69, 70, 70, 71, 71, 72, 72, 72 };
 
       uint32_t index = (((s_panel_play_pitch_value + 3) * 2) + 1) / 5;
-      uint8_t note_number = ary_pentatonic[index];
-      static_cast<void>(ary_major);
-      static_cast<void>(ary_chromatic);
+      uint8_t note_number = ary_chromatic[index];
 
       s_panel_play_note_number = note_number;
 
@@ -373,6 +373,18 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
         value_display_text[2] = '-';
       }
 
+      result = true;
+    }
+    break;
+  case  PANEL_PITCH    :
+    {
+      char ary[53][5] =
+        { "Off", "Off", " C3", " C3", "C#3", "C#3", " D3", " D3", "D#3", "D#3", " E3", " E3", " F3", " F3", "F#3",
+                               "F#3", " G3", " G3", "G#3", "G#3", " A3", " A3", "A#3", "A#3", " B3", " B3", " C4",
+                               " C4", "C#4", "C#4", " D4", " D4", "D#4", "D#4", " E4", " E4", " F4", " F4", "F#4",
+                               "F#4", " G4", " G4", "G#4", "G#4", " A4", " A4", "A#4", "A#4", " B4", " B4", " C5", " C5", " C5" };
+      uint32_t index = (((s_panel_play_pitch_value + 3) * 2) + 1) / 5;
+      std::strcpy(value_display_text, ary[index]);
       result = true;
     }
     break;
@@ -627,7 +639,7 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
       uint8_t current_controller_value = adc_control_value;
       if        (adc_control_target_0 <= 0x7F) {
         current_controller_value = g_synth.current_controller_value(adc_control_target_0);
-      } else if (adc_control_target_0 == PANEL_PLAY_PIT) {
+      } else if (adc_control_target_0 == PANEL_PITCH) {
         current_controller_value = s_panel_play_pitch_value;
       }
 
@@ -662,7 +674,7 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
       uint8_t current_controller_value = adc_control_value;
       if        (adc_control_target_1 <= 0x7F) {
         current_controller_value = g_synth.current_controller_value(adc_control_target_1);
-      } else if (adc_control_target_1 == PANEL_PLAY_PIT) {
+      } else if (adc_control_target_1 == PANEL_PITCH) {
         current_controller_value = s_panel_play_pitch_value;
       }
 
@@ -697,7 +709,7 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
       uint8_t current_controller_value = adc_control_value;
       if        (adc_control_target_2 <= 0x7F) {
         current_controller_value = g_synth.current_controller_value(adc_control_target_2);
-      } else if (adc_control_target_2 == PANEL_PLAY_PIT) {
+      } else if (adc_control_target_2 == PANEL_PITCH) {
         current_controller_value = s_panel_play_pitch_value;
       }
 

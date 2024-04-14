@@ -36,7 +36,7 @@ const uint8_t   WR_BY_PANEL_13  = 157;
 const uint8_t   WR_BY_PANEL_14  = 158;
 const uint8_t   WR_BY_PANEL_15  = 159;
 
-const uint8_t   PANEL_PLAY_PIT  = 160;
+const uint8_t   PANEL_PITCH     = 160;
 
 struct PRA32_U_ControlPanelPage {
   char    page_name_line_0            [10 + 1];
@@ -80,7 +80,7 @@ struct PRA32_U_ControlPanelPage {
   { "Page=27   ", "Read f    ",   "Read      ", "Program 10", PC_BY_PANEL_10 ,   "Read      ", "Program 11", PC_BY_PANEL_11 ,   "          ", "          ", 0xFF           , },
   { "Page=28   ", "Read g    ",   "Read      ", "Program 12", PC_BY_PANEL_12 ,   "Read      ", "Program 13", PC_BY_PANEL_13 ,   "          ", "          ", 0xFF           , },
   { "Page=29   ", "Read h    ",   "Read      ", "Program 14", PC_BY_PANEL_14 ,   "Read      ", "Program 15", PC_BY_PANEL_15 ,   "          ", "          ", 0xFF           , },
-  { "Page=30   ", "Panel a   ",   "Filter    ", "Cutoff    ", FILTER_CUTOFF  ,   "Filter    ", "Resonance ", FILTER_RESO    ,   "Panel     ", "Pitch     ", PANEL_PLAY_PIT , },
-  { "Page=31   ", "Panel b   ",   "Modulation", "          ", MODULATION     ,   "          ", "          ", 0xFF           ,   "Panel     ", "Pitch     ", PANEL_PLAY_PIT , },
-  { "Page=31   ", "Panel c   ",   "Breath    ", "Controller", BTH_CONTROLLER ,   "Sustain   ", "Pedal     ", SUSTAIN_PEDAL  ,   "Panel     ", "Pitch     ", PANEL_PLAY_PIT , },
+  { "Page=30   ", "Panel a   ",   "Filter    ", "Cutoff    ", FILTER_CUTOFF  ,   "Filter    ", "Resonance ", FILTER_RESO    ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=31   ", "Panel b   ",   "Modulation", "          ", MODULATION     ,   "          ", "          ", 0xFF           ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=31   ", "Panel c   ",   "Breath    ", "Controller", BTH_CONTROLLER ,   "Sustain   ", "Pedal     ", SUSTAIN_PEDAL  ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
 };
