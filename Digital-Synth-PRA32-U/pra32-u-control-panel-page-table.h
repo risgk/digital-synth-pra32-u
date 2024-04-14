@@ -2,6 +2,7 @@
 
 const uint8_t   PANEL_PITCH     = 128 + 0;
 const uint8_t   PANEL_SCALE     = 128 + 1;
+const uint8_t   PANEL_TRANSPOSE = 128 + 2;
 
 const uint8_t   PC_BY_PANEL_0   = 128 + 64;
 const uint8_t   PC_BY_PANEL_1   = 128 + 65;
@@ -83,5 +84,6 @@ struct PRA32_U_ControlPanelPage {
   { "Page=29   ", "Read h    ",   "Read      ", "Program 14", PC_BY_PANEL_14 ,   "Read      ", "Program 15", PC_BY_PANEL_15 ,   "          ", "          ", 0xFF           , },
   { "Page=30   ", "Panel a   ",   "Filter    ", "Cutoff    ", FILTER_CUTOFF  ,   "Filter    ", "Resonance ", FILTER_RESO    ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
   { "Page=31   ", "Panel b   ",   "Modulation", "          ", MODULATION     ,   "Breath    ", "Controller", BTH_CONTROLLER ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
-  { "Page=31   ", "Panel c   ",   "Sustain   ", "Pedal     ", SUSTAIN_PEDAL  ,   "Panel     ", "Scale     ", PANEL_SCALE    ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=32   ", "Panel c   ",   "Sustain   ", "Pedal     ", SUSTAIN_PEDAL  ,   "          ", "          ", 0xFF           ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=33   ", "Panel d   ",   "Panel     ", "Scale     ", PANEL_SCALE    ,   "Panel     ", "Transpose ", PANEL_TRANSPOSE,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
 };

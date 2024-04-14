@@ -24,12 +24,13 @@ static          uint32_t s_prev_key_current_value;
 static          uint32_t s_next_key_current_value;
 static          uint32_t s_play_key_current_value;
 
-static volatile uint8_t  s_panel_play_pitch_value    = 60;
-static volatile uint8_t  s_panel_play_scale_value    = 0;
-static volatile uint8_t  s_panel_play_note_number    = 60;
-static volatile uint8_t  s_panel_playing_note_number = 0xFF;
-static volatile uint8_t  s_reserved_note_off         = 0xFF;
-static volatile uint8_t  s_reserved_note_on          = 0xFF;
+static volatile uint8_t  s_panel_play_pitch_value     = 60;
+static volatile uint8_t  s_panel_play_scale_value     = 0;
+static volatile uint8_t  s_panel_play_transpose_value = 64;
+static volatile uint8_t  s_panel_play_note_number     = 60;
+static volatile uint8_t  s_panel_playing_note_number  = 0xFF;
+static volatile uint8_t  s_reserved_note_off          = 0xFF;
+static volatile uint8_t  s_reserved_note_on           = 0xFF;
 
 static volatile uint32_t s_display_draw_counter = 0;
 
@@ -109,7 +110,7 @@ static INLINE boolean PRA32_U_ControlPanel_process_reserved_note_off_on() {
 }
 
 static INLINE void PRA32_U_ControlPanel_update_pitch() {
-  uint32_t new_note_number = s_panel_play_pitch_value;
+  int32_t new_note_number = s_panel_play_pitch_value;
 
   uint32_t index_scale = ((s_panel_play_scale_value * 4) + 127) / 254;
   if        (index_scale == 1) {
@@ -129,6 +130,13 @@ static INLINE void PRA32_U_ControlPanel_update_pitch() {
 
     uint32_t index_pitch = (((s_panel_play_pitch_value + 3) * 2) + 1) / 5;
     new_note_number = ary_pentatonic[index_pitch];
+  }
+
+  new_note_number += s_panel_play_transpose_value - 64;
+  if (new_note_number < 0) {
+   new_note_number = 0;
+  } else if (new_note_number > 127) {
+   new_note_number = 127;
   }
 
   bool panel_play_note_number_changed = false;
@@ -160,6 +168,8 @@ static INLINE boolean PRA32_U_ControlPanel_update_control_adc(uint32_t adc_numbe
       current_controller_value = s_panel_play_pitch_value;
     } else if (s_adc_control_target[adc_number] == PANEL_SCALE) {
       current_controller_value = s_panel_play_scale_value;
+    } else if (s_adc_control_target[adc_number] == PANEL_TRANSPOSE) {
+      current_controller_value = s_panel_play_transpose_value;
     }
 
     if ((s_adc_control_value_old <= current_controller_value) &&
@@ -201,6 +211,11 @@ static INLINE boolean PRA32_U_ControlPanel_update_control_adc(uint32_t adc_numbe
         s_panel_play_scale_value = s_adc_control_value[adc_number];
         PRA32_U_ControlPanel_update_pitch();
       }
+    } else if (s_adc_control_target[adc_number] == PANEL_TRANSPOSE) {
+      if (s_adc_control_catched[adc_number]) {
+        s_panel_play_transpose_value = s_adc_control_value[adc_number];
+        PRA32_U_ControlPanel_update_pitch();
+      }
     }
 
     return true;
@@ -234,6 +249,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
   case LFO_OSC_AMT     :
   case LFO_FILTER_AMT  :
   case BTH_FILTER_AMT  :
+  case PANEL_TRANSPOSE :
     {
       std::sprintf(value_display_text, "%+3d", static_cast<int>(controller_value) - 64);
       result = true;
@@ -721,6 +737,8 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
         current_controller_value = s_panel_play_pitch_value;
       } else if (adc_control_target_0 == PANEL_SCALE) {
         current_controller_value = s_panel_play_scale_value;
+      } else if (adc_control_target_0 == PANEL_TRANSPOSE) {
+        current_controller_value = s_panel_play_transpose_value;
       }
 
       s_display_buffer[7][ 0] = 'A';
@@ -758,6 +776,8 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
         current_controller_value = s_panel_play_pitch_value;
       } else if (adc_control_target_1 == PANEL_SCALE) {
         current_controller_value = s_panel_play_scale_value;
+      } else if (adc_control_target_1 == PANEL_TRANSPOSE) {
+        current_controller_value = s_panel_play_transpose_value;
       }
 
       s_display_buffer[7][11] = 'B';
@@ -795,6 +815,8 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
         current_controller_value = s_panel_play_pitch_value;
       } else if (adc_control_target_2 == PANEL_SCALE) {
         current_controller_value = s_panel_play_scale_value;
+      } else if (adc_control_target_2 == PANEL_TRANSPOSE) {
+        current_controller_value = s_panel_play_transpose_value;
       }
 
       s_display_buffer[3][11] = 'C';
