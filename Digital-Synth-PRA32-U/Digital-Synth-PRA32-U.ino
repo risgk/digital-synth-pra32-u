@@ -2,7 +2,7 @@
  * Digital Synth PRA32-U
  */
 
-#define PRA32_U_USE_DEBUG_PRINT               // Serial1
+//#define PRA32_U_USE_DEBUG_PRINT               // Serial1
 
 #define PRA32_U_USE_USB_MIDI                  // Select USB Stack: "Adafruit TinyUSB" in the Arduino IDE "Tools" menu
 
@@ -42,7 +42,7 @@
 
 ////////////////////////////////////////////////////////////////
 
-#define PRA32_U_USE_CONTROL_PANEL               // Experimental
+//#define PRA32_U_USE_CONTROL_PANEL               // Experimental
 
 #define PRA32_U_USE_CONTROL_PANEL_KEY_INPUT     // Use tactile switches
 #define PRA32_U_KEY_INPUT_ACTIVE_LEVEL          (HIGH)
