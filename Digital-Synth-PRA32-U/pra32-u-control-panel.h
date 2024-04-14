@@ -25,6 +25,7 @@ static          uint32_t s_next_key_current_value;
 static          uint32_t s_play_key_current_value;
 
 static volatile uint8_t  s_panel_play_pitch_value    = 60;
+static volatile uint8_t  s_panel_play_scale_value    = 0;
 static volatile uint8_t  s_panel_play_note_number    = 60;
 static volatile uint8_t  s_panel_playing_note_number = 0xFF;
 static volatile uint8_t  s_reserved_note_off         = 0xFF;
@@ -107,6 +108,44 @@ static INLINE boolean PRA32_U_ControlPanel_process_reserved_note_off_on() {
   return false;
 }
 
+static INLINE void PRA32_U_ControlPanel_update_pitch() {
+  uint32_t new_note_number = s_panel_play_pitch_value;
+
+  uint32_t index_scale = ((s_panel_play_scale_value * 4) + 127) / 254;
+  if        (index_scale == 1) {
+    const uint8_t ary_major[53] =
+      { 48, 48, 48, 48, 48, 50, 50, 50, 50, 52, 52, 52, 53, 53, 53,
+                    55, 55, 55, 55, 57, 57, 57, 57, 59, 59, 59, 60,
+                    60, 60, 62, 62, 62, 62, 64, 64, 64, 65, 65, 65,
+                    67, 67, 67, 67, 69, 69, 69, 69, 71, 71, 71, 72, 72, 72 };
+    uint32_t index_pitch = (((s_panel_play_pitch_value + 3) * 2) + 1) / 5;
+    new_note_number = ary_major[index_pitch];
+  } else if (index_scale == 2) {
+    const uint8_t ary_pentatonic[53] =
+      { 48, 48, 48, 48, 48, 50, 50, 50, 50, 52, 52, 52, 52, 52, 55,
+                    55, 55, 55, 55, 57, 57, 57, 57, 57, 60, 60, 60,
+                    60, 60, 62, 62, 62, 62, 64, 64, 64, 64, 64, 67,
+                    67, 67, 67, 67, 69, 69, 69, 69, 69, 72, 72, 72, 72, 72 };
+
+    uint32_t index_pitch = (((s_panel_play_pitch_value + 3) * 2) + 1) / 5;
+    new_note_number = ary_pentatonic[index_pitch];
+  }
+
+  bool panel_play_note_number_changed = false;
+  if (s_panel_play_note_number != new_note_number) {
+    s_panel_play_note_number = new_note_number;
+    panel_play_note_number_changed = true;
+  }
+
+  if (s_play_key_current_value == 1) {
+    if (panel_play_note_number_changed) {
+      s_reserved_note_off = s_panel_playing_note_number;
+      s_reserved_note_on = s_panel_play_note_number;
+      PRA32_U_ControlPanel_process_reserved_note_off_on();
+    }
+  }
+}
+
 static INLINE boolean PRA32_U_ControlPanel_update_control_adc(uint32_t adc_number) {
   uint8_t adc_control_value_candidate = PRA32_U_ControlPanel_adc_control_value_candidate(adc_number);
 
@@ -119,6 +158,8 @@ static INLINE boolean PRA32_U_ControlPanel_update_control_adc(uint32_t adc_numbe
       current_controller_value = g_synth.current_controller_value(s_adc_control_target[adc_number]);
     } else if (s_adc_control_target[adc_number] == PANEL_PITCH) {
       current_controller_value = s_panel_play_pitch_value;
+    } else if (s_adc_control_target[adc_number] == PANEL_SCALE) {
+      current_controller_value = s_panel_play_scale_value;
     }
 
     if ((s_adc_control_value_old <= current_controller_value) &&
@@ -153,22 +194,12 @@ static INLINE boolean PRA32_U_ControlPanel_update_control_adc(uint32_t adc_numbe
     } else if (s_adc_control_target[adc_number] == PANEL_PITCH) {
       if (s_adc_control_catched[adc_number]) {
         s_panel_play_pitch_value = s_adc_control_value[adc_number];
-
-        uint8_t new_note_number = s_panel_play_pitch_value;
-
-        bool panel_play_note_number_changed = false;
-        if (s_panel_play_note_number != new_note_number) {
-          s_panel_play_note_number = new_note_number;
-          panel_play_note_number_changed = true;
-        }
-
-        if (s_play_key_current_value == 1) {
-          if (panel_play_note_number_changed) {
-            s_reserved_note_off = s_panel_playing_note_number;
-            s_reserved_note_on = s_panel_play_note_number;
-            PRA32_U_ControlPanel_process_reserved_note_off_on();
-          }
-        }
+        PRA32_U_ControlPanel_update_pitch();
+      }
+    } else if (s_adc_control_target[adc_number] == PANEL_SCALE) {
+      if (s_adc_control_catched[adc_number]) {
+        s_panel_play_scale_value = s_adc_control_value[adc_number];
+        PRA32_U_ControlPanel_update_pitch();
       }
     }
 
@@ -383,20 +414,47 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     break;
   case  PANEL_PITCH    :
     {
-      char ary[12][5] = { " C", "C#", " D", "D#", " E", " F", "F#", " G", "G#", " A", "A#", " B" };
+      uint32_t index_scale = ((s_panel_play_scale_value * 4) + 127) / 254;
+      if        (index_scale == 0) {
+        char ary[12][5] = { " C", "C#", " D", "D#", " E", " F", "F#", " G", "G#", " A", "A#", " B" };
 
-      uint32_t quotient  = controller_value / 12;
-      uint32_t remainder = controller_value % 12;
+        uint32_t quotient  = controller_value / 12;
+        uint32_t remainder = controller_value % 12;
 
-      value_display_text[0] = ary[remainder][0];
-      value_display_text[1] = ary[remainder][1];
+        value_display_text[0] = ary[remainder][0];
+        value_display_text[1] = ary[remainder][1];
 
-      if (quotient == 0) {
-        value_display_text[2] = '-';
-      } else {
-        value_display_text[2] = '0' + quotient - 1;
+        if (quotient == 0) {
+          value_display_text[2] = '-';
+        } else {
+          value_display_text[2] = '0' + quotient - 1;
+        }
+      } else if (index_scale == 1) {
+       char ary_major[53][5] =
+          { " C3", " C3", " C3", " C3", " C3", " D3", " D3", " D3", " D3", " E3", " E3", " E3", " F3", " F3", " F3",
+                                 " G3", " G3", " G3", " G3", " A3", " A3", " A3", " A3", " B3", " B3", " B3", " C4",
+                                 " C4", " C4", " D4", " D4", " D4", " D4", " E4", " E4", " E4", " F4", " F4", " F4",
+                                 " G4", " G4", " G4", " G4", " A4", " A4", " A4", " A4", " B4", " B4", " B4", " C5", " C5", " C5" };
+        uint32_t index = (((s_panel_play_pitch_value + 3) * 2) + 1) / 5;
+        std::strcpy(value_display_text, ary_major[index]);
+      } else if (index_scale == 2) {
+       char ary_pentatonic[53][5] =
+          { " C3", " C3", " C3", " C3", " C3", " D3", " D3", " D3", " D3", " E3", " E3", " E3", " E3", " E3", " G3",
+                                 " G3", " G3", " G3", " G3", " A3", " A3", " A3", " A3", " A3", " C4", " C4", " C4",
+                                 " C4", " C4", " D4", " D4", " D4", " D4", " E4", " E4", " E4", " E4", " E4", " G4",
+                                 " G4", " G4", " G4", " G4", " A4", " A4", " A4", " A4", " A4", " C4", " C5", " C5", " C5", " C5" };
+        uint32_t index = (((s_panel_play_pitch_value + 3) * 2) + 1) / 5;
+        std::strcpy(value_display_text, ary_pentatonic[index]);
       }
 
+      result = true;
+    }
+    break;
+  case  PANEL_SCALE    :
+    {
+      char ary[3][5] = {"Ful"," M2"," P2"};
+      uint32_t index = ((controller_value * 4) + 127) / 254;
+      std::strcpy(value_display_text, ary[index]);
       result = true;
     }
     break;
@@ -661,6 +719,8 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
         current_controller_value = g_synth.current_controller_value(adc_control_target_0);
       } else if (adc_control_target_0 == PANEL_PITCH) {
         current_controller_value = s_panel_play_pitch_value;
+      } else if (adc_control_target_0 == PANEL_SCALE) {
+        current_controller_value = s_panel_play_scale_value;
       }
 
       s_display_buffer[7][ 0] = 'A';
@@ -696,6 +756,8 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
         current_controller_value = g_synth.current_controller_value(adc_control_target_1);
       } else if (adc_control_target_1 == PANEL_PITCH) {
         current_controller_value = s_panel_play_pitch_value;
+      } else if (adc_control_target_1 == PANEL_SCALE) {
+        current_controller_value = s_panel_play_scale_value;
       }
 
       s_display_buffer[7][11] = 'B';
@@ -731,6 +793,8 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
         current_controller_value = g_synth.current_controller_value(adc_control_target_2);
       } else if (adc_control_target_2 == PANEL_PITCH) {
         current_controller_value = s_panel_play_pitch_value;
+      } else if (adc_control_target_2 == PANEL_SCALE) {
+        current_controller_value = s_panel_play_scale_value;
       }
 
       s_display_buffer[3][11] = 'C';
