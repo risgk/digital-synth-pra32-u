@@ -152,8 +152,8 @@ static INLINE boolean PRA32_U_ControlPanel_update_control_adc(uint32_t adc_numbe
                           66, 67, 67, 68, 68, 69, 69, 70, 70, 71, 71, 72, 72, 72 };
 
       uint32_t index = (((s_panel_play_pitch_value + 3) * 2) + 1) / 5;
-      uint8_t note_number = ary_major[index];
-      static_cast<void>(ary_pentatonic);
+      uint8_t note_number = ary_pentatonic[index];
+      static_cast<void>(ary_major);
       static_cast<void>(ary_chromatic);
 
       s_panel_play_note_number = note_number;
@@ -285,6 +285,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     break;
   case EG_AMP_MOD      :
   case REL_EQ_DECAY    :
+  case SUSTAIN_PEDAL   :
     {
       char ary[2][5] = {"Off"," On"};
       uint32_t index = ((controller_value * 2) + 127) / 254;
