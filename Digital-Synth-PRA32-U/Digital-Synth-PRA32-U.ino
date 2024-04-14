@@ -69,6 +69,10 @@
 
 #include "hardware/adc.h"
 
+#if defined(PRA32_U_USE_CONTROL_PANEL)
+extern void PRA32_U_ControlPanel_on_control_change(uint8_t control_number);
+#endif  // defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
+
 #include "pra32-u-common.h"
 #include "pra32-u-synth.h"
 

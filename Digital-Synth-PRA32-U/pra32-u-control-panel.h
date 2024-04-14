@@ -18,6 +18,7 @@ static volatile uint32_t s_current_page_index = 4;
 static volatile int32_t  s_adc_current_value[3];
 static volatile uint8_t  s_adc_control_value[3];
 static volatile uint8_t  s_adc_control_target[3] = { 0xFF, 0xFF, 0xFF };
+static volatile boolean  s_adc_control_catched[3];
 
 static          uint32_t s_prev_key_current_value;
 static          uint32_t s_next_key_current_value;
@@ -113,8 +114,27 @@ static INLINE boolean PRA32_U_ControlPanel_update_control_adc(uint32_t adc_numbe
     uint8_t s_adc_control_value_old = s_adc_control_value[adc_number];
     s_adc_control_value[adc_number] = adc_control_value_candidate;
 
+    uint8_t current_controller_value = s_adc_control_value[adc_number];
+    if        (s_adc_control_target[adc_number] <= 0x7F) {
+      current_controller_value = g_synth.current_controller_value(s_adc_control_target[adc_number]);
+    } else if (s_adc_control_target[adc_number] == PANEL_PITCH) {
+      current_controller_value = s_panel_play_pitch_value;
+    }
+
+    if ((s_adc_control_value_old <= current_controller_value) &&
+        (s_adc_control_value[adc_number] >= current_controller_value)) {
+      s_adc_control_catched[adc_number] = true;
+    }
+
+    if ((s_adc_control_value_old >= current_controller_value) &&
+        (s_adc_control_value[adc_number] <= current_controller_value)) {
+      s_adc_control_catched[adc_number] = true;
+    }
+
     if (s_adc_control_target[adc_number] <= 0x7F) {
-      g_synth.control_change(s_adc_control_target[adc_number], s_adc_control_value[adc_number]);
+      if (s_adc_control_catched[adc_number]) {
+        g_synth.control_change(s_adc_control_target[adc_number], s_adc_control_value[adc_number]);
+      }
     } else if ((s_adc_control_target[adc_number] >= PC_BY_PANEL_0) && (s_adc_control_target[adc_number] <= PC_BY_PANEL_15)) {
       if ((s_adc_control_value_old < 64) && (s_adc_control_value[adc_number] >= 64)) {
         g_synth.program_change(s_adc_control_target[adc_number] - PC_BY_PANEL_0);
@@ -131,21 +151,23 @@ static INLINE boolean PRA32_U_ControlPanel_update_control_adc(uint32_t adc_numbe
         s_ready_to_write[program_number_to_write] = false;
       }
     } else if (s_adc_control_target[adc_number] == PANEL_PITCH) {
-      s_panel_play_pitch_value = s_adc_control_value[adc_number];
+      if (s_adc_control_catched[adc_number]) {
+        s_panel_play_pitch_value = s_adc_control_value[adc_number];
 
-      uint8_t new_note_number = s_panel_play_pitch_value;
+        uint8_t new_note_number = s_panel_play_pitch_value;
 
-      bool panel_play_note_number_changed = false;
-      if (s_panel_play_note_number != new_note_number) {
-        s_panel_play_note_number = new_note_number;
-        panel_play_note_number_changed = true;
-      }
+        bool panel_play_note_number_changed = false;
+        if (s_panel_play_note_number != new_note_number) {
+          s_panel_play_note_number = new_note_number;
+          panel_play_note_number_changed = true;
+        }
 
-      if (s_play_key_current_value == 1) {
-        if (panel_play_note_number_changed) {
-          s_reserved_note_off = s_panel_playing_note_number;
-          s_reserved_note_on = s_panel_play_note_number;
-          PRA32_U_ControlPanel_process_reserved_note_off_on();
+        if (s_play_key_current_value == 1) {
+          if (panel_play_note_number_changed) {
+            s_reserved_note_off = s_panel_playing_note_number;
+            s_reserved_note_on = s_panel_play_note_number;
+            PRA32_U_ControlPanel_process_reserved_note_off_on();
+          }
         }
       }
     }
@@ -545,6 +567,10 @@ INLINE void PRA32_U_ControlPanel_update_control() {
         }
 
         PRA32_U_ControlPanel_update_page();
+
+        s_adc_control_catched[0] = false;
+        s_adc_control_catched[1] = false;
+        s_adc_control_catched[2] = false;
       }
       return;
     }
@@ -567,6 +593,10 @@ INLINE void PRA32_U_ControlPanel_update_control() {
         }
 
         PRA32_U_ControlPanel_update_page();
+
+        s_adc_control_catched[0] = false;
+        s_adc_control_catched[1] = false;
+        s_adc_control_catched[2] = false;
       }
       return;
     }
@@ -784,6 +814,23 @@ INLINE void PRA32_U_ControlPanel_update_display(uint32_t loop_counter) {
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL_OLED_DISPLAY)
 
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL)
+}
+
+void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
+{
+#if defined(PRA32_U_USE_CONTROL_PANEL)
+  if (s_adc_control_target[0] == control_number) {
+    s_adc_control_catched[0] = false;
+  }
+
+  if (s_adc_control_target[1] == control_number) {
+    s_adc_control_catched[1] = false;
+  }
+
+  if (s_adc_control_target[2] == control_number) {
+    s_adc_control_catched[2] = false;
+  }
+#endif  // defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
 }
 
 INLINE void PRA32_U_ControlPanel_debug_print(uint32_t loop_counter) {

@@ -606,6 +606,10 @@ public:
   /* INLINE */ void control_change(uint8_t control_number, uint8_t controller_value) {
     m_current_controller_value_table[control_number] = controller_value;
 
+#if defined(PRA32_U_USE_CONTROL_PANEL)
+    PRA32_U_ControlPanel_on_control_change(control_number);
+#endif  // defined(PRA32_U_USE_CONTROL_PANEL)
+
     switch (control_number) {
     case MODULATION     :
       m_lfo.set_lfo_depth<1>(controller_value);
