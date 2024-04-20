@@ -120,13 +120,6 @@
 ```
 
 
-#### PRA32-U with Panel (Optional) (Experimental)
-
-- This option requires 3 tactile switches, 3 ADCs, and SSD1306 monochrome 128x64 OLED
-- Tested with Seeed Studio's Grove Shield for Pi Pico, Buttons, Rotary Angle Sensors, and a OLED Display 0.96 inch
-- Uncomment out `//#define PRA32_U_USE_CONTROL_PANEL` in "Digital-Synth-PRA32-U.ino" and modify options
-
-
 ## Files
 
 - "Digital-Synth-PRA32-U.ino" is a Arduino sketch for Raspberry Pi Pico/RP2040 core
@@ -259,6 +252,33 @@ graph LR
 ![Actual Wiring Diagram](./pra32-u-pwm-audio-bread-board.png)
 
 - This image was created with Fritzing.
+
+
+## PRA32-U with Panel, Prototype 1 (Experimental) (Optional)
+
+![PRA32-U with Panel, Prototype 1](./pra32-u-with-panel-prototype-1.jpg)
+
+- Uncomment out `//#define PRA32_U_USE_CONTROL_PANEL` in "Digital-Synth-PRA32-U.ino" and modify options
+- This option requires 3 tactile switches, 3 ADCs, and SSD1306 monochrome 128x64 OLED
+    - Tested with Seeed Studio's Grove Shield for Pi Pico, Buttons, Rotary Angle Sensors, and a OLED Display 0.96 inch
+- Inputs
+    - SW0: Prev Key
+    - SW1: Next Key
+    - SW2: Play Key (play notes)
+    - ADC0: Parameter A
+    - ADC1: Parameter B
+    - ADC2: Parameter C
+- Panel Parameters
+    - Panel Pitch
+    - Panel Scale [Ful|Pen|Maj]
+        - Full = Chromatic, 10 + 7/12 octaves
+        - Major Pentatonic, 2 octaves
+        - Major, 2 octaves
+    - Panel Transpose [-|+]
+- Other Operations
+    - Write Program 8-15
+    - Read Program 1-7, 8-15
+- NOTE: Specifications may change significantly in the future
 
 
 ## License
