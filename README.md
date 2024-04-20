@@ -276,8 +276,8 @@ graph LR
         - Major, 2 octaves
     - Panel Transpose [-|+]
 - Other Operations
-    - Write Program 8-15
-    - Read Program 1-7, 8-15
+    - Write Program 8-15: Change the value from 0 [Rdy] to 127 [Exe]
+    - Read Program 1-7, 8-15: Change the value from 0-63 [Rdy] to 64-127 [Exe]
 - NOTE: Specifications may change significantly in the future
 
 
