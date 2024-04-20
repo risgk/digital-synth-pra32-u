@@ -259,7 +259,7 @@ graph LR
 ![PRA32-U with Panel, Prototype 1](./pra32-u-with-panel-prototype-1.jpg)
 
 - Uncomment out `//#define PRA32_U_USE_CONTROL_PANEL` in "Digital-Synth-PRA32-U.ino" and modify options
-- This option requires 3 tactile switches, 3 ADCs, and SSD1306 monochrome 128x64 OLED
+- This option requires 3 tactile switches, 3 ADCs, and SSD1306 compatible monochrome 128x64 OLED Display
     - Tested with Seeed Studio's Grove Shield for Pi Pico, Buttons, Rotary Angle Sensors, and a OLED Display 0.96 inch
 - Inputs
     - SW0: Prev Key
