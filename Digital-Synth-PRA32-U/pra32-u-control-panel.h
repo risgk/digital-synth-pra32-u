@@ -24,9 +24,6 @@ static          uint32_t s_prev_key_current_value;
 static          uint32_t s_next_key_current_value;
 static          uint32_t s_play_key_current_value;
 
-static volatile uint8_t  s_panel_play_pitch_value     = 60;
-static volatile uint8_t  s_panel_play_scale_value     = 0;
-static volatile uint8_t  s_panel_play_transpose_value = 64;
 static volatile uint8_t  s_panel_play_note_number     = 60;
 static volatile uint8_t  s_panel_playing_note_number  = 0xFF;
 static volatile uint8_t  s_reserved_note_off          = 0xFF;
@@ -112,16 +109,16 @@ static INLINE boolean PRA32_U_ControlPanel_process_reserved_note_off_on() {
 }
 
 static INLINE void PRA32_U_ControlPanel_update_pitch() {
-  int32_t new_note_number = s_panel_play_pitch_value;
+  int32_t new_note_number = g_synth.current_controller_value(PANEL_PITCH);
 
-  uint32_t index_scale = ((s_panel_play_scale_value * 4) + 127) / 254;
+  uint32_t index_scale = ((g_synth.current_controller_value(PANEL_SCALE) * 4) + 127) / 254;
   if        (index_scale == 2) {
     const uint8_t ary_major[53] =
       { 48, 48, 48, 48, 48, 50, 50, 50, 50, 52, 52, 52, 53, 53, 53,
                     55, 55, 55, 55, 57, 57, 57, 57, 59, 59, 59, 60,
                     60, 60, 62, 62, 62, 62, 64, 64, 64, 65, 65, 65,
                     67, 67, 67, 67, 69, 69, 69, 69, 71, 71, 71, 72, 72, 72 };
-    uint32_t index_pitch = (((s_panel_play_pitch_value + 3) * 2) + 1) / 5;
+    uint32_t index_pitch = (((g_synth.current_controller_value(PANEL_PITCH) + 3) * 2) + 1) / 5;
     new_note_number = ary_major[index_pitch];
   } else if (index_scale == 1) {
     const uint8_t ary_pentatonic[53] =
@@ -130,11 +127,11 @@ static INLINE void PRA32_U_ControlPanel_update_pitch() {
                     60, 60, 62, 62, 62, 62, 64, 64, 64, 64, 64, 67,
                     67, 67, 67, 67, 69, 69, 69, 69, 69, 72, 72, 72, 72, 72 };
 
-    uint32_t index_pitch = (((s_panel_play_pitch_value + 3) * 2) + 1) / 5;
+    uint32_t index_pitch = (((g_synth.current_controller_value(PANEL_PITCH) + 3) * 2) + 1) / 5;
     new_note_number = ary_pentatonic[index_pitch];
   }
 
-  new_note_number += s_panel_play_transpose_value - 64;
+  new_note_number += g_synth.current_controller_value(PANEL_TRANSPOSE) - 64;
   if (new_note_number < 0) {
    new_note_number = 0;
   } else if (new_note_number > 127) {
@@ -164,14 +161,8 @@ static INLINE boolean PRA32_U_ControlPanel_update_control_adc(uint32_t adc_numbe
     s_adc_control_value[adc_number] = adc_control_value_candidate;
 
     uint8_t current_controller_value = s_adc_control_value[adc_number];
-    if        (s_adc_control_target[adc_number] <= 0x7F) {
+    if        (s_adc_control_target[adc_number] < 128 + 64) {
       current_controller_value = g_synth.current_controller_value(s_adc_control_target[adc_number]);
-    } else if (s_adc_control_target[adc_number] == PANEL_PITCH) {
-      current_controller_value = s_panel_play_pitch_value;
-    } else if (s_adc_control_target[adc_number] == PANEL_SCALE) {
-      current_controller_value = s_panel_play_scale_value;
-    } else if (s_adc_control_target[adc_number] == PANEL_TRANSPOSE) {
-      current_controller_value = s_panel_play_transpose_value;
     }
 
     if ((s_adc_control_value_old <= current_controller_value) &&
@@ -184,9 +175,16 @@ static INLINE boolean PRA32_U_ControlPanel_update_control_adc(uint32_t adc_numbe
       s_adc_control_catched[adc_number] = true;
     }
 
-    if (s_adc_control_target[adc_number] <= 0x7F) {
+    if (s_adc_control_target[adc_number] < 128) {
       if (s_adc_control_catched[adc_number]) {
         g_synth.control_change(s_adc_control_target[adc_number], s_adc_control_value[adc_number]);
+      }
+    } else if ((s_adc_control_target[adc_number] == PANEL_PITCH) ||
+               (s_adc_control_target[adc_number] == PANEL_SCALE) ||
+               (s_adc_control_target[adc_number] == PANEL_TRANSPOSE)) {
+      if (s_adc_control_catched[adc_number]) {
+        g_synth.control_change(s_adc_control_target[adc_number], s_adc_control_value[adc_number]);
+        PRA32_U_ControlPanel_update_pitch();
       }
     } else if ((s_adc_control_target[adc_number] >= PC_BY_PANEL_0) && (s_adc_control_target[adc_number] <= PC_BY_PANEL_15)) {
       if ((s_adc_control_value_old < 64) && (s_adc_control_value[adc_number] >= 64)) {
@@ -202,21 +200,6 @@ static INLINE boolean PRA32_U_ControlPanel_update_control_adc(uint32_t adc_numbe
       } else if (s_ready_to_write[program_number_to_write] && (s_adc_control_value[adc_number] == 127)) {
         g_synth.write_parameters_to_program(program_number_to_write);
         s_ready_to_write[program_number_to_write] = false;
-      }
-    } else if (s_adc_control_target[adc_number] == PANEL_PITCH) {
-      if (s_adc_control_catched[adc_number]) {
-        s_panel_play_pitch_value = s_adc_control_value[adc_number];
-        PRA32_U_ControlPanel_update_pitch();
-      }
-    } else if (s_adc_control_target[adc_number] == PANEL_SCALE) {
-      if (s_adc_control_catched[adc_number]) {
-        s_panel_play_scale_value = s_adc_control_value[adc_number];
-        PRA32_U_ControlPanel_update_pitch();
-      }
-    } else if (s_adc_control_target[adc_number] == PANEL_TRANSPOSE) {
-      if (s_adc_control_catched[adc_number]) {
-        s_panel_play_transpose_value = s_adc_control_value[adc_number];
-        PRA32_U_ControlPanel_update_pitch();
       }
     }
 
@@ -432,7 +415,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     break;
   case  PANEL_PITCH    :
     {
-      uint32_t index_scale = ((s_panel_play_scale_value * 4) + 127) / 254;
+      uint32_t index_scale = ((g_synth.current_controller_value(PANEL_SCALE) * 4) + 127) / 254;
       if        (index_scale == 0) {
         char ary[12][5] = { " C", "C#", " D", "D#", " E", " F", "F#", " G", "G#", " A", "A#", " B" };
 
@@ -453,7 +436,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
                                  " G3", " G3", " G3", " G3", " A3", " A3", " A3", " A3", " B3", " B3", " B3", " C4",
                                  " C4", " C4", " D4", " D4", " D4", " D4", " E4", " E4", " E4", " F4", " F4", " F4",
                                  " G4", " G4", " G4", " G4", " A4", " A4", " A4", " A4", " B4", " B4", " B4", " C5", " C5", " C5" };
-        uint32_t index = (((s_panel_play_pitch_value + 3) * 2) + 1) / 5;
+        uint32_t index = (((g_synth.current_controller_value(PANEL_PITCH) + 3) * 2) + 1) / 5;
         std::strcpy(value_display_text, ary_major[index]);
       } else if (index_scale == 1) {
        char ary_pentatonic[53][5] =
@@ -461,7 +444,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
                                  " G3", " G3", " G3", " G3", " A3", " A3", " A3", " A3", " A3", " C4", " C4", " C4",
                                  " C4", " C4", " D4", " D4", " D4", " D4", " E4", " E4", " E4", " E4", " E4", " G4",
                                  " G4", " G4", " G4", " G4", " A4", " A4", " A4", " A4", " A4", " C4", " C5", " C5", " C5", " C5" };
-        uint32_t index = (((s_panel_play_pitch_value + 3) * 2) + 1) / 5;
+        uint32_t index = (((g_synth.current_controller_value(PANEL_PITCH) + 3) * 2) + 1) / 5;
         std::strcpy(value_display_text, ary_pentatonic[index]);
       }
 
@@ -733,14 +716,8 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
     if (adc_control_target_0 < 0xFF) {
       uint8_t adc_control_value        = s_adc_control_value[0];
       uint8_t current_controller_value = adc_control_value;
-      if        (adc_control_target_0 <= 0x7F) {
+      if        (adc_control_target_0 < 128 + 64) {
         current_controller_value = g_synth.current_controller_value(adc_control_target_0);
-      } else if (adc_control_target_0 == PANEL_PITCH) {
-        current_controller_value = s_panel_play_pitch_value;
-      } else if (adc_control_target_0 == PANEL_SCALE) {
-        current_controller_value = s_panel_play_scale_value;
-      } else if (adc_control_target_0 == PANEL_TRANSPOSE) {
-        current_controller_value = s_panel_play_transpose_value;
       }
 
       s_display_buffer[7][ 0] = 'A';
@@ -772,14 +749,8 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
     if (adc_control_target_1 < 0xFF) {
       uint8_t adc_control_value        = s_adc_control_value[1];
       uint8_t current_controller_value = adc_control_value;
-      if        (adc_control_target_1 <= 0x7F) {
+      if        (adc_control_target_1 < 128 + 64) {
         current_controller_value = g_synth.current_controller_value(adc_control_target_1);
-      } else if (adc_control_target_1 == PANEL_PITCH) {
-        current_controller_value = s_panel_play_pitch_value;
-      } else if (adc_control_target_1 == PANEL_SCALE) {
-        current_controller_value = s_panel_play_scale_value;
-      } else if (adc_control_target_1 == PANEL_TRANSPOSE) {
-        current_controller_value = s_panel_play_transpose_value;
       }
 
       s_display_buffer[7][11] = 'B';
@@ -811,14 +782,8 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
     if (adc_control_target_2 < 0xFF) {
       uint8_t adc_control_value        = s_adc_control_value[2];
       uint8_t current_controller_value = adc_control_value;
-      if        (adc_control_target_2 <= 0x7F) {
+      if        (adc_control_target_2 < 128+64) {
         current_controller_value = g_synth.current_controller_value(adc_control_target_2);
-      } else if (adc_control_target_2 == PANEL_PITCH) {
-        current_controller_value = s_panel_play_pitch_value;
-      } else if (adc_control_target_2 == PANEL_SCALE) {
-        current_controller_value = s_panel_play_scale_value;
-      } else if (adc_control_target_2 == PANEL_TRANSPOSE) {
-        current_controller_value = s_panel_play_transpose_value;
       }
 
       s_display_buffer[3][11] = 'C';

@@ -3,6 +3,7 @@
 const uint8_t   PANEL_PITCH     = 128 + 0;
 const uint8_t   PANEL_SCALE     = 128 + 1;
 const uint8_t   PANEL_TRANSPOSE = 128 + 2;
+const uint8_t   PANEL_VELOCITY  = 128 + 3;
 
 const uint8_t   PC_BY_PANEL_0   = 128 + 64;
 const uint8_t   PC_BY_PANEL_1   = 128 + 65;
@@ -93,7 +94,8 @@ struct PRA32_U_ControlPanelPage {
   { "Page=35   ", "Read f    ",   "Read      ", "Program 10", PC_BY_PANEL_10 ,   "Read      ", "Program 11", PC_BY_PANEL_11 ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
   { "Page=36   ", "Read g    ",   "Read      ", "Program 12", PC_BY_PANEL_12 ,   "Read      ", "Program 13", PC_BY_PANEL_13 ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
   { "Page=37   ", "Read h    ",   "Read      ", "Program 14", PC_BY_PANEL_14 ,   "Read      ", "Program 15", PC_BY_PANEL_15 ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
-  { "Page=38   ", "Panel a   ",   "Modulation", "          ", MODULATION     ,   "Breath    ", "Controller", BTH_CONTROLLER ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
-  { "Page=39   ", "Panel b   ",   "          ", "          ", 0xFF           ,   "Sustain   ", "Pedal     ", SUSTAIN_PEDAL  ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=38   ", "Panel a   ",   "Modulation", "          ", MODULATION     ,   "          ", "          ", 0xFF           ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=39   ", "Panel b   ",   "Breath    ", "Controller", BTH_CONTROLLER ,   "Sustain   ", "Pedal     ", SUSTAIN_PEDAL  ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
   { "Page=40   ", "Panel c   ",   "Panel     ", "Scale     ", PANEL_SCALE    ,   "Panel     ", "Transpose ", PANEL_TRANSPOSE,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=41   ", "Panel b   ",   "Panel     ", "Velocity  ", PANEL_VELOCITY ,   "          ", "          ", 0xFF           ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
 };
