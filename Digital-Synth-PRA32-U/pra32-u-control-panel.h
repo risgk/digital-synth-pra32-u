@@ -92,17 +92,19 @@ static INLINE uint8_t PRA32_U_ControlPanel_adc_control_value_candidate(uint32_t 
 }
 
 static INLINE boolean PRA32_U_ControlPanel_process_reserved_note_off_on() {
-  if (s_reserved_note_off <= 127) {
-    g_synth.note_off(s_reserved_note_off);
-    s_panel_playing_note_number = 0xFF;
-    s_reserved_note_off = 0xFF;
-    return true;
-  }
-
   if (s_reserved_note_on <= 127) {
     g_synth.note_on(s_reserved_note_on, 100);
     s_panel_playing_note_number = s_reserved_note_on;
     s_reserved_note_on = 0xFF;
+    return true;
+  }
+
+  if (s_reserved_note_off <= 127) {
+    g_synth.note_off(s_reserved_note_off);
+    if (s_panel_playing_note_number == s_reserved_note_off) {
+      s_panel_playing_note_number = 0xFF;
+    }
+    s_reserved_note_off = 0xFF;
     return true;
   }
 
