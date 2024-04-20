@@ -13,7 +13,7 @@
 
 #define NUMBER_OF_PAGES (sizeof(g_control_panel_page_table) / sizeof(g_control_panel_page_table[0]))
 
-static volatile uint32_t s_current_page_index = 4;
+static volatile uint32_t s_current_page_index = PAGE_INDEX_DEFAULT;
 
 static volatile int32_t  s_adc_current_value[3];
 static volatile uint8_t  s_adc_control_value[3];
@@ -113,7 +113,7 @@ static INLINE void PRA32_U_ControlPanel_update_pitch() {
   int32_t new_note_number = s_panel_play_pitch_value;
 
   uint32_t index_scale = ((s_panel_play_scale_value * 4) + 127) / 254;
-  if        (index_scale == 1) {
+  if        (index_scale == 2) {
     const uint8_t ary_major[53] =
       { 48, 48, 48, 48, 48, 50, 50, 50, 50, 52, 52, 52, 53, 53, 53,
                     55, 55, 55, 55, 57, 57, 57, 57, 59, 59, 59, 60,
@@ -121,7 +121,7 @@ static INLINE void PRA32_U_ControlPanel_update_pitch() {
                     67, 67, 67, 67, 69, 69, 69, 69, 71, 71, 71, 72, 72, 72 };
     uint32_t index_pitch = (((s_panel_play_pitch_value + 3) * 2) + 1) / 5;
     new_note_number = ary_major[index_pitch];
-  } else if (index_scale == 2) {
+  } else if (index_scale == 1) {
     const uint8_t ary_pentatonic[53] =
       { 48, 48, 48, 48, 48, 50, 50, 50, 50, 52, 52, 52, 52, 52, 55,
                     55, 55, 55, 55, 57, 57, 57, 57, 57, 60, 60, 60,
@@ -420,8 +420,8 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
         value_display_text[1] = 'x';
         value_display_text[2] = 'e';
       } else {
-        value_display_text[0] = '-';
-        value_display_text[1] = '-';
+        value_display_text[0] = ' ';
+        value_display_text[1] = ' ';
         value_display_text[2] = '-';
       }
 
@@ -445,7 +445,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
         } else {
           value_display_text[2] = '0' + quotient - 1;
         }
-      } else if (index_scale == 1) {
+      } else if (index_scale == 2) {
        char ary_major[53][5] =
           { " C3", " C3", " C3", " C3", " C3", " D3", " D3", " D3", " D3", " E3", " E3", " E3", " F3", " F3", " F3",
                                  " G3", " G3", " G3", " G3", " A3", " A3", " A3", " A3", " B3", " B3", " B3", " C4",
@@ -453,7 +453,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
                                  " G4", " G4", " G4", " G4", " A4", " A4", " A4", " A4", " B4", " B4", " B4", " C5", " C5", " C5" };
         uint32_t index = (((s_panel_play_pitch_value + 3) * 2) + 1) / 5;
         std::strcpy(value_display_text, ary_major[index]);
-      } else if (index_scale == 2) {
+      } else if (index_scale == 1) {
        char ary_pentatonic[53][5] =
           { " C3", " C3", " C3", " C3", " C3", " D3", " D3", " D3", " D3", " E3", " E3", " E3", " E3", " E3", " G3",
                                  " G3", " G3", " G3", " G3", " A3", " A3", " A3", " A3", " A3", " C4", " C4", " C4",
@@ -468,7 +468,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     break;
   case  PANEL_SCALE    :
     {
-      char ary[3][5] = {"Ful","Maj","Pen"};
+      char ary[3][5] = {"Ful","Pen","Maj"};
       uint32_t index = ((controller_value * 4) + 127) / 254;
       std::strcpy(value_display_text, ary[index]);
       result = true;
