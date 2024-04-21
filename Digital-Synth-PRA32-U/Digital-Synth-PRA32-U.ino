@@ -2,6 +2,8 @@
  * Digital Synth PRA32-U
  */
 
+#define PRA32_U_VERSION                       "v2.2.2    "
+
 //#define PRA32_U_USE_DEBUG_PRINT               // Serial1
 
 #define PRA32_U_USE_USB_MIDI                  // Select USB Stack: "Adafruit TinyUSB" in the Arduino IDE "Tools" menu
@@ -243,6 +245,8 @@ void __not_in_flash_func(setup)() {
 #endif  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
 
   g_synth.initialize();
+
+  PRA32_U_ControlPanel_initialize_parameters();
 
   delay(100);
 }
