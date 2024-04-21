@@ -20,8 +20,10 @@ static volatile uint8_t  s_adc_control_value[3];
 static volatile uint8_t  s_adc_control_target[3] = { 0xFF, 0xFF, 0xFF };
 static volatile boolean  s_adc_control_catched[3];
 
+#if defined(PRA32_U_USE_CONTROL_PANEL)
 static          uint32_t s_prev_key_current_value;
 static          uint32_t s_next_key_current_value;
+#endif  // defined(PRA32_U_USE_CONTROL_PANEL)
 static          uint32_t s_play_key_current_value;
 
 static volatile uint8_t  s_panel_play_note_number     = 60;
@@ -41,7 +43,6 @@ static char s_display_buffer[8][21 + 1] = {
   "                     ",
   "                     ",
 };
-
 
 
 static INLINE void PRA32_U_ControlPanel_update_page() {
@@ -885,6 +886,8 @@ INLINE void PRA32_U_ControlPanel_update_display(uint32_t loop_counter) {
 
 void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
 {
+  static_cast<void>(control_number);
+
 #if defined(PRA32_U_USE_CONTROL_PANEL)
   if (s_adc_control_target[0] == control_number) {
     s_adc_control_catched[0] = false;
