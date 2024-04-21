@@ -1,5 +1,8 @@
 ## Digital Synth PRA32-U Change History
 
+- v2.3.1 (2024-04-21):
+    - Abolish the option to write user programs to the flash when using PWM audio due to performance problem uncovered
+    - Tested with Arduino-Pico version 3.7.2
 - v2.3.0 (2024-04-21):
     - Allow user programs to be written to the flash when using I2S DAC without mute-off pin
     - Add the option to write user programs to the flash when using PWM audio (for Raspberry Pi Pico/H/W/WH)

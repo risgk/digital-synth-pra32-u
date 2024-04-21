@@ -40,8 +40,6 @@
 
 #define PRA32_U_USE_EMULATED_EEPROM
 
-//#define PRA32_U_USE_EMULATED_EEPROM_PRESS_BOOTSEL_TO_WRITE_USER_PROGRAMS
-
 ////////////////////////////////////////////////////////////////
 
 //#define PRA32_U_USE_CONTROL_PANEL               // Experimental
@@ -257,22 +255,6 @@ void __not_in_flash_func(loop)() {
   uint32_t debug_measurement_start0_us = micros();
 #endif  // defined(PRA32_U_USE_DEBUG_PRINT)
 
-#if defined(PRA32_U_USE_EMULATED_EEPROM)
-#if !defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
-#elif (defined(PRA32_U_USE_EMULATED_EEPROM_PRESS_BOOTSEL_TO_WRITE_USER_PROGRAMS) \
-      && (defined(ARDUINO_RASPBERRY_PI_PICO) || defined(ARDUINO_RASPBERRY_PI_PICO_W)))
-  static uint32_t s_bootsel_counter = 0;
-  if (BOOTSEL) {
-    s_bootsel_counter++;
-    if (s_bootsel_counter >= (3 * SAMPLING_RATE) / PRA32_U_I2S_BUFFER_WORDS) {
-      writeUserProgramsToFlashAndShutDown();
-    }
-  } else {
-    s_bootsel_counter = 0;
-  }
-#endif
-#endif  // defined(PRA32_U_USE_EMULATED_EEPROM)
-
   for (uint32_t i = 0; i < (PRA32_U_I2S_BUFFER_WORDS + 15) / 16; i++) {
 #if defined(PRA32_U_USE_USB_MIDI)
     USB_MIDI.read();
@@ -366,39 +348,5 @@ void __not_in_flash_func(handleHandlePitchBend)(byte channel, int bend)
 {
   if ((channel - 1) == PRA32_U_MIDI_CH) {
     g_synth.pitch_bend((bend + 8192) & 0x7F, (bend + 8192) >> 7);
-  }
-}
-
-void writeUserProgramsToFlashAndShutDown()
-{
-#if defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
-  for (int16_t i = 0; i > -32768; i--) {
-#if ((PRA32_U_PWM_AUDIO_L_PIN + 1) == PRA32_U_PWM_AUDIO_R_PIN) && ((PRA32_U_PWM_AUDIO_L_PIN % 2) == 0)
-    g_pwm_l.write(i);
-    g_pwm_l.write(i);
-#elif ((PRA32_U_PWM_AUDIO_R_PIN + 1) == PRA32_U_PWM_AUDIO_L_PIN) && ((PRA32_U_PWM_AUDIO_R_PIN % 2) == 0)
-    g_pwm_r.write(i);
-    g_pwm_r.write(i);
-#else
-    g_pwm_l.write(i);
-    g_pwm_r.write(i);
-#endif
-  }
-
-  g_pwm_l.end();
-  g_pwm_r.end();
-#else  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
-  g_i2s_output.end();
-#endif  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
-
-  EEPROM.commit();
-
-  while (true) {
-#if defined(ARDUINO_RASPBERRY_PI_PICO)
-    digitalWrite(LED_BUILTIN, LOW);
-    delay(500);
-    digitalWrite(LED_BUILTIN, HIGH);
-#endif  // defined(ARDUINO_RASPBERRY_PI_PICO)
-    delay(500);
   }
 }

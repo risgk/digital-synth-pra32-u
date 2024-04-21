@@ -272,9 +272,7 @@ public:
 #if defined(PRA32_U_USE_EMULATED_EEPROM)
     EEPROM.begin(2048);
 
-#if !defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S) \
-    || (defined(PRA32_U_USE_EMULATED_EEPROM_PRESS_BOOTSEL_TO_WRITE_USER_PROGRAMS) \
-       && (defined(ARDUINO_RASPBERRY_PI_PICO) || defined(ARDUINO_RASPBERRY_PI_PICO_W)))
+#if !defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
     for (uint32_t program_number = (PRESET_PROGRAM_NUMBER_MAX + 1); program_number <= PROGRAM_NUMBER_MAX; ++program_number) {
       if ((EEPROM.read(program_number * 128) == 'U') && (EEPROM.read(program_number * 128 + 1) == program_number)) {
         for (uint32_t i = 0; i < sizeof(s_program_table_parameters) / sizeof(s_program_table_parameters[0]); ++i) {
@@ -283,7 +281,7 @@ public:
         }
       }
     }
-#endif
+#endif  // !defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
 #endif  // defined(PRA32_U_USE_EMULATED_EEPROM)
 #endif  // defined(ARDUINO_ARCH_RP2040)
 
