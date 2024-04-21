@@ -7,6 +7,7 @@
     - Add the option PRA32-U with Panel, Prototype 1 (experimental)
     - Change the default program #0 to #8
     - Use core 1 for Debug Print
+    - Other changes
     - Tested with Arduino-Pico version 3.7.2
 - v2.2.2 (2024-02-10):
     - Fix a bug that the parameters are not written to the flash when using I2S DAC, even if PRA32_U_I2S_DAC_MUTE_OFF_PIN is defined

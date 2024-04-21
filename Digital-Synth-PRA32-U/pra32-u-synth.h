@@ -567,7 +567,7 @@ public:
     }
   }
 
-  void all_sound_off() {
+  void all_notes_off() {
     m_sustain_pedal = false;
     m_note_on_number[0] = NOTE_NUMBER_INVALID;
     m_note_on_number[1] = NOTE_NUMBER_INVALID;
@@ -594,13 +594,15 @@ public:
     m_eg[5].note_off();
     m_eg[6].note_off();
     m_eg[7].note_off();
+
+    control_change(SUSTAIN_PEDAL   , 0  );
   }
 
   INLINE void reset_all_controllers() {
     pitch_bend(0, 64);
-    set_modulation(0);
-    set_breath_controller(0);
-    set_sustain_pedal(0);
+    control_change(MODULATION      , 0  );
+    control_change(BTH_CONTROLLER  , 0  );
+    control_change(SUSTAIN_PEDAL   , 0  );
   }
 
   /* INLINE */ void control_change(uint8_t control_number, uint8_t controller_value) {
@@ -840,11 +842,11 @@ public:
     case OMNI_MODE_ON   :
     case MONO_MODE_ON   :
     case POLY_MODE_ON   :
-      all_sound_off();  // Strictly speaking, this is a violation of MIDI 1.0 Specification...
+      all_notes_off();  // Strictly speaking, this is a violation of MIDI 1.0 Specification...
       break;
 
     case ALL_SOUND_OFF  :
-      all_sound_off();
+      all_notes_off();
       break;
 
     case RESET_ALL_CTRLS:
@@ -1234,7 +1236,7 @@ private:
 #endif
     if (m_voice_mode != new_voice_mode) {
       m_voice_mode = new_voice_mode;
-      all_sound_off();
+      all_notes_off();
       m_osc.set_gate_enabled(m_voice_mode == VOICE_PARAPHONIC);
     }
   }
