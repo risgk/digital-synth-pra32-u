@@ -1,6 +1,6 @@
-# Digital Synth PRA32-U v2.2.2
+# Digital Synth PRA32-U v2.3.1
 
-- 2024-02-10 ISGK Instruments
+- 2024-04-21 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
 
 
@@ -14,7 +14,7 @@
 - An **I2S DAC** hardware (e.g. Pimoroni Pico Audio Pack) is required
     - PWM Audio can also be used instead of I2S (PWM Audio does not require an I2S DAC hardware)
 - Prebuilt UF2 files ("bin")
-    - "Digital-Synth-PRA32-U-2.2.2-Pimoroni-Pico-Audio-Pack.uf2" is for Raspberry Pi Pico and Pimoroni Pico Audio Pack
+    - "Digital-Synth-PRA32-U-2.3.1-Pimoroni-Pico-Audio-Pack.uf2" is for Raspberry Pi Pico and Pimoroni Pico Audio Pack
 
 
 ## [Change History](/PRA32-U-Change-History.md)
@@ -27,8 +27,8 @@
     - Info: <https://www.arduino.cc/en/software>
 - Please install Arduino-Pico = **Raspberry Pi Pico/RP2040** (by Earle F. Philhower, III) core
     - Additional Board Manager URL: <https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json>
-    - This sketch is tested with version **3.7.0**: <https://github.com/earlephilhower/arduino-pico/releases/tag/3.7.0>
-        - Arduino-Pico version 3.7.0 includes Adafruit TinyUSB Library version 2.3.0
+    - This sketch is tested with version **3.7.2**: <https://github.com/earlephilhower/arduino-pico/releases/tag/3.7.2>
+        - Arduino-Pico version 3.7.2 includes Adafruit TinyUSB Library version 2.3.0
     - Info: <https://github.com/earlephilhower/arduino-pico>
 - Please install Arduino **MIDI Library** (by Francois Best, lathoub)
     - This sketch is tested with version **5.0.2**: <https://github.com/FortySevenEffects/arduino_midi_library/releases/tag/5.0.2>
@@ -48,14 +48,18 @@
 #### UART MIDI (Optional)
 
 - UART MIDI can also be used
+    - Noise caused by USB communication can be avoided
 - Uncomment out `//#define PRA32_U_USE_UART_MIDI` in "Digital-Synth-PRA32-U.ino"
   and modify `PRA32_U_UART_MIDI_SPEED`, `PRA32_U_UART_MIDI_TX_PIN`, and `PRA32_U_UART_MIDI_RX_PIN`
-- Speed: 31250 bps (default, for DIN/TRS MIDI) or 38400 bps
-- GP4 and GP5 pins are used by UART1 TX and UART1 RX by default
+    - Speed: 31250 bps (default, for DIN/TRS MIDI) or 38400 bps (for PC)
+    - GP4 and GP5 pins are used by UART1 TX and UART1 RX by default
 - DIN/TRS MIDI is available by using (and modifying) Adafruit MIDI FeatherWing Kit, for example
     - Adafruit [MIDI FeatherWing Kit](https://www.adafruit.com/product/4740)
     - 木下研究所 [MIDI-UARTインターフェースさん キット](https://www.switch-science.com/products/8117) (Shipping to Japan only)
     - necobit電子 [MIDI Unit for GROVE](https://necobit.com/denshi/grove-midi-unit/) (Shipping to Japan only)
+- We recommend using [Hairless MIDI<->Serial Bridge](https://projectgus.github.io/hairless-midiserial/) on PC
+    - On Windows, We recommend using [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html) (virtual loopback MIDI cable)
+    - On Mac, a virtual MIDI bus (port) can be created by using the IAC bus
 
 
 ### Audio (Output)
@@ -65,9 +69,8 @@
 - Use an I2S DAC (e.g. Texas Instruments PCM5100A and Cirrus Logic CS4344), Sampling Rate: 48 kHz, Bit Depth: 16 bit
 - NOTE: The RP2040 system clock (sysclk) changes to overclocked 147.6 MHz by I2S Audio Library setSysClk()
 - Modify `PRA32_U_I2S_DAC_MUTE_OFF_PIN`, `PRA32_U_I2S_DATA_PIN`, `PRA32_U_I2S_MCLK_PIN`, `PRA32_U_I2S_MCLK_MULT`,
-  `PRA32_U_I2S_BCLK_PIN`, and `PRA32_U_I2S_SWAP_BCLK_AND_LRCLK_PINS`
+  `PRA32_U_I2S_BCLK_PIN`, `PRA32_U_I2S_SWAP_BCLK_AND_LRCLK_PINS`, and `PRA32_U_I2S_SWAP_LEFT_AND_RIGHT`
   in "Digital-Synth-PRA32-U.ino" to match the hardware configuration
-    - NOTE: To avoid noise, the parameters will not be written to the flash if `PRA32_U_I2S_DAC_MUTE_OFF_PIN` is not defined
 - The default setting is for Pimoroni [Pico Audio Pack](https://shop.pimoroni.com/products/pico-audio-pack) (PIM544)
 ```
 #define PRA32_U_I2S_DAC_MUTE_OFF_PIN          (22)
@@ -76,9 +79,9 @@
 //#define PRA32_U_I2S_MCLK_MULT                 (0)
 #define PRA32_U_I2S_BCLK_PIN                  (10)  // LRCLK Pin is PRA32_U_I2S_BCLK_PIN + 1
 #define PRA32_U_I2S_SWAP_BCLK_AND_LRCLK_PINS  (false)
+#define PRA32_U_I2S_SWAP_LEFT_AND_RIGHT       (false)
 ```
 - The following is setting is for [Pimoroni Pico VGA Demo Base](https://shop.pimoroni.com/products/pimoroni-pico-vga-demo-base) (PIM553)
-  and [Pimoroni Pico DV Demo Base](https://shop.pimoroni.com/products/pimoroni-pico-dv-demo-base) (PIM588)
 ```
 //#define PRA32_U_I2S_DAC_MUTE_OFF_PIN          (0)
 #define PRA32_U_I2S_DATA_PIN                  (26)
@@ -86,15 +89,7 @@
 //#define PRA32_U_I2S_MCLK_MULT                 (0)
 #define PRA32_U_I2S_BCLK_PIN                  (27)  // LRCLK Pin is is PRA32_U_I2S_BCLK_PIN + 1
 #define PRA32_U_I2S_SWAP_BCLK_AND_LRCLK_PINS  (false)
-```
-- The following is setting is for Waveshare Pico-Audio Initial Version (WAVESHARE-20167)
-```
-//#define PRA32_U_I2S_DAC_MUTE_OFF_PIN          (0)
-#define PRA32_U_I2S_DATA_PIN                  (26)
-//#define PRA32_U_I2S_MCLK_PIN                  (0)
-//#define PRA32_U_I2S_MCLK_MULT                 (0)
-#define PRA32_U_I2S_BCLK_PIN                  (27)  // LRCLK Pin is is PRA32_U_I2S_BCLK_PIN + 1
-#define PRA32_U_I2S_SWAP_BCLK_AND_LRCLK_PINS  (false)
+#define PRA32_U_I2S_SWAP_LEFT_AND_RIGHT       (false)
 ```
 - The following is setting is for [Waveshare Pico-Audio](https://www.waveshare.com/wiki/Pico-Audio) Rev2.1 Version (WAVESHARE-20167)
 ```
@@ -104,6 +99,7 @@
 #define PRA32_U_I2S_MCLK_MULT                 (256)
 #define PRA32_U_I2S_BCLK_PIN                  (27)  // LRCLK Pin is is PRA32_U_I2S_BCLK_PIN + 1
 #define PRA32_U_I2S_SWAP_BCLK_AND_LRCLK_PINS  (true)
+#define PRA32_U_I2S_SWAP_LEFT_AND_RIGHT       (true)
 ```
 
 
@@ -149,7 +145,7 @@
 - When not using PRA32-U CTRL
     - PRA32-U can also be controlled by MIDI without using PRA32-U CTRL
     - Refer to "PRA32-U-MIDI-Implementation-Chart.txt" for the supported functions
-    - The default program is #0
+    - The default program is #8
     - Programs #0-15 can be modified by editing "pra32-u-program-table.h"
     - PRA32-U CTRL functions related to parameter writing
         - Write: Write the current parameters to PRA32-U (Program #8-15 and the flash)
@@ -254,15 +250,43 @@ graph LR
 - This image was created with Fritzing.
 
 
+## PRA32-U with Panel, Prototype 1 (Experimental) (Optional)
+
+![PRA32-U with Panel, Prototype 1](./pra32-u-with-panel-prototype-1.jpg)
+
+- Uncomment out `//#define PRA32_U_USE_CONTROL_PANEL` in "Digital-Synth-PRA32-U.ino" and modify options
+- This option requires 3 tactile switches, 3 ADCs, and SSD1306 compatible monochrome 128x64 OLED Display
+    - Tested with Seeed Studio's Grove Shield for Pi Pico, Buttons, Rotary Angle Sensors, and a OLED Display 0.96 inch
+- Inputs
+    - SW0: Prev Key
+    - SW1: Next Key
+    - SW2: Play Key (play notes)
+    - ADC0: Parameter A
+    - ADC1: Parameter B
+    - ADC2: Parameter C
+- Panel Parameters
+    - Panel Pitch
+    - Panel Scale [Ful|Pen|Maj]
+        - Full = Chromatic, 10 + 7/12 octaves
+        - Major Pentatonic, 2 octaves
+        - Major, 2 octaves
+    - Panel Transpose [-|+]
+    - Panel Velocity
+- Other Operations
+    - Write Program 8-15: Change the value from 0 [Rdy] to 127 [Exe]
+    - Read Program 1-7, 8-15: Change the value from 0-63 [Rdy] to 64-127 [Exe]
+- NOTE: Specifications may change significantly in the future
+
+
 ## License
 
 ![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)
 
-**Digital Synth PRA32-U v2.2.2 by ISGK Instruments (Ryo Ishigaki)**
+**Digital Synth PRA32-U v2.3.1 by ISGK Instruments (Ryo Ishigaki)**
 
 To the extent possible under law, ISGK Instruments (Ryo Ishigaki)
 has waived all copyright and related or neighboring rights
-to Digital Synth PRA32-U v2.2.2.
+to Digital Synth PRA32-U v2.3.1.
 
 You should have received a copy of the CC0 legalcode along with this
 work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.

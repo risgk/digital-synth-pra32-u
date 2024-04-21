@@ -13,6 +13,8 @@
 
 #if defined(ARDUINO_ARCH_RP2040)
 #include <EEPROM.h>
+#include <I2S.h>
+extern I2S g_i2s_output;
 #endif  // defined(ARDUINO_ARCH_RP2040)
 
 #include <algorithm>
@@ -123,7 +125,7 @@ class PRA32_U_Synth {
   uint8_t           m_program_number_to_write;
   uint8_t           m_wr_prog_to_flash_cc_value;
   uint8_t           m_sp_prog_chg_cc_values[8];
-  uint8_t           m_current_controller_value_table[128];
+  uint8_t           m_current_controller_value_table[128 + 128];
   uint8_t           m_program_table[128][PROGRAM_NUMBER_MAX + 1];
 
   volatile int32_t  m_secondary_core_processing_argument;
@@ -268,9 +270,9 @@ public:
 
 #if defined(ARDUINO_ARCH_RP2040)
 #if defined(PRA32_U_USE_EMULATED_EEPROM)
-#if defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN) && !defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
     EEPROM.begin(2048);
 
+#if !defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
     for (uint32_t program_number = (PRESET_PROGRAM_NUMBER_MAX + 1); program_number <= PROGRAM_NUMBER_MAX; ++program_number) {
       if ((EEPROM.read(program_number * 128) == 'U') && (EEPROM.read(program_number * 128 + 1) == program_number)) {
         for (uint32_t i = 0; i < sizeof(s_program_table_parameters) / sizeof(s_program_table_parameters[0]); ++i) {
@@ -279,14 +281,18 @@ public:
         }
       }
     }
-#endif  // defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN) && !defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+#endif  // !defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
 #endif  // defined(PRA32_U_USE_EMULATED_EEPROM)
 #endif  // defined(ARDUINO_ARCH_RP2040)
 
     program_change(PROGRAM_NUMBER_DEFAULT);
   }
 
-  INLINE void note_on(uint8_t note_number, uint8_t velocity) {
+  INLINE uint8_t current_controller_value(uint8_t control_number) {
+    return m_current_controller_value_table[control_number];
+  }
+
+  /* INLINE */ void note_on(uint8_t note_number, uint8_t velocity) {
     if (m_note_on_total_count == 255) {
       return;
     }
@@ -446,7 +452,7 @@ public:
     }
   }
 
-  INLINE void note_off(uint8_t note_number) {
+  /* INLINE */ void note_off(uint8_t note_number) {
     if (m_note_on_total_count == 0) {
       return;
     }
@@ -559,7 +565,7 @@ public:
     }
   }
 
-  void all_sound_off() {
+  void all_notes_off() {
     m_sustain_pedal = false;
     m_note_on_number[0] = NOTE_NUMBER_INVALID;
     m_note_on_number[1] = NOTE_NUMBER_INVALID;
@@ -586,17 +592,23 @@ public:
     m_eg[5].note_off();
     m_eg[6].note_off();
     m_eg[7].note_off();
+
+    control_change(SUSTAIN_PEDAL   , 0  );
   }
 
   INLINE void reset_all_controllers() {
     pitch_bend(0, 64);
-    set_modulation(0);
-    set_breath_controller(0);
-    set_sustain_pedal(0);
+    control_change(MODULATION      , 0  );
+    control_change(BTH_CONTROLLER  , 0  );
+    control_change(SUSTAIN_PEDAL   , 0  );
   }
 
-  INLINE void control_change(uint8_t control_number, uint8_t controller_value) {
+  /* INLINE */ void control_change(uint8_t control_number, uint8_t controller_value) {
     m_current_controller_value_table[control_number] = controller_value;
+
+#if defined(PRA32_U_USE_CONTROL_PANEL)
+    PRA32_U_ControlPanel_on_control_change(control_number);
+#endif  // defined(PRA32_U_USE_CONTROL_PANEL)
 
     switch (control_number) {
     case MODULATION     :
@@ -828,11 +840,11 @@ public:
     case OMNI_MODE_ON   :
     case MONO_MODE_ON   :
     case POLY_MODE_ON   :
-      all_sound_off();  // Strictly speaking, this is a violation of MIDI 1.0 Specification...
+      all_notes_off();  // Strictly speaking, this is a violation of MIDI 1.0 Specification...
       break;
 
     case ALL_SOUND_OFF  :
-      all_sound_off();
+      all_notes_off();
       break;
 
     case RESET_ALL_CTRLS:
@@ -848,35 +860,8 @@ public:
         uint8_t old_value = m_wr_prog_to_flash_cc_value;
         m_wr_prog_to_flash_cc_value = controller_value;
 
-        if (m_program_number_to_write >= (PRESET_PROGRAM_NUMBER_MAX + 1)) {
-          if ((old_value == 0) && (controller_value >= 1)) {
-            for (uint32_t i = 0; i < sizeof(s_program_table_parameters) / sizeof(s_program_table_parameters[0]); ++i) {
-              uint32_t control_number = s_program_table_parameters[i];
-              m_program_table[control_number][m_program_number_to_write] = m_current_controller_value_table[control_number];
-            }
-
-#if defined(ARDUINO_ARCH_RP2040)
-#if defined(PRA32_U_USE_EMULATED_EEPROM)
-#if defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN) && !defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
-            // To avoid noise, the data will not be written to the flash
-            // if PRA32_U_I2S_DAC_MUTE_OFF_PIN is not defined or PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S is defined
-            for (uint32_t i = 0; i < sizeof(s_program_table_parameters) / sizeof(s_program_table_parameters[0]); ++i) {
-              uint32_t control_number = s_program_table_parameters[i];
-              EEPROM.write(m_program_number_to_write * 128 + control_number, m_current_controller_value_table[control_number]);
-            }
-
-            EEPROM.write(m_program_number_to_write * 128,     'U');
-            EEPROM.write(m_program_number_to_write * 128 + 1, m_program_number_to_write);
-
-            digitalWrite(PRA32_U_I2S_DAC_MUTE_OFF_PIN, LOW);
-
-            EEPROM.commit();
-
-            digitalWrite(PRA32_U_I2S_DAC_MUTE_OFF_PIN, HIGH);
-#endif  // defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN) && !defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
-#endif  // defined(PRA32_U_USE_EMULATED_EEPROM)
-#endif  // defined(ARDUINO_ARCH_RP2040)
-          }
+        if ((old_value == 0) && (m_wr_prog_to_flash_cc_value >= 1)) {
+          write_parameters_to_program(m_program_number_to_write);
         }
       }
       break;
@@ -902,7 +887,7 @@ public:
     }
   }
 
-  INLINE void pitch_bend(uint8_t lsb, uint8_t msb) {
+  /* INLINE */ void pitch_bend(uint8_t lsb, uint8_t msb) {
     int16_t pitch_bend = ((static_cast<uint16_t>(msb) << 8) >> 1) + lsb - 8192;
     m_osc.set_pitch_bend(pitch_bend);
   }
@@ -916,6 +901,48 @@ public:
       uint32_t control_number = s_program_table_parameters[i];
       control_change(control_number, m_program_table[control_number][program_number]);
     }
+  }
+
+  /* INLINE */ void write_parameters_to_program(uint8_t program_number_to_write) {
+    if (program_number_to_write < (PRESET_PROGRAM_NUMBER_MAX + 1)) {
+      return;
+    }
+
+    for (uint32_t i = 0; i < sizeof(s_program_table_parameters) / sizeof(s_program_table_parameters[0]); ++i) {
+      uint32_t control_number = s_program_table_parameters[i];
+      m_program_table[control_number][program_number_to_write] = m_current_controller_value_table[control_number];
+    }
+
+#if defined(ARDUINO_ARCH_RP2040)
+#if defined(PRA32_U_USE_EMULATED_EEPROM)
+    for (uint32_t i = 0; i < sizeof(s_program_table_parameters) / sizeof(s_program_table_parameters[0]); ++i) {
+      uint32_t control_number = s_program_table_parameters[i];
+      EEPROM.write(program_number_to_write * 128 + control_number, m_current_controller_value_table[control_number]);
+    }
+
+    EEPROM.write(program_number_to_write * 128,     'U');
+    EEPROM.write(program_number_to_write * 128 + 1, program_number_to_write);
+
+#if !defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+    // To avoid noise, the data will not be written to the flash
+    // if PRA32_U_I2S_DAC_MUTE_OFF_PIN is not defined or PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S is defined
+
+#if defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN)
+    digitalWrite(PRA32_U_I2S_DAC_MUTE_OFF_PIN, LOW);
+#else  // defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN)
+    g_i2s_output.end();
+#endif  // defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN)
+
+    EEPROM.commit();
+
+#if defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN)
+    digitalWrite(PRA32_U_I2S_DAC_MUTE_OFF_PIN, HIGH);
+#else  // defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN)
+    g_i2s_output.begin();
+#endif  // defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN)
+#endif
+#endif  // defined(PRA32_U_USE_EMULATED_EEPROM)
+#endif  // defined(ARDUINO_ARCH_RP2040)
   }
 
   INLINE int16_t process(int16_t& right_level) {
@@ -1045,6 +1072,11 @@ public:
 
       voice_mixer_output = amp_output[0];
     } else {
+#if defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
+      m_secondary_core_processing_argument = 0;
+      m_secondary_core_processing_request = 1;
+#endif  // defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
+
       osc_output[0] = m_osc.process<0>(noise_int15);
       int16_t osc_mixer_output = osc_output[0] << 1;
 
@@ -1052,6 +1084,17 @@ public:
       amp_output   [0] = m_amp   [0].process(filter_output[0]);
 
       voice_mixer_output = amp_output[0];
+
+#if defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
+      // Wait
+      for (volatile uint32_t i = 0; i < 30; ++i) {
+        ;
+      }
+
+      while (m_secondary_core_processing_request) {
+        ;
+      }
+#endif  // defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
     }
 
     int16_t chorus_fx_output_r;
@@ -1093,7 +1136,9 @@ public:
 #endif  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
   }
 
-  INLINE void secondary_core_process() {
+  INLINE boolean secondary_core_process() {
+    boolean processed = false;
+
 #if defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
     if (m_secondary_core_processing_request == 1) {
       int16_t noise_int15 = static_cast<int16_t>(m_secondary_core_processing_argument);
@@ -1117,11 +1162,16 @@ public:
         osc_output[3] = m_osc.process<3>(noise_int15);
 
         m_secondary_core_processing_result = osc_output[2] + osc_output[3];
+      } else {
+        m_secondary_core_processing_result = 0;
       }
 
       m_secondary_core_processing_request = 0;
+      processed = true;
     }
 #endif  // defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
+
+    return processed;
   }
 
 private:
@@ -1184,7 +1234,7 @@ private:
 #endif
     if (m_voice_mode != new_voice_mode) {
       m_voice_mode = new_voice_mode;
-      all_sound_off();
+      all_notes_off();
       m_osc.set_gate_enabled(m_voice_mode == VOICE_PARAPHONIC);
     }
   }

@@ -1,6 +1,6 @@
 ```
-  [Polyphonic/Paraphonic Synthesizer]                             Date: 2024-02-10                     
-  Model: Digital Synth PRA32-U    MIDI Implementation Chart       Version: 2.2.2                       
+  [Polyphonic/Paraphonic Synthesizer]                             Date: 2024-04-21                     
+  Model: Digital Synth PRA32-U    MIDI Implementation Chart       Version: 2.3.1                       
 +-------------------------------+---------------+---------------+-------------------------------------+
 | Function...                   | Transmitted   | Recognized    | Remarks                             |
 +-------------------------------+---------------+---------------+-------------------------------------+
@@ -88,11 +88,18 @@
 |                               |               |               |                                     |
 |                            87 | x             | o             | Program Number to Write to $$$$     |
 |                           106 | x             | o             | Write Parameters to Program $$$$    |
-|                       112-119 |               |               | Program Change #8-15 by CC          |
+|                           112 |               |               | Program Change #8 by CC             |
+|                           113 |               |               | Program Change #9 by CC             |
+|                           114 |               |               | Program Change #10 by CC            |
+|                           115 |               |               | Program Change #11 by CC            |
+|                           116 |               |               | Program Change #12 by CC            |
+|                           117 |               |               | Program Change #13 by CC            |
+|                           118 |               |               | Program Change #14 by CC            |
+|                           119 |               |               | Program Change #15 by CC            |
 |                           111 | x             | x             | [Reserved]                          |
 +-------------------------------+---------------+---------------+-------------------------------------+
 | Program                       | x             | o             |                                     |
-| Change       : True #         | ************* | 0-15          | Default 0                           |
+| Change       : True #         | ************* | 0-15          | Default 8                           |
 +-------------------------------+---------------+---------------+-------------------------------------+
 | System Exclusive              | x             | x             |                                     |
 +-------------------------------+---------------+---------------+-------------------------------------+
