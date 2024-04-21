@@ -1,6 +1,6 @@
-# Digital Synth PRA32-U v2.2.2
+# Digital Synth PRA32-U v2.3.0
 
-- 2024-02-10 ISGK Instruments
+- 2024-04-21 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
 
 
@@ -14,7 +14,7 @@
 - An **I2S DAC** hardware (e.g. Pimoroni Pico Audio Pack) is required
     - PWM Audio can also be used instead of I2S (PWM Audio does not require an I2S DAC hardware)
 - Prebuilt UF2 files ("bin")
-    - "Digital-Synth-PRA32-U-2.2.2-Pimoroni-Pico-Audio-Pack.uf2" is for Raspberry Pi Pico and Pimoroni Pico Audio Pack
+    - "Digital-Synth-PRA32-U-2.3.0-Pimoroni-Pico-Audio-Pack.uf2" is for Raspberry Pi Pico and Pimoroni Pico Audio Pack
 
 
 ## [Change History](/PRA32-U-Change-History.md)
@@ -286,11 +286,11 @@ graph LR
 
 ![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)
 
-**Digital Synth PRA32-U v2.2.2 by ISGK Instruments (Ryo Ishigaki)**
+**Digital Synth PRA32-U v2.3.0 by ISGK Instruments (Ryo Ishigaki)**
 
 To the extent possible under law, ISGK Instruments (Ryo Ishigaki)
 has waived all copyright and related or neighboring rights
-to Digital Synth PRA32-U v2.2.2.
+to Digital Synth PRA32-U v2.3.0.
 
 You should have received a copy of the CC0 legalcode along with this
 work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
