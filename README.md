@@ -158,6 +158,7 @@
 - PRA32-U (USB MIDI Device, I2S), Default
 - PRA32-U (USB MIDI Device, UART MIDI, I2S)
 - PRA32-U (USB MIDI Device, PWM Audio)
+- PRA32-U with Panel (USB MIDI Device, UART MIDI, I2S, Control Panel)
 
 
 ## [Parameter Guide](/PRA32-U-Parameter-Guide.md)
@@ -258,7 +259,7 @@ graph LR
 
 - Uncomment out `//#define PRA32_U_USE_CONTROL_PANEL` in "Digital-Synth-PRA32-U.ino" and modify options
 - This option requires 3 tactile switches, 3 ADCs, and SSD1306 compatible monochrome 128x64 OLED Display
-    - Tested with Seeed Studio's Grove Shield for Pi Pico, Buttons, Rotary Angle Sensors, and a OLED Display 0.96 inch
+    - Tested with Pimoroni Pico Audio Pack, necobit電子 MIDI Unit for GROVE, Long Leg 2x20 Pin Socket * 2, Seeed Studio's Grove Shield for Pi Pico, Buttons, Rotary Angle Sensors, and a OLED Display 0.96 inch
 - Inputs
     - SW0: Prev Key
     - SW1: Next Key
