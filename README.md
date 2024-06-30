@@ -264,9 +264,9 @@ graph LR
     - SW0: Prev Key
     - SW1: Next Key
     - SW2: Play Key (play notes)
-    - ADC0: Parameter A
-    - ADC1: Parameter B
-    - ADC2: Parameter C
+    - VR0 (ADC0): Parameter A
+    - VR1 (ADC1): Parameter B
+    - VR2 (ADC2): Parameter C
 - Panel Parameters
     - Panel Pitch
     - Panel Scale [Ful|Pen|Maj]
