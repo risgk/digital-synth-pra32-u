@@ -46,6 +46,7 @@
 
 #define PRA32_U_USE_CONTROL_PANEL_KEY_INPUT     // Use tactile switches
 #define PRA32_U_KEY_INPUT_ACTIVE_LEVEL          (HIGH)
+#define PRA32_U_KEY_INPUT_PIN_MODE              (INPUT_PULLDOWN)
 #define PRA32_U_KEY_INPUT_PREV_KEY_PIN          (16)
 #define PRA32_U_KEY_INPUT_NEXT_KEY_PIN          (18)
 #define PRA32_U_KEY_INPUT_PLAY_KEY_PIN          (20)
@@ -164,6 +165,8 @@ void __not_in_flash_func(loop1)() {
 void __not_in_flash_func(setup)() {
   g_i2s_output.setSysClk(SAMPLING_RATE);
 #if defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+  pinMode(PRA32_U_PWM_AUDIO_L_PIN, OUTPUT_12MA);
+  pinMode(PRA32_U_PWM_AUDIO_R_PIN, OUTPUT_12MA);
 #if ((PRA32_U_PWM_AUDIO_L_PIN + 1) == PRA32_U_PWM_AUDIO_R_PIN) && ((PRA32_U_PWM_AUDIO_L_PIN % 2) == 0)
   g_pwm_l.setStereo(true);
   g_pwm_l.setBuffers(PRA32_U_I2S_BUFFERS, PRA32_U_I2S_BUFFER_WORDS);

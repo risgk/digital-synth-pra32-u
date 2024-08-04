@@ -473,6 +473,19 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
 
 
 INLINE void PRA32_U_ControlPanel_setup() {
+
+#if defined(PRA32_U_KEY_INPUT_PREV_KEY_PIN)
+  pinMode(PRA32_U_KEY_INPUT_PREV_KEY_PIN, PRA32_U_KEY_INPUT_PIN_MODE);
+#endif  // defined(PRA32_U_KEY_INPUT_PREV_KEY_PIN)
+
+#if defined(PRA32_U_KEY_INPUT_NEXT_KEY_PIN)
+  pinMode(PRA32_U_KEY_INPUT_NEXT_KEY_PIN, PRA32_U_KEY_INPUT_PIN_MODE);
+#endif  // defined(PRA32_U_KEY_INPUT_NEXT_KEY_PIN)
+
+#if defined(PRA32_U_KEY_INPUT_PLAY_KEY_PIN)
+  pinMode(PRA32_U_KEY_INPUT_PLAY_KEY_PIN, PRA32_U_KEY_INPUT_PIN_MODE);
+#endif  // defined(PRA32_U_KEY_INPUT_PLAY_KEY_PIN)
+
 #if defined(PRA32_U_USE_CONTROL_PANEL)
   PRA32_U_ControlPanel_update_page();
 
