@@ -27,8 +27,8 @@
     - Info: <https://www.arduino.cc/en/software>
 - Please install Arduino-Pico = **Raspberry Pi Pico/RP2040** (by Earle F. Philhower, III) core
     - Additional Board Manager URL: <https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json>
-    - This sketch is tested with version **3.7.2**: <https://github.com/earlephilhower/arduino-pico/releases/tag/3.7.2>
-        - Arduino-Pico version 3.7.2 includes Adafruit TinyUSB Library version 2.3.0
+    - This sketch is tested with version **3.9.4**: <https://github.com/earlephilhower/arduino-pico/releases/tag/3.9.4>
+        - Arduino-Pico version 3.9.4 includes Adafruit TinyUSB Library version 2.3.0
     - Info: <https://github.com/earlephilhower/arduino-pico>
 - Please install Arduino **MIDI Library** (by Francois Best, lathoub)
     - This sketch is tested with version **5.0.2**: <https://github.com/FortySevenEffects/arduino_midi_library/releases/tag/5.0.2>
@@ -258,7 +258,7 @@ graph LR
 ![PRA32-U with Panel, Prototype 1](./pra32-u-with-panel-prototype-1.jpg)
 
 - Uncomment out `//#define PRA32_U_USE_CONTROL_PANEL` in "Digital-Synth-PRA32-U.ino" and modify options
-- This option requires 3 tactile switches, 3 ADCs, and SSD1306 compatible monochrome 128x64 OLED Display
+- This option requires 3 tactile switches, 3 VRs (ADCs), and a monochrome 128x64 OLED Display based on SSD1306 series drivers
     - Tested with Pimoroni Pico Audio Pack, necobit電子 MIDI Unit for GROVE, Long Leg 2x20 Pin Socket * 2, Seeed Studio's Grove Shield for Pi Pico, Buttons, Rotary Angle Sensors, and a OLED Display 0.96 inch
 - Inputs
     - SW0: Prev Key
