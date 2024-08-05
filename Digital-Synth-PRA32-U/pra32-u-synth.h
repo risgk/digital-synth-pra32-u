@@ -914,6 +914,7 @@ public:
     }
 
 #if defined(ARDUINO_ARCH_RP2040)
+
 #if defined(PRA32_U_USE_EMULATED_EEPROM)
     for (uint32_t i = 0; i < sizeof(s_program_table_parameters) / sizeof(s_program_table_parameters[0]); ++i) {
       uint32_t control_number = s_program_table_parameters[i];
@@ -923,25 +924,28 @@ public:
     EEPROM.write(program_number_to_write * 128,     'U');
     EEPROM.write(program_number_to_write * 128 + 1, program_number_to_write);
 
-#if !defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
-    // To avoid noise, the data will not be written to the flash
-    // if PRA32_U_I2S_DAC_MUTE_OFF_PIN is not defined or PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S is defined
+#if defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+
+#else  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
 
 #if defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN)
     digitalWrite(PRA32_U_I2S_DAC_MUTE_OFF_PIN, LOW);
-#else  // defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN)
-    g_i2s_output.end();
 #endif  // defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN)
+
+    g_i2s_output.end();
 
     EEPROM.commit();
 
+    g_i2s_output.begin();
+
 #if defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN)
     digitalWrite(PRA32_U_I2S_DAC_MUTE_OFF_PIN, HIGH);
-#else  // defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN)
-    g_i2s_output.begin();
 #endif  // defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN)
-#endif
+
+#endif  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+
 #endif  // defined(PRA32_U_USE_EMULATED_EEPROM)
+
 #endif  // defined(ARDUINO_ARCH_RP2040)
   }
 

@@ -3,6 +3,7 @@
 - v2.4.0 (2024-**-**):
     - For safety, change the mode of the PWM audio output pins to OUTPUT_12MA
     - Add control panel option PRA32_U_KEY_INPUT_PIN_MODE (default: INPUT_PULLDOWN)
+    - Other changes
 - v2.3.1 (2024-04-21):
     - Abolish the option to write user programs to the flash when using PWM audio due to performance problem uncovered
     - Tested with Arduino-Pico version 3.7.2
