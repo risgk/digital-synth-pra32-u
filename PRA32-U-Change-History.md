@@ -1,7 +1,6 @@
 ## Digital Synth PRA32-U Change History
 
 - v2.4.0 (2024-**-**):
-    - Delete PRA32_U_I2S_DAC_MUTE_OFF_PIN
     - For safety, change the mode of the PWM audio output pins to OUTPUT_12MA
     - Add control panel option PRA32_U_KEY_INPUT_PIN_MODE (default: INPUT_PULLDOWN)
     - Other changes
