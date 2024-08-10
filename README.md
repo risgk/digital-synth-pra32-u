@@ -66,7 +66,7 @@
 
 #### I2S (Default)
 
-- Use an I2S DAC (e.g. Texas Instruments PCM5100A and Cirrus Logic CS4344), Sampling Rate: 48 kHz, Bit Depth: 16 bit
+- Use an I2S DAC (Texas Instruments PCM5100A, PCM5101A, or PCM5102A is recommended), Sampling Rate: 48 kHz, Bit Depth: 16 bit
 - NOTE: The RP2040 system clock (sysclk) changes to overclocked 147.6 MHz by I2S Audio Library setSysClk()
 - Modify `PRA32_U_I2S_DAC_MUTE_OFF_PIN`, `PRA32_U_I2S_DATA_PIN`, `PRA32_U_I2S_MCLK_PIN`, `PRA32_U_I2S_MCLK_MULT`,
   `PRA32_U_I2S_BCLK_PIN`, `PRA32_U_I2S_SWAP_BCLK_AND_LRCLK_PINS`, and `PRA32_U_I2S_SWAP_LEFT_AND_RIGHT`
