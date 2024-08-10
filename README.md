@@ -68,11 +68,12 @@
 
 - Use an I2S DAC (e.g. Texas Instruments PCM5100A and Cirrus Logic CS4344), Sampling Rate: 48 kHz, Bit Depth: 16 bit
 - NOTE: The RP2040 system clock (sysclk) changes to overclocked 147.6 MHz by I2S Audio Library setSysClk()
-- Modify `PRA32_U_I2S_DATA_PIN`, `PRA32_U_I2S_MCLK_PIN`, `PRA32_U_I2S_MCLK_MULT`,
+- Modify `PRA32_U_I2S_DAC_MUTE_OFF_PIN`, `PRA32_U_I2S_DATA_PIN`, `PRA32_U_I2S_MCLK_PIN`, `PRA32_U_I2S_MCLK_MULT`,
   `PRA32_U_I2S_BCLK_PIN`, `PRA32_U_I2S_SWAP_BCLK_AND_LRCLK_PINS`, and `PRA32_U_I2S_SWAP_LEFT_AND_RIGHT`
   in "Digital-Synth-PRA32-U.ino" to match the hardware configuration
 - The default setting is for Pimoroni [Pico Audio Pack](https://shop.pimoroni.com/products/pico-audio-pack) (PIM544)
 ```
+#define PRA32_U_I2S_DAC_MUTE_OFF_PIN          (22)
 #define PRA32_U_I2S_DATA_PIN                  (9)
 //#define PRA32_U_I2S_MCLK_PIN                  (0)
 //#define PRA32_U_I2S_MCLK_MULT                 (0)
@@ -82,6 +83,7 @@
 ```
 - The following is setting is for [Pimoroni Pico VGA Demo Base](https://shop.pimoroni.com/products/pimoroni-pico-vga-demo-base) (PIM553)
 ```
+//#define PRA32_U_I2S_DAC_MUTE_OFF_PIN          (0)
 #define PRA32_U_I2S_DATA_PIN                  (26)
 //#define PRA32_U_I2S_MCLK_PIN                  (0)
 //#define PRA32_U_I2S_MCLK_MULT                 (0)
@@ -91,6 +93,7 @@
 ```
 - The following is setting is for [Waveshare Pico-Audio](https://www.waveshare.com/wiki/Pico-Audio) Rev2.1 Version (WAVESHARE-20167)
 ```
+//#define PRA32_U_I2S_DAC_MUTE_OFF_PIN          (0)
 #define PRA32_U_I2S_DATA_PIN                  (22)
 #define PRA32_U_I2S_MCLK_PIN                  (26)
 #define PRA32_U_I2S_MCLK_MULT                 (256)
