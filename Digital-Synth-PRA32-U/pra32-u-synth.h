@@ -928,19 +928,11 @@ public:
 
 #else  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
 
-#if defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN)
-    digitalWrite(PRA32_U_I2S_DAC_MUTE_OFF_PIN, LOW);
-#endif  // defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN)
-
     g_i2s_output.end();
 
     EEPROM.commit();
 
     g_i2s_output.begin();
-
-#if defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN)
-    digitalWrite(PRA32_U_I2S_DAC_MUTE_OFF_PIN, HIGH);
-#endif  // defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN)
 
 #endif  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
 
