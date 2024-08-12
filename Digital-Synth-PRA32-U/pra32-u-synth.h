@@ -1101,6 +1101,17 @@ public:
 #endif  // defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
     }
 
+#if 1
+    // Increase the output level using Extra Amp and Limiter
+
+    // voice_mixer_output_clamped = clamp((voice_mixer_output << 1), (-INT16_MAX), (+INT16_MAX))
+    volatile int32_t voice_mixer_output_clamped = (voice_mixer_output * 2) - (+INT16_MAX);
+    voice_mixer_output_clamped = (voice_mixer_output_clamped < 0) * voice_mixer_output_clamped + (+INT16_MAX) - (-INT16_MAX);
+    voice_mixer_output_clamped = (voice_mixer_output_clamped > 0) * voice_mixer_output_clamped + (-INT16_MAX);
+
+    voice_mixer_output = voice_mixer_output_clamped;
+#endif
+
     int16_t chorus_fx_output_r;
     int16_t chorus_fx_output_l = m_chorus_fx.process(voice_mixer_output, chorus_fx_output_r);
 
