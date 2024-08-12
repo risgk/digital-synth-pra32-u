@@ -3,7 +3,7 @@
 - v2.4.0 (2024-**-**):
     - Increase the output level using Extra Amp and Limiter
     - For safety, change the mode of the PWM audio output pins to OUTPUT_12MA
-    - Add control panel option PRA32_U_KEY_INPUT_PIN_MODE (default: INPUT_PULLDOWN)
+    - Add PRA32-U with Panel option PRA32_U_KEY_INPUT_PIN_MODE (default: INPUT_PULLDOWN)
     - Other changes
 - v2.3.1 (2024-04-21):
     - Abolish the option to write user programs to the flash when using PWM audio due to performance problem uncovered
