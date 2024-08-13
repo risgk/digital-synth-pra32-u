@@ -8,9 +8,9 @@
 
 ![PRA32-U with Panel (Grove System)](./pra32-u-with-panel-grove-system.jpg)
 
-- Uncomment out `//#define PRA32_U_USE_CONTROL_PANEL` in "Digital-Synth-PRA32-U.ino" and modify options
-- This option requires 3 tactile switches, 3 VRs (ADCs), and a monochrome 128x64 OLED Display based on SSD1306 series drivers
-    - Tested with Pimoroni Pico Audio Pack, necobit電子 MIDI Unit for GROVE, Long Leg 2x20 Pin Socket * 2, Seeed Studio's Grove Shield for Pi Pico, Buttons, Rotary Angle Sensors, and a OLED Display 0.96 inch
+- This option requires 3 SWs (tactile switches), 3 VRs (ADCs), and a monochrome 128x64 OLED Display based on SSD1306 series drivers
+    - Tested with Pimoroni Pico Audio Pack, necobit電子 MIDI Unit for GROVE (optional), Long Leg 2x20 Pin Socket * 2, Seeed Studio's Grove Shield for Pi Pico, Buttons * 3, Rotary Angle Sensors * 3, and an OLED Display 0.96 inch
+- Uncomment out `//#define PRA32_U_USE_CONTROL_PANEL` in "Digital-Synth-PRA32-U.ino" and modify the constants
 - Inputs
     - SW0: Prev Key (to the previous page, long press to the previous group)
     - SW1: Next Key (to the next page, long press to the next group)
@@ -32,11 +32,19 @@
 - Other Operations
     - Write Program 8-15: Change the value from 0 [Rdy] to 127 [Exe]
     - Read Program 1-7, 8-15: Change the value from 0-63 [Rdy] to 64-127 [Exe]
+- KNOWN ISSUE: An OLED display refresh is slow when switching pages
 - NOTE: Specifications may change significantly in the future
 
 
-### Circuit Diagram (PRA32-U with Panel)
+### Circuit Diagram
 
 ![Circuit Diagram](./pra32-u-with-panel-circuit-diagram.png)
 
 - This image was created with Fritzing.
+
+### An Example of Construction by Bread Board
+
+- Tested with a bread board, GY-PCM5102 (PCM5102A I2S DAC Module), 3 SWs, 3 VRs, and a OLED Display
+    - An connection of RP2040's Mute Off Pin and XSMT is omitted
+
+![PRA32-U with Panel (Bread Board)](./pra32-u-with-panel-bread-board.jpg)
