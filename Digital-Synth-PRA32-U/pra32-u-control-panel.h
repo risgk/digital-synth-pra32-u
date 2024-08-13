@@ -475,9 +475,9 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
         std::strcpy(value_display_text, ary_chromatic[index]);
       } else if (index_scale == 2) {
        char ary_minor_pentatonic[53][5] =
-          { " C3", " C3", " C3", " C3", " C3", " D3", " D3", " D3", " D3", " D3", " F3", " F3", " F3", " F3", " G3",
+          { " C3", " C3", " C3", " C3", " C3", "D#3", "D#3", "D#3", "D#3", "D#3", " F3", " F3", " F3", " F3", " G3",
                                  " G3", " G3", " G3", " G3", "A#3", "A#3", "A#3", "A#3", "A#3", " C4", " C4", " C4",
-                                 " C4", " C4", " D4", " D4", " D4", " D4", " D4", " F4", " F4", " F4", " F4", " G4",
+                                 " C4", " C4", "D#4", "D#4", "D#4", "D#4", "D#4", " F4", " F4", " F4", " F4", " G4",
                                  " G4", " G4", " G4", " G4", "A#4", "A#4", "A#4", "A#4", "A#4", " C5", " C5", " C5", " C5", " C5" };
         uint32_t index = (((g_synth.current_controller_value(PANEL_PITCH) + 3) * 2) + 1) / 5;
         std::strcpy(value_display_text, ary_minor_pentatonic[index]);
