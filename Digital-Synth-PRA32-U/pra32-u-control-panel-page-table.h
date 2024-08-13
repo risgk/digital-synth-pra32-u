@@ -1,10 +1,10 @@
 #pragma once
 
 const uint8_t   PAGE_GROUP_DEFAULT   = 0;
-const uint8_t   PAGE_INDEX_DEFAULT_A = 7;
+const uint8_t   PAGE_INDEX_DEFAULT_A = 0;
 const uint8_t   PAGE_INDEX_DEFAULT_B = 0;
 const uint8_t   PAGE_INDEX_DEFAULT_C = 0;
-const uint8_t   PAGE_INDEX_DEFAULT_D = 4;
+const uint8_t   PAGE_INDEX_DEFAULT_D = 0;
 
 struct PRA32_U_ControlPanelPage {
   char    page_name_line_0            [10 + 1];
@@ -51,10 +51,10 @@ PRA32_U_ControlPanelPage g_control_panel_page_table_a[] = {
 };
 
 PRA32_U_ControlPanelPage g_control_panel_page_table_b[] = {
-  { "Page=B-00 ", "Panel a   ",   "Modulation", "          ", MODULATION     ,   "          ", "          ", 0xFF           ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
-  { "Page=B-01 ", "Panel b   ",   "Breath    ", "Controller", BTH_CONTROLLER ,   "Sustain   ", "Pedal     ", SUSTAIN_PEDAL  ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
-  { "Page=B-02 ", "Panel c   ",   "Panel     ", "Scale     ", PANEL_SCALE    ,   "Panel     ", "Transpose ", PANEL_TRANSPOSE,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
-  { "Page=B-03 ", "Panel d   ",   "Panel     ", "Velocity  ", PANEL_VELOCITY ,   "          ", "          ", 0xFF           ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=B-00 ", "Panel a   ",   "Panel     ", "Scale     ", PANEL_SCALE    ,   "Panel     ", "Transpose ", PANEL_TRANSPOSE,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=B-01 ", "Panel b   ",   "Panel     ", "Velocity  ", PANEL_VELOCITY ,   "          ", "          ", 0xFF           ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=B-02 ", "Control a ",   "Modulation", "          ", MODULATION     ,   "          ", "          ", 0xFF           ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=B-03 ", "Control b ",   "Breath    ", "Controller", BTH_CONTROLLER ,   "Sustain   ", "Pedal     ", SUSTAIN_PEDAL  ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
 };
 
 PRA32_U_ControlPanelPage g_control_panel_page_table_c[] = {
