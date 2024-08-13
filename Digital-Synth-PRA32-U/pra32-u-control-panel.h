@@ -122,40 +122,7 @@ static INLINE void PRA32_U_ControlPanel_update_pitch() {
 
   uint32_t index_scale = ((g_synth.current_controller_value(PANEL_SCALE) * 10) + 127) / 254;
 
-  if        (index_scale == 1) {
-    const uint8_t ary_chromatic[53] =
-      { 48, 48, 48, 48, 49, 49, 50, 50, 51, 51, 52, 52, 53, 53, 54,
-                    54, 55, 55, 56, 56, 57, 57, 58, 58, 59, 59, 60,
-                    60, 61, 61, 62, 62, 63, 63, 64, 64, 65, 65, 66,
-                    66, 67, 67, 68, 68, 69, 69, 70, 70, 71, 71, 72, 72, 72 };
-    uint32_t index_pitch = (((g_synth.current_controller_value(PANEL_PITCH) + 3) * 2) + 1) / 5;
-    new_note_number = ary_chromatic[index_pitch];
-  } else if (index_scale == 2) {
-    const uint8_t ary_minor_pentatonic[53] =
-      { 48, 48, 48, 48, 48, 51, 51, 51, 51, 51, 53, 53, 53, 53, 55,
-                    55, 55, 55, 55, 58, 58, 58, 58, 58, 60, 60, 60,
-                    60, 60, 63, 63, 63, 63, 63, 65, 65, 65, 65, 67,
-                    67, 67, 67, 67, 70, 70, 70, 70, 70, 72, 72, 72, 72, 72 };
-    uint32_t index_pitch = (((g_synth.current_controller_value(PANEL_PITCH) + 3) * 2) + 1) / 5;
-    new_note_number = ary_minor_pentatonic[index_pitch];
-  } else if (index_scale == 3) {
-    const uint8_t ary_pentatonic[53] =
-      { 48, 48, 48, 48, 48, 50, 50, 50, 50, 52, 52, 52, 52, 52, 55,
-                    55, 55, 55, 55, 57, 57, 57, 57, 57, 60, 60, 60,
-                    60, 60, 62, 62, 62, 62, 64, 64, 64, 64, 64, 67,
-                    67, 67, 67, 67, 69, 69, 69, 69, 69, 72, 72, 72, 72, 72 };
-
-    uint32_t index_pitch = (((g_synth.current_controller_value(PANEL_PITCH) + 3) * 2) + 1) / 5;
-    new_note_number = ary_pentatonic[index_pitch];
-  } else if (index_scale == 4) {
-    const uint8_t ary_minor[53] =
-      { 48, 48, 48, 48, 48, 50, 50, 50, 51, 51, 51, 53, 53, 53, 53,
-                    55, 55, 55, 56, 56, 56, 58, 58, 58, 58, 60, 60,
-                    60, 60, 62, 62, 62, 63, 63, 63, 65, 65, 65, 65,
-                    67, 67, 67, 68, 68, 68, 70, 70, 70, 70, 72, 72, 72, 72 };
-    uint32_t index_pitch = (((g_synth.current_controller_value(PANEL_PITCH) + 3) * 2) + 1) / 5;
-    new_note_number = ary_minor[index_pitch];
-  } else if (index_scale == 5) {
+  if        (index_scale == 0) {
     const uint8_t ary_major[53] =
       { 48, 48, 48, 48, 48, 50, 50, 50, 50, 52, 52, 52, 53, 53, 53,
                     55, 55, 55, 55, 57, 57, 57, 57, 59, 59, 59, 60,
@@ -163,6 +130,39 @@ static INLINE void PRA32_U_ControlPanel_update_pitch() {
                     67, 67, 67, 67, 69, 69, 69, 69, 71, 71, 71, 72, 72, 72 };
     uint32_t index_pitch = (((g_synth.current_controller_value(PANEL_PITCH) + 3) * 2) + 1) / 5;
     new_note_number = ary_major[index_pitch];
+  } else if (index_scale == 1) {
+    const uint8_t ary_minor[53] =
+      { 48, 48, 48, 48, 48, 50, 50, 50, 51, 51, 51, 53, 53, 53, 53,
+                    55, 55, 55, 56, 56, 56, 58, 58, 58, 58, 60, 60,
+                    60, 60, 62, 62, 62, 63, 63, 63, 65, 65, 65, 65,
+                    67, 67, 67, 68, 68, 68, 70, 70, 70, 70, 72, 72, 72, 72 };
+    uint32_t index_pitch = (((g_synth.current_controller_value(PANEL_PITCH) + 3) * 2) + 1) / 5;
+    new_note_number = ary_minor[index_pitch];
+  } else if (index_scale == 2) {
+    const uint8_t ary_major_pentatonic[53] =
+      { 48, 48, 48, 48, 48, 50, 50, 50, 50, 52, 52, 52, 52, 52, 55,
+                    55, 55, 55, 55, 57, 57, 57, 57, 57, 60, 60, 60,
+                    60, 60, 62, 62, 62, 62, 64, 64, 64, 64, 64, 67,
+                    67, 67, 67, 67, 69, 69, 69, 69, 69, 72, 72, 72, 72, 72 };
+
+    uint32_t index_pitch = (((g_synth.current_controller_value(PANEL_PITCH) + 3) * 2) + 1) / 5;
+    new_note_number = ary_major_pentatonic[index_pitch];
+  } else if (index_scale == 3) {
+    const uint8_t ary_minor_pentatonic[53] =
+      { 48, 48, 48, 48, 48, 51, 51, 51, 51, 51, 53, 53, 53, 53, 55,
+                    55, 55, 55, 55, 58, 58, 58, 58, 58, 60, 60, 60,
+                    60, 60, 63, 63, 63, 63, 63, 65, 65, 65, 65, 67,
+                    67, 67, 67, 67, 70, 70, 70, 70, 70, 72, 72, 72, 72, 72 };
+    uint32_t index_pitch = (((g_synth.current_controller_value(PANEL_PITCH) + 3) * 2) + 1) / 5;
+    new_note_number = ary_minor_pentatonic[index_pitch];
+  } else if (index_scale == 4) {
+    const uint8_t ary_chromatic[53] =
+      { 48, 48, 48, 48, 49, 49, 50, 50, 51, 51, 52, 52, 53, 53, 54,
+                    54, 55, 55, 56, 56, 57, 57, 58, 58, 59, 59, 60,
+                    60, 61, 61, 62, 62, 63, 63, 64, 64, 65, 65, 66,
+                    66, 67, 67, 68, 68, 69, 69, 70, 70, 71, 71, 72, 72, 72 };
+    uint32_t index_pitch = (((g_synth.current_controller_value(PANEL_PITCH) + 3) * 2) + 1) / 5;
+    new_note_number = ary_chromatic[index_pitch];
   }
 
   new_note_number += g_synth.current_controller_value(PANEL_TRANSPOSE) - 64;
@@ -465,7 +465,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     {
       uint32_t index_scale = ((g_synth.current_controller_value(PANEL_SCALE) * 10) + 127) / 254;
 
-      if        (index_scale == 0) {
+      if        (index_scale == 5) {
         char ary[12][5] = { " C", "C#", " D", "D#", " E", " F", "F#", " G", "G#", " A", "A#", " B" };
 
         uint32_t quotient  = controller_value / 12;
@@ -479,39 +479,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
         } else {
           value_display_text[2] = '0' + quotient - 1;
         }
-      } else if (index_scale == 1) {
-       char ary_chromatic[53][5] =
-          { " C3", " C3", " C3", " C3", "C#3", "C#3", " D3", " D3", "D#3", "D#3", " E3", " E3", " F3", " F3", "F#3",
-                                 "F#3", " G3", " G3", "G#3", "G#3", " A3", " A3", "A#3", "A#3", " B3", " B3", " C4",
-                                 " C4", "C#4", "C#4", " D4", " D4", "D#4", "D#4", " E4", " E4", " F4", " F4", "F#4",
-                                 "F#4", " G4", " G4", "G#4", "G#4", " A4", " A4", "A#4", "A#4", " B4", " B4", " C5", " C5", " C5" };
-        uint32_t index = (((g_synth.current_controller_value(PANEL_PITCH) + 3) * 2) + 1) / 5;
-        std::strcpy(value_display_text, ary_chromatic[index]);
-      } else if (index_scale == 2) {
-       char ary_minor_pentatonic[53][5] =
-          { " C3", " C3", " C3", " C3", " C3", "D#3", "D#3", "D#3", "D#3", "D#3", " F3", " F3", " F3", " F3", " G3",
-                                 " G3", " G3", " G3", " G3", "A#3", "A#3", "A#3", "A#3", "A#3", " C4", " C4", " C4",
-                                 " C4", " C4", "D#4", "D#4", "D#4", "D#4", "D#4", " F4", " F4", " F4", " F4", " G4",
-                                 " G4", " G4", " G4", " G4", "A#4", "A#4", "A#4", "A#4", "A#4", " C5", " C5", " C5", " C5", " C5" };
-        uint32_t index = (((g_synth.current_controller_value(PANEL_PITCH) + 3) * 2) + 1) / 5;
-        std::strcpy(value_display_text, ary_minor_pentatonic[index]);
-      } else if (index_scale == 3) {
-       char ary_pentatonic[53][5] =
-          { " C3", " C3", " C3", " C3", " C3", " D3", " D3", " D3", " D3", " E3", " E3", " E3", " E3", " E3", " G3",
-                                 " G3", " G3", " G3", " G3", " A3", " A3", " A3", " A3", " A3", " C4", " C4", " C4",
-                                 " C4", " C4", " D4", " D4", " D4", " D4", " E4", " E4", " E4", " E4", " E4", " G4",
-                                 " G4", " G4", " G4", " G4", " A4", " A4", " A4", " A4", " A4", " C4", " C5", " C5", " C5", " C5" };
-        uint32_t index = (((g_synth.current_controller_value(PANEL_PITCH) + 3) * 2) + 1) / 5;
-        std::strcpy(value_display_text, ary_pentatonic[index]);
-      } else if (index_scale == 4) {
-       char ary_minor[53][5] =
-          { " C3", " C3", " C3", " C3", " C3", " D3", " D3", " D3", "D#3", "D#3", "D#3", " F3", " F3", " F3", " F3",
-                                 " G3", " G3", " G3", "G#3", "G#3", "G#3", "A#3", "A#3", "A#3", "A#3", " C4", " C4",
-                                 " C4", " C4", " D4", " D4", " D4", "D#4", "D#4", "D#4", " F4", " F4", " F4", " F4",
-                                 " G4", " G4", " G4", "G#4", "G#4", "G#4", "A#4", "A#4", "A#4", "A#4", " C4", " C5", " C5", " C5" };
-        uint32_t index = (((g_synth.current_controller_value(PANEL_PITCH) + 3) * 2) + 1) / 5;
-        std::strcpy(value_display_text, ary_minor[index]);
-      } else if (index_scale == 5) {
+      } else if (index_scale == 0) {
        char ary_major[53][5] =
           { " C3", " C3", " C3", " C3", " C3", " D3", " D3", " D3", " D3", " E3", " E3", " E3", " F3", " F3", " F3",
                                  " G3", " G3", " G3", " G3", " A3", " A3", " A3", " A3", " B3", " B3", " B3", " C4",
@@ -519,6 +487,38 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
                                  " G4", " G4", " G4", " G4", " A4", " A4", " A4", " A4", " B4", " B4", " B4", " C5", " C5", " C5" };
         uint32_t index = (((g_synth.current_controller_value(PANEL_PITCH) + 3) * 2) + 1) / 5;
         std::strcpy(value_display_text, ary_major[index]);
+      } else if (index_scale == 1) {
+       char ary_minor[53][5] =
+          { " C3", " C3", " C3", " C3", " C3", " D3", " D3", " D3", "D#3", "D#3", "D#3", " F3", " F3", " F3", " F3",
+                                 " G3", " G3", " G3", "G#3", "G#3", "G#3", "A#3", "A#3", "A#3", "A#3", " C4", " C4",
+                                 " C4", " C4", " D4", " D4", " D4", "D#4", "D#4", "D#4", " F4", " F4", " F4", " F4",
+                                 " G4", " G4", " G4", "G#4", "G#4", "G#4", "A#4", "A#4", "A#4", "A#4", " C4", " C5", " C5", " C5" };
+        uint32_t index = (((g_synth.current_controller_value(PANEL_PITCH) + 3) * 2) + 1) / 5;
+        std::strcpy(value_display_text, ary_minor[index]);
+      } else if (index_scale == 2) {
+       char ary_major_pentatonic[53][5] =
+          { " C3", " C3", " C3", " C3", " C3", " D3", " D3", " D3", " D3", " E3", " E3", " E3", " E3", " E3", " G3",
+                                 " G3", " G3", " G3", " G3", " A3", " A3", " A3", " A3", " A3", " C4", " C4", " C4",
+                                 " C4", " C4", " D4", " D4", " D4", " D4", " E4", " E4", " E4", " E4", " E4", " G4",
+                                 " G4", " G4", " G4", " G4", " A4", " A4", " A4", " A4", " A4", " C4", " C5", " C5", " C5", " C5" };
+        uint32_t index = (((g_synth.current_controller_value(PANEL_PITCH) + 3) * 2) + 1) / 5;
+        std::strcpy(value_display_text, ary_major_pentatonic[index]);
+      } else if (index_scale == 3) {
+       char ary_minor_pentatonic[53][5] =
+          { " C3", " C3", " C3", " C3", " C3", "D#3", "D#3", "D#3", "D#3", "D#3", " F3", " F3", " F3", " F3", " G3",
+                                 " G3", " G3", " G3", " G3", "A#3", "A#3", "A#3", "A#3", "A#3", " C4", " C4", " C4",
+                                 " C4", " C4", "D#4", "D#4", "D#4", "D#4", "D#4", " F4", " F4", " F4", " F4", " G4",
+                                 " G4", " G4", " G4", " G4", "A#4", "A#4", "A#4", "A#4", "A#4", " C5", " C5", " C5", " C5", " C5" };
+        uint32_t index = (((g_synth.current_controller_value(PANEL_PITCH) + 3) * 2) + 1) / 5;
+        std::strcpy(value_display_text, ary_minor_pentatonic[index]);
+      } else if (index_scale == 4) {
+       char ary_chromatic[53][5] =
+          { " C3", " C3", " C3", " C3", "C#3", "C#3", " D3", " D3", "D#3", "D#3", " E3", " E3", " F3", " F3", "F#3",
+                                 "F#3", " G3", " G3", "G#3", "G#3", " A3", " A3", "A#3", "A#3", " B3", " B3", " C4",
+                                 " C4", "C#4", "C#4", " D4", " D4", "D#4", "D#4", " E4", " E4", " F4", " F4", "F#4",
+                                 "F#4", " G4", " G4", "G#4", "G#4", " A4", " A4", "A#4", "A#4", " B4", " B4", " C5", " C5", " C5" };
+        uint32_t index = (((g_synth.current_controller_value(PANEL_PITCH) + 3) * 2) + 1) / 5;
+        std::strcpy(value_display_text, ary_chromatic[index]);
       }
 
       result = true;
@@ -526,7 +526,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     break;
   case  PANEL_SCALE    :
     {
-      char ary[6][5] = {"Ful","Chr","MiP","MaP","Min","Maj"};
+      char ary[6][5] = {"Maj","Min","MaP","MiP","Chr","Ful"};
       uint32_t index = ((controller_value * 10) + 127) / 254;
       std::strcpy(value_display_text, ary[index]);
       result = true;

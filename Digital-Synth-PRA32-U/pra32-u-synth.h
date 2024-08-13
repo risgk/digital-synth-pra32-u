@@ -275,7 +275,7 @@ public:
 
 
     m_program_table_panel[PANEL_PITCH    ] = 64 ;
-    m_program_table_panel[PANEL_SCALE    ] = 127;
+    m_program_table_panel[PANEL_SCALE    ] = 0  ;
     m_program_table_panel[PANEL_TRANSPOSE] = 64 ;
     m_program_table_panel[PANEL_VELOCITY ] = 100;
 
