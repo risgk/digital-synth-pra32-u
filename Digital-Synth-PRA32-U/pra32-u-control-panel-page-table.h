@@ -62,6 +62,7 @@ PRA32_U_ControlPanelPage g_control_panel_page_table_c[] = {
   { "Page=C-01 ", "Write b   ",   "Write     ", "Program 10", WR_BY_PANEL_10 ,   "Write     ", "Program 11", WR_BY_PANEL_11 ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
   { "Page=C-02 ", "Write c   ",   "Write     ", "Program 12", WR_BY_PANEL_12 ,   "Write     ", "Program 13", WR_BY_PANEL_13 ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
   { "Page=C-03 ", "Write d   ",   "Write     ", "Program 14", WR_BY_PANEL_14 ,   "Write     ", "Program 15", WR_BY_PANEL_15 ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=C-04 ", "Write e   ",   "Write     ", "Panel     ", WR_PANEL_PRMS  ,   "          ", "          ", 0xFF           ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
 };
 
 PRA32_U_ControlPanelPage g_control_panel_page_table_d[] = {
@@ -73,6 +74,7 @@ PRA32_U_ControlPanelPage g_control_panel_page_table_d[] = {
   { "Page=D-05 ", "Read f    ",   "Read      ", "Program 10", PC_BY_PANEL_10 ,   "Read      ", "Program 11", PC_BY_PANEL_11 ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
   { "Page=D-06 ", "Read g    ",   "Read      ", "Program 12", PC_BY_PANEL_12 ,   "Read      ", "Program 13", PC_BY_PANEL_13 ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
   { "Page=D-07 ", "Read h    ",   "Read      ", "Program 14", PC_BY_PANEL_14 ,   "Read      ", "Program 15", PC_BY_PANEL_15 ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=D-08 ", "Read i    ",   "Read      ", "Panel     ", RD_PANEL_PRMS  ,   "          ", "          ", 0xFF           ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
 };
 
 PRA32_U_ControlPanelPage* g_control_panel_page_table[] = {

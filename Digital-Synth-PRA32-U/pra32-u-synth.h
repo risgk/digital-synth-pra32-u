@@ -922,6 +922,12 @@ public:
 
   /* INLINE */ void program_change(uint8_t program_number) {
     if (program_number > PROGRAM_NUMBER_MAX) {
+      if (program_number == 128) {
+        for (uint32_t i = 0; i < sizeof(s_program_table_panel_parameters) / sizeof(s_program_table_panel_parameters[0]); ++i) {
+          uint32_t control_number = s_program_table_panel_parameters[i];
+          control_change(control_number, m_program_table_panel[control_number - 128]);
+        }
+      }
       return;
     }
 

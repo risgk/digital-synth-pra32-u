@@ -235,6 +235,19 @@ static INLINE boolean PRA32_U_ControlPanel_update_control_adc(uint32_t adc_numbe
         g_synth.write_parameters_to_program(program_number_to_write);
         s_ready_to_write[program_number_to_write] = false;
       }
+    } else if (s_adc_control_target[adc_number] == RD_PANEL_PRMS) {
+      if ((s_adc_control_value_old < 64) && (s_adc_control_value[adc_number] >= 64)) {
+        g_synth.program_change(128);
+      }
+    } else if (s_adc_control_target[adc_number] == WR_PANEL_PRMS) {
+      static boolean s_ready_to_write = false;
+
+      if (s_adc_control_value[adc_number] == 0) {
+        s_ready_to_write = true;
+      } else if (s_ready_to_write && (s_adc_control_value[adc_number] == 127)) {
+        g_synth.write_parameters_to_program(128);
+        s_ready_to_write = false;
+      }
     }
 
     return true;
@@ -399,6 +412,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
   case  PC_BY_PANEL_13 :
   case  PC_BY_PANEL_14 :
   case  PC_BY_PANEL_15 :
+  case  RD_PANEL_PRMS  :
     {
       if        (controller_value < 64) {
         value_display_text[0] = 'R';
@@ -429,6 +443,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
   case  WR_BY_PANEL_13 :
   case  WR_BY_PANEL_14 :
   case  WR_BY_PANEL_15 :
+  case  WR_PANEL_PRMS  :
     {
       if        (controller_value == 0) {
         value_display_text[0] = 'R';
