@@ -42,9 +42,9 @@
 
 - This image was created with Fritzing.
 
-### An Example of Construction by Bread Board
+### An Example of Construction by a Breadboard
 
-- Tested with a bread board, GY-PCM5102 (PCM5102A I2S DAC Module), 3 SWs, 3 VRs, and a OLED Display
+- Tested with a breadboard, GY-PCM5102 (PCM5102A I2S DAC Module), 3 SWs, 3 VRs, and a OLED Display
     - An connection between RP2040's Mute Off Pin and GY-PCM5102's XSMT is omitted
 
-![PRA32-U with Panel (Bread Board)](./pra32-u-with-panel-bread-board.jpg)
+![PRA32-U with Panel (Bread Board)](./pra32-u-with-panel-breadboard.jpg)
