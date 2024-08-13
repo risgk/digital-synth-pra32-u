@@ -11,9 +11,8 @@
 
 
 
-#define NUMBER_OF_PAGES (sizeof(g_control_panel_page_table) / sizeof(g_control_panel_page_table[0]))
-
-static volatile uint32_t s_current_page_index = PAGE_INDEX_DEFAULT;
+static volatile uint32_t s_current_page_group   = PAGE_GROUP_DEFAULT;
+static volatile uint32_t s_current_page_index[] = { PAGE_INDEX_DEFAULT_A, PAGE_INDEX_DEFAULT_B };
 
 static volatile int32_t  s_adc_current_value[3];
 static volatile uint8_t  s_adc_control_value[3];
@@ -46,7 +45,7 @@ static char s_display_buffer[8][21 + 1] = {
 
 
 static INLINE void PRA32_U_ControlPanel_update_page() {
-  PRA32_U_ControlPanelPage& current_page = g_control_panel_page_table[s_current_page_index];
+  PRA32_U_ControlPanelPage& current_page = g_control_panel_page_table[s_current_page_group][s_current_page_index[s_current_page_group]];
 
   std::memset(&s_display_buffer[3], ' ', 21);
   std::memset(&s_display_buffer[7], ' ', 21);
@@ -697,10 +696,10 @@ INLINE void PRA32_U_ControlPanel_update_control() {
 
       if (s_prev_key_current_value == 0) {
         // Prev key released
-        if (s_current_page_index == 0) {
-          s_current_page_index = NUMBER_OF_PAGES - 1;
+        if (s_current_page_index[s_current_page_group] == 0) {
+          s_current_page_index[s_current_page_group] = g_number_of_pages[s_current_page_group] - 1;
         } else {
-          --s_current_page_index;
+          --s_current_page_index[s_current_page_group];
         }
 
         PRA32_U_ControlPanel_update_page();
@@ -723,10 +722,10 @@ INLINE void PRA32_U_ControlPanel_update_control() {
 
       if (s_next_key_current_value == 0) {
         // Next key released
-        if (s_current_page_index == NUMBER_OF_PAGES - 1) {
-          s_current_page_index = 0;
+        if (s_current_page_index[s_current_page_group] == g_number_of_pages[s_current_page_group] - 1) {
+          s_current_page_index[s_current_page_group] = 0;
         } else {
-          ++s_current_page_index;
+          ++s_current_page_index[s_current_page_group];
         }
 
         PRA32_U_ControlPanel_update_page();
