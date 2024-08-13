@@ -219,14 +219,14 @@ static INLINE boolean PRA32_U_ControlPanel_update_control_adc(uint32_t adc_numbe
       if (s_adc_control_catched[adc_number]) {
         g_synth.control_change(s_adc_control_target[adc_number], s_adc_control_value[adc_number]);
       }
-    } else if ((s_adc_control_target[adc_number] >= PC_BY_PANEL_0) && (s_adc_control_target[adc_number] <= PC_BY_PANEL_15)) {
+    } else if ((s_adc_control_target[adc_number] >= RD_PROGRAM_0) && (s_adc_control_target[adc_number] <= RD_PROGRAM_15)) {
       if ((s_adc_control_value_old < 64) && (s_adc_control_value[adc_number] >= 64)) {
-        g_synth.program_change(s_adc_control_target[adc_number] - PC_BY_PANEL_0);
+        g_synth.program_change(s_adc_control_target[adc_number] - RD_PROGRAM_0);
       }
-    } else if ((s_adc_control_target[adc_number] >= WR_BY_PANEL_0) && (s_adc_control_target[adc_number] <= WR_BY_PANEL_15)) {
+    } else if ((s_adc_control_target[adc_number] >= WR_PROGRAM_0) && (s_adc_control_target[adc_number] <= WR_PROGRAM_15)) {
       static boolean s_ready_to_write[PROGRAM_NUMBER_MAX + 1] = {};
 
-      uint8_t program_number_to_write = s_adc_control_target[adc_number] - WR_BY_PANEL_0;
+      uint8_t program_number_to_write = s_adc_control_target[adc_number] - WR_PROGRAM_0;
 
       if (s_adc_control_value[adc_number] == 0) {
         s_ready_to_write[program_number_to_write] = true;
@@ -395,22 +395,22 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
       result = true;
     }
     break;
-  case  PC_BY_PANEL_0  :
-  case  PC_BY_PANEL_1  :
-  case  PC_BY_PANEL_2  :
-  case  PC_BY_PANEL_3  :
-  case  PC_BY_PANEL_4  :
-  case  PC_BY_PANEL_5  :
-  case  PC_BY_PANEL_6  :
-  case  PC_BY_PANEL_7  :
-  case  PC_BY_PANEL_8  :
-  case  PC_BY_PANEL_9  :
-  case  PC_BY_PANEL_10 :
-  case  PC_BY_PANEL_11 :
-  case  PC_BY_PANEL_12 :
-  case  PC_BY_PANEL_13 :
-  case  PC_BY_PANEL_14 :
-  case  PC_BY_PANEL_15 :
+  case  RD_PROGRAM_0   :
+  case  RD_PROGRAM_1   :
+  case  RD_PROGRAM_2   :
+  case  RD_PROGRAM_3   :
+  case  RD_PROGRAM_4   :
+  case  RD_PROGRAM_5   :
+  case  RD_PROGRAM_6   :
+  case  RD_PROGRAM_7   :
+  case  RD_PROGRAM_8   :
+  case  RD_PROGRAM_9   :
+  case  RD_PROGRAM_10  :
+  case  RD_PROGRAM_11  :
+  case  RD_PROGRAM_12  :
+  case  RD_PROGRAM_13  :
+  case  RD_PROGRAM_14  :
+  case  RD_PROGRAM_15  :
   case  RD_PANEL_PRMS  :
     {
       if        (controller_value < 64) {
@@ -426,22 +426,22 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
       result = true;
     }
     break;
-  case  WR_BY_PANEL_0  :
-  case  WR_BY_PANEL_1  :
-  case  WR_BY_PANEL_2  :
-  case  WR_BY_PANEL_3  :
-  case  WR_BY_PANEL_4  :
-  case  WR_BY_PANEL_5  :
-  case  WR_BY_PANEL_6  :
-  case  WR_BY_PANEL_7  :
-  case  WR_BY_PANEL_8  :
-  case  WR_BY_PANEL_9  :
-  case  WR_BY_PANEL_10 :
-  case  WR_BY_PANEL_11 :
-  case  WR_BY_PANEL_12 :
-  case  WR_BY_PANEL_13 :
-  case  WR_BY_PANEL_14 :
-  case  WR_BY_PANEL_15 :
+  case  WR_PROGRAM_0   :
+  case  WR_PROGRAM_1   :
+  case  WR_PROGRAM_2   :
+  case  WR_PROGRAM_3   :
+  case  WR_PROGRAM_4   :
+  case  WR_PROGRAM_5   :
+  case  WR_PROGRAM_6   :
+  case  WR_PROGRAM_7   :
+  case  WR_PROGRAM_8   :
+  case  WR_PROGRAM_9   :
+  case  WR_PROGRAM_10  :
+  case  WR_PROGRAM_11  :
+  case  WR_PROGRAM_12  :
+  case  WR_PROGRAM_13  :
+  case  WR_PROGRAM_14  :
+  case  WR_PROGRAM_15  :
   case  WR_PANEL_PRMS  :
     {
       if        (controller_value == 0) {

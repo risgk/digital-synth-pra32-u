@@ -58,22 +58,22 @@ PRA32_U_ControlPanelPage g_control_panel_page_table_b[] = {
 };
 
 PRA32_U_ControlPanelPage g_control_panel_page_table_c[] = {
-  { "Page=C-00 ", "Write a   ",   "Write     ", "Program  8", WR_BY_PANEL_8  ,   "Write     ", "Program  9", WR_BY_PANEL_9  ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
-  { "Page=C-01 ", "Write b   ",   "Write     ", "Program 10", WR_BY_PANEL_10 ,   "Write     ", "Program 11", WR_BY_PANEL_11 ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
-  { "Page=C-02 ", "Write c   ",   "Write     ", "Program 12", WR_BY_PANEL_12 ,   "Write     ", "Program 13", WR_BY_PANEL_13 ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
-  { "Page=C-03 ", "Write d   ",   "Write     ", "Program 14", WR_BY_PANEL_14 ,   "Write     ", "Program 15", WR_BY_PANEL_15 ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=C-00 ", "Write a   ",   "Write     ", "Program  8", WR_PROGRAM_8   ,   "Write     ", "Program  9", WR_PROGRAM_9   ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=C-01 ", "Write b   ",   "Write     ", "Program 10", WR_PROGRAM_10  ,   "Write     ", "Program 11", WR_PROGRAM_11  ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=C-02 ", "Write c   ",   "Write     ", "Program 12", WR_PROGRAM_12  ,   "Write     ", "Program 13", WR_PROGRAM_13  ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=C-03 ", "Write d   ",   "Write     ", "Program 14", WR_PROGRAM_14  ,   "Write     ", "Program 15", WR_PROGRAM_15  ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
   { "Page=C-04 ", "Write e   ",   "Write     ", "Panel Prms", WR_PANEL_PRMS  ,   "          ", "          ", 0xFF           ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
 };
 
 PRA32_U_ControlPanelPage g_control_panel_page_table_d[] = {
-  { "Page=D-00 ", "Read a    ",   "Read      ", "Program  0", PC_BY_PANEL_0  ,   "Read      ", "Program  1", PC_BY_PANEL_1  ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
-  { "Page=D-01 ", "Read b    ",   "Read      ", "Program  2", PC_BY_PANEL_2  ,   "Read      ", "Program  3", PC_BY_PANEL_3  ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
-  { "Page=D-02 ", "Read c    ",   "Read      ", "Program  4", PC_BY_PANEL_4  ,   "Read      ", "Program  5", PC_BY_PANEL_5  ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
-  { "Page=D-03 ", "Read d    ",   "Read      ", "Program  6", PC_BY_PANEL_6  ,   "Read      ", "Program  7", PC_BY_PANEL_7  ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
-  { "Page=D-04 ", "Read e    ",   "Read      ", "Program  8", PC_BY_PANEL_8  ,   "Read      ", "Program  9", PC_BY_PANEL_9  ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
-  { "Page=D-05 ", "Read f    ",   "Read      ", "Program 10", PC_BY_PANEL_10 ,   "Read      ", "Program 11", PC_BY_PANEL_11 ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
-  { "Page=D-06 ", "Read g    ",   "Read      ", "Program 12", PC_BY_PANEL_12 ,   "Read      ", "Program 13", PC_BY_PANEL_13 ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
-  { "Page=D-07 ", "Read h    ",   "Read      ", "Program 14", PC_BY_PANEL_14 ,   "Read      ", "Program 15", PC_BY_PANEL_15 ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=D-00 ", "Read a    ",   "Read      ", "Program  0", RD_PROGRAM_0   ,   "Read      ", "Program  1", RD_PROGRAM_1   ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=D-01 ", "Read b    ",   "Read      ", "Program  2", RD_PROGRAM_2   ,   "Read      ", "Program  3", RD_PROGRAM_3   ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=D-02 ", "Read c    ",   "Read      ", "Program  4", RD_PROGRAM_4   ,   "Read      ", "Program  5", RD_PROGRAM_5   ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=D-03 ", "Read d    ",   "Read      ", "Program  6", RD_PROGRAM_6   ,   "Read      ", "Program  7", RD_PROGRAM_7   ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=D-04 ", "Read e    ",   "Read      ", "Program  8", RD_PROGRAM_8   ,   "Read      ", "Program  9", RD_PROGRAM_9   ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=D-05 ", "Read f    ",   "Read      ", "Program 10", RD_PROGRAM_10  ,   "Read      ", "Program 11", RD_PROGRAM_11  ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=D-06 ", "Read g    ",   "Read      ", "Program 12", RD_PROGRAM_12  ,   "Read      ", "Program 13", RD_PROGRAM_13  ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=D-07 ", "Read h    ",   "Read      ", "Program 14", RD_PROGRAM_14  ,   "Read      ", "Program 15", RD_PROGRAM_15  ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
   { "Page=D-08 ", "Read i    ",   "Read      ", "Panel Prms", RD_PANEL_PRMS  ,   "          ", "          ", 0xFF           ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
 };
 
