@@ -12,7 +12,7 @@
 
 
 static volatile uint32_t s_current_page_group   = PAGE_GROUP_DEFAULT;
-static volatile uint32_t s_current_page_index[] = { PAGE_INDEX_DEFAULT_A, PAGE_INDEX_DEFAULT_B };
+static volatile uint32_t s_current_page_index[] = { PAGE_INDEX_DEFAULT_A, PAGE_INDEX_DEFAULT_B, PAGE_INDEX_DEFAULT_C, PAGE_INDEX_DEFAULT_D };
 
 static volatile int32_t  s_adc_current_value[3];
 static volatile uint8_t  s_adc_control_value[3];
@@ -722,7 +722,13 @@ INLINE void PRA32_U_ControlPanel_update_control() {
       if (s_prev_key_long_preesed == false) {
         if (s_key_inpuy_counter - s_prev_key_value_changed_time >= PRA32_U_KEY_LONG_PRESS_WAIT) {
           s_prev_key_long_preesed = true;
-          s_current_page_group = 0;
+
+          if (s_current_page_group == 0) {
+            s_current_page_group = NUMBER_OF_PAGE_GROUPS - 1;
+          } else {
+            --s_current_page_group;
+          }
+
           PRA32_U_ControlPanel_update_page();
           return;
         }
@@ -759,7 +765,13 @@ INLINE void PRA32_U_ControlPanel_update_control() {
       if (s_next_key_long_preesed == false) {
         if (s_key_inpuy_counter - s_next_key_value_changed_time >= PRA32_U_KEY_LONG_PRESS_WAIT) {
           s_next_key_long_preesed = true;
-          s_current_page_group = 1;
+
+          if (s_current_page_group == NUMBER_OF_PAGE_GROUPS - 1) {
+            s_current_page_group = 0;
+          } else {
+            ++s_current_page_group;
+          }
+
           PRA32_U_ControlPanel_update_page();
           return;
         }

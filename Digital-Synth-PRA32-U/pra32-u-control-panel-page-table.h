@@ -44,6 +44,8 @@ const uint8_t   WR_BY_PANEL_15  = 128 + 95;
 const uint8_t   PAGE_GROUP_DEFAULT   = 0;
 const uint8_t   PAGE_INDEX_DEFAULT_A = 7;
 const uint8_t   PAGE_INDEX_DEFAULT_B = 0;
+const uint8_t   PAGE_INDEX_DEFAULT_C = 4;
+const uint8_t   PAGE_INDEX_DEFAULT_D = 0;
 
 struct PRA32_U_ControlPanelPage {
   char    page_name_line_0            [10 + 1];
@@ -94,26 +96,38 @@ PRA32_U_ControlPanelPage g_control_panel_page_table_b[] = {
   { "Page=B01  ", "Panel b   ",   "Breath    ", "Controller", BTH_CONTROLLER ,   "Sustain   ", "Pedal     ", SUSTAIN_PEDAL  ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
   { "Page=B02  ", "Panel c   ",   "Panel     ", "Scale     ", PANEL_SCALE    ,   "Panel     ", "Transpose ", PANEL_TRANSPOSE,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
   { "Page=B03  ", "Panel b   ",   "Panel     ", "Velocity  ", PANEL_VELOCITY ,   "          ", "          ", 0xFF           ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
-  { "Page=B04  ", "Read a    ",   "Read      ", "Program  0", PC_BY_PANEL_0  ,   "Read      ", "Program  1", PC_BY_PANEL_1  ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
-  { "Page=B05  ", "Read b    ",   "Read      ", "Program  2", PC_BY_PANEL_2  ,   "Read      ", "Program  3", PC_BY_PANEL_3  ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
-  { "Page=B06  ", "Read c    ",   "Read      ", "Program  4", PC_BY_PANEL_4  ,   "Read      ", "Program  5", PC_BY_PANEL_5  ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
-  { "Page=B07  ", "Read d    ",   "Read      ", "Program  6", PC_BY_PANEL_6  ,   "Read      ", "Program  7", PC_BY_PANEL_7  ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
-  { "Page=B08  ", "Read e    ",   "Read      ", "Program  8", PC_BY_PANEL_8  ,   "Read      ", "Program  9", PC_BY_PANEL_9  ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
-  { "Page=B09  ", "Read f    ",   "Read      ", "Program 10", PC_BY_PANEL_10 ,   "Read      ", "Program 11", PC_BY_PANEL_11 ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
-  { "Page=B10  ", "Read g    ",   "Read      ", "Program 12", PC_BY_PANEL_12 ,   "Read      ", "Program 13", PC_BY_PANEL_13 ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
-  { "Page=B11  ", "Read h    ",   "Read      ", "Program 14", PC_BY_PANEL_14 ,   "Read      ", "Program 15", PC_BY_PANEL_15 ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
-  { "Page=B12  ", "Write a   ",   "Write     ", "Program  8", WR_BY_PANEL_8  ,   "Write     ", "Program  9", WR_BY_PANEL_9  ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
-  { "Page=B13  ", "Write b   ",   "Write     ", "Program 10", WR_BY_PANEL_10 ,   "Write     ", "Program 11", WR_BY_PANEL_11 ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
-  { "Page=B14  ", "Write c   ",   "Write     ", "Program 12", WR_BY_PANEL_12 ,   "Write     ", "Program 13", WR_BY_PANEL_13 ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
-  { "Page=B15  ", "Write d   ",   "Write     ", "Program 14", WR_BY_PANEL_14 ,   "Write     ", "Program 15", WR_BY_PANEL_15 ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
 };
 
-PRA32_U_ControlPanelPage* g_control_panel_page_table[2] = {
+PRA32_U_ControlPanelPage g_control_panel_page_table_c[] = {
+  { "Page=C00  ", "Read a    ",   "Read      ", "Program  0", PC_BY_PANEL_0  ,   "Read      ", "Program  1", PC_BY_PANEL_1  ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=C01  ", "Read b    ",   "Read      ", "Program  2", PC_BY_PANEL_2  ,   "Read      ", "Program  3", PC_BY_PANEL_3  ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=C02  ", "Read c    ",   "Read      ", "Program  4", PC_BY_PANEL_4  ,   "Read      ", "Program  5", PC_BY_PANEL_5  ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=C03  ", "Read d    ",   "Read      ", "Program  6", PC_BY_PANEL_6  ,   "Read      ", "Program  7", PC_BY_PANEL_7  ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=C04  ", "Read e    ",   "Read      ", "Program  8", PC_BY_PANEL_8  ,   "Read      ", "Program  9", PC_BY_PANEL_9  ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=C05  ", "Read f    ",   "Read      ", "Program 10", PC_BY_PANEL_10 ,   "Read      ", "Program 11", PC_BY_PANEL_11 ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=C06  ", "Read g    ",   "Read      ", "Program 12", PC_BY_PANEL_12 ,   "Read      ", "Program 13", PC_BY_PANEL_13 ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=C07  ", "Read h    ",   "Read      ", "Program 14", PC_BY_PANEL_14 ,   "Read      ", "Program 15", PC_BY_PANEL_15 ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+};
+
+PRA32_U_ControlPanelPage g_control_panel_page_table_d[] = {
+  { "Page=D00  ", "Write a   ",   "Write     ", "Program  8", WR_BY_PANEL_8  ,   "Write     ", "Program  9", WR_BY_PANEL_9  ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=D01  ", "Write b   ",   "Write     ", "Program 10", WR_BY_PANEL_10 ,   "Write     ", "Program 11", WR_BY_PANEL_11 ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=D02  ", "Write c   ",   "Write     ", "Program 12", WR_BY_PANEL_12 ,   "Write     ", "Program 13", WR_BY_PANEL_13 ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=D03  ", "Write d   ",   "Write     ", "Program 14", WR_BY_PANEL_14 ,   "Write     ", "Program 15", WR_BY_PANEL_15 ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+};
+
+PRA32_U_ControlPanelPage* g_control_panel_page_table[] = {
     g_control_panel_page_table_a,
     g_control_panel_page_table_b,
+    g_control_panel_page_table_c,
+    g_control_panel_page_table_d,
 };
 
-uint32_t g_number_of_pages[2] = {
+uint32_t g_number_of_pages[] = {
     (sizeof(g_control_panel_page_table_a) / sizeof(g_control_panel_page_table_a[0])),
     (sizeof(g_control_panel_page_table_b) / sizeof(g_control_panel_page_table_b[0])),
+    (sizeof(g_control_panel_page_table_c) / sizeof(g_control_panel_page_table_c[0])),
+    (sizeof(g_control_panel_page_table_d) / sizeof(g_control_panel_page_table_d[0])),
 };
+
+#define NUMBER_OF_PAGE_GROUPS (sizeof(g_control_panel_page_table) / sizeof(g_control_panel_page_table[0]))

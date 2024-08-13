@@ -261,8 +261,8 @@ graph LR
 - This option requires 3 tactile switches, 3 VRs (ADCs), and a monochrome 128x64 OLED Display based on SSD1306 series drivers
     - Tested with Pimoroni Pico Audio Pack, necobit電子 MIDI Unit for GROVE, Long Leg 2x20 Pin Socket * 2, Seeed Studio's Grove Shield for Pi Pico, Buttons, Rotary Angle Sensors, and a OLED Display 0.96 inch
 - Inputs
-    - SW0: Prev Key
-    - SW1: Next Key
+    - SW0: Prev Key (to the previous page, long press to the previous group)
+    - SW1: Next Key (to the next page, long press to the next group)
     - SW2: Play Key (play notes)
     - VR0 (ADC0): Parameter A
     - VR1 (ADC1): Parameter B
