@@ -51,6 +51,7 @@
 #define PRA32_U_KEY_INPUT_NEXT_KEY_PIN          (18)
 #define PRA32_U_KEY_INPUT_PLAY_KEY_PIN          (20)
 #define PRA32_U_KEY_ANTI_CHATTERING_WAIT        (15)
+#define PRA32_U_KEY_LONG_PRESS_WAIT             (375)
 
 #define PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT  // Use ADC0, ADC1, and ADC2
 #define PRA32_U_ANALOG_INPUT_REVERSED           (true)
