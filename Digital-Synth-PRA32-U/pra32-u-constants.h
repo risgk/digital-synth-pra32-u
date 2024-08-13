@@ -156,3 +156,45 @@ const uint8_t   VOICE_POLYPHONIC   = 25;
 const uint8_t   VOICE_MONOPHONIC   = 75;
 const uint8_t   VOICE_LEGATO       = 100;
 const uint8_t   VOICE_LEGATO_PORTA = 127;
+
+
+const uint8_t   PANEL_PITCH     = 128 + 0;
+const uint8_t   PANEL_SCALE     = 128 + 1;
+const uint8_t   PANEL_TRANSPOSE = 128 + 2;
+const uint8_t   PANEL_VELOCITY  = 128 + 3;
+
+const uint8_t   PC_BY_PANEL_0   = 128 + 64;
+const uint8_t   PC_BY_PANEL_1   = 128 + 65;
+const uint8_t   PC_BY_PANEL_2   = 128 + 66;
+const uint8_t   PC_BY_PANEL_3   = 128 + 67;
+const uint8_t   PC_BY_PANEL_4   = 128 + 68;
+const uint8_t   PC_BY_PANEL_5   = 128 + 69;
+const uint8_t   PC_BY_PANEL_6   = 128 + 70;
+const uint8_t   PC_BY_PANEL_7   = 128 + 71;
+
+const uint8_t   PC_BY_PANEL_8   = 128 + 72;
+const uint8_t   PC_BY_PANEL_9   = 128 + 73;
+const uint8_t   PC_BY_PANEL_10  = 128 + 74;
+const uint8_t   PC_BY_PANEL_11  = 128 + 75;
+const uint8_t   PC_BY_PANEL_12  = 128 + 76;
+const uint8_t   PC_BY_PANEL_13  = 128 + 77;
+const uint8_t   PC_BY_PANEL_14  = 128 + 78;
+const uint8_t   PC_BY_PANEL_15  = 128 + 79;
+
+const uint8_t   WR_BY_PANEL_0   = 128 + 80;
+const uint8_t   WR_BY_PANEL_1   = 128 + 81;
+const uint8_t   WR_BY_PANEL_2   = 128 + 82;
+const uint8_t   WR_BY_PANEL_3   = 128 + 83;
+const uint8_t   WR_BY_PANEL_4   = 128 + 84;
+const uint8_t   WR_BY_PANEL_5   = 128 + 85;
+const uint8_t   WR_BY_PANEL_6   = 128 + 86;
+const uint8_t   WR_BY_PANEL_7   = 128 + 87;
+
+const uint8_t   WR_BY_PANEL_8   = 128 + 88;
+const uint8_t   WR_BY_PANEL_9   = 128 + 89;
+const uint8_t   WR_BY_PANEL_10  = 128 + 90;
+const uint8_t   WR_BY_PANEL_11  = 128 + 91;
+const uint8_t   WR_BY_PANEL_12  = 128 + 92;
+const uint8_t   WR_BY_PANEL_13  = 128 + 93;
+const uint8_t   WR_BY_PANEL_14  = 128 + 94;
+const uint8_t   WR_BY_PANEL_15  = 128 + 95;

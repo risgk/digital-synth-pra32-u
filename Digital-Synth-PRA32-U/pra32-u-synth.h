@@ -20,7 +20,7 @@ extern I2S g_i2s_output;
 #include <algorithm>
 #include <cstring>
 
-static const uint8_t s_program_table_parameters[] = {
+static uint8_t s_program_table_parameters[] = {
   OSC_1_WAVE     ,
   OSC_1_SHAPE    ,
   OSC_1_MORPH    ,
@@ -82,6 +82,13 @@ static const uint8_t s_program_table_parameters[] = {
 
 };
 
+static uint8_t s_program_table_panel_parameters[] = {
+  PANEL_PITCH    ,
+  PANEL_SCALE    ,
+  PANEL_TRANSPOSE,
+  PANEL_VELOCITY ,
+};
+
 class PRA32_U_Synth {
   PRA32_U_Osc       m_osc;
   PRA32_U_Filter    m_filter[4];
@@ -127,6 +134,7 @@ class PRA32_U_Synth {
   uint8_t           m_sp_prog_chg_cc_values[8];
   uint8_t           m_current_controller_value_table[128 + 128];
   uint8_t           m_program_table[128][PROGRAM_NUMBER_MAX + 1];
+  uint8_t           m_program_table_panel[128];
 
   volatile int32_t  m_secondary_core_processing_argument;
   volatile uint32_t m_secondary_core_processing_request;
@@ -179,6 +187,7 @@ public:
   , m_sp_prog_chg_cc_values()
   , m_current_controller_value_table()
   , m_program_table()
+  , m_program_table_panel()
 
   , m_secondary_core_processing_argument()
   , m_secondary_core_processing_request()
@@ -205,9 +214,6 @@ public:
   }
 
   INLINE void initialize() {
-    std::memset(m_current_controller_value_table, sizeof(m_current_controller_value_table), 255);
-    std::memset(m_program_table, sizeof(m_program_table), 255);
-
     std::memcpy(m_program_table[OSC_1_WAVE     ], g_preset_table_OSC_1_WAVE     , sizeof(m_program_table[0]));
     std::memcpy(m_program_table[OSC_1_SHAPE    ], g_preset_table_OSC_1_SHAPE    , sizeof(m_program_table[0]));
     std::memcpy(m_program_table[OSC_1_MORPH    ], g_preset_table_OSC_1_MORPH    , sizeof(m_program_table[0]));
@@ -268,6 +274,11 @@ public:
     std::memcpy(m_program_table[DELAY_MODE     ], g_preset_table_DELAY_MODE     , sizeof(m_program_table[0]));
 
 
+    m_program_table_panel[PANEL_PITCH     - 128] = 64 ;
+    m_program_table_panel[PANEL_SCALE     - 128] = 127;
+    m_program_table_panel[PANEL_TRANSPOSE - 128] = 64 ;
+    m_program_table_panel[PANEL_VELOCITY  - 128] = 100;
+
 #if defined(ARDUINO_ARCH_RP2040)
 #if defined(PRA32_U_USE_EMULATED_EEPROM)
     EEPROM.begin(2048);
@@ -281,11 +292,28 @@ public:
         }
       }
     }
+
+#if defined(PRA32_U_USE_CONTROL_PANEL)
+    if ((EEPROM.read(0) == 'P') && (EEPROM.read(1) == 0)) {
+      for (uint32_t i = 0; i < sizeof(s_program_table_panel_parameters) / sizeof(s_program_table_panel_parameters[0]); ++i) {
+        uint32_t control_number = s_program_table_panel_parameters[i];
+        m_program_table_panel[control_number - 128] = std::min<uint8_t>(127, EEPROM.read(control_number - 128));
+      }
+    }
+#endif  // defined(PRA32_U_USE_CONTROL_PANEL)
+
 #endif  // !defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
 #endif  // defined(PRA32_U_USE_EMULATED_EEPROM)
 #endif  // defined(ARDUINO_ARCH_RP2040)
 
     program_change(PROGRAM_NUMBER_DEFAULT);
+
+#if defined(PRA32_U_USE_CONTROL_PANEL)
+    for (uint32_t i = 0; i < sizeof(s_program_table_panel_parameters) / sizeof(s_program_table_panel_parameters[0]); ++i) {
+      uint32_t control_number = s_program_table_panel_parameters[i];
+      control_change(control_number, m_program_table_panel[control_number - 128]);
+    }
+#endif  // defined(PRA32_U_USE_CONTROL_PANEL)
   }
 
   INLINE uint8_t current_controller_value(uint8_t control_number) {
@@ -904,25 +932,50 @@ public:
   }
 
   /* INLINE */ void write_parameters_to_program(uint8_t program_number_to_write) {
-    if (program_number_to_write < (PRESET_PROGRAM_NUMBER_MAX + 1)) {
+    if (program_number_to_write <= PRESET_PROGRAM_NUMBER_MAX) {
       return;
     }
 
-    for (uint32_t i = 0; i < sizeof(s_program_table_parameters) / sizeof(s_program_table_parameters[0]); ++i) {
-      uint32_t control_number = s_program_table_parameters[i];
-      m_program_table[control_number][program_number_to_write] = m_current_controller_value_table[control_number];
+    if (program_number_to_write <= PROGRAM_NUMBER_MAX) {
+      for (uint32_t i = 0; i < sizeof(s_program_table_parameters) / sizeof(s_program_table_parameters[0]); ++i) {
+        uint32_t control_number = s_program_table_parameters[i];
+        m_program_table[control_number][program_number_to_write] = m_current_controller_value_table[control_number];
+      }
     }
+
+#if defined(PRA32_U_USE_CONTROL_PANEL)
+    if (program_number_to_write == 128) {
+      for (uint32_t i = 0; i < sizeof(s_program_table_panel_parameters) / sizeof(s_program_table_panel_parameters[0]); ++i) {
+        uint32_t control_number = s_program_table_panel_parameters[i];
+        m_program_table_panel[control_number - 128] = m_current_controller_value_table[control_number];
+      }
+    }
+#endif  // defined(PRA32_U_USE_CONTROL_PANEL)
 
 #if defined(ARDUINO_ARCH_RP2040)
 
 #if defined(PRA32_U_USE_EMULATED_EEPROM)
-    for (uint32_t i = 0; i < sizeof(s_program_table_parameters) / sizeof(s_program_table_parameters[0]); ++i) {
-      uint32_t control_number = s_program_table_parameters[i];
-      EEPROM.write(program_number_to_write * 128 + control_number, m_current_controller_value_table[control_number]);
+    if (program_number_to_write <= PROGRAM_NUMBER_MAX) {
+      for (uint32_t i = 0; i < sizeof(s_program_table_parameters) / sizeof(s_program_table_parameters[0]); ++i) {
+        uint32_t control_number = s_program_table_parameters[i];
+        EEPROM.write(program_number_to_write * 128 + control_number, m_current_controller_value_table[control_number]);
+      }
+
+      EEPROM.write(program_number_to_write * 128,     'U');
+      EEPROM.write(program_number_to_write * 128 + 1, program_number_to_write);
     }
 
-    EEPROM.write(program_number_to_write * 128,     'U');
-    EEPROM.write(program_number_to_write * 128 + 1, program_number_to_write);
+#if defined(PRA32_U_USE_CONTROL_PANEL)
+    if (program_number_to_write == 128) {
+      for (uint32_t i = 0; i < sizeof(s_program_table_panel_parameters) / sizeof(s_program_table_panel_parameters[0]); ++i) {
+        uint32_t control_number = s_program_table_panel_parameters[i];
+        EEPROM.write(control_number - 128, m_program_table_panel[control_number - 128]);
+      }
+
+      EEPROM.write(0, 'P');
+      EEPROM.write(1, 0);
+    }
+#endif  // defined(PRA32_U_USE_CONTROL_PANEL)
 
 #if defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
 

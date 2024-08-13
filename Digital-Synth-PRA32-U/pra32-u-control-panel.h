@@ -586,12 +586,6 @@ INLINE void PRA32_U_ControlPanel_setup() {
 }
 
 INLINE void PRA32_U_ControlPanel_initialize_parameters() {
-#if defined(PRA32_U_USE_CONTROL_PANEL)
-  g_synth.control_change(PANEL_PITCH     , 64 );
-  g_synth.control_change(PANEL_SCALE     , 127);
-  g_synth.control_change(PANEL_TRANSPOSE , 64 );
-  g_synth.control_change(PANEL_VELOCITY  , 100);
-#endif  // defined(PRA32_U_USE_CONTROL_PANEL)
 }
 
 INLINE void PRA32_U_ControlPanel_update_analog_inputs(uint32_t loop_counter) {
