@@ -20,7 +20,7 @@
     - VR2 (ADC2): Parameter C
 - Panel Parameters
     - Panel Pitch
-    - Panel Scale [Ful|Chr|mi5|Ma5|min|Maj]
+    - Panel Scale [Ful|Chr|MiP|MaP|Min|Maj]
         - Full = Chromatic, 10 + 7/12 octaves
         - Chromatic, 2 octaves
         - Minor Pentatonic, 2 octaves

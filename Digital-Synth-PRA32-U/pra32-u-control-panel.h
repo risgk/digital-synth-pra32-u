@@ -512,7 +512,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     break;
   case  PANEL_SCALE    :
     {
-      char ary[6][5] = {"Ful","Chr","mi5","Ma5","min","Maj"};
+      char ary[6][5] = {"Ful","Chr","MiP","MaP","Min","Maj"};
       uint32_t index = ((controller_value * 10) + 127) / 254;
       std::strcpy(value_display_text, ary[index]);
       result = true;
