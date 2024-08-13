@@ -269,9 +269,12 @@ graph LR
     - VR2 (ADC2): Parameter C
 - Panel Parameters
     - Panel Pitch
-    - Panel Scale [Ful|Pen|Maj]
+    - Panel Scale [Ful|Chr|mi5|Ma5|min|Maj]
         - Full = Chromatic, 10 + 7/12 octaves
+        - Chromatic, 2 octaves
+        - Minor Pentatonic, 2 octaves
         - Major Pentatonic, 2 octaves
+        - Minor, 2 octaves
         - Major, 2 octaves
     - Panel Transpose [-|+]
     - Panel Velocity
