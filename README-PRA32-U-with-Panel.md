@@ -42,6 +42,7 @@
 
 - This image was created with Fritzing.
 
+
 ### An Example of Construction by a Breadboard
 
 - Tested with a breadboard, GY-PCM5102 (PCM5102A I2S DAC Module), 3 SWs, 3 VRs, and a OLED Display
