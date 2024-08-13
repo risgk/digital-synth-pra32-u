@@ -6,6 +6,7 @@
     - Update the option PRA32-U with Panel to Prototype 2 (experimental)
         - Change the page structure (Add page groups)
         - Add Minor, Minor Pentatonic, and Chromatic (2 octaves) to Panel Scale
+        - Add the functions "Read Panel Prms" and "Write Panel Prms"
         - Add the option PRA32_U_KEY_INPUT_PIN_MODE (default: INPUT_PULLDOWN)
     - Other changes
 - v2.3.1 (2024-04-21):
