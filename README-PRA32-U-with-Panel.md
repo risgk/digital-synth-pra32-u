@@ -1,12 +1,12 @@
-# PRA32-U with Panel
+# PRA32-U with Panel (Experimental) (Optional)
 
 - 2024-04-21 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
 
 
-## PRA32-U with Panel, Prototype 1 (Experimental) (Optional)
+## PRA32-U with Panel, Prototype 2
 
-![PRA32-U with Panel, Prototype 1](./pra32-u-with-panel-prototype-1.jpg)
+![PRA32-U with Panel (Grove System)](./pra32-u-with-panel-grove-system.jpg)
 
 - Uncomment out `//#define PRA32_U_USE_CONTROL_PANEL` in "Digital-Synth-PRA32-U.ino" and modify options
 - This option requires 3 tactile switches, 3 VRs (ADCs), and a monochrome 128x64 OLED Display based on SSD1306 series drivers
