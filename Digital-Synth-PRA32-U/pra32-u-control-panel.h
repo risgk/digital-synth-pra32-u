@@ -214,7 +214,6 @@ static INLINE boolean PRA32_U_ControlPanel_update_control_adc(uint32_t adc_numbe
         (s_adc_control_target[adc_number] == PANEL_TRANSPOSE)) {
       if (s_adc_control_catched[adc_number]) {
         g_synth.control_change(s_adc_control_target[adc_number], s_adc_control_value[adc_number]);
-        PRA32_U_ControlPanel_update_pitch();
       }
     } else if (s_adc_control_target[adc_number] < 128 + 64) {
       if (s_adc_control_catched[adc_number]) {
@@ -1012,6 +1011,12 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
 
   if (s_adc_control_target[2] == control_number) {
     s_adc_control_catched[2] = false;
+  }
+
+  if ((control_number == PANEL_PITCH) ||
+      (control_number == PANEL_SCALE) ||
+      (control_number == PANEL_TRANSPOSE)) {
+    PRA32_U_ControlPanel_update_pitch();
   }
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
 }
