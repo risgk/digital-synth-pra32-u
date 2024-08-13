@@ -84,9 +84,33 @@ static uint8_t s_program_table_parameters[] = {
 
 static uint8_t s_program_table_panel_parameters[] = {
   PANEL_PITCH    ,
+
   PANEL_SCALE    ,
   PANEL_TRANSPOSE,
   PANEL_VELOCITY ,
+  PANEL_PLAY_MODE,
+
+  SEQ_PITCH_0    ,
+  SEQ_PITCH_1    ,
+  SEQ_PITCH_2    ,
+  SEQ_PITCH_3    ,
+
+  SEQ_PITCH_4    ,
+  SEQ_PITCH_5    ,
+  SEQ_PITCH_6    ,
+  SEQ_PITCH_7    ,
+
+  SEQ_VELO_0     ,
+  SEQ_VELO_1     ,
+  SEQ_VELO_2     ,
+  SEQ_VELO_3     ,
+
+  SEQ_VELO_4     ,
+  SEQ_VELO_5     ,
+  SEQ_VELO_6     ,
+  SEQ_VELO_7     ,
+
+  SEQ_TEMPO      ,
 };
 
 class PRA32_U_Synth {
@@ -275,9 +299,33 @@ public:
 
 
     m_program_table_panel[PANEL_PITCH    ] = 64 ;
+
     m_program_table_panel[PANEL_SCALE    ] = 0  ;
     m_program_table_panel[PANEL_TRANSPOSE] = 64 ;
     m_program_table_panel[PANEL_VELOCITY ] = 100;
+    m_program_table_panel[PANEL_PLAY_MODE] = 0  ;
+
+    m_program_table_panel[SEQ_PITCH_0    ] = 0  ;
+    m_program_table_panel[SEQ_PITCH_1    ] = 0  ;
+    m_program_table_panel[SEQ_PITCH_2    ] = 0  ;
+    m_program_table_panel[SEQ_PITCH_3    ] = 0  ;
+
+    m_program_table_panel[SEQ_PITCH_4    ] = 0  ;
+    m_program_table_panel[SEQ_PITCH_5    ] = 0  ;
+    m_program_table_panel[SEQ_PITCH_6    ] = 0  ;
+    m_program_table_panel[SEQ_PITCH_7    ] = 0  ;
+
+    m_program_table_panel[SEQ_VELO_0     ] = 0  ;
+    m_program_table_panel[SEQ_VELO_1     ] = 0  ;
+    m_program_table_panel[SEQ_VELO_2     ] = 0  ;
+    m_program_table_panel[SEQ_VELO_3     ] = 0  ;
+
+    m_program_table_panel[SEQ_VELO_4     ] = 0  ;
+    m_program_table_panel[SEQ_VELO_5     ] = 0  ;
+    m_program_table_panel[SEQ_VELO_6     ] = 0  ;
+    m_program_table_panel[SEQ_VELO_7     ] = 0  ;
+
+    m_program_table_panel[SEQ_TEMPO      ] = 64 ;
 
 #if defined(ARDUINO_ARCH_RP2040)
 #if defined(PRA32_U_USE_EMULATED_EEPROM)
@@ -288,7 +336,10 @@ public:
       if ((EEPROM.read(program_number * 128) == 'U') && (EEPROM.read(program_number * 128 + 1) == program_number)) {
         for (uint32_t i = 0; i < sizeof(s_program_table_parameters) / sizeof(s_program_table_parameters[0]); ++i) {
           uint32_t control_number = s_program_table_parameters[i];
-          m_program_table[control_number][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + control_number));
+          uint8_t value_read = EEPROM.read(program_number * 128 + control_number);
+          if (value_read < 128) {
+            m_program_table[control_number][program_number] = value_read;
+          }
         }
       }
     }
@@ -297,7 +348,10 @@ public:
     if ((EEPROM.read(0) == 'P') && (EEPROM.read(1) == 0)) {
       for (uint32_t i = 0; i < sizeof(s_program_table_panel_parameters) / sizeof(s_program_table_panel_parameters[0]); ++i) {
         uint32_t control_number = s_program_table_panel_parameters[i];
-        m_program_table_panel[control_number] = std::min<uint8_t>(127, EEPROM.read(control_number));
+        uint8_t value_read = EEPROM.read(control_number);
+        if (value_read < 128) {
+          m_program_table_panel[control_number] = value_read;
+        }
       }
     }
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL)
