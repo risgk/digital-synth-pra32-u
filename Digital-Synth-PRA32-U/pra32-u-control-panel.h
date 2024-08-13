@@ -25,6 +25,16 @@ static          uint32_t s_next_key_current_value;
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL)
 static          uint32_t s_play_key_current_value;
 
+static          uint8_t  s_play_mode;
+
+enum PlayingStatus {
+  PlayingStatus_Stop = 0,
+  PlayingStatus_Playing,
+  PlayingStatus_Seq,
+};
+
+static          uint32_t s_playing_status = PlayingStatus_Stop;
+
 static volatile uint8_t  s_panel_play_note_number     = 60;
 static volatile uint8_t  s_panel_playing_note_number  = 0xFF;
 static volatile uint8_t  s_reserved_note_off          = 0xFF;
@@ -178,7 +188,7 @@ static INLINE void PRA32_U_ControlPanel_update_pitch() {
     panel_play_note_number_changed = true;
   }
 
-  if (s_play_key_current_value == 1) {
+  if ((s_playing_status == PlayingStatus_Playing) || (s_playing_status == PlayingStatus_Seq)) {
     if (panel_play_note_number_changed) {
       s_reserved_note_off = s_panel_playing_note_number;
       s_reserved_note_on = s_panel_play_note_number;
@@ -532,6 +542,15 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
       result = true;
     }
     break;
+  case PANEL_PLAY_MODE :
+    {
+      char ary[2][5] = {"Nrm","Seq"};
+      uint32_t index = ((controller_value * 2) + 127) / 254;
+      if (controller_value < 2) { index = controller_value; }
+      std::strcpy(value_display_text, ary[index]);
+      result = true;
+    }
+    break;
   }
 
   return result;
@@ -796,12 +815,28 @@ INLINE void PRA32_U_ControlPanel_update_control() {
       s_play_key_current_value = value;
       s_play_key_value_changed_time = s_key_inpuy_counter;
 
+      uint8_t play_mode = g_synth.current_controller_value(PANEL_PLAY_MODE);
+
       if (s_play_key_current_value == 1) {
         // Play key pressed
-        s_reserved_note_on = s_panel_play_note_number;
+        if (play_mode < 64) { // Normal Mode
+          s_playing_status = PlayingStatus_Playing;
+          s_reserved_note_on = s_panel_play_note_number;
+        }
       } else {
         // Play key released
-        s_reserved_note_off = s_panel_playing_note_number;
+        if (play_mode < 64) { // Normal Mode
+          s_playing_status = PlayingStatus_Stop;
+          s_reserved_note_off = s_panel_playing_note_number;
+        } else {  // Seq Mode
+          if (s_playing_status == PlayingStatus_Stop) {
+            s_playing_status == PlayingStatus_Seq;
+            s_reserved_note_off = s_panel_playing_note_number;
+          } else {
+            s_playing_status = PlayingStatus_Stop;
+            s_reserved_note_off = s_panel_playing_note_number;
+          }
+        }
       }
 
       PRA32_U_ControlPanel_process_reserved_note_off_on();
@@ -1018,6 +1053,20 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
       (control_number == PANEL_TRANSPOSE)) {
     PRA32_U_ControlPanel_update_pitch();
   }
+
+  if (control_number == PANEL_PLAY_MODE) {
+    uint8_t play_mode_cc_value = g_synth.current_controller_value(PANEL_PLAY_MODE);
+    uint8_t new_play_mode = (play_mode_cc_value >= 64);
+
+    if (s_play_mode != new_play_mode) {
+      s_play_mode = new_play_mode;
+
+      s_playing_status = PlayingStatus_Stop;
+      s_reserved_note_off = s_panel_playing_note_number;
+      PRA32_U_ControlPanel_process_reserved_note_off_on();
+    }
+  }
+
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
 }
 
