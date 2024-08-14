@@ -66,7 +66,9 @@ static char s_display_buffer[8][21 + 1] = {
 static INLINE uint32_t PRA32_U_ControlPanel_calc_bpm(uint8_t tempo_control_value) {
   uint32_t bpm = tempo_control_value + 56;
 
-  if (bpm < 60) {
+  if (bpm == 56) {
+    bpm = 0;
+  } else if (bpm < 60) {
     bpm = 60;
   }
 
