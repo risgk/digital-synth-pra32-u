@@ -43,11 +43,11 @@ static          uint32_t s_seq_sub_step        = 23;
 static          uint32_t s_seq_count           = 0;
 static          uint32_t s_seq_count_increment = 0;
 
-static volatile uint8_t  s_panel_play_note_number     = 60;
-static volatile uint8_t  s_panel_playing_note_number  = 0xFF;
-static volatile uint8_t  s_reserved_note_off          = 0xFF;
-static volatile uint8_t  s_reserved_note_on           = 0xFF;
-static volatile uint8_t  s_reserved_note_on_velocity  = 127;
+static volatile uint8_t  s_panel_play_note_number      = 0xFF;
+static volatile uint8_t  s_panel_playing_note_number   = 0xFF;
+static volatile uint8_t  s_reserved_note_off           = 0xFF;
+static volatile uint8_t  s_reserved_note_on            = 0xFF;
+static volatile uint8_t  s_panel_play_note_on_velocity = 127;
 
 static volatile uint32_t s_display_draw_counter = 0;
 
@@ -137,7 +137,7 @@ static INLINE uint8_t PRA32_U_ControlPanel_adc_control_value_candidate(uint32_t 
 
 static INLINE boolean PRA32_U_ControlPanel_process_reserved_note_off_on() {
   if (s_reserved_note_on <= 127) {
-    g_synth.note_on(s_reserved_note_on, s_reserved_note_on_velocity);
+    g_synth.note_on(s_reserved_note_on, s_panel_play_note_on_velocity);
     s_panel_playing_note_number = s_reserved_note_on;
     s_reserved_note_on = 0xFF;
     return true;
@@ -224,6 +224,8 @@ static INLINE void PRA32_U_ControlPanel_update_pitch(bool progress_seq_step) {
     new_pitch = 127;
   }
 
+  s_panel_play_note_on_velocity = new_velocity;
+
   bool panel_play_note_number_changed = false;
 
   if (s_panel_play_note_number != new_pitch) {
@@ -235,7 +237,6 @@ static INLINE void PRA32_U_ControlPanel_update_pitch(bool progress_seq_step) {
       ((s_playing_status == PlayingStatus_Seq) && progress_seq_step)) {
     s_reserved_note_off = s_panel_playing_note_number;
     s_reserved_note_on = s_panel_play_note_number;
-    s_reserved_note_on_velocity = new_velocity;
   }
 }
 
@@ -295,13 +296,7 @@ static INLINE boolean PRA32_U_ControlPanel_update_control_adc(uint32_t adc_numbe
       s_adc_control_catched[adc_number] = true;
     }
 
-    if ((s_adc_control_target[adc_number] == PANEL_PLAY_PIT ) ||
-        (s_adc_control_target[adc_number] == PANEL_SCALE    ) ||
-        (s_adc_control_target[adc_number] == PANEL_TRANSPOSE)) {
-      if (s_adc_control_catched[adc_number]) {
-        g_synth.control_change(s_adc_control_target[adc_number], s_adc_control_value[adc_number]);
-      }
-    } else if (s_adc_control_target[adc_number] < 128 + 64) {
+    if (s_adc_control_target[adc_number] < 128 + 64) {
       if (s_adc_control_catched[adc_number]) {
         g_synth.control_change(s_adc_control_target[adc_number], s_adc_control_value[adc_number]);
       }
@@ -1133,6 +1128,7 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
   }
 
   if ((control_number == PANEL_PLAY_PIT ) ||
+      (control_number == PANEL_PLAY_VELO) ||
       (control_number == PANEL_SCALE    ) ||
       (control_number == PANEL_TRANSPOSE)) {
     PRA32_U_ControlPanel_update_pitch(false);
@@ -1145,6 +1141,7 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
 
       s_playing_status = PlayingStatus_Stop;
       s_reserved_note_off = s_panel_playing_note_number;
+      s_panel_play_note_number = 0xFF;
 
       PRA32_U_ControlPanel_update_pitch(false);
       PRA32_U_ControlPanel_update_page();
