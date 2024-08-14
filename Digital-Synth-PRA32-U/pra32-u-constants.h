@@ -158,12 +158,13 @@ const uint8_t   VOICE_LEGATO       = 100;
 const uint8_t   VOICE_LEGATO_PORTA = 127;
 
 
-const uint8_t   PANEL_PITCH     = 128 + 4;
-
 const uint8_t   PANEL_SCALE     = 128 + 8;
 const uint8_t   PANEL_TRANSPOSE = 128 + 9;
-const uint8_t   PANEL_VELOCITY  = 128 + 10;
-const uint8_t   PANEL_PLAY_MODE = 128 + 11;
+const uint8_t   PANEL_PLAY_MODE = 128 + 10;
+const uint8_t   PANEL_MIDI_RX   = 128 + 11;
+
+const uint8_t   PANEL_PLAY_PIT  = 128 + 12;
+const uint8_t   PANEL_PLAY_VELO = 128 + 13;
 
 const uint8_t   SEQ_PITCH_0     = 128 + 16;
 const uint8_t   SEQ_PITCH_1     = 128 + 17;
@@ -206,8 +207,9 @@ const uint8_t   SEQ_VELO_14     = 128 + 46;
 const uint8_t   SEQ_VELO_15     = 128 + 47;
 
 const uint8_t   SEQ_TEMPO       = 128 + 48;
-const uint8_t   SEQ_ACTIV_STEP  = 128 + 49;
-const uint8_t   SEQ_TRANSPOSE   = 128 + 50;
+const uint8_t   SEQ_GATE_TIME   = 128 + 49;
+
+const uint8_t   SEQ_TRANSPOSE   = 128 + 54;
 
 const uint8_t   RD_PROGRAM_0    = 128 + 64;
 const uint8_t   RD_PROGRAM_1    = 128 + 65;
@@ -250,5 +252,6 @@ const uint8_t   WR_PROGRAM_14   = 128 + 94;
 const uint8_t   WR_PROGRAM_15   = 128 + 95;
 
 const uint8_t   RD_PANEL_PRMS   = 128 + 96;
+const uint8_t   IN_PANEL_PRMS   = 128 + 97;
 
 const uint8_t   WR_PANEL_PRMS   = 128 + 100;

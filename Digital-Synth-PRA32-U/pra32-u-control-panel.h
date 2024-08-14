@@ -160,8 +160,8 @@ static INLINE void PRA32_U_ControlPanel_update_pitch(bool progress_seq_step) {
   uint8_t new_velocity = 127;
 
   if (s_play_mode == 0) {  // Normal Mode
-    new_pitch         = g_synth.current_controller_value(PANEL_PITCH);
-    new_velocity      = g_synth.current_controller_value(PANEL_VELOCITY);
+    new_pitch         = g_synth.current_controller_value(PANEL_PLAY_PIT );
+    new_velocity      = g_synth.current_controller_value(PANEL_PLAY_VELO);
 
     s_index_scale     = ((g_synth.current_controller_value(PANEL_SCALE) * 10) + 127) / 254;
     s_panel_transpose = g_synth.current_controller_value(PANEL_TRANSPOSE) - 64;
@@ -295,8 +295,8 @@ static INLINE boolean PRA32_U_ControlPanel_update_control_adc(uint32_t adc_numbe
       s_adc_control_catched[adc_number] = true;
     }
 
-    if ((s_adc_control_target[adc_number] == PANEL_PITCH) ||
-        (s_adc_control_target[adc_number] == PANEL_SCALE) ||
+    if ((s_adc_control_target[adc_number] == PANEL_PLAY_PIT ) ||
+        (s_adc_control_target[adc_number] == PANEL_SCALE    ) ||
         (s_adc_control_target[adc_number] == PANEL_TRANSPOSE)) {
       if (s_adc_control_catched[adc_number]) {
         g_synth.control_change(s_adc_control_target[adc_number], s_adc_control_value[adc_number]);
@@ -531,7 +531,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
       result = true;
     }
     break;
-  case  PANEL_PITCH    :
+  case  PANEL_PLAY_PIT :
   case  SEQ_PITCH_0    :
   case  SEQ_PITCH_1    :
   case  SEQ_PITCH_2    :
@@ -1127,8 +1127,8 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
     s_adc_control_catched[2] = false;
   }
 
-  if ((control_number == PANEL_PITCH) ||
-      (control_number == PANEL_SCALE) ||
+  if ((control_number == PANEL_PLAY_PIT ) ||
+      (control_number == PANEL_SCALE    ) ||
       (control_number == PANEL_TRANSPOSE)) {
     PRA32_U_ControlPanel_update_pitch(false);
   } else if (control_number == PANEL_PLAY_MODE) {

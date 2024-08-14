@@ -83,11 +83,11 @@ static uint8_t s_program_table_parameters[] = {
 };
 
 static uint8_t s_program_table_panel_parameters[] = {
-  PANEL_PITCH    ,
+  PANEL_PLAY_PIT ,
 
   PANEL_SCALE    ,
   PANEL_TRANSPOSE,
-  PANEL_VELOCITY ,
+  PANEL_PLAY_VELO,
   PANEL_PLAY_MODE,
 
   SEQ_PITCH_0    ,
@@ -299,11 +299,11 @@ public:
     std::memcpy(m_program_table[DELAY_MODE     ], g_preset_table_DELAY_MODE     , sizeof(m_program_table[0]));
 
 
-    m_program_table_panel[PANEL_PITCH    ] = 64 ;
+    m_program_table_panel[PANEL_PLAY_PIT ] = 64 ;
 
     m_program_table_panel[PANEL_SCALE    ] = 0  ;
     m_program_table_panel[PANEL_TRANSPOSE] = 64 ;
-    m_program_table_panel[PANEL_VELOCITY ] = 127;
+    m_program_table_panel[PANEL_PLAY_VELO] = 127;
     m_program_table_panel[PANEL_PLAY_MODE] = 0  ;
 
     m_program_table_panel[SEQ_PITCH_0    ] = 4  ;
