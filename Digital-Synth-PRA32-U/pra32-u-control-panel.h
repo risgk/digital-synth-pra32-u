@@ -39,6 +39,7 @@ enum PlayingStatus {
 static          uint32_t s_playing_status = PlayingStatus_Stop;
 
 static          uint32_t s_seq_step            = 7;
+static          uint32_t s_seq_sub_step        = 23;
 static          uint32_t s_seq_count           = 0;
 static          uint32_t s_seq_count_increment = 0;
 
@@ -61,6 +62,20 @@ static char s_display_buffer[8][21 + 1] = {
   "                     ",
 };
 
+
+static INLINE uint32_t PRA32_U_ControlPanel_calc_bpm(uint8_t tempo_control_value) {
+  uint32_t bpm = tempo_control_value + 56;
+
+  if (bpm < 60) {
+    bpm = 60;
+  }
+
+  if (bpm > 126) {
+    bpm += bpm - 126;
+  }
+
+  return bpm;
+}
 
 static INLINE void PRA32_U_ControlPanel_update_page() {
   s_adc_control_catched[0] = false;
@@ -228,26 +243,32 @@ static INLINE void PRA32_U_ControlPanel_update_control_seq() {
   if (s_playing_status == PlayingStatus_Seq) {
     s_seq_count += s_seq_count_increment;
 
-    if (s_seq_count >= 184320000) {
-      s_seq_count -= 184320000;
-      ++s_seq_step;
-      s_seq_step &= 0x7;
+    if (s_seq_count >= 7680000) {
+      s_seq_count -= 7680000;
+      ++s_seq_sub_step;
 
-      if (s_seq_step == 0) {
-        s_index_scale     = ((g_synth.current_controller_value(PANEL_SCALE) * 10) + 127) / 254;
-        s_panel_transpose = g_synth.current_controller_value(PANEL_TRANSPOSE) - 64;
+      if (s_seq_sub_step >= 24) {
+        s_seq_sub_step = 0;
 
-        int seq_transpose_value = g_synth.current_controller_value(SEQ_TRANSPOSE);
-        if (seq_transpose_value < 2) {
-          seq_transpose_value = 2;
-        } else if (seq_transpose_value > 126) {
-          seq_transpose_value = 126;
+        ++s_seq_step;
+        s_seq_step &= 0x7;
+
+        if (s_seq_step == 0) {
+          s_index_scale     = ((g_synth.current_controller_value(PANEL_SCALE) * 10) + 127) / 254;
+          s_panel_transpose = g_synth.current_controller_value(PANEL_TRANSPOSE) - 64;
+
+          int seq_transpose_value = g_synth.current_controller_value(SEQ_TRANSPOSE);
+          if (seq_transpose_value < 2) {
+            seq_transpose_value = 2;
+          } else if (seq_transpose_value > 126) {
+            seq_transpose_value = 126;
+          }
+          seq_transpose_value = ((seq_transpose_value - 2) / 5) - 12;
+          s_seq_transpose = seq_transpose_value;
         }
-        seq_transpose_value = ((seq_transpose_value - 2) / 5) - 12;
-        s_seq_transpose = seq_transpose_value;
-      }
 
-      PRA32_U_ControlPanel_update_pitch(true);
+        PRA32_U_ControlPanel_update_pitch(true);
+      }
     }
   }
 }
@@ -601,11 +622,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
 
   case SEQ_TEMPO       :
     {
-      uint32_t bpm = g_synth.current_controller_value(SEQ_TEMPO) + 56;
-      if (bpm > 126) {
-        bpm += bpm - 126;
-      }
-
+      uint32_t bpm = PRA32_U_ControlPanel_calc_bpm(g_synth.current_controller_value(SEQ_TEMPO));
       std::sprintf(value_display_text, "%3u", bpm);
       result = true;
     }
@@ -890,8 +907,9 @@ INLINE void PRA32_U_ControlPanel_update_control() {
         } else {  // Seq Mode
           if (s_playing_status == PlayingStatus_Stop) {
             s_playing_status = PlayingStatus_Seq;
-            s_seq_step  = 7;
-            s_seq_count = 0;
+            s_seq_step     = 7;
+            s_seq_sub_step = 23;
+            s_seq_count    = 0;
             s_reserved_note_off = s_panel_playing_note_number;
           } else {
             s_playing_status = PlayingStatus_Stop;
@@ -1127,12 +1145,8 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
       PRA32_U_ControlPanel_update_page();
     }
   } else if (control_number == SEQ_TEMPO) {
-      uint32_t bpm = g_synth.current_controller_value(SEQ_TEMPO) + 56;
-      if (bpm > 126) {
-        bpm += bpm - 126;
-      }
-
-      s_seq_count_increment = bpm * 8192;
+    uint32_t bpm = PRA32_U_ControlPanel_calc_bpm(g_synth.current_controller_value(SEQ_TEMPO));
+    s_seq_count_increment = bpm * 8192;
   }
 
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
