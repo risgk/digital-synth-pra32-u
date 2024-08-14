@@ -121,7 +121,7 @@ const uint8_t   DEFAULT_PANEL_TRANSPOSE = 64 ;
 const uint8_t   DEFAULT_PANEL_PLAY_MODE = 0  ;
 
 const uint8_t   DEFAULT_PANEL_PLAY_PIT  = 64 ;
-const uint8_t   DEFAULT_PANEL_PLAY_VELO = 127;
+const uint8_t   DEFAULT_PANEL_PLAY_VELO = 100;
 
 const uint8_t   DEFAULT_SEQ_PITCH_0     = 4  ;
 const uint8_t   DEFAULT_SEQ_PITCH_1     = 29 ;
@@ -133,15 +133,15 @@ const uint8_t   DEFAULT_SEQ_PITCH_5     = 89 ;
 const uint8_t   DEFAULT_SEQ_PITCH_6     = 109;
 const uint8_t   DEFAULT_SEQ_PITCH_7     = 124;
 
-const uint8_t   DEFAULT_SEQ_VELO_0      = 127;
-const uint8_t   DEFAULT_SEQ_VELO_1      = 127;
-const uint8_t   DEFAULT_SEQ_VELO_2      = 127;
-const uint8_t   DEFAULT_SEQ_VELO_3      = 127;
+const uint8_t   DEFAULT_SEQ_VELO_0      = 100;
+const uint8_t   DEFAULT_SEQ_VELO_1      = 100;
+const uint8_t   DEFAULT_SEQ_VELO_2      = 100;
+const uint8_t   DEFAULT_SEQ_VELO_3      = 100;
 
-const uint8_t   DEFAULT_SEQ_VELO_4      = 127;
-const uint8_t   DEFAULT_SEQ_VELO_5      = 127;
-const uint8_t   DEFAULT_SEQ_VELO_6      = 127;
-const uint8_t   DEFAULT_SEQ_VELO_7      = 127;
+const uint8_t   DEFAULT_SEQ_VELO_4      = 100;
+const uint8_t   DEFAULT_SEQ_VELO_5      = 100;
+const uint8_t   DEFAULT_SEQ_VELO_6      = 100;
+const uint8_t   DEFAULT_SEQ_VELO_7      = 100;
 
 const uint8_t   DEFAULT_SEQ_TEMPO       = 64 ;
 
