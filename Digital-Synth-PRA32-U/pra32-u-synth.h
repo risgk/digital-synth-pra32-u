@@ -303,28 +303,28 @@ public:
 
     m_program_table_panel[PANEL_SCALE    ] = 0  ;
     m_program_table_panel[PANEL_TRANSPOSE] = 64 ;
-    m_program_table_panel[PANEL_VELOCITY ] = 100;
+    m_program_table_panel[PANEL_VELOCITY ] = 127;
     m_program_table_panel[PANEL_PLAY_MODE] = 0  ;
 
-    m_program_table_panel[SEQ_PITCH_0    ] = 0  ;
-    m_program_table_panel[SEQ_PITCH_1    ] = 0  ;
-    m_program_table_panel[SEQ_PITCH_2    ] = 0  ;
-    m_program_table_panel[SEQ_PITCH_3    ] = 0  ;
+    m_program_table_panel[SEQ_PITCH_0    ] = 4  ;
+    m_program_table_panel[SEQ_PITCH_1    ] = 29 ;
+    m_program_table_panel[SEQ_PITCH_2    ] = 39 ;
+    m_program_table_panel[SEQ_PITCH_3    ] = 59 ;
 
-    m_program_table_panel[SEQ_PITCH_4    ] = 0  ;
-    m_program_table_panel[SEQ_PITCH_5    ] = 0  ;
-    m_program_table_panel[SEQ_PITCH_6    ] = 0  ;
-    m_program_table_panel[SEQ_PITCH_7    ] = 0  ;
+    m_program_table_panel[SEQ_PITCH_4    ] = 74 ;
+    m_program_table_panel[SEQ_PITCH_5    ] = 89 ;
+    m_program_table_panel[SEQ_PITCH_6    ] = 109;
+    m_program_table_panel[SEQ_PITCH_7    ] = 124;
 
-    m_program_table_panel[SEQ_VELO_0     ] = 0  ;
-    m_program_table_panel[SEQ_VELO_1     ] = 0  ;
-    m_program_table_panel[SEQ_VELO_2     ] = 0  ;
-    m_program_table_panel[SEQ_VELO_3     ] = 0  ;
+    m_program_table_panel[SEQ_VELO_0     ] = 127;
+    m_program_table_panel[SEQ_VELO_1     ] = 127;
+    m_program_table_panel[SEQ_VELO_2     ] = 127;
+    m_program_table_panel[SEQ_VELO_3     ] = 127;
 
-    m_program_table_panel[SEQ_VELO_4     ] = 0  ;
-    m_program_table_panel[SEQ_VELO_5     ] = 0  ;
-    m_program_table_panel[SEQ_VELO_6     ] = 0  ;
-    m_program_table_panel[SEQ_VELO_7     ] = 0  ;
+    m_program_table_panel[SEQ_VELO_4     ] = 127;
+    m_program_table_panel[SEQ_VELO_5     ] = 127;
+    m_program_table_panel[SEQ_VELO_6     ] = 127;
+    m_program_table_panel[SEQ_VELO_7     ] = 127;
 
     m_program_table_panel[SEQ_TEMPO      ] = 64 ;
     m_program_table_panel[SEQ_TRANSPOSE  ] = 64 ;
