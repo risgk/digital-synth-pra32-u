@@ -63,8 +63,9 @@ PRA32_U_ControlPanelPage g_control_panel_page_table_b[] = {
   { "Page=B-09 ", "Seq 6     ",   "Seq       ", "Pitch 6   ", SEQ_PITCH_6    ,   "Seq       ", "Velo 6    ", SEQ_VELO_6     ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
   { "Page=B-10 ", "Seq 7     ",   "Seq       ", "Pitch 7   ", SEQ_PITCH_7    ,   "Seq       ", "Velo 7    ", SEQ_VELO_7     ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
   { "Page=B-11 ", "Seq a     ",   "Seq       ", "Tempo     ", SEQ_TEMPO      ,   "          ", "          ", 0xFF           ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
-  { "Page=B-12 ", "Control a ",   "Modulation", "          ", MODULATION     ,   "          ", "          ", 0xFF           ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
-  { "Page=B-13 ", "Control b ",   "Breath    ", "Controller", BTH_CONTROLLER ,   "Sustain   ", "Pedal     ", SUSTAIN_PEDAL  ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=B-12 ", "Seq b     ",   "Seq       ", "Transpose ", SEQ_TRANSPOSE  ,   "          ", "          ", 0xFF           ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=B-13 ", "Control a ",   "Modulation", "          ", MODULATION     ,   "          ", "          ", 0xFF           ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
+  { "Page=B-14 ", "Control b ",   "Breath    ", "Controller", BTH_CONTROLLER ,   "Sustain   ", "Pedal     ", SUSTAIN_PEDAL  ,   "Panel     ", "Pitch     ", PANEL_PITCH    , },
 };
 
 PRA32_U_ControlPanelPage g_control_panel_page_table_c[] = {

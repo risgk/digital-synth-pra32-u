@@ -26,7 +26,9 @@ static          uint32_t s_next_key_current_value;
 static          uint32_t s_play_key_current_value;
 
 static          uint8_t  s_play_mode;
-static          int8_t   s_transpose;
+static          int8_t   s_panel_transpose;
+static          int8_t   s_seq_transpose;
+static          uint32_t s_index_scale;
 
 enum PlayingStatus {
   PlayingStatus_Stop = 0,
@@ -64,12 +66,12 @@ static INLINE void PRA32_U_ControlPanel_update_page() {
   s_adc_control_catched[1] = false;
   s_adc_control_catched[2] = false;
 
-  PRA32_U_ControlPanelPage& current_page = g_control_panel_page_table[s_current_page_group][s_current_page_index[s_current_page_group]];
+  PRA32_U_ControlPanelPage current_page = g_control_panel_page_table[s_current_page_group][s_current_page_index[s_current_page_group]];
 
   if (s_play_mode == 1) {  // Seq Mode
-    std::memcpy(current_page.control_target_c_name_line_0, "Panel     ", 10);
+    std::memcpy(current_page.control_target_c_name_line_0, "Seq       ", 10);
     std::memcpy(current_page.control_target_c_name_line_1, "Transpose ", 10);
-    current_page.control_target_c = PANEL_TRANSPOSE;
+    current_page.control_target_c = SEQ_TRANSPOSE;
   }
 
   std::memset(&s_display_buffer[3], ' ', 21);
@@ -138,16 +140,18 @@ static INLINE void PRA32_U_ControlPanel_update_pitch() {
   uint8_t new_velocity    = 100;
 
   if (s_play_mode == 0) {  // Normal Mode
-    new_note_number = g_synth.current_controller_value(PANEL_PITCH);
-    new_velocity    = g_synth.current_controller_value(PANEL_VELOCITY);
+    new_note_number   = g_synth.current_controller_value(PANEL_PITCH);
+    new_velocity      = g_synth.current_controller_value(PANEL_VELOCITY);
 
-    s_transpose     = g_synth.current_controller_value(PANEL_TRANSPOSE) - 64;
+    s_index_scale     = ((g_synth.current_controller_value(PANEL_SCALE) * 10) + 127) / 254;
+    s_panel_transpose = g_synth.current_controller_value(PANEL_TRANSPOSE) - 64;
+    s_seq_transpose   = 0;
   } else {  // Seq Mode
-    new_note_number = g_synth.current_controller_value(SEQ_PITCH_0 + s_seq_step);
-    new_velocity    = g_synth.current_controller_value(SEQ_VELO_0  + s_seq_step);
+    new_note_number   = g_synth.current_controller_value(SEQ_PITCH_0 + s_seq_step);
+    new_velocity      = g_synth.current_controller_value(SEQ_VELO_0  + s_seq_step);
   }
 
-  uint32_t index_scale = ((g_synth.current_controller_value(PANEL_SCALE) * 10) + 127) / 254;
+  uint32_t index_scale = s_index_scale;
 
   if        (index_scale == 0) {
     const uint8_t ary_major[53] =
@@ -192,7 +196,7 @@ static INLINE void PRA32_U_ControlPanel_update_pitch() {
     new_note_number = ary_chromatic[index_pitch];
   }
 
-  new_note_number += s_transpose;
+  new_note_number += s_panel_transpose + s_seq_transpose;
 
   if (new_note_number < 0) {
    new_note_number = 0;
@@ -225,7 +229,17 @@ static INLINE void PRA32_U_ControlPanel_update_control_seq() {
       s_seq_step &= 0x7;
 
       if (s_seq_step == 0) {
-        s_transpose = g_synth.current_controller_value(PANEL_TRANSPOSE) - 64;
+        s_index_scale     = ((g_synth.current_controller_value(PANEL_SCALE) * 10) + 127) / 254;
+        s_panel_transpose = g_synth.current_controller_value(PANEL_TRANSPOSE) - 64;
+
+        int seq_transpose_value = g_synth.current_controller_value(SEQ_TRANSPOSE);
+        if (seq_transpose_value < 2) {
+          seq_transpose_value = 2;
+        } else if (seq_transpose_value > 126) {
+          seq_transpose_value = 126;
+        }
+        seq_transpose_value = ((seq_transpose_value - 2) / 5) - 12;
+        s_seq_transpose = seq_transpose_value;
       }
 
       PRA32_U_ControlPanel_update_pitch();
@@ -329,6 +343,19 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
   case PANEL_TRANSPOSE :
     {
       std::sprintf(value_display_text, "%+3d", static_cast<int>(controller_value) - 64);
+      result = true;
+    }
+    break;
+  case SEQ_TRANSPOSE   :
+    {
+      int seq_transpose_value = controller_value;
+      if (seq_transpose_value < 2) {
+        seq_transpose_value = 2;
+      } else if (seq_transpose_value > 126) {
+        seq_transpose_value = 126;
+      }
+      seq_transpose_value = ((seq_transpose_value - 2) / 5) - 12;
+      std::sprintf(value_display_text, "%+3d", seq_transpose_value);
       result = true;
     }
     break;
@@ -1108,6 +1135,9 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
 
       s_playing_status = PlayingStatus_Stop;
       s_reserved_note_off = s_panel_playing_note_number;
+
+      PRA32_U_ControlPanel_update_pitch();
+      PRA32_U_ControlPanel_update_page();
     }
   }
 

@@ -111,6 +111,7 @@ static uint8_t s_program_table_panel_parameters[] = {
   SEQ_VELO_7     ,
 
   SEQ_TEMPO      ,
+  SEQ_TRANSPOSE  ,
 };
 
 class PRA32_U_Synth {
@@ -326,6 +327,7 @@ public:
     m_program_table_panel[SEQ_VELO_7     ] = 0  ;
 
     m_program_table_panel[SEQ_TEMPO      ] = 64 ;
+    m_program_table_panel[SEQ_TRANSPOSE  ] = 64 ;
 
 #if defined(ARDUINO_ARCH_RP2040)
 #if defined(PRA32_U_USE_EMULATED_EEPROM)

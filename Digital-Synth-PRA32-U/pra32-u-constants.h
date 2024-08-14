@@ -207,6 +207,7 @@ const uint8_t   SEQ_VELO_15     = 128 + 47;
 
 const uint8_t   SEQ_TEMPO       = 128 + 48;
 const uint8_t   SEQ_ACTIV_STEP  = 128 + 49;
+const uint8_t   SEQ_TRANSPOSE   = 128 + 50;
 
 const uint8_t   RD_PROGRAM_0    = 128 + 64;
 const uint8_t   RD_PROGRAM_1    = 128 + 65;
