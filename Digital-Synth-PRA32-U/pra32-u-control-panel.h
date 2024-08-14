@@ -92,6 +92,10 @@ static INLINE void PRA32_U_ControlPanel_update_page() {
   std::memcpy(&s_display_buffer[2][11], current_page.control_target_c_name_line_1, 10);
   s_adc_control_target[2]             = current_page.control_target_c;
 
+  if ((s_playing_status == PlayingStatus_Playing) || (s_playing_status == PlayingStatus_Seq)) {
+    s_display_buffer[1][20] = '*';
+  }
+
   s_display_draw_counter = 0;
 }
 
@@ -135,7 +139,7 @@ static INLINE boolean PRA32_U_ControlPanel_process_reserved_note_off_on() {
   return false;
 }
 
-static INLINE void PRA32_U_ControlPanel_update_pitch() {
+static INLINE void PRA32_U_ControlPanel_update_pitch(bool progress_seq_step) {
   int32_t new_pitch    = 60;
   uint8_t new_velocity = 127;
 
@@ -211,8 +215,8 @@ static INLINE void PRA32_U_ControlPanel_update_pitch() {
     panel_play_note_number_changed = true;
   }
 
-  if (((s_playing_status == PlayingStatus_Playing) && (panel_play_note_number_changed)) ||
-      (s_playing_status == PlayingStatus_Seq)) {
+  if (((s_playing_status == PlayingStatus_Playing) && panel_play_note_number_changed) ||
+      ((s_playing_status == PlayingStatus_Seq) && progress_seq_step)) {
     s_reserved_note_off = s_panel_playing_note_number;
     s_reserved_note_on = s_panel_play_note_number;
     s_reserved_note_on_velocity = new_velocity;
@@ -242,7 +246,7 @@ static INLINE void PRA32_U_ControlPanel_update_control_seq() {
         s_seq_transpose = seq_transpose_value;
       }
 
-      PRA32_U_ControlPanel_update_pitch();
+      PRA32_U_ControlPanel_update_pitch(true);
     }
   }
 }
@@ -284,28 +288,17 @@ static INLINE boolean PRA32_U_ControlPanel_update_control_adc(uint32_t adc_numbe
         g_synth.program_change(s_adc_control_target[adc_number] - RD_PROGRAM_0);
       }
     } else if ((s_adc_control_target[adc_number] >= WR_PROGRAM_0) && (s_adc_control_target[adc_number] <= WR_PROGRAM_15)) {
-      static boolean s_ready_to_write[PROGRAM_NUMBER_MAX + 1] = {};
-
-      uint8_t program_number_to_write = s_adc_control_target[adc_number] - WR_PROGRAM_0;
-
-      if (s_adc_control_value[adc_number] == 0) {
-        s_ready_to_write[program_number_to_write] = true;
-      } else if (s_ready_to_write[program_number_to_write] && (s_adc_control_value[adc_number] == 127)) {
+      if ((s_adc_control_value_old < 64) && (s_adc_control_value[adc_number] >= 64)) {
+        uint8_t program_number_to_write = s_adc_control_target[adc_number] - WR_PROGRAM_0;
         g_synth.write_parameters_to_program(program_number_to_write);
-        s_ready_to_write[program_number_to_write] = false;
       }
     } else if (s_adc_control_target[adc_number] == RD_PANEL_PRMS) {
       if ((s_adc_control_value_old < 64) && (s_adc_control_value[adc_number] >= 64)) {
         g_synth.program_change(128);
       }
     } else if (s_adc_control_target[adc_number] == WR_PANEL_PRMS) {
-      static boolean s_ready_to_write = false;
-
-      if (s_adc_control_value[adc_number] == 0) {
-        s_ready_to_write = true;
-      } else if (s_ready_to_write && (s_adc_control_value[adc_number] == 127)) {
+      if ((s_adc_control_value_old < 64) && (s_adc_control_value[adc_number] >= 64)) {
         g_synth.write_parameters_to_program(128);
-        s_ready_to_write = false;
       }
     }
 
@@ -484,21 +477,6 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
   case  RD_PROGRAM_13  :
   case  RD_PROGRAM_14  :
   case  RD_PROGRAM_15  :
-  case  RD_PANEL_PRMS  :
-    {
-      if        (controller_value < 64) {
-        value_display_text[0] = 'R';
-        value_display_text[1] = 'd';
-        value_display_text[2] = 'y';
-      } else {
-        value_display_text[0] = 'E';
-        value_display_text[1] = 'x';
-        value_display_text[2] = 'e';
-      }
-
-      result = true;
-    }
-    break;
   case  WR_PROGRAM_0   :
   case  WR_PROGRAM_1   :
   case  WR_PROGRAM_2   :
@@ -515,20 +493,17 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
   case  WR_PROGRAM_13  :
   case  WR_PROGRAM_14  :
   case  WR_PROGRAM_15  :
+  case  RD_PANEL_PRMS  :
   case  WR_PANEL_PRMS  :
     {
-      if        (controller_value == 0) {
+      if        (controller_value < 64) {
         value_display_text[0] = 'R';
         value_display_text[1] = 'd';
         value_display_text[2] = 'y';
-      } else if (controller_value == 127) {
+      } else {
         value_display_text[0] = 'E';
         value_display_text[1] = 'x';
         value_display_text[2] = 'e';
-      } else {
-        value_display_text[0] = ' ';
-        value_display_text[1] = ' ';
-        value_display_text[2] = '-';
       }
 
       result = true;
@@ -912,6 +887,7 @@ INLINE void PRA32_U_ControlPanel_update_control() {
         }
       }
 
+      PRA32_U_ControlPanel_update_page();
       return;
     }
   }
@@ -1123,7 +1099,7 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
   if ((control_number == PANEL_PITCH) ||
       (control_number == PANEL_SCALE) ||
       (control_number == PANEL_TRANSPOSE)) {
-    PRA32_U_ControlPanel_update_pitch();
+    PRA32_U_ControlPanel_update_pitch(false);
   }
 
   if (control_number == PANEL_PLAY_MODE) {
@@ -1136,7 +1112,7 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
       s_playing_status = PlayingStatus_Stop;
       s_reserved_note_off = s_panel_playing_note_number;
 
-      PRA32_U_ControlPanel_update_pitch();
+      PRA32_U_ControlPanel_update_pitch(false);
       PRA32_U_ControlPanel_update_page();
     }
   }
