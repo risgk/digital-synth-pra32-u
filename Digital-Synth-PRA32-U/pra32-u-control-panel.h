@@ -38,8 +38,9 @@ enum PlayingStatus {
 
 static          uint32_t s_playing_status = PlayingStatus_Stop;
 
-static          uint32_t s_seq_step  = 7;
-static          uint32_t s_seq_count = 0;
+static          uint32_t s_seq_step            = 7;
+static          uint32_t s_seq_count           = 0;
+static          uint32_t s_seq_count_increment = 0;
 
 static volatile uint8_t  s_panel_play_note_number     = 60;
 static volatile uint8_t  s_panel_playing_note_number  = 0xFF;
@@ -225,10 +226,10 @@ static INLINE void PRA32_U_ControlPanel_update_pitch(bool progress_seq_step) {
 
 static INLINE void PRA32_U_ControlPanel_update_control_seq() {
   if (s_playing_status == PlayingStatus_Seq) {
-    s_seq_count += (16777216 / (48 * 4));
+    s_seq_count += s_seq_count_increment;
 
-    if (s_seq_count >= 16777216) {
-      s_seq_count -= 16777216;
+    if (s_seq_count >= 184320000) {
+      s_seq_count -= 184320000;
       ++s_seq_step;
       s_seq_step &= 0x7;
 
@@ -594,6 +595,18 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
       uint32_t index = ((controller_value * 2) + 127) / 254;
       if (controller_value < 2) { index = controller_value; }
       std::strcpy(value_display_text, ary[index]);
+      result = true;
+    }
+    break;
+
+  case SEQ_TEMPO       :
+    {
+      uint32_t bpm = g_synth.current_controller_value(SEQ_TEMPO) + 56;
+      if (bpm > 126) {
+        bpm += bpm - 126;
+      }
+
+      std::sprintf(value_display_text, "%3u", bpm);
       result = true;
     }
     break;
@@ -1100,9 +1113,7 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
       (control_number == PANEL_SCALE) ||
       (control_number == PANEL_TRANSPOSE)) {
     PRA32_U_ControlPanel_update_pitch(false);
-  }
-
-  if (control_number == PANEL_PLAY_MODE) {
+  } else if (control_number == PANEL_PLAY_MODE) {
     uint8_t play_mode_cc_value = g_synth.current_controller_value(PANEL_PLAY_MODE);
     uint8_t new_play_mode = (play_mode_cc_value >= 64);
 
@@ -1115,6 +1126,13 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
       PRA32_U_ControlPanel_update_pitch(false);
       PRA32_U_ControlPanel_update_page();
     }
+  } else if (control_number == SEQ_TEMPO) {
+      uint32_t bpm = g_synth.current_controller_value(SEQ_TEMPO) + 56;
+      if (bpm > 126) {
+        bpm += bpm - 126;
+      }
+
+      s_seq_count_increment = bpm * 8192;
   }
 
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
