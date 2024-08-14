@@ -375,6 +375,11 @@ public:
   }
 
   /* INLINE */ void note_on(uint8_t note_number, uint8_t velocity) {
+    if (velocity == 0) {
+      note_off(note_number);
+      return;
+    }
+
     if (m_note_on_total_count == 255) {
       return;
     }

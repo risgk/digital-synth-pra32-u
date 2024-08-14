@@ -35,10 +35,14 @@ enum PlayingStatus {
 
 static          uint32_t s_playing_status = PlayingStatus_Stop;
 
+static          uint32_t s_seq_step  = 7;
+static          uint32_t s_seq_count = 0;
+
 static volatile uint8_t  s_panel_play_note_number     = 60;
 static volatile uint8_t  s_panel_playing_note_number  = 0xFF;
 static volatile uint8_t  s_reserved_note_off          = 0xFF;
 static volatile uint8_t  s_reserved_note_on           = 0xFF;
+static volatile uint8_t  s_reserved_note_on_velocity  = 100;
 
 static volatile uint32_t s_display_draw_counter = 0;
 
@@ -104,12 +108,7 @@ static INLINE uint8_t PRA32_U_ControlPanel_adc_control_value_candidate(uint32_t 
 
 static INLINE boolean PRA32_U_ControlPanel_process_reserved_note_off_on() {
   if (s_reserved_note_on <= 127) {
-    uint8_t velocity = g_synth.current_controller_value(PANEL_VELOCITY);
-    if (velocity == 0) {
-      velocity = 1;
-    }
-
-    g_synth.note_on(s_reserved_note_on, velocity);
+    g_synth.note_on(s_reserved_note_on, s_reserved_note_on_velocity);
     s_panel_playing_note_number = s_reserved_note_on;
     s_reserved_note_on = 0xFF;
     return true;
@@ -128,7 +127,16 @@ static INLINE boolean PRA32_U_ControlPanel_process_reserved_note_off_on() {
 }
 
 static INLINE void PRA32_U_ControlPanel_update_pitch() {
-  int32_t new_note_number = g_synth.current_controller_value(PANEL_PITCH);
+  int32_t new_note_number = 60;
+  uint8_t new_velocity    = 100;
+
+  if (s_play_mode == 0) {  // Normal Mode
+    new_note_number = g_synth.current_controller_value(PANEL_PITCH);
+    new_velocity    = g_synth.current_controller_value(PANEL_VELOCITY);
+  } else {  // Seq Mode
+    new_note_number = g_synth.current_controller_value(SEQ_PITCH_0 + s_seq_step);
+    new_velocity    = g_synth.current_controller_value(SEQ_VELO_0  + s_seq_step);
+  }
 
   uint32_t index_scale = ((g_synth.current_controller_value(PANEL_SCALE) * 10) + 127) / 254;
 
@@ -138,7 +146,7 @@ static INLINE void PRA32_U_ControlPanel_update_pitch() {
                     55, 55, 55, 55, 57, 57, 57, 57, 59, 59, 59, 60,
                     60, 60, 62, 62, 62, 62, 64, 64, 64, 65, 65, 65,
                     67, 67, 67, 67, 69, 69, 69, 69, 71, 71, 71, 72, 72, 72 };
-    uint32_t index_pitch = (((g_synth.current_controller_value(PANEL_PITCH) + 3) * 2) + 1) / 5;
+    uint32_t index_pitch = (((new_note_number + 3) * 2) + 1) / 5;
     new_note_number = ary_major[index_pitch];
   } else if (index_scale == 1) {
     const uint8_t ary_minor[53] =
@@ -146,7 +154,7 @@ static INLINE void PRA32_U_ControlPanel_update_pitch() {
                     55, 55, 55, 56, 56, 56, 58, 58, 58, 58, 60, 60,
                     60, 60, 62, 62, 62, 63, 63, 63, 65, 65, 65, 65,
                     67, 67, 67, 68, 68, 68, 70, 70, 70, 70, 72, 72, 72, 72 };
-    uint32_t index_pitch = (((g_synth.current_controller_value(PANEL_PITCH) + 3) * 2) + 1) / 5;
+    uint32_t index_pitch = (((new_note_number + 3) * 2) + 1) / 5;
     new_note_number = ary_minor[index_pitch];
   } else if (index_scale == 2) {
     const uint8_t ary_major_pentatonic[53] =
@@ -155,7 +163,7 @@ static INLINE void PRA32_U_ControlPanel_update_pitch() {
                     60, 60, 62, 62, 62, 62, 64, 64, 64, 64, 64, 67,
                     67, 67, 67, 67, 69, 69, 69, 69, 69, 72, 72, 72, 72, 72 };
 
-    uint32_t index_pitch = (((g_synth.current_controller_value(PANEL_PITCH) + 3) * 2) + 1) / 5;
+    uint32_t index_pitch = (((new_note_number + 3) * 2) + 1) / 5;
     new_note_number = ary_major_pentatonic[index_pitch];
   } else if (index_scale == 3) {
     const uint8_t ary_minor_pentatonic[53] =
@@ -163,7 +171,7 @@ static INLINE void PRA32_U_ControlPanel_update_pitch() {
                     55, 55, 55, 55, 58, 58, 58, 58, 58, 60, 60, 60,
                     60, 60, 63, 63, 63, 63, 63, 65, 65, 65, 65, 67,
                     67, 67, 67, 67, 70, 70, 70, 70, 70, 72, 72, 72, 72, 72 };
-    uint32_t index_pitch = (((g_synth.current_controller_value(PANEL_PITCH) + 3) * 2) + 1) / 5;
+    uint32_t index_pitch = (((new_note_number + 3) * 2) + 1) / 5;
     new_note_number = ary_minor_pentatonic[index_pitch];
   } else if (index_scale == 4) {
     const uint8_t ary_chromatic[53] =
@@ -171,7 +179,7 @@ static INLINE void PRA32_U_ControlPanel_update_pitch() {
                     54, 55, 55, 56, 56, 57, 57, 58, 58, 59, 59, 60,
                     60, 61, 61, 62, 62, 63, 63, 64, 64, 65, 65, 66,
                     66, 67, 67, 68, 68, 69, 69, 70, 70, 71, 71, 72, 72, 72 };
-    uint32_t index_pitch = (((g_synth.current_controller_value(PANEL_PITCH) + 3) * 2) + 1) / 5;
+    uint32_t index_pitch = (((new_note_number + 3) * 2) + 1) / 5;
     new_note_number = ary_chromatic[index_pitch];
   }
 
@@ -192,7 +200,21 @@ static INLINE void PRA32_U_ControlPanel_update_pitch() {
     if (panel_play_note_number_changed) {
       s_reserved_note_off = s_panel_playing_note_number;
       s_reserved_note_on = s_panel_play_note_number;
-      PRA32_U_ControlPanel_process_reserved_note_off_on();
+      s_reserved_note_on_velocity = new_velocity;
+    }
+  }
+}
+
+static INLINE void PRA32_U_ControlPanel_update_control_seq() {
+  if (s_playing_status == PlayingStatus_Seq) {
+    s_seq_count += (16777216 / (48 * 4));
+
+    if (s_seq_count >= 16777216) {
+      s_seq_count -= 16777216;
+      ++s_seq_step;
+      s_seq_step &= 0x7;
+
+      PRA32_U_ControlPanel_update_pitch();
     }
   }
 }
@@ -705,6 +727,8 @@ INLINE void PRA32_U_ControlPanel_update_control() {
     return;
   }
 
+  PRA32_U_ControlPanel_update_control_seq();
+
   boolean processed = PRA32_U_ControlPanel_process_reserved_note_off_on();
   if (processed) {
     return;
@@ -815,22 +839,22 @@ INLINE void PRA32_U_ControlPanel_update_control() {
       s_play_key_current_value = value;
       s_play_key_value_changed_time = s_key_inpuy_counter;
 
-      uint8_t play_mode = g_synth.current_controller_value(PANEL_PLAY_MODE);
-
       if (s_play_key_current_value == 1) {
         // Play key pressed
-        if (play_mode < 64) { // Normal Mode
+        if (s_play_mode == 0) {  // Normal Mode
           s_playing_status = PlayingStatus_Playing;
           s_reserved_note_on = s_panel_play_note_number;
         }
       } else {
         // Play key released
-        if (play_mode < 64) { // Normal Mode
+        if (s_play_mode == 0) {  // Normal Mode
           s_playing_status = PlayingStatus_Stop;
           s_reserved_note_off = s_panel_playing_note_number;
         } else {  // Seq Mode
           if (s_playing_status == PlayingStatus_Stop) {
-            s_playing_status == PlayingStatus_Seq;
+            s_playing_status = PlayingStatus_Seq;
+            s_seq_step  = 7;
+            s_seq_count = 0;
             s_reserved_note_off = s_panel_playing_note_number;
           } else {
             s_playing_status = PlayingStatus_Stop;
@@ -839,7 +863,6 @@ INLINE void PRA32_U_ControlPanel_update_control() {
         }
       }
 
-      PRA32_U_ControlPanel_process_reserved_note_off_on();
       return;
     }
   }
@@ -1063,7 +1086,6 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
 
       s_playing_status = PlayingStatus_Stop;
       s_reserved_note_off = s_panel_playing_note_number;
-      PRA32_U_ControlPanel_process_reserved_note_off_on();
     }
   }
 
