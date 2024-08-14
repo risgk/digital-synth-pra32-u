@@ -83,12 +83,12 @@ static uint8_t s_program_table_parameters[] = {
 };
 
 static uint8_t s_program_table_panel_parameters[] = {
-  PANEL_PLAY_PIT ,
-
   PANEL_SCALE    ,
   PANEL_TRANSPOSE,
-  PANEL_PLAY_VELO,
   PANEL_PLAY_MODE,
+
+  PANEL_PLAY_PIT ,
+  PANEL_PLAY_VELO,
 
   SEQ_PITCH_0    ,
   SEQ_PITCH_1    ,
@@ -111,8 +111,42 @@ static uint8_t s_program_table_panel_parameters[] = {
   SEQ_VELO_7     ,
 
   SEQ_TEMPO      ,
+
   SEQ_TRANSPOSE  ,
 };
+
+
+const uint8_t   DEFAULT_PANEL_SCALE     = 0  ;
+const uint8_t   DEFAULT_PANEL_TRANSPOSE = 64 ;
+const uint8_t   DEFAULT_PANEL_PLAY_MODE = 0  ;
+
+const uint8_t   DEFAULT_PANEL_PLAY_PIT  = 64 ;
+const uint8_t   DEFAULT_PANEL_PLAY_VELO = 127;
+
+const uint8_t   DEFAULT_SEQ_PITCH_0     = 4  ;
+const uint8_t   DEFAULT_SEQ_PITCH_1     = 29 ;
+const uint8_t   DEFAULT_SEQ_PITCH_2     = 39 ;
+const uint8_t   DEFAULT_SEQ_PITCH_3     = 59 ;
+
+const uint8_t   DEFAULT_SEQ_PITCH_4     = 74 ;
+const uint8_t   DEFAULT_SEQ_PITCH_5     = 89 ;
+const uint8_t   DEFAULT_SEQ_PITCH_6     = 109;
+const uint8_t   DEFAULT_SEQ_PITCH_7     = 124;
+
+const uint8_t   DEFAULT_SEQ_VELO_0      = 127;
+const uint8_t   DEFAULT_SEQ_VELO_1      = 127;
+const uint8_t   DEFAULT_SEQ_VELO_2      = 127;
+const uint8_t   DEFAULT_SEQ_VELO_3      = 127;
+
+const uint8_t   DEFAULT_SEQ_VELO_4      = 127;
+const uint8_t   DEFAULT_SEQ_VELO_5      = 127;
+const uint8_t   DEFAULT_SEQ_VELO_6      = 127;
+const uint8_t   DEFAULT_SEQ_VELO_7      = 127;
+
+const uint8_t   DEFAULT_SEQ_TEMPO       = 64 ;
+
+const uint8_t   DEFAULT_SEQ_TRANSPOSE   = 64 ;
+
 
 class PRA32_U_Synth {
   PRA32_U_Osc       m_osc;
@@ -159,7 +193,7 @@ class PRA32_U_Synth {
   uint8_t           m_sp_prog_chg_cc_values[8];
   uint8_t           m_current_controller_value_table[128 + 128];
   uint8_t           m_program_table[128][PROGRAM_NUMBER_MAX + 1];
-  uint8_t           m_program_table_panel[128 + 128];
+  uint8_t           m_program_table_panel[2][128 + 128];
 
   volatile int32_t  m_secondary_core_processing_argument;
   volatile uint32_t m_secondary_core_processing_request;
@@ -298,36 +332,38 @@ public:
     std::memcpy(m_program_table[DELAY_TIME     ], g_preset_table_DELAY_TIME     , sizeof(m_program_table[0]));
     std::memcpy(m_program_table[DELAY_MODE     ], g_preset_table_DELAY_MODE     , sizeof(m_program_table[0]));
 
+    for (uint32_t i = 0; i < sizeof(m_program_table_panel) / sizeof(m_program_table_panel[0]); ++i) {
+      m_program_table_panel[i][PANEL_SCALE    ] = DEFAULT_PANEL_SCALE    ;
+      m_program_table_panel[i][PANEL_TRANSPOSE] = DEFAULT_PANEL_TRANSPOSE;
+      m_program_table_panel[i][PANEL_PLAY_MODE] = DEFAULT_PANEL_PLAY_MODE;
 
-    m_program_table_panel[PANEL_PLAY_PIT ] = 64 ;
+      m_program_table_panel[i][PANEL_PLAY_PIT ] = DEFAULT_PANEL_PLAY_PIT ;
+      m_program_table_panel[i][PANEL_PLAY_VELO] = DEFAULT_PANEL_PLAY_VELO;
 
-    m_program_table_panel[PANEL_SCALE    ] = 0  ;
-    m_program_table_panel[PANEL_TRANSPOSE] = 64 ;
-    m_program_table_panel[PANEL_PLAY_VELO] = 127;
-    m_program_table_panel[PANEL_PLAY_MODE] = 0  ;
+      m_program_table_panel[i][SEQ_PITCH_0    ] = DEFAULT_SEQ_PITCH_0    ;
+      m_program_table_panel[i][SEQ_PITCH_1    ] = DEFAULT_SEQ_PITCH_1    ;
+      m_program_table_panel[i][SEQ_PITCH_2    ] = DEFAULT_SEQ_PITCH_2    ;
+      m_program_table_panel[i][SEQ_PITCH_3    ] = DEFAULT_SEQ_PITCH_3    ;
 
-    m_program_table_panel[SEQ_PITCH_0    ] = 4  ;
-    m_program_table_panel[SEQ_PITCH_1    ] = 29 ;
-    m_program_table_panel[SEQ_PITCH_2    ] = 39 ;
-    m_program_table_panel[SEQ_PITCH_3    ] = 59 ;
+      m_program_table_panel[i][SEQ_PITCH_4    ] = DEFAULT_SEQ_PITCH_4    ;
+      m_program_table_panel[i][SEQ_PITCH_5    ] = DEFAULT_SEQ_PITCH_5    ;
+      m_program_table_panel[i][SEQ_PITCH_6    ] = DEFAULT_SEQ_PITCH_6    ;
+      m_program_table_panel[i][SEQ_PITCH_7    ] = DEFAULT_SEQ_PITCH_7    ;
 
-    m_program_table_panel[SEQ_PITCH_4    ] = 74 ;
-    m_program_table_panel[SEQ_PITCH_5    ] = 89 ;
-    m_program_table_panel[SEQ_PITCH_6    ] = 109;
-    m_program_table_panel[SEQ_PITCH_7    ] = 124;
+      m_program_table_panel[i][SEQ_VELO_0     ] = DEFAULT_SEQ_VELO_0     ;
+      m_program_table_panel[i][SEQ_VELO_1     ] = DEFAULT_SEQ_VELO_1     ;
+      m_program_table_panel[i][SEQ_VELO_2     ] = DEFAULT_SEQ_VELO_2     ;
+      m_program_table_panel[i][SEQ_VELO_3     ] = DEFAULT_SEQ_VELO_3     ;
 
-    m_program_table_panel[SEQ_VELO_0     ] = 127;
-    m_program_table_panel[SEQ_VELO_1     ] = 127;
-    m_program_table_panel[SEQ_VELO_2     ] = 127;
-    m_program_table_panel[SEQ_VELO_3     ] = 127;
+      m_program_table_panel[i][SEQ_VELO_4     ] = DEFAULT_SEQ_VELO_4     ;
+      m_program_table_panel[i][SEQ_VELO_5     ] = DEFAULT_SEQ_VELO_5     ;
+      m_program_table_panel[i][SEQ_VELO_6     ] = DEFAULT_SEQ_VELO_6     ;
+      m_program_table_panel[i][SEQ_VELO_7     ] = DEFAULT_SEQ_VELO_7     ;
 
-    m_program_table_panel[SEQ_VELO_4     ] = 127;
-    m_program_table_panel[SEQ_VELO_5     ] = 127;
-    m_program_table_panel[SEQ_VELO_6     ] = 127;
-    m_program_table_panel[SEQ_VELO_7     ] = 127;
+      m_program_table_panel[i][SEQ_TEMPO      ] = DEFAULT_SEQ_TEMPO      ;
 
-    m_program_table_panel[SEQ_TEMPO      ] = 64 ;
-    m_program_table_panel[SEQ_TRANSPOSE  ] = 64 ;
+      m_program_table_panel[i][SEQ_TRANSPOSE  ] = DEFAULT_SEQ_TRANSPOSE  ;
+    }
 
 #if defined(ARDUINO_ARCH_RP2040)
 #if defined(PRA32_U_USE_EMULATED_EEPROM)
@@ -352,7 +388,7 @@ public:
         uint32_t control_number = s_program_table_panel_parameters[i];
         uint8_t value_read = EEPROM.read(control_number);
         if (value_read < 128) {
-          m_program_table_panel[control_number] = value_read;
+          m_program_table_panel[0][control_number] = value_read;
         }
       }
     }
@@ -367,7 +403,7 @@ public:
 #if defined(PRA32_U_USE_CONTROL_PANEL)
     for (uint32_t i = 0; i < sizeof(s_program_table_panel_parameters) / sizeof(s_program_table_panel_parameters[0]); ++i) {
       uint32_t control_number = s_program_table_panel_parameters[i];
-      control_change(control_number, m_program_table_panel[control_number]);
+      control_change(control_number, m_program_table_panel[0][control_number]);
     }
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL)
   }
@@ -983,10 +1019,10 @@ public:
 
   /* INLINE */ void program_change(uint8_t program_number) {
     if (program_number > PROGRAM_NUMBER_MAX) {
-      if (program_number == 128) {
+      if ((program_number == 128) || (program_number == 129)) {
         for (uint32_t i = 0; i < sizeof(s_program_table_panel_parameters) / sizeof(s_program_table_panel_parameters[0]); ++i) {
           uint32_t control_number = s_program_table_panel_parameters[i];
-          control_change(control_number, m_program_table_panel[control_number]);
+          control_change(control_number, m_program_table_panel[program_number - 128][control_number]);
         }
       }
       return;
@@ -1014,7 +1050,7 @@ public:
     if (program_number_to_write == 128) {
       for (uint32_t i = 0; i < sizeof(s_program_table_panel_parameters) / sizeof(s_program_table_panel_parameters[0]); ++i) {
         uint32_t control_number = s_program_table_panel_parameters[i];
-        m_program_table_panel[control_number] = m_current_controller_value_table[control_number];
+        m_program_table_panel[0][control_number] = m_current_controller_value_table[control_number];
       }
     }
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL)
@@ -1036,7 +1072,7 @@ public:
     if (program_number_to_write == 128) {
       for (uint32_t i = 0; i < sizeof(s_program_table_panel_parameters) / sizeof(s_program_table_panel_parameters[0]); ++i) {
         uint32_t control_number = s_program_table_panel_parameters[i];
-        EEPROM.write(control_number, m_program_table_panel[control_number]);
+        EEPROM.write(control_number, m_program_table_panel[0][control_number]);
       }
 
       EEPROM.write(0, 'P');

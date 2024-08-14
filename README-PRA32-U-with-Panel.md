@@ -38,8 +38,8 @@
         - Seq Tempo
         - Seq Transpose [-|+]
 - Other Operations
-    - Write Program 8-15, Write Panel Prms: Change the value from 0-63 [Rdy] to 64-127 [Exe]
-    - Read Program 1-7, 8-15, Read Panel Prms: Change the value from 0-63 [Rdy] to 64-127 [Exe]
+    - Write Program 8-15, Write Panel Prms, Read Program 1-7, 8-15, Read Panel Prms, Init Panel Prms
+      - Change the value from 0-63 [Rdy] to 64-127 [Exe]
 - KNOWN ISSUE: An OLED display refresh is slow when switching pages
 - NOTE: Specifications may change significantly in the future
 

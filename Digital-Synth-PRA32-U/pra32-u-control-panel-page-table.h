@@ -85,7 +85,7 @@ PRA32_U_ControlPanelPage g_control_panel_page_table_d[] = {
   { "Page=D-05 ", "Read 10   ",   "Read      ", "Program 10", RD_PROGRAM_10  ,   "Read      ", "Program 11", RD_PROGRAM_11  ,   "Panel     ", "Pitch     ", PANEL_PLAY_PIT , },
   { "Page=D-06 ", "Read 12   ",   "Read      ", "Program 12", RD_PROGRAM_12  ,   "Read      ", "Program 13", RD_PROGRAM_13  ,   "Panel     ", "Pitch     ", PANEL_PLAY_PIT , },
   { "Page=D-07 ", "Read 14   ",   "Read      ", "Program 14", RD_PROGRAM_14  ,   "Read      ", "Program 15", RD_PROGRAM_15  ,   "Panel     ", "Pitch     ", PANEL_PLAY_PIT , },
-  { "Page=D-08 ", "Read a    ",   "Read      ", "Panel Prms", RD_PANEL_PRMS  ,   "          ", "          ", 0xFF           ,   "Panel     ", "Pitch     ", PANEL_PLAY_PIT , },
+  { "Page=D-08 ", "Read a    ",   "Read      ", "Panel Prms", RD_PANEL_PRMS  ,   "Init      ", "Panel Prms", IN_PANEL_PRMS  ,   "Panel     ", "Pitch     ", PANEL_PLAY_PIT , },
 };
 
 PRA32_U_ControlPanelPage* g_control_panel_page_table[] = {
