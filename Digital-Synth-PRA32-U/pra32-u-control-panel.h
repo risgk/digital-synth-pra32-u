@@ -636,6 +636,19 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
       result = true;
     }
     break;
+
+  case PANEL_MIDI_CH   :
+    {
+      uint8_t midi_ch = g_synth.current_controller_value(PANEL_MIDI_CH);
+
+      if (midi_ch > 15) {
+        midi_ch = 15;
+      }
+
+      std::sprintf(value_display_text, "%3d", midi_ch + 1);
+      result = true;
+    }
+    break;
   }
 
   return result;
@@ -1158,6 +1171,14 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
   } else if (control_number == SEQ_TEMPO) {
     uint32_t bpm = PRA32_U_ControlPanel_calc_bpm(g_synth.current_controller_value(SEQ_TEMPO));
     s_seq_count_increment = bpm * 8192;
+  } else if (control_number == PANEL_MIDI_CH) {
+    uint8_t midi_ch = g_synth.current_controller_value(PANEL_MIDI_CH);
+
+    if (midi_ch > 15) {
+      midi_ch = 15;
+    }
+
+    g_midi_ch = midi_ch;
   }
 
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)

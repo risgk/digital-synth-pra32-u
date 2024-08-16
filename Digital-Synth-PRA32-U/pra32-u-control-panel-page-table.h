@@ -52,7 +52,7 @@ PRA32_U_ControlPanelPage g_control_panel_page_table_a[] = {
 
 PRA32_U_ControlPanelPage g_control_panel_page_table_b[] = {
   { "Page=B-00 ", "Panel a   ",   "Panel     ", "Scale     ", PANEL_SCALE    ,   "Panel     ", "Transpose ", PANEL_TRANSPOSE,   "Panel     ", "Pitch     ", PANEL_PLAY_PIT , },
-  { "Page=B-01 ", "Panel b   ",   "Panel     ", "Play Mode ", PANEL_PLAY_MODE,   "          ", "          ", 0xFF           ,   "Panel     ", "Pitch     ", PANEL_PLAY_PIT , },
+  { "Page=B-01 ", "Panel b   ",   "Panel     ", "Play Mode ", PANEL_PLAY_MODE,   "Panel     ", "MIDI Ch   ", PANEL_MIDI_CH  ,   "Panel     ", "Pitch     ", PANEL_PLAY_PIT , },
   { "Page=B-02 ", "Panel c   ",   "Panel     ", "Play Pitch", PANEL_PLAY_PIT ,   "Panel     ", "Play Velo ", PANEL_PLAY_VELO,   "Panel     ", "Pitch     ", PANEL_PLAY_PIT , },
   { "Page=B-03 ", "Seq 0     ",   "Seq       ", "Pitch 0   ", SEQ_PITCH_0    ,   "Seq       ", "Velo 0    ", SEQ_VELO_0     ,   "Panel     ", "Pitch     ", PANEL_PLAY_PIT , },
   { "Page=B-04 ", "Seq 1     ",   "Seq       ", "Pitch 1   ", SEQ_PITCH_1    ,   "Seq       ", "Velo 1    ", SEQ_VELO_1     ,   "Panel     ", "Pitch     ", PANEL_PLAY_PIT , },

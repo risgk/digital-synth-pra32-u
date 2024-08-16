@@ -69,6 +69,8 @@
 
 ////////////////////////////////////////////////////////////////
 
+uint8_t g_midi_ch = PRA32_U_MIDI_CH;
+
 #include "hardware/adc.h"
 
 #if defined(PRA32_U_USE_CONTROL_PANEL)
@@ -321,14 +323,14 @@ void __not_in_flash_func(loop)() {
 
 void __not_in_flash_func(handleNoteOn)(byte channel, byte pitch, byte velocity)
 {
-  if ((channel - 1) == PRA32_U_MIDI_CH) {
+  if ((channel - 1) == g_midi_ch) {
     g_synth.note_on(pitch, velocity);
   }
 }
 
 void __not_in_flash_func(handleNoteOff)(byte channel, byte pitch, byte velocity)
 {
-  if ((channel - 1) == PRA32_U_MIDI_CH) {
+  if ((channel - 1) == g_midi_ch) {
     (void) velocity;
     g_synth.note_off(pitch);
   }
@@ -336,21 +338,21 @@ void __not_in_flash_func(handleNoteOff)(byte channel, byte pitch, byte velocity)
 
 void __not_in_flash_func(handleControlChange)(byte channel, byte number, byte value)
 {
-  if ((channel - 1) == PRA32_U_MIDI_CH) {
+  if ((channel - 1) == g_midi_ch) {
     g_synth.control_change(number, value);
   }
 }
 
 void __not_in_flash_func(handleHandleProgramChange)(byte channel, byte number)
 {
-  if ((channel - 1) == PRA32_U_MIDI_CH) {
+  if ((channel - 1) == g_midi_ch) {
     g_synth.program_change(number);
   }
 }
 
 void __not_in_flash_func(handleHandlePitchBend)(byte channel, int bend)
 {
-  if ((channel - 1) == PRA32_U_MIDI_CH) {
+  if ((channel - 1) == g_midi_ch) {
     g_synth.pitch_bend((bend + 8192) & 0x7F, (bend + 8192) >> 7);
   }
 }

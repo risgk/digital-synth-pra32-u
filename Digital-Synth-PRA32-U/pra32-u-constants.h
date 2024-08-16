@@ -161,7 +161,7 @@ const uint8_t   VOICE_LEGATO_PORTA = 127;
 const uint8_t   PANEL_SCALE     = 128 + 8;
 const uint8_t   PANEL_TRANSPOSE = 128 + 9;
 const uint8_t   PANEL_PLAY_MODE = 128 + 10;
-const uint8_t   PANEL_MIDI_RX   = 128 + 11;
+const uint8_t   PANEL_MIDI_CH   = 128 + 11;
 
 const uint8_t   PANEL_PLAY_PIT  = 128 + 12;
 const uint8_t   PANEL_PLAY_VELO = 128 + 13;
