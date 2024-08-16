@@ -5,7 +5,7 @@
 | Function...                   | Transmitted   | Recognized    | Remarks                             |
 +-------------------------------+---------------+---------------+-------------------------------------+
 | Basic        Default          | x             | 1             |                                     |
-| Channel      Changed          | x             | x             |                                     |
+| Channel      Changed          | x             | x             | $$$$$                               |
 +-------------------------------+---------------+---------------+-------------------------------------+
 | Mode         Default          | x             | Mode 3        |                                     |
 |              Messages         | x             | x             |                                     |
@@ -124,6 +124,7 @@
 |                               | $$$$ : To write the current parameters to Program #8-15 and the     |
 |                               |   flash, set "Program Number to Write to" (# is the value mod 16)   |
 |                               |   and then change "Write Parameters to Program" from 0 to 1-127     |
+|                               | $$$$$ : Basic Channel can be changed in PRA32-U with Panel          |
 +-------------------------------+---------------------------------------------------------------------+
   Mode 1: Omni On,  Poly          Mode 2: Omni On,  Mono          o: Yes                               
   Mode 3: Omni Off, Poly          Mode 4: Omni Off, Mono          x: No                                

@@ -30,6 +30,7 @@
     - Panel Play Mode [Nrm|Seq]
         - Normal Mode
         - Sequencer Mode
+    - Panel MIDI Ch
     - Panel Play Pitch
     - Panel Play Velo
     - Sequencer Parameters
