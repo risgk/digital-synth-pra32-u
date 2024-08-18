@@ -208,7 +208,7 @@ const uint8_t   SEQ_VELO_15     = 128 + 47;
 
 const uint8_t   SEQ_TEMPO       = 128 + 48;
 const uint8_t   SEQ_CLOCK_SRC   = 128 + 49;
-
+const uint8_t   SEQ_GATE_TIME   = 128 + 50;
 const uint8_t   SEQ_LAST_STEP   = 128 + 51;
 
 const uint8_t   SEQ_TRANSPOSE   = 128 + 54;

@@ -113,7 +113,7 @@ static uint8_t s_program_table_panel_parameters[] = {
 
   SEQ_TEMPO      ,
   SEQ_CLOCK_SRC  ,
-
+  SEQ_GATE_TIME  ,
   SEQ_LAST_STEP  ,
 
   SEQ_TRANSPOSE  ,
@@ -149,7 +149,7 @@ const uint8_t   DEFAULT_SEQ_VELO_7      = 100;
 
 const uint8_t   DEFAULT_SEQ_TEMPO       = 64 ;
 const uint8_t   DEFAULT_SEQ_CLOCK_SRC   = 0  ;
-
+const uint8_t   DEFAULT_SEQ_GATE_TIME   = 127;
 const uint8_t   DEFAULT_SEQ_LAST_STEP   = 127;
 
 const uint8_t   DEFAULT_SEQ_TRANSPOSE   = 64 ;
@@ -370,7 +370,7 @@ public:
 
       m_program_table_panel[i][SEQ_TEMPO      ] = DEFAULT_SEQ_TEMPO      ;
       m_program_table_panel[i][SEQ_CLOCK_SRC  ] = DEFAULT_SEQ_CLOCK_SRC  ;
-
+      m_program_table_panel[i][SEQ_GATE_TIME  ] = DEFAULT_SEQ_GATE_TIME  ;
       m_program_table_panel[i][SEQ_LAST_STEP  ] = DEFAULT_SEQ_LAST_STEP  ;
 
       m_program_table_panel[i][SEQ_TRANSPOSE  ] = DEFAULT_SEQ_TRANSPOSE  ;

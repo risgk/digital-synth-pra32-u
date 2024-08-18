@@ -28,6 +28,7 @@ static          uint32_t s_play_key_current_value;
 static          uint8_t  s_play_mode;
 static          int8_t   s_panel_transpose;
 static          int8_t   s_seq_transpose;
+static          uint8_t  s_seq_gate_time = 6;
 static          uint8_t  s_seq_last_step = 7;
 static          uint32_t s_index_scale;
 
@@ -271,6 +272,8 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
     }
 
     PRA32_U_ControlPanel_update_pitch(true);
+  } else  if (s_seq_sub_step == (s_seq_gate_time << 1)) {
+    s_panel_play_note_gate = false;
   }
 }
 
@@ -644,7 +647,6 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
       result = true;
     }
     break;
-
   case SEQ_TEMPO      :
     {
       uint32_t bpm = PRA32_U_ControlPanel_calc_bpm(g_synth.current_controller_value(SEQ_TEMPO      ));
@@ -652,7 +654,6 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
       result = true;
     }
     break;
-
   case SEQ_CLOCK_SRC  :
     {
       if        (controller_value < 64) {
@@ -668,7 +669,14 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
       result = true;
     }
     break;
-
+  case SEQ_GATE_TIME  :
+    {
+      char ary[7][5] = {"1/6","2/6","3/6","4/6","5/6","6/6"};
+      uint32_t index = ((controller_value * 10) + 127) / 254;
+      std::strcpy(value_display_text, ary[index]);
+      result = true;
+    }
+    break;
   case SEQ_LAST_STEP  :
     {
       uint8_t last_step = g_synth.current_controller_value(SEQ_LAST_STEP  );
@@ -678,7 +686,6 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
       result = true;
     }
     break;
-
   case PANEL_MIDI_CH  :
     {
       uint8_t midi_ch = g_synth.current_controller_value(PANEL_MIDI_CH  );
@@ -1241,6 +1248,9 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
   } else if (control_number == SEQ_CLOCK_SRC) {
     uint32_t seq_clock_src = g_synth.current_controller_value(SEQ_CLOCK_SRC  );
     s_seq_clock_src_external = (seq_clock_src >= 64);
+  } else if (control_number == SEQ_GATE_TIME) {
+    uint8_t controller_value = g_synth.current_controller_value(SEQ_GATE_TIME  );
+    s_seq_gate_time = (((controller_value * 10) + 127) / 254) + 1;
   } else if (control_number == SEQ_LAST_STEP) {
     uint8_t last_step = g_synth.current_controller_value(SEQ_LAST_STEP  );
     last_step = (last_step + 8) >> 4;
