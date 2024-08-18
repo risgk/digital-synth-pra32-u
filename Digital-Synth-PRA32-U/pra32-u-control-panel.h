@@ -249,10 +249,10 @@ static INLINE void PRA32_U_ControlPanel_update_pitch(bool progress_seq_step) {
   }
 }
 
-static INLINE void PRA32_U_ControlPanel_seq_advance_sub_step() {
+static INLINE void PRA32_U_ControlPanel_seq_clock() {
   ++s_seq_sub_step;
 
-  if (s_seq_sub_step >= 24) {
+  if (s_seq_sub_step >= 12) {
     s_seq_sub_step = 0;
 
     ++s_seq_step;
@@ -276,14 +276,35 @@ static INLINE void PRA32_U_ControlPanel_seq_advance_sub_step() {
   }
 }
 
+static INLINE void PRA32_U_ControlPanel_seq_start() {
+  s_playing_status = PlayingStatus_Seq;
+  s_seq_step     = 7;
+  s_seq_sub_step = 23;
+  s_seq_count    = 0;
+  s_panel_play_note_gate = false;
+}
+
+static INLINE void PRA32_U_ControlPanel_seq_stop() {
+  s_playing_status = PlayingStatus_Stop;
+  s_panel_play_note_gate = false;
+}
+
 static INLINE void PRA32_U_ControlPanel_update_control_seq() {
   if (s_playing_status == PlayingStatus_Seq) {
     s_seq_count += s_seq_count_increment;
 
-    if (s_seq_count >= 7680000) {
-      s_seq_count -= 7680000;
+    if (s_seq_count >= 7680000 * 2) {
+      s_seq_count -= 7680000 * 2;
 
-      PRA32_U_ControlPanel_seq_advance_sub_step();
+#if defined(PRA32_U_USE_USB_MIDI)
+      USB_MIDI.sendRealTime(midi::Clock);
+#endif  // defined(PRA32_U_USE_USB_MIDI)
+
+#if defined(PRA32_U_USE_UART_MIDI)
+      UART_MIDI.sendRealTime(midi::Clock);
+#endif  // defined(PRA32_U_USE_UART_MIDI)
+
+      PRA32_U_ControlPanel_seq_clock();
     }
   }
 }
@@ -934,14 +955,25 @@ INLINE void PRA32_U_ControlPanel_update_control() {
           s_panel_play_note_gate = false;
         } else {  // Seq Mode
           if (s_playing_status == PlayingStatus_Stop) {
-            s_playing_status = PlayingStatus_Seq;
-            s_seq_step     = 7;
-            s_seq_sub_step = 23;
-            s_seq_count    = 0;
-            s_panel_play_note_gate = false;
+#if defined(PRA32_U_USE_USB_MIDI)
+            USB_MIDI.sendRealTime(midi::Start);
+#endif  // defined(PRA32_U_USE_USB_MIDI)
+
+#if defined(PRA32_U_USE_UART_MIDI)
+            UART_MIDI.sendRealTime(midi::Start);
+#endif  // defined(PRA32_U_USE_UART_MIDI)
+
+            PRA32_U_ControlPanel_seq_start();
           } else {
-            s_playing_status = PlayingStatus_Stop;
-            s_panel_play_note_gate = false;
+#if defined(PRA32_U_USE_USB_MIDI)
+            USB_MIDI.sendRealTime(midi::Stop);
+#endif  // defined(PRA32_U_USE_USB_MIDI)
+
+#if defined(PRA32_U_USE_UART_MIDI)
+            UART_MIDI.sendRealTime(midi::Stop);
+#endif  // defined(PRA32_U_USE_UART_MIDI)
+
+            PRA32_U_ControlPanel_seq_stop();
           }
         }
       }
@@ -977,19 +1009,30 @@ INLINE void PRA32_U_ControlPanel_update_control() {
 
 INLINE void PRA32_U_ControlPanel_on_clock()
 {
-  PRA32_U_ControlPanel_seq_advance_sub_step();
-  PRA32_U_ControlPanel_seq_advance_sub_step();
+#if defined(PRA32_U_USE_USB_MIDI)
+  USB_MIDI.sendRealTime(midi::Clock);
+#endif  // defined(PRA32_U_USE_USB_MIDI)
+
+#if defined(PRA32_U_USE_UART_MIDI)
+  UART_MIDI.sendRealTime(midi::Clock);
+#endif  // defined(PRA32_U_USE_UART_MIDI)
+
+  PRA32_U_ControlPanel_seq_clock();
 }
 
 INLINE void PRA32_U_ControlPanel_on_start()
 {
+#if defined(PRA32_U_USE_USB_MIDI)
+  USB_MIDI.sendRealTime(midi::Start);
+#endif  // defined(PRA32_U_USE_USB_MIDI)
+
+#if defined(PRA32_U_USE_UART_MIDI)
+  UART_MIDI.sendRealTime(midi::Start);
+#endif  // defined(PRA32_U_USE_UART_MIDI)
+
   if (s_play_mode == 1) {  // Seq Mode
     if (s_playing_status == PlayingStatus_Stop) {
-      s_playing_status = PlayingStatus_Seq;
-      s_seq_step     = 7;
-      s_seq_sub_step = 23;
-      s_seq_count    = 0;
-      s_panel_play_note_gate = false;
+      PRA32_U_ControlPanel_seq_start();
     }
   }
 
@@ -998,10 +1041,17 @@ INLINE void PRA32_U_ControlPanel_on_start()
 
 INLINE void PRA32_U_ControlPanel_on_stop()
 {
+#if defined(PRA32_U_USE_USB_MIDI)
+  USB_MIDI.sendRealTime(midi::Stop);
+#endif  // defined(PRA32_U_USE_USB_MIDI)
+
+#if defined(PRA32_U_USE_UART_MIDI)
+  UART_MIDI.sendRealTime(midi::Stop);
+#endif  // defined(PRA32_U_USE_UART_MIDI)
+
   if (s_play_mode == 1) {  // Seq Mode
     if (s_playing_status != PlayingStatus_Stop) {
-      s_playing_status = PlayingStatus_Stop;
-      s_panel_play_note_gate = false;
+      PRA32_U_ControlPanel_seq_stop();
     }
   }
 

@@ -75,14 +75,15 @@ uint8_t g_midi_ch = PRA32_U_MIDI_CH;
 
 #if defined(PRA32_U_USE_CONTROL_PANEL)
 extern void PRA32_U_ControlPanel_on_control_change(uint8_t control_number);
+extern void PRA32_U_ControlPanel_on_clock();
+extern void PRA32_U_ControlPanel_on_start();
+extern void PRA32_U_ControlPanel_on_stop();
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
 
 #include "pra32-u-common.h"
 #include "pra32-u-synth.h"
 
 PRA32_U_Synth g_synth;
-
-#include "pra32-u-control-panel.h"
 
 #include <MIDI.h>
 #if defined(PRA32_U_USE_USB_MIDI)
@@ -94,6 +95,8 @@ MIDI_CREATE_INSTANCE(Adafruit_USBD_MIDI, usbd_midi, USB_MIDI);
 #if defined(PRA32_U_USE_UART_MIDI)
 MIDI_CREATE_INSTANCE(HardwareSerial, Serial2, UART_MIDI);
 #endif
+
+#include "pra32-u-control-panel.h"
 
 #if defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
 #include <PWMAudio.h>
@@ -112,8 +115,11 @@ static volatile uint32_t s_debug_measurement_max1_us     = 0;
 void handleNoteOn(byte channel, byte pitch, byte velocity);
 void handleNoteOff(byte channel, byte pitch, byte velocity);
 void handleControlChange(byte channel, byte number, byte value);
-void handleHandleProgramChange(byte channel, byte number);
-void handleHandlePitchBend(byte channel, int bend);
+void handleProgramChange(byte channel, byte number);
+void handlePitchBend(byte channel, int bend);
+void handleClock();
+void handleStart();
+void handleStop();
 void writeProgramsToFlashAndEndSketch();
 
 void __not_in_flash_func(setup1)() {
@@ -211,8 +217,11 @@ void __not_in_flash_func(setup)() {
   USB_MIDI.setHandleNoteOn(handleNoteOn);
   USB_MIDI.setHandleNoteOff(handleNoteOff);
   USB_MIDI.setHandleControlChange(handleControlChange);
-  USB_MIDI.setHandleProgramChange(handleHandleProgramChange);
-  USB_MIDI.setHandlePitchBend(handleHandlePitchBend);
+  USB_MIDI.setHandleProgramChange(handleProgramChange);
+  USB_MIDI.setHandlePitchBend(handlePitchBend);
+  USB_MIDI.setHandleClock(handleClock);
+  USB_MIDI.setHandleStart(handleStart);
+  USB_MIDI.setHandleStop(handleStop);
   USB_MIDI.begin(MIDI_CHANNEL_OMNI);
   USB_MIDI.turnThruOff();
 #endif  // defined(PRA32_U_USE_USB_MIDI)
@@ -223,8 +232,11 @@ void __not_in_flash_func(setup)() {
   UART_MIDI.setHandleNoteOn(handleNoteOn);
   UART_MIDI.setHandleNoteOff(handleNoteOff);
   UART_MIDI.setHandleControlChange(handleControlChange);
-  UART_MIDI.setHandleProgramChange(handleHandleProgramChange);
-  UART_MIDI.setHandlePitchBend(handleHandlePitchBend);
+  UART_MIDI.setHandleProgramChange(handleProgramChange);
+  UART_MIDI.setHandlePitchBend(handlePitchBend);
+  UART_MIDI.setHandleClock(handleClock);
+  UART_MIDI.setHandleStart(handleStart);
+  UART_MIDI.setHandleStop(handleStop);
   UART_MIDI.begin(MIDI_CHANNEL_OMNI);
   UART_MIDI.turnThruOff();
   Serial2.begin(PRA32_U_UART_MIDI_SPEED);
@@ -343,16 +355,37 @@ void __not_in_flash_func(handleControlChange)(byte channel, byte number, byte va
   }
 }
 
-void __not_in_flash_func(handleHandleProgramChange)(byte channel, byte number)
+void __not_in_flash_func(handleProgramChange)(byte channel, byte number)
 {
   if ((channel - 1) == g_midi_ch) {
     g_synth.program_change(number);
   }
 }
 
-void __not_in_flash_func(handleHandlePitchBend)(byte channel, int bend)
+void __not_in_flash_func(handlePitchBend)(byte channel, int bend)
 {
   if ((channel - 1) == g_midi_ch) {
     g_synth.pitch_bend((bend + 8192) & 0x7F, (bend + 8192) >> 7);
   }
+}
+
+void __not_in_flash_func(handleClock)()
+{
+#if defined(PRA32_U_USE_CONTROL_PANEL)
+  PRA32_U_ControlPanel_on_clock();
+#endif  // defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
+}
+
+void __not_in_flash_func(handleStart)()
+{
+#if defined(PRA32_U_USE_CONTROL_PANEL)
+  PRA32_U_ControlPanel_on_start();
+#endif  // defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
+}
+
+void __not_in_flash_func(handleStop)()
+{
+#if defined(PRA32_U_USE_CONTROL_PANEL)
+  PRA32_U_ControlPanel_on_stop();
+#endif  // defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
 }
