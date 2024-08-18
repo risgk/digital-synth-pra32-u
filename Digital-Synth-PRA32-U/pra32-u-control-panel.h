@@ -38,10 +38,11 @@ enum PlayingStatus {
 
 static          uint32_t s_playing_status = PlayingStatus_Stop;
 
-static          uint32_t s_seq_step            = 7;
-static          uint32_t s_seq_sub_step        = 23;
-static          uint32_t s_seq_count           = 0;
-static          uint32_t s_seq_count_increment = 0;
+static          uint32_t s_seq_step               = 7;
+static          uint32_t s_seq_sub_step           = 23;
+static          uint32_t s_seq_count              = 0;
+static          uint32_t s_seq_count_increment    = 0;
+static          bool     s_seq_clock_src_external = false;
 
 static volatile uint8_t  s_panel_play_note_pitch    = 60;
 static volatile uint8_t  s_panel_play_note_velocity = 127;
@@ -64,12 +65,6 @@ static char s_display_buffer[8][21 + 1] = {
 
 static INLINE uint32_t PRA32_U_ControlPanel_calc_bpm(uint8_t tempo_control_value) {
   uint32_t bpm = tempo_control_value + 56;
-
-  if (bpm == 56) {
-    bpm = 0;
-  } else if (bpm < 60) {
-    bpm = 60;
-  }
 
   if (bpm > 126) {
     bpm += bpm - 126;
@@ -290,7 +285,7 @@ static INLINE void PRA32_U_ControlPanel_seq_stop() {
 }
 
 static INLINE void PRA32_U_ControlPanel_update_control_seq() {
-  if (s_playing_status == PlayingStatus_Seq) {
+  if ((s_playing_status == PlayingStatus_Seq) && (s_seq_clock_src_external == false)) {
     s_seq_count += s_seq_count_increment;
 
     if (s_seq_count >= 7680000 * 2) {
@@ -663,6 +658,22 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     }
     break;
 
+  case SEQ_CLOCK_SRC   :
+    {
+      if        (controller_value < 64) {
+        value_display_text[0] = 'I';
+        value_display_text[1] = 'n';
+        value_display_text[2] = 't';
+      } else {
+        value_display_text[0] = 'E';
+        value_display_text[1] = 'x';
+        value_display_text[2] = 't';
+      }
+
+      result = true;
+    }
+    break;
+
   case PANEL_MIDI_CH   :
     {
       uint8_t midi_ch = g_synth.current_controller_value(PANEL_MIDI_CH);
@@ -1009,15 +1020,17 @@ INLINE void PRA32_U_ControlPanel_update_control() {
 
 INLINE void PRA32_U_ControlPanel_on_clock()
 {
+  if (s_seq_clock_src_external) {
 #if defined(PRA32_U_USE_USB_MIDI)
-  USB_MIDI.sendRealTime(midi::Clock);
+    USB_MIDI.sendRealTime(midi::Clock);
 #endif  // defined(PRA32_U_USE_USB_MIDI)
 
 #if defined(PRA32_U_USE_UART_MIDI)
-  UART_MIDI.sendRealTime(midi::Clock);
+    UART_MIDI.sendRealTime(midi::Clock);
 #endif  // defined(PRA32_U_USE_UART_MIDI)
 
-  PRA32_U_ControlPanel_seq_clock();
+    PRA32_U_ControlPanel_seq_clock();
+  }
 }
 
 INLINE void PRA32_U_ControlPanel_on_start()
@@ -1260,6 +1273,9 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
   } else if (control_number == SEQ_TEMPO) {
     uint32_t bpm = PRA32_U_ControlPanel_calc_bpm(g_synth.current_controller_value(SEQ_TEMPO));
     s_seq_count_increment = bpm * 8192;
+  } else if (control_number == SEQ_CLOCK_SRC) {
+    uint32_t seq_clock_src = g_synth.current_controller_value(SEQ_CLOCK_SRC);
+    s_seq_clock_src_external = (seq_clock_src >= 64);
   } else if (control_number == PANEL_MIDI_CH) {
     uint8_t midi_ch = g_synth.current_controller_value(PANEL_MIDI_CH);
 

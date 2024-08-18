@@ -37,7 +37,9 @@
     - Seq Pitch 0-7
     - Seq Velo 0-7
     - Seq Tempo
-        - NOTE: Set to 0 when synchronized with external MIDI clocks
+    - Seq Clock Src [Int|Ext]
+        - Internal
+        - External (MIDI Clock)
     - Seq Transpose [-|+]
 - Other Operations
     - Write Program 8-15, Write Panel Prms (Panel and Step Sequencer Parameters), Read Program 1-7, 8-15, Read Panel Prms, Init Panel Prms

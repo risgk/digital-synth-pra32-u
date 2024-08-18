@@ -112,7 +112,7 @@ static uint8_t s_program_table_panel_parameters[] = {
   SEQ_VELO_7     ,
 
   SEQ_TEMPO      ,
-
+  SEQ_CLOCK_SRC  ,
   SEQ_TRANSPOSE  ,
 };
 
@@ -145,7 +145,7 @@ const uint8_t   DEFAULT_SEQ_VELO_6      = 100;
 const uint8_t   DEFAULT_SEQ_VELO_7      = 100;
 
 const uint8_t   DEFAULT_SEQ_TEMPO       = 64 ;
-
+const uint8_t   DEFAULT_SEQ_CLOCK_SRC   = 0  ;
 const uint8_t   DEFAULT_SEQ_TRANSPOSE   = 64 ;
 
 
@@ -363,7 +363,7 @@ public:
       m_program_table_panel[i][SEQ_VELO_7     ] = DEFAULT_SEQ_VELO_7     ;
 
       m_program_table_panel[i][SEQ_TEMPO      ] = DEFAULT_SEQ_TEMPO      ;
-
+      m_program_table_panel[i][SEQ_CLOCK_SRC  ] = DEFAULT_SEQ_CLOCK_SRC  ;
       m_program_table_panel[i][SEQ_TRANSPOSE  ] = DEFAULT_SEQ_TRANSPOSE  ;
     }
 
