@@ -28,6 +28,7 @@ static          uint32_t s_play_key_current_value;
 static          uint8_t  s_play_mode;
 static          int8_t   s_panel_transpose;
 static          int8_t   s_seq_transpose;
+static          uint8_t  s_seq_last_step = 7;
 static          uint32_t s_index_scale;
 
 enum PlayingStatus {
@@ -251,7 +252,9 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
     s_seq_sub_step = 0;
 
     ++s_seq_step;
-    s_seq_step &= 0x7;
+    if (s_seq_step > s_seq_last_step) {
+      s_seq_step = 0;
+    }
 
     if (s_seq_step == 0) {
       s_index_scale     = ((g_synth.current_controller_value(PANEL_SCALE) * 10) + 127) / 254;
@@ -624,7 +627,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
       result = true;
     }
     break;
-  case  PANEL_SCALE    :
+  case  PANEL_SCALE   :
     {
       char ary[6][5] = {"Maj","Min","MaP","MiP","Chr","Ful"};
       uint32_t index = ((controller_value * 10) + 127) / 254;
@@ -632,7 +635,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
       result = true;
     }
     break;
-  case PANEL_PLAY_MODE :
+  case PANEL_PLAY_MODE:
     {
       char ary[2][5] = {"Nrm","Seq"};
       uint32_t index = ((controller_value * 2) + 127) / 254;
@@ -642,15 +645,15 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     }
     break;
 
-  case SEQ_TEMPO       :
+  case SEQ_TEMPO      :
     {
-      uint32_t bpm = PRA32_U_ControlPanel_calc_bpm(g_synth.current_controller_value(SEQ_TEMPO));
+      uint32_t bpm = PRA32_U_ControlPanel_calc_bpm(g_synth.current_controller_value(SEQ_TEMPO      ));
       std::sprintf(value_display_text, "%3lu", bpm);
       result = true;
     }
     break;
 
-  case SEQ_CLOCK_SRC   :
+  case SEQ_CLOCK_SRC  :
     {
       if        (controller_value < 64) {
         value_display_text[0] = 'I';
@@ -666,9 +669,19 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     }
     break;
 
-  case PANEL_MIDI_CH   :
+  case SEQ_LAST_STEP  :
     {
-      uint8_t midi_ch = g_synth.current_controller_value(PANEL_MIDI_CH);
+      uint8_t last_step = g_synth.current_controller_value(SEQ_LAST_STEP  );
+      last_step = (last_step + 8) >> 4;
+      if (last_step > 7) { last_step = 7; }
+      std::sprintf(value_display_text, "%3d", last_step);
+      result = true;
+    }
+    break;
+
+  case PANEL_MIDI_CH  :
+    {
+      uint8_t midi_ch = g_synth.current_controller_value(PANEL_MIDI_CH  );
 
       if (midi_ch > 15) {
         midi_ch = 15;
@@ -1226,8 +1239,13 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
     uint32_t bpm = PRA32_U_ControlPanel_calc_bpm(g_synth.current_controller_value(SEQ_TEMPO));
     s_seq_count_increment = bpm * 8192;
   } else if (control_number == SEQ_CLOCK_SRC) {
-    uint32_t seq_clock_src = g_synth.current_controller_value(SEQ_CLOCK_SRC);
+    uint32_t seq_clock_src = g_synth.current_controller_value(SEQ_CLOCK_SRC  );
     s_seq_clock_src_external = (seq_clock_src >= 64);
+  } else if (control_number == SEQ_LAST_STEP) {
+    uint8_t last_step = g_synth.current_controller_value(SEQ_LAST_STEP  );
+    last_step = (last_step + 8) >> 4;
+    if (last_step > 7) { last_step = 7; }
+    s_seq_last_step = last_step;
   } else if (control_number == PANEL_MIDI_CH) {
     uint8_t midi_ch = g_synth.current_controller_value(PANEL_MIDI_CH);
 
