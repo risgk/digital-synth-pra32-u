@@ -151,7 +151,7 @@ const uint8_t   DEFAULT_SEQ_VELO_7      = 100;
 
 const uint8_t   DEFAULT_SEQ_TEMPO       = 64 ;
 const uint8_t   DEFAULT_SEQ_CLOCK_SRC   = 0  ;
-const uint8_t   DEFAULT_SEQ_GATE_TIME   = 127;
+const uint8_t   DEFAULT_SEQ_GATE_TIME   = 60 ;
 const uint8_t   DEFAULT_SEQ_LAST_STEP   = 127;
 
 const uint8_t   DEFAULT_SEQ_PATTERN     = 0  ;

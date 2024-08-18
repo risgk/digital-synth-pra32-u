@@ -296,7 +296,7 @@ static INLINE void PRA32_U_ControlPanel_seq_start() {
   if (s_seq_pattern == 0) {  // Normal
     s_seq_step = 7;
   } else {  // Reverse
-    s_seq_step = 0;
+    s_seq_step = 1;
   }
 
   s_seq_sub_step = 23;
