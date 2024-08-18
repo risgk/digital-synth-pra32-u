@@ -55,7 +55,7 @@ static volatile uint8_t  s_panel_play_note_velocity = 127;
 static volatile bool     s_panel_play_note_gate     = false;
 static volatile bool     s_panel_play_note_trigger  = false;
 
-static volatile uint32_t s_display_draw_counter = 0;
+static volatile int32_t s_display_draw_counter = 0;
 
 static char s_display_buffer[8][21 + 1] = {
   "                     ",
@@ -113,10 +113,12 @@ static INLINE void PRA32_U_ControlPanel_update_page() {
   s_adc_control_target[2]             = current_page.control_target_c;
 
   if ((s_playing_status == PlayingStatus_Playing) || (s_playing_status == PlayingStatus_Seq)) {
-    s_display_buffer[1][20] = '*';
+    s_display_buffer[0][20] = '*';
+  } else {
+    s_display_buffer[0][20] = ' ';
   }
 
-  s_display_draw_counter = 0;
+  s_display_draw_counter = -1;
 }
 
 static INLINE uint8_t PRA32_U_ControlPanel_adc_control_value_candidate(uint32_t adc_number) {
@@ -1229,41 +1231,44 @@ INLINE void PRA32_U_ControlPanel_update_display(uint32_t loop_counter) {
   static uint32_t s_display_draw_position_y = 0;
 
   if ((loop_counter & 0x7F) == 0x40) {
-    uint32_t display_draw_counter = s_display_draw_counter;
+    int32_t display_draw_counter = s_display_draw_counter;
 
     s_display_draw_counter++;
-    if (s_display_draw_counter == 8 * 21) {
+    if (s_display_draw_counter == (8 * 21) + 1) {
       s_display_draw_counter = (6 * 21) + 11;
-    }
+    } else if ((s_display_draw_counter == 0) || (s_display_draw_counter == 8 * 21)) {
+      s_display_draw_position_y = 0;
+      s_display_draw_position_x = 20;
+    } else {
+      switch (display_draw_counter / 21) {
+      case 0:
+        s_display_draw_position_y = 1;
+        break;
+      case 1:
+        s_display_draw_position_y = 2;
+        break;
+      case 2:
+        s_display_draw_position_y = 3;
+        break;
+      case 3:
+        s_display_draw_position_y = 5;
+        break;
+      case 4:
+        s_display_draw_position_y = 6;
+        break;
+      case 5:
+        s_display_draw_position_y = 7;
+        break;
+      case 6:
+        s_display_draw_position_y = 3;
+        break;
+      case 7:
+        s_display_draw_position_y = 7;
+        break;
+      }
 
-    switch (display_draw_counter / 21) {
-    case 0:
-      s_display_draw_position_y = 1;
-      break;
-    case 1:
-      s_display_draw_position_y = 2;
-      break;
-    case 2:
-      s_display_draw_position_y = 3;
-      break;
-    case 3:
-      s_display_draw_position_y = 5;
-      break;
-    case 4:
-      s_display_draw_position_y = 6;
-      break;
-    case 5:
-      s_display_draw_position_y = 7;
-      break;
-    case 6:
-      s_display_draw_position_y = 3;
-      break;
-    case 7:
-      s_display_draw_position_y = 7;
-      break;
+      s_display_draw_position_x = display_draw_counter % 21;
     }
-
-    s_display_draw_position_x = display_draw_counter % 21;
 
     PRA32_U_ControlPanel_set_draw_position(s_display_draw_position_x, s_display_draw_position_y);
   } else if ((loop_counter & 0x7F) == 0x00) {
