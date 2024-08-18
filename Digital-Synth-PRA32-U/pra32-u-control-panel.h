@@ -249,36 +249,41 @@ static INLINE void PRA32_U_ControlPanel_update_pitch(bool progress_seq_step) {
   }
 }
 
+static INLINE void PRA32_U_ControlPanel_seq_advance_sub_step() {
+  ++s_seq_sub_step;
+
+  if (s_seq_sub_step >= 24) {
+    s_seq_sub_step = 0;
+
+    ++s_seq_step;
+    s_seq_step &= 0x7;
+
+    if (s_seq_step == 0) {
+      s_index_scale     = ((g_synth.current_controller_value(PANEL_SCALE) * 10) + 127) / 254;
+      s_panel_transpose = g_synth.current_controller_value(PANEL_TRANSPOSE) - 64;
+
+      int seq_transpose_value = g_synth.current_controller_value(SEQ_TRANSPOSE);
+      if (seq_transpose_value < 2) {
+        seq_transpose_value = 2;
+      } else if (seq_transpose_value > 126) {
+        seq_transpose_value = 126;
+      }
+      seq_transpose_value = ((seq_transpose_value - 2) / 5) - 12;
+      s_seq_transpose = seq_transpose_value;
+    }
+
+    PRA32_U_ControlPanel_update_pitch(true);
+  }
+}
+
 static INLINE void PRA32_U_ControlPanel_update_control_seq() {
   if (s_playing_status == PlayingStatus_Seq) {
     s_seq_count += s_seq_count_increment;
 
     if (s_seq_count >= 7680000) {
       s_seq_count -= 7680000;
-      ++s_seq_sub_step;
 
-      if (s_seq_sub_step >= 24) {
-        s_seq_sub_step = 0;
-
-        ++s_seq_step;
-        s_seq_step &= 0x7;
-
-        if (s_seq_step == 0) {
-          s_index_scale     = ((g_synth.current_controller_value(PANEL_SCALE) * 10) + 127) / 254;
-          s_panel_transpose = g_synth.current_controller_value(PANEL_TRANSPOSE) - 64;
-
-          int seq_transpose_value = g_synth.current_controller_value(SEQ_TRANSPOSE);
-          if (seq_transpose_value < 2) {
-            seq_transpose_value = 2;
-          } else if (seq_transpose_value > 126) {
-            seq_transpose_value = 126;
-          }
-          seq_transpose_value = ((seq_transpose_value - 2) / 5) - 12;
-          s_seq_transpose = seq_transpose_value;
-        }
-
-        PRA32_U_ControlPanel_update_pitch(true);
-      }
+      PRA32_U_ControlPanel_seq_advance_sub_step();
     }
   }
 }
@@ -967,6 +972,40 @@ INLINE void PRA32_U_ControlPanel_update_control() {
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
 
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL)
+}
+
+
+INLINE void PRA32_U_ControlPanel_on_clock()
+{
+  PRA32_U_ControlPanel_seq_advance_sub_step();
+  PRA32_U_ControlPanel_seq_advance_sub_step();
+}
+
+INLINE void PRA32_U_ControlPanel_on_start()
+{
+  if (s_play_mode == 1) {  // Seq Mode
+    if (s_playing_status == PlayingStatus_Stop) {
+      s_playing_status = PlayingStatus_Seq;
+      s_seq_step     = 7;
+      s_seq_sub_step = 23;
+      s_seq_count    = 0;
+      s_panel_play_note_gate = false;
+    }
+  }
+
+  PRA32_U_ControlPanel_update_page();
+}
+
+INLINE void PRA32_U_ControlPanel_on_stop()
+{
+  if (s_play_mode == 1) {  // Seq Mode
+    if (s_playing_status != PlayingStatus_Stop) {
+      s_playing_status = PlayingStatus_Stop;
+      s_panel_play_note_gate = false;
+    }
+  }
+
+  PRA32_U_ControlPanel_update_page();
 }
 
 INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {

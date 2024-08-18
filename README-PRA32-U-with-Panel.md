@@ -33,13 +33,14 @@
     - Panel MIDI Ch
     - Panel Play Pitch
     - Panel Play Velo
-    - Sequencer Parameters
-        - Seq Pitch 0-7
-        - Seq Velo 0-7
-        - Seq Tempo
-        - Seq Transpose [-|+]
+- Step Sequencer Parameters
+    - Seq Pitch 0-7
+    - Seq Velo 0-7
+    - Seq Tempo
+        - NOTE: Set to 0 when synchronized with external MIDI clocks
+    - Seq Transpose [-|+]
 - Other Operations
-    - Write Program 8-15, Write Panel Prms, Read Program 1-7, 8-15, Read Panel Prms, Init Panel Prms
+    - Write Program 8-15, Write Panel Prms (Panel and Step Sequencer Parameters), Read Program 1-7, 8-15, Read Panel Prms, Init Panel Prms
       - Change the value from 0-63 [Rdy] to 64-127 [Exe]
 - KNOWN ISSUE: An OLED display refresh is slow when switching pages
 - NOTE: Specifications may change significantly in the future
