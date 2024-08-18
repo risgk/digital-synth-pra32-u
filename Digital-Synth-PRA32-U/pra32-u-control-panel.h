@@ -632,7 +632,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
   case SEQ_TEMPO       :
     {
       uint32_t bpm = PRA32_U_ControlPanel_calc_bpm(g_synth.current_controller_value(SEQ_TEMPO));
-      std::sprintf(value_display_text, "%3u", bpm);
+      std::sprintf(value_display_text, "%3lu", bpm);
       result = true;
     }
     break;
