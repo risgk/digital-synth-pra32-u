@@ -41,9 +41,10 @@
         - Internal
         - External (MIDI Clock)
     - Seq Gate Time [1/6|2/6|3/6|4/6|5/6|6/6]
-    - Seq Pattern [Nrm|Rev]
+    - Seq Pattern [Nrm|Rvs|Bnc]
         - Normal
         - Reverse
+        - Bounce
     - Seq Act Steps (Active Steps)
         - bit 0: step 1
         - bit 1: step 2

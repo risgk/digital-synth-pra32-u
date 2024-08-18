@@ -31,6 +31,7 @@ static          int8_t   s_seq_transpose   = 0;
 static          uint8_t  s_seq_gate_time   = 6;
 static          uint8_t  s_seq_last_step   = 7;
 static          uint8_t  s_seq_pattern     = 0;
+static          int8_t   s_seq_pattern_dir = +1;
 static          uint8_t  s_seq_act_steps   = 127;
 
 static          uint32_t s_index_scale;
@@ -262,11 +263,35 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
         if (s_seq_step > s_seq_last_step) {
           s_seq_step = 0;
         }
-      } else {  // Reverse
+
+        s_seq_pattern_dir = +1;
+      } else if (s_seq_pattern == 1) {  // Reverse
         --s_seq_step;
 
         if (s_seq_step < 0) {
           s_seq_step = s_seq_last_step;
+        }
+
+        s_seq_pattern_dir = -1;
+      } else {  // Bounce
+        if (s_seq_pattern_dir > 0) {
+          ++s_seq_step;
+
+          if (s_seq_step > s_seq_last_step) {
+            s_seq_step = s_seq_last_step - 1;
+            s_seq_pattern_dir = -1;
+          } else {
+            s_seq_pattern_dir = +1;
+          }
+        } else {
+          --s_seq_step;
+
+          if (s_seq_step < 0) {
+            s_seq_step = 1;
+            s_seq_pattern_dir = +1;
+          } else {
+            s_seq_pattern_dir = -1;
+          }
         }
       }
     } while ((s_seq_step != 0) && (((1 << (s_seq_step - 1)) & s_seq_act_steps) == 0));
@@ -295,8 +320,13 @@ static INLINE void PRA32_U_ControlPanel_seq_start() {
   s_playing_status = PlayingStatus_Seq;
   if (s_seq_pattern == 0) {  // Normal
     s_seq_step = 7;
-  } else {  // Reverse
+    s_seq_pattern_dir = +1;
+  } else if (s_seq_pattern == 1) {  // Reverse
     s_seq_step = 1;
+    s_seq_pattern_dir = -1;
+  } else {  // Bounce
+    s_seq_step = 1;
+    s_seq_pattern_dir = -1;
   }
 
   s_seq_sub_step = 23;
@@ -690,7 +720,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     break;
   case SEQ_GATE_TIME  :
     {
-      char ary[7][5] = {"1/6","2/6","3/6","4/6","5/6","6/6"};
+      char ary[6][5] = {"1/6","2/6","3/6","4/6","5/6","6/6"};
       uint32_t index = ((controller_value * 10) + 127) / 254;
       std::strcpy(value_display_text, ary[index]);
       result = true;
@@ -707,8 +737,8 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     break;
   case SEQ_PATTERN    :
     {
-      char ary[2][5] = {"Nrm","Rev"};
-      uint32_t index = ((controller_value * 2) + 127) / 254;
+      char ary[3][5] = {"Nrm","Rvs","Bnc"};
+      uint32_t index = ((controller_value * 4) + 127) / 254;
       if (controller_value < 2) { index = controller_value; }
       std::strcpy(value_display_text, ary[index]);
       result = true;
@@ -1287,7 +1317,7 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
     s_seq_last_step = last_step;
   } else if (control_number == SEQ_PATTERN    ) {
     uint8_t pattern = g_synth.current_controller_value(SEQ_PATTERN    );
-    s_seq_pattern = (pattern >= 64);
+    s_seq_pattern = ((pattern * 4) + 127) / 254;
   } else if (control_number == SEQ_ACT_STEPS  ) {
     s_seq_act_steps = g_synth.current_controller_value(SEQ_ACT_STEPS  );
   } else if (control_number == PANEL_MIDI_CH) {
