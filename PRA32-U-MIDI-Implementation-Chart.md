@@ -107,8 +107,8 @@
 | Common       : Song Sel       | x             | x             |                                     |
 |              : Tune           | x             | x             |                                     |
 +-------------------------------+---------------+---------------+-------------------------------------+
-| System       : Clock          | x $6          | x $6          |                                     |
-| Real Time    : Commands       | x $6          | x $6          | Compatible only with Start/Stop     |
+| System       : Clock          | x $6          | x             |                                     |
+| Real Time    : Commands       | x $6          | x             | Compatible only with Start/Stop     |
 +-------------------------------+---------------+---------------+-------------------------------------+
 | Aux          : All Sound OFF  | x             | o 120         |                                     |
 | Messages     : Reset All      | x             | o 121         |                                     |
