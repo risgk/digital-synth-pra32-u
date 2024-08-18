@@ -37,6 +37,7 @@
     - Seq Pitch 0-7
     - Seq Velo 0-7
     - Seq Tempo
+        - BPM 30-240
     - Seq Clock Src [Int|Ext]
         - Internal
         - External (MIDI Clock)

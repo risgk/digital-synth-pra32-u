@@ -72,7 +72,9 @@ static char s_display_buffer[8][21 + 1] = {
 static INLINE uint32_t PRA32_U_ControlPanel_calc_bpm(uint8_t tempo_control_value) {
   uint32_t bpm = tempo_control_value + 56;
 
-  if (bpm > 126) {
+  if (bpm < 82) {
+    bpm -= 82 - bpm;
+  } else if (bpm > 126) {
     bpm += bpm - 126;
   }
 
@@ -744,7 +746,13 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
       result = true;
     }
     break;
-
+  case SEQ_ACT_STEPS  :
+    {
+      uint8_t act_steps = g_synth.current_controller_value(SEQ_ACT_STEPS  );
+      std::sprintf(value_display_text, "x%02X", act_steps);
+      result = true;
+    }
+    break;
   case PANEL_MIDI_CH  :
     {
       uint8_t midi_ch = g_synth.current_controller_value(PANEL_MIDI_CH  );
