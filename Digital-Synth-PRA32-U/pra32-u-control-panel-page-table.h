@@ -64,9 +64,10 @@ PRA32_U_ControlPanelPage g_control_panel_page_table_b[] = {
   { "Page=B-10 ", "Seq 7     ",   "Seq       ", "Pitch 7   ", SEQ_PITCH_7    ,   "Seq       ", "Velo 7    ", SEQ_VELO_7     ,   "Panel     ", "Pitch     ", PANEL_PLAY_PIT , },
   { "Page=B-11 ", "Seq a     ",   "Seq       ", "Tempo     ", SEQ_TEMPO      ,   "Seq       ", "Clock Src ", SEQ_CLOCK_SRC  ,   "Panel     ", "Pitch     ", PANEL_PLAY_PIT , },
   { "Page=B-12 ", "Seq b     ",   "Seq       ", "Gate Time ", SEQ_GATE_TIME  ,   "Seq       ", "Last Step ", SEQ_LAST_STEP  ,   "Panel     ", "Pitch     ", PANEL_PLAY_PIT , },
-  { "Page=B-13 ", "Seq c     ",   "Seq       ", "Transpose ", SEQ_TRANSPOSE  ,   "          ", "          ", 0xFF           ,   "Panel     ", "Pitch     ", PANEL_PLAY_PIT , },
-  { "Page=B-14 ", "Control a ",   "Modulation", "          ", MODULATION     ,   "          ", "          ", 0xFF           ,   "Panel     ", "Pitch     ", PANEL_PLAY_PIT , },
-  { "Page=B-15 ", "Control b ",   "Breath    ", "Controller", BTH_CONTROLLER ,   "Sustain   ", "Pedal     ", SUSTAIN_PEDAL  ,   "Panel     ", "Pitch     ", PANEL_PLAY_PIT , },
+  { "Page=B-13 ", "Seq c     ",   "Seq       ", "Pattern   ", SEQ_PATTERN    ,   "Seq       ", "Act Steps ", SEQ_ACT_STEPS  ,   "Panel     ", "Pitch     ", PANEL_PLAY_PIT , },
+  { "Page=B-14 ", "Seq d     ",   "Seq       ", "Transpose ", SEQ_TRANSPOSE  ,   "          ", "          ", 0xFF           ,   "Panel     ", "Pitch     ", PANEL_PLAY_PIT , },
+  { "Page=B-15 ", "Control a ",   "Modulation", "          ", MODULATION     ,   "          ", "          ", 0xFF           ,   "Panel     ", "Pitch     ", PANEL_PLAY_PIT , },
+  { "Page=B-16 ", "Control b ",   "Breath    ", "Controller", BTH_CONTROLLER ,   "Sustain   ", "Pedal     ", SUSTAIN_PEDAL  ,   "Panel     ", "Pitch     ", PANEL_PLAY_PIT , },
 };
 
 PRA32_U_ControlPanelPage g_control_panel_page_table_c[] = {

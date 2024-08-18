@@ -211,6 +211,8 @@ const uint8_t   SEQ_CLOCK_SRC   = 128 + 49;
 const uint8_t   SEQ_GATE_TIME   = 128 + 50;
 const uint8_t   SEQ_LAST_STEP   = 128 + 51;
 
+const uint8_t   SEQ_PATTERN     = 128 + 52;
+const uint8_t   SEQ_ACT_STEPS   = 128 + 53;
 const uint8_t   SEQ_TRANSPOSE   = 128 + 54;
 
 const uint8_t   RD_PROGRAM_0    = 128 + 64;

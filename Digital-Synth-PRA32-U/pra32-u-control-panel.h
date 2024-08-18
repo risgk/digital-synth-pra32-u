@@ -25,11 +25,14 @@ static          uint32_t s_next_key_current_value;
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL)
 static          uint32_t s_play_key_current_value;
 
-static          uint8_t  s_play_mode;
-static          int8_t   s_panel_transpose;
-static          int8_t   s_seq_transpose;
-static          uint8_t  s_seq_gate_time = 6;
-static          uint8_t  s_seq_last_step = 7;
+static          uint8_t  s_play_mode       = 0;
+static          int8_t   s_panel_transpose = 0;
+static          int8_t   s_seq_transpose   = 0;
+static          uint8_t  s_seq_gate_time   = 6;
+static          uint8_t  s_seq_last_step   = 7;
+static          uint8_t  s_seq_pattern     = 0;
+static          uint8_t  s_seq_act_steps   = 127;
+
 static          uint32_t s_index_scale;
 
 enum PlayingStatus {
@@ -40,7 +43,7 @@ enum PlayingStatus {
 
 static          uint32_t s_playing_status = PlayingStatus_Stop;
 
-static          uint32_t s_seq_step               = 7;
+static          int32_t  s_seq_step               = 7;
 static          uint32_t s_seq_sub_step           = 23;
 static          uint32_t s_seq_count              = 0;
 static          uint32_t s_seq_count_increment    = 0;
@@ -252,10 +255,21 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
   if (s_seq_sub_step >= 12) {
     s_seq_sub_step = 0;
 
-    ++s_seq_step;
-    if (s_seq_step > s_seq_last_step) {
-      s_seq_step = 0;
-    }
+    do {
+      if (s_seq_pattern == 0) {  // Normal
+        ++s_seq_step;
+
+        if (s_seq_step > s_seq_last_step) {
+          s_seq_step = 0;
+        }
+      } else {  // Reverse
+        --s_seq_step;
+
+        if (s_seq_step < 0) {
+          s_seq_step = s_seq_last_step;
+        }
+      }
+    } while ((s_seq_step != 0) && (((1 << (s_seq_step - 1)) & s_seq_act_steps) == 0));
 
     if (s_seq_step == 0) {
       s_index_scale     = ((g_synth.current_controller_value(PANEL_SCALE) * 10) + 127) / 254;
@@ -279,7 +293,12 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
 
 static INLINE void PRA32_U_ControlPanel_seq_start() {
   s_playing_status = PlayingStatus_Seq;
-  s_seq_step     = 7;
+  if (s_seq_pattern == 0) {  // Normal
+    s_seq_step = 7;
+  } else {  // Reverse
+    s_seq_step = 0;
+  }
+
   s_seq_sub_step = 23;
   s_seq_count    = 0;
   s_panel_play_note_gate = false;
@@ -686,6 +705,16 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
       result = true;
     }
     break;
+  case SEQ_PATTERN    :
+    {
+      char ary[2][5] = {"Nrm","Rev"};
+      uint32_t index = ((controller_value * 2) + 127) / 254;
+      if (controller_value < 2) { index = controller_value; }
+      std::strcpy(value_display_text, ary[index]);
+      result = true;
+    }
+    break;
+
   case PANEL_MIDI_CH  :
     {
       uint8_t midi_ch = g_synth.current_controller_value(PANEL_MIDI_CH  );
@@ -1256,6 +1285,11 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
     last_step = (last_step + 8) >> 4;
     if (last_step > 7) { last_step = 7; }
     s_seq_last_step = last_step;
+  } else if (control_number == SEQ_PATTERN    ) {
+    uint8_t pattern = g_synth.current_controller_value(SEQ_PATTERN    );
+    s_seq_pattern = (pattern >= 64);
+  } else if (control_number == SEQ_ACT_STEPS  ) {
+    s_seq_act_steps = g_synth.current_controller_value(SEQ_ACT_STEPS  );
   } else if (control_number == PANEL_MIDI_CH) {
     uint8_t midi_ch = g_synth.current_controller_value(PANEL_MIDI_CH);
 
