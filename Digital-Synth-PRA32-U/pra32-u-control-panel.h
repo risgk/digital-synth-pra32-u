@@ -324,7 +324,7 @@ static INLINE void PRA32_U_ControlPanel_seq_start() {
     s_seq_step = 7;
     s_seq_pattern_dir = +1;
   } else if (s_seq_pattern == 1) {  // Reverse
-    s_seq_step = 1;
+    s_seq_step = 0;
     s_seq_pattern_dir = -1;
   } else {  // Bounce
     s_seq_step = 0;
