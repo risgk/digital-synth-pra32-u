@@ -280,7 +280,7 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
           ++s_seq_step;
 
           if (s_seq_step > s_seq_last_step) {
-            s_seq_step = s_seq_last_step - 1;
+            s_seq_step = s_seq_last_step;
             s_seq_pattern_dir = -1;
           } else {
             s_seq_pattern_dir = +1;
@@ -289,7 +289,7 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
           --s_seq_step;
 
           if (s_seq_step < 0) {
-            s_seq_step = 1;
+            s_seq_step = 0;
             s_seq_pattern_dir = +1;
           } else {
             s_seq_pattern_dir = -1;
@@ -327,7 +327,7 @@ static INLINE void PRA32_U_ControlPanel_seq_start() {
     s_seq_step = 1;
     s_seq_pattern_dir = -1;
   } else {  // Bounce
-    s_seq_step = 1;
+    s_seq_step = 0;
     s_seq_pattern_dir = -1;
   }
 
