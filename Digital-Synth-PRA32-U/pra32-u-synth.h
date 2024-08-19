@@ -139,15 +139,15 @@ const uint8_t   DEFAULT_SEQ_PITCH_5     = 89 ;
 const uint8_t   DEFAULT_SEQ_PITCH_6     = 109;
 const uint8_t   DEFAULT_SEQ_PITCH_7     = 124;
 
-const uint8_t   DEFAULT_SEQ_VELO_0      = 100;
-const uint8_t   DEFAULT_SEQ_VELO_1      = 100;
+const uint8_t   DEFAULT_SEQ_VELO_0      = 120;
+const uint8_t   DEFAULT_SEQ_VELO_1      = 90 ;
 const uint8_t   DEFAULT_SEQ_VELO_2      = 100;
-const uint8_t   DEFAULT_SEQ_VELO_3      = 100;
+const uint8_t   DEFAULT_SEQ_VELO_3      = 90 ;
 
-const uint8_t   DEFAULT_SEQ_VELO_4      = 100;
-const uint8_t   DEFAULT_SEQ_VELO_5      = 100;
+const uint8_t   DEFAULT_SEQ_VELO_4      = 110;
+const uint8_t   DEFAULT_SEQ_VELO_5      = 90 ;
 const uint8_t   DEFAULT_SEQ_VELO_6      = 100;
-const uint8_t   DEFAULT_SEQ_VELO_7      = 100;
+const uint8_t   DEFAULT_SEQ_VELO_7      = 90 ;
 
 const uint8_t   DEFAULT_SEQ_TEMPO       = 64 ;
 const uint8_t   DEFAULT_SEQ_CLOCK_SRC   = 0  ;

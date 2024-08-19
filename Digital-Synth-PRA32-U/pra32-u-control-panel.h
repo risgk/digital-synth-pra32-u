@@ -112,12 +112,6 @@ static INLINE void PRA32_U_ControlPanel_update_page() {
   std::memcpy(&s_display_buffer[2][11], current_page.control_target_c_name_line_1, 10);
   s_adc_control_target[2]             = current_page.control_target_c;
 
-  if ((s_playing_status == PlayingStatus_Playing) || (s_playing_status == PlayingStatus_Seq)) {
-    s_display_buffer[0][20] = '*';
-  } else {
-    s_display_buffer[0][20] = ' ';
-  }
-
   s_display_draw_counter = -1;
 }
 
@@ -300,6 +294,8 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
       }
     } while ((s_seq_step != 0) && (((1 << (s_seq_step - 1)) & s_seq_act_steps) == 0));
 
+    s_display_buffer[0][20] = '0' + s_seq_step;
+
     if (s_seq_step == 0) {
       s_index_scale     = ((g_synth.current_controller_value(PANEL_SCALE) * 10) + 127) / 254;
       s_panel_transpose = g_synth.current_controller_value(PANEL_TRANSPOSE) - 64;
@@ -322,6 +318,7 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
 
 static INLINE void PRA32_U_ControlPanel_seq_start() {
   s_playing_status = PlayingStatus_Seq;
+
   if (s_seq_pattern == 0) {  // Normal
     s_seq_step = 7;
     s_seq_pattern_dir = +1;
@@ -340,6 +337,7 @@ static INLINE void PRA32_U_ControlPanel_seq_start() {
 
 static INLINE void PRA32_U_ControlPanel_seq_stop() {
   s_playing_status = PlayingStatus_Stop;
+  s_display_buffer[0][20] = ' ';
   s_panel_play_note_gate = false;
 }
 
@@ -1037,6 +1035,7 @@ INLINE void PRA32_U_ControlPanel_update_control() {
         // Play key pressed
         if (s_play_mode == 0) {  // Normal Mode
           s_playing_status = PlayingStatus_Playing;
+          s_display_buffer[0][20] = '*';
           s_panel_play_note_gate    = true;
           s_panel_play_note_trigger = true;
         }
@@ -1044,6 +1043,7 @@ INLINE void PRA32_U_ControlPanel_update_control() {
         // Play key released
         if (s_play_mode == 0) {  // Normal Mode
           s_playing_status = PlayingStatus_Stop;
+          s_display_buffer[0][20] = ' ';
           s_panel_play_note_gate = false;
         } else {  // Seq Mode
           if (s_playing_status == PlayingStatus_Stop) {
@@ -1234,13 +1234,13 @@ INLINE void PRA32_U_ControlPanel_update_display(uint32_t loop_counter) {
     int32_t display_draw_counter = s_display_draw_counter;
 
     s_display_draw_counter++;
-    if (s_display_draw_counter == (8 * 21) + 1) {
-      s_display_draw_counter = (6 * 21) + 11;
-    } else if ((s_display_draw_counter == 0) || (s_display_draw_counter == 8 * 21)) {
+    if (s_display_draw_counter == (8 * 22) + 0) {
+      s_display_draw_counter = (6 * 22) + 10;
+    } else if (s_display_draw_counter == 0) {
       s_display_draw_position_y = 0;
       s_display_draw_position_x = 20;
     } else {
-      switch (display_draw_counter / 21) {
+      switch (display_draw_counter / 22) {
       case 0:
         s_display_draw_position_y = 1;
         break;
@@ -1267,7 +1267,17 @@ INLINE void PRA32_U_ControlPanel_update_display(uint32_t loop_counter) {
         break;
       }
 
-      s_display_draw_position_x = display_draw_counter % 21;
+      s_display_draw_position_x = display_draw_counter % 22;
+
+      if (s_display_draw_position_x == 0) {
+        s_display_draw_position_y = 0;
+        s_display_draw_position_x = 20;
+      } else if (s_display_draw_position_x == 11) {
+        s_display_draw_position_y = 0;
+        s_display_draw_position_x = 20;
+      } else {
+        --s_display_draw_position_x;
+      }
     }
 
     PRA32_U_ControlPanel_set_draw_position(s_display_draw_position_x, s_display_draw_position_y);
@@ -1309,6 +1319,7 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
       s_play_mode = new_play_mode;
 
       s_playing_status = PlayingStatus_Stop;
+      s_display_buffer[0][20] = ' ';
       s_panel_play_note_gate = false;
 
       PRA32_U_ControlPanel_update_pitch(false);
