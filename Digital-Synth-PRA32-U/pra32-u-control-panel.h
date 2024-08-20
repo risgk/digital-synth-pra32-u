@@ -74,8 +74,14 @@ static INLINE uint32_t PRA32_U_ControlPanel_calc_bpm(uint8_t tempo_control_value
 
   if (bpm < 82) {
     bpm -= 82 - bpm;
-  } else if (bpm > 126) {
+  }
+
+  if (bpm > 126) {
     bpm += bpm - 126;
+  }
+
+  if (bpm > 180) {
+    bpm += bpm - 180;
   }
 
   return bpm;
