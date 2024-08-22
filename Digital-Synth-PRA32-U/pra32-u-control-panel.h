@@ -625,7 +625,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
       uint32_t index_scale = ((g_synth.current_controller_value(PANEL_SCALE) * 10) + 127) / 254;
 
       if        (index_scale == 5) {
-        char ary[12][5] = { " C", "Db", " D", "Eb", " E", " F", "Gb", " G", "Ab", " A", "Bb", " B" };
+        char ary[12][5] = { " C", "C#", " D", "D#", " E", " F", "F#", " G", "G#", " A", "A#", " B" };
 
         uint32_t quotient  = controller_value / 12;
         uint32_t remainder = controller_value % 12;
@@ -648,10 +648,10 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
         std::strcpy(value_display_text, ary_major[index]);
       } else if (index_scale == 1) {
        char ary_minor[53][5] =
-          { " C3", " C3", " C3", " C3", " C3", " D3", " D3", " D3", "Eb3", "Eb3", "Eb3", " F3", " F3", " F3", " F3",
-                                 " G3", " G3", " G3", "Ab3", "Ab3", "Ab3", "Bb3", "Bb3", "Bb3", "Bb3", " C4", " C4",
-                                 " C4", " C4", " D4", " D4", " D4", "Eb4", "Eb4", "Eb4", " F4", " F4", " F4", " F4",
-                                 " G4", " G4", " G4", "Ab4", "Ab4", "Ab4", "Bb4", "Bb4", "Bb4", "Bb4", " C4", " C5", " C5", " C5" };
+          { " C3", " C3", " C3", " C3", " C3", " D3", " D3", " D3", "D#3", "D#3", "D#3", " F3", " F3", " F3", " F3",
+                                 " G3", " G3", " G3", "G#3", "G#3", "G#3", "A#3", "A#3", "A#3", "A#3", " C4", " C4",
+                                 " C4", " C4", " D4", " D4", " D4", "D#4", "D#4", "D#4", " F4", " F4", " F4", " F4",
+                                 " G4", " G4", " G4", "G#4", "G#4", "G#4", "A#4", "A#4", "A#4", "A#4", " C4", " C5", " C5", " C5" };
         uint32_t index = (((g_synth.current_controller_value(control_target) + 3) * 2) + 1) / 5;
         std::strcpy(value_display_text, ary_minor[index]);
       } else if (index_scale == 2) {
@@ -664,18 +664,18 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
         std::strcpy(value_display_text, ary_major_pentatonic[index]);
       } else if (index_scale == 3) {
        char ary_minor_pentatonic[53][5] =
-          { " C3", " C3", " C3", " C3", " C3", "Eb3", "Eb3", "Eb3", "Eb3", "Eb3", " F3", " F3", " F3", " F3", " G3",
-                                 " G3", " G3", " G3", " G3", "Bb3", "Bb3", "Bb3", "Bb3", "Bb3", " C4", " C4", " C4",
-                                 " C4", " C4", "Eb4", "Eb4", "Eb4", "Eb4", "Eb4", " F4", " F4", " F4", " F4", " G4",
-                                 " G4", " G4", " G4", " G4", "Bb4", "Bb4", "Bb4", "Bb4", "Bb4", " C5", " C5", " C5", " C5", " C5" };
+          { " C3", " C3", " C3", " C3", " C3", "D#3", "D#3", "D#3", "D#3", "D#3", " F3", " F3", " F3", " F3", " G3",
+                                 " G3", " G3", " G3", " G3", "A#3", "A#3", "A#3", "A#3", "A#3", " C4", " C4", " C4",
+                                 " C4", " C4", "D#4", "D#4", "D#4", "D#4", "D#4", " F4", " F4", " F4", " F4", " G4",
+                                 " G4", " G4", " G4", " G4", "A#4", "A#4", "A#4", "A#4", "A#4", " C5", " C5", " C5", " C5", " C5" };
         uint32_t index = (((g_synth.current_controller_value(control_target) + 3) * 2) + 1) / 5;
         std::strcpy(value_display_text, ary_minor_pentatonic[index]);
       } else if (index_scale == 4) {
        char ary_chromatic[53][5] =
-          { " C3", " C3", " C3", " C3", "Db3", "Db3", " D3", " D3", "Eb3", "Eb3", " E3", " E3", " F3", " F3", "Gb3",
-                                 "Gb3", " G3", " G3", "Ab3", "Ab3", " A3", " A3", "Bb3", "Bb3", " B3", " B3", " C4",
-                                 " C4", "Db4", "Db4", " D4", " D4", "Eb4", "Eb4", " E4", " E4", " F4", " F4", "Gb4",
-                                 "Gb4", " G4", " G4", "Ab4", "Ab4", " A4", " A4", "Bb4", "Bb4", " B4", " B4", " C5", " C5", " C5" };
+          { " C3", " C3", " C3", " C3", "C#3", "C#3", " D3", " D3", "D#3", "D#3", " E3", " E3", " F3", " F3", "F#3",
+                                 "F#3", " G3", " G3", "G#3", "G#3", " A3", " A3", "A#3", "A#3", " B3", " B3", " C4",
+                                 " C4", "C#4", "C#4", " D4", " D4", "D#4", "D#4", " E4", " E4", " F4", " F4", "F#4",
+                                 "F#4", " G4", " G4", "G#4", "G#4", " A4", " A4", "A#4", "A#4", " B4", " B4", " C5", " C5", " C5" };
         uint32_t index = (((g_synth.current_controller_value(control_target) + 3) * 2) + 1) / 5;
         std::strcpy(value_display_text, ary_chromatic[index]);
       }
