@@ -51,8 +51,8 @@ PRA32_U_ControlPanelPage g_control_panel_page_table_a[] = {
 };
 
 PRA32_U_ControlPanelPage g_control_panel_page_table_b[] = {
-  { "Page=B-00 ", "Panel a   ",   "Panel     ", "Play Pitch", PANEL_PLAY_PIT ,   "Panel     ", "Play Velo ", PANEL_PLAY_VELO,   "Panel     ", "Pitch     ", PANEL_PLAY_PIT , },
-  { "Page=B-01 ", "Panel b   ",   "Panel     ", "Play Mode ", PANEL_PLAY_MODE,   "Panel     ", "MIDI Ch   ", PANEL_MIDI_CH  ,   "Panel     ", "Pitch     ", PANEL_PLAY_PIT , },
+  { "Page=B-00 ", "Panel a   ",   "Panel     ", "Play Mode ", PANEL_PLAY_MODE,   "Panel     ", "MIDI Ch   ", PANEL_MIDI_CH  ,   "Panel     ", "Pitch     ", PANEL_PLAY_PIT , },
+  { "Page=B-01 ", "Panel b   ",   "Panel     ", "Play Pitch", PANEL_PLAY_PIT ,   "Panel     ", "Play Velo ", PANEL_PLAY_VELO,   "Panel     ", "Pitch     ", PANEL_PLAY_PIT , },
   { "Page=B-02 ", "Panel c   ",   "Panel     ", "Scale     ", PANEL_SCALE    ,   "Panel     ", "Transpose ", PANEL_TRANSPOSE,   "Panel     ", "Pitch     ", PANEL_PLAY_PIT , },
   { "Page=B-03 ", "Seq a     ",   "Seq       ", "Pattern   ", SEQ_PATTERN    ,   "Seq       ", "Act Steps ", SEQ_ACT_STEPS  ,   "Panel     ", "Pitch     ", PANEL_PLAY_PIT , },
   { "Page=B-04 ", "Seq b     ",   "Seq       ", "Tempo     ", SEQ_TEMPO      ,   "Seq       ", "Clock Src ", SEQ_CLOCK_SRC  ,   "Panel     ", "Pitch     ", PANEL_PLAY_PIT , },
