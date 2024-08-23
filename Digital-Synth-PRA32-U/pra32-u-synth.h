@@ -135,7 +135,7 @@ const uint8_t   DEFAULT_SEQ_PITCH_2     = 97 ;
 const uint8_t   DEFAULT_SEQ_PITCH_3     = 117;
 
 const uint8_t   DEFAULT_SEQ_PITCH_4     = 72 ;
-const uint8_t   DEFAULT_SEQ_PITCH_5     = 89 ;
+const uint8_t   DEFAULT_SEQ_PITCH_5     = 91 ;
 const uint8_t   DEFAULT_SEQ_PITCH_6     = 107;
 const uint8_t   DEFAULT_SEQ_PITCH_7     = 122;
 
