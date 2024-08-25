@@ -42,7 +42,7 @@
             - bit 0: Step 1 Active, ,,,, bit 6: Step 7 Active
         - Seq Last Step
         - Seq Tempo
-            - BPM 60-240
+            - BPM 30-300
         - Seq Gate Time [1/6|2/6|3/6|4/6|5/6|6/6]
         - Seq Transpose [-|+]
         - Seq Clock Src [Int|Ext]

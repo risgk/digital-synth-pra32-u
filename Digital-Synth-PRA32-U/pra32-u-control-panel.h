@@ -72,12 +72,16 @@ static char s_display_buffer[8][21 + 1] = {
 static INLINE uint32_t PRA32_U_ControlPanel_calc_bpm(uint8_t tempo_control_value) {
   uint32_t bpm = tempo_control_value + 56;
 
-  if (bpm < 60) {
-    bpm = 60;
+  if (bpm < 82) {
+    bpm -= 82 - bpm;
   }
 
   if (bpm > 126) {
     bpm += bpm - 126;
+  }
+
+  if (bpm > 180) {
+    bpm += bpm - 180;
   }
 
   return bpm;
