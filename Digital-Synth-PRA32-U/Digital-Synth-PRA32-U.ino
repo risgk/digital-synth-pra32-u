@@ -2,7 +2,7 @@
  * Digital Synth PRA32-U
  */
 
-#define PRA32_U_VERSION                       "v2.3.1    "
+#define PRA32_U_VERSION                       "v2.4.0    "
 
 //#define PRA32_U_USE_DEBUG_PRINT               // Serial1
 
@@ -46,10 +46,12 @@
 
 #define PRA32_U_USE_CONTROL_PANEL_KEY_INPUT     // Use tactile switches
 #define PRA32_U_KEY_INPUT_ACTIVE_LEVEL          (HIGH)
+#define PRA32_U_KEY_INPUT_PIN_MODE              (INPUT_PULLDOWN)
 #define PRA32_U_KEY_INPUT_PREV_KEY_PIN          (16)
 #define PRA32_U_KEY_INPUT_NEXT_KEY_PIN          (18)
 #define PRA32_U_KEY_INPUT_PLAY_KEY_PIN          (20)
 #define PRA32_U_KEY_ANTI_CHATTERING_WAIT        (15)
+#define PRA32_U_KEY_LONG_PRESS_WAIT             (375)
 
 #define PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT  // Use ADC0, ADC1, and ADC2
 #define PRA32_U_ANALOG_INPUT_REVERSED           (true)
@@ -67,18 +69,21 @@
 
 ////////////////////////////////////////////////////////////////
 
+uint8_t g_midi_ch = PRA32_U_MIDI_CH;
+
 #include "hardware/adc.h"
 
 #if defined(PRA32_U_USE_CONTROL_PANEL)
 extern void PRA32_U_ControlPanel_on_control_change(uint8_t control_number);
+extern void PRA32_U_ControlPanel_on_clock();
+extern void PRA32_U_ControlPanel_on_start();
+extern void PRA32_U_ControlPanel_on_stop();
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
 
 #include "pra32-u-common.h"
 #include "pra32-u-synth.h"
 
 PRA32_U_Synth g_synth;
-
-#include "pra32-u-control-panel.h"
 
 #include <MIDI.h>
 #if defined(PRA32_U_USE_USB_MIDI)
@@ -90,6 +95,8 @@ MIDI_CREATE_INSTANCE(Adafruit_USBD_MIDI, usbd_midi, USB_MIDI);
 #if defined(PRA32_U_USE_UART_MIDI)
 MIDI_CREATE_INSTANCE(HardwareSerial, Serial2, UART_MIDI);
 #endif
+
+#include "pra32-u-control-panel.h"
 
 #if defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
 #include <PWMAudio.h>
@@ -108,8 +115,11 @@ static volatile uint32_t s_debug_measurement_max1_us     = 0;
 void handleNoteOn(byte channel, byte pitch, byte velocity);
 void handleNoteOff(byte channel, byte pitch, byte velocity);
 void handleControlChange(byte channel, byte number, byte value);
-void handleHandleProgramChange(byte channel, byte number);
-void handleHandlePitchBend(byte channel, int bend);
+void handleProgramChange(byte channel, byte number);
+void handlePitchBend(byte channel, int bend);
+void handleClock();
+void handleStart();
+void handleStop();
 void writeProgramsToFlashAndEndSketch();
 
 void __not_in_flash_func(setup1)() {
@@ -164,6 +174,8 @@ void __not_in_flash_func(loop1)() {
 void __not_in_flash_func(setup)() {
   g_i2s_output.setSysClk(SAMPLING_RATE);
 #if defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+  pinMode(PRA32_U_PWM_AUDIO_L_PIN, OUTPUT_12MA);
+  pinMode(PRA32_U_PWM_AUDIO_R_PIN, OUTPUT_12MA);
 #if ((PRA32_U_PWM_AUDIO_L_PIN + 1) == PRA32_U_PWM_AUDIO_R_PIN) && ((PRA32_U_PWM_AUDIO_L_PIN % 2) == 0)
   g_pwm_l.setStereo(true);
   g_pwm_l.setBuffers(PRA32_U_I2S_BUFFERS, PRA32_U_I2S_BUFFER_WORDS);
@@ -205,8 +217,11 @@ void __not_in_flash_func(setup)() {
   USB_MIDI.setHandleNoteOn(handleNoteOn);
   USB_MIDI.setHandleNoteOff(handleNoteOff);
   USB_MIDI.setHandleControlChange(handleControlChange);
-  USB_MIDI.setHandleProgramChange(handleHandleProgramChange);
-  USB_MIDI.setHandlePitchBend(handleHandlePitchBend);
+  USB_MIDI.setHandleProgramChange(handleProgramChange);
+  USB_MIDI.setHandlePitchBend(handlePitchBend);
+  USB_MIDI.setHandleClock(handleClock);
+  USB_MIDI.setHandleStart(handleStart);
+  USB_MIDI.setHandleStop(handleStop);
   USB_MIDI.begin(MIDI_CHANNEL_OMNI);
   USB_MIDI.turnThruOff();
 #endif  // defined(PRA32_U_USE_USB_MIDI)
@@ -217,8 +232,11 @@ void __not_in_flash_func(setup)() {
   UART_MIDI.setHandleNoteOn(handleNoteOn);
   UART_MIDI.setHandleNoteOff(handleNoteOff);
   UART_MIDI.setHandleControlChange(handleControlChange);
-  UART_MIDI.setHandleProgramChange(handleHandleProgramChange);
-  UART_MIDI.setHandlePitchBend(handleHandlePitchBend);
+  UART_MIDI.setHandleProgramChange(handleProgramChange);
+  UART_MIDI.setHandlePitchBend(handlePitchBend);
+  UART_MIDI.setHandleClock(handleClock);
+  UART_MIDI.setHandleStart(handleStart);
+  UART_MIDI.setHandleStop(handleStop);
   UART_MIDI.begin(MIDI_CHANNEL_OMNI);
   UART_MIDI.turnThruOff();
   Serial2.begin(PRA32_U_UART_MIDI_SPEED);
@@ -317,14 +335,14 @@ void __not_in_flash_func(loop)() {
 
 void __not_in_flash_func(handleNoteOn)(byte channel, byte pitch, byte velocity)
 {
-  if ((channel - 1) == PRA32_U_MIDI_CH) {
+  if ((channel - 1) == g_midi_ch) {
     g_synth.note_on(pitch, velocity);
   }
 }
 
 void __not_in_flash_func(handleNoteOff)(byte channel, byte pitch, byte velocity)
 {
-  if ((channel - 1) == PRA32_U_MIDI_CH) {
+  if ((channel - 1) == g_midi_ch) {
     (void) velocity;
     g_synth.note_off(pitch);
   }
@@ -332,21 +350,42 @@ void __not_in_flash_func(handleNoteOff)(byte channel, byte pitch, byte velocity)
 
 void __not_in_flash_func(handleControlChange)(byte channel, byte number, byte value)
 {
-  if ((channel - 1) == PRA32_U_MIDI_CH) {
+  if ((channel - 1) == g_midi_ch) {
     g_synth.control_change(number, value);
   }
 }
 
-void __not_in_flash_func(handleHandleProgramChange)(byte channel, byte number)
+void __not_in_flash_func(handleProgramChange)(byte channel, byte number)
 {
-  if ((channel - 1) == PRA32_U_MIDI_CH) {
+  if ((channel - 1) == g_midi_ch) {
     g_synth.program_change(number);
   }
 }
 
-void __not_in_flash_func(handleHandlePitchBend)(byte channel, int bend)
+void __not_in_flash_func(handlePitchBend)(byte channel, int bend)
 {
-  if ((channel - 1) == PRA32_U_MIDI_CH) {
+  if ((channel - 1) == g_midi_ch) {
     g_synth.pitch_bend((bend + 8192) & 0x7F, (bend + 8192) >> 7);
   }
+}
+
+void __not_in_flash_func(handleClock)()
+{
+#if defined(PRA32_U_USE_CONTROL_PANEL)
+  PRA32_U_ControlPanel_on_clock();
+#endif  // defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
+}
+
+void __not_in_flash_func(handleStart)()
+{
+#if defined(PRA32_U_USE_CONTROL_PANEL)
+  PRA32_U_ControlPanel_on_start();
+#endif  // defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
+}
+
+void __not_in_flash_func(handleStop)()
+{
+#if defined(PRA32_U_USE_CONTROL_PANEL)
+  PRA32_U_ControlPanel_on_stop();
+#endif  // defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
 }

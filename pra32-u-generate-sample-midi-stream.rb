@@ -27,24 +27,24 @@ def wait(length)
 end
 
 def play_mono_a(oct)
-  play_mono(12, oct, 100)
-  play_mono(16, oct, 100)
-  play_mono(14, oct, 100)
-  play_mono(17, oct, 100)
+  play_mono(12, oct, 64)
+  play_mono(16, oct, 64)
+  play_mono(14, oct, 64)
+  play_mono(17, oct, 64)
 end
 
 def play_a(oct)
-  play_chord_a(12, 16, 19, 23, oct, 100)
-  play_chord_a(16, 19, 23, 26, oct, 100)
-  play_chord_a(14, 17, 21, 24, oct, 100)
-  play_chord_a(17, 21, 24, 28, oct, 100)
+  play_chord_a(12, 16, 19, 23, oct, 64)
+  play_chord_a(16, 19, 23, 26, oct, 64)
+  play_chord_a(14, 17, 21, 24, oct, 64)
+  play_chord_a(17, 21, 24, 28, oct, 64)
 end
 
 def play_b(oct)
-  play_chord_b(12, 16, 19, 23, oct, 100)
-  play_chord_b(16, 19, 23, 26, oct, 100)
-  play_chord_b(14, 17, 21, 24, oct, 100)
-  play_chord_b(17, 21, 24, 28, oct, 100)
+  play_chord_b(12, 16, 19, 23, oct, 64)
+  play_chord_b(16, 19, 23, 26, oct, 64)
+  play_chord_b(14, 17, 21, 24, oct, 64)
+  play_chord_b(17, 21, 24, 28, oct, 64)
 end
 
 def play_mono(x, oct, velocity)

@@ -1,11 +1,11 @@
 ```
-  [Polyphonic/Paraphonic Synthesizer]                             Date: 2024-04-21                     
-  Model: Digital Synth PRA32-U    MIDI Implementation Chart       Version: 2.3.1                       
+  [Polyphonic/Paraphonic Synthesizer]                             Date: 2024-08-25                     
+  Model: Digital Synth PRA32-U    MIDI Implementation Chart       Version: 2.4.0                       
 +-------------------------------+---------------+---------------+-------------------------------------+
 | Function...                   | Transmitted   | Recognized    | Remarks                             |
 +-------------------------------+---------------+---------------+-------------------------------------+
 | Basic        Default          | x             | 1             |                                     |
-| Channel      Changed          | x             | x             |                                     |
+| Channel      Changed          | x             | x             | $5                                  |
 +-------------------------------+---------------+---------------+-------------------------------------+
 | Mode         Default          | x             | Mode 3        |                                     |
 |              Messages         | x             | x             |                                     |
@@ -27,9 +27,9 @@
 |                            64 | x             | o             | Sustain Pedal [Off|On]              |
 |                               |               |               |                                     |
 |                           102 | x             | o             | Osc 1 Wave [Saw|Sin|-|Tri|-|Pls]    |
-|                            19 | x             | o             | Osc 1 Shape $$                      |
-|                            20 | x             | o             | Osc 1 Morph $$                      |
-|                            23 | x             | o             | Mixer Noise/Sub Osc [N|S] $$$       |
+|                            19 | x             | o             | Osc 1 Shape $2                      |
+|                            20 | x             | o             | Osc 1 Morph $2                      |
+|                            23 | x             | o             | Mixer Noise/Sub Osc [N|S] $3        |
 |                               |               |               |                                     |
 |                           104 | x             | o             | Osc 2 Wave [Saw|Sin|-|Tri|Nos|Sqr]  |
 |                            85 | x             | o             | Osc 2 Coarse [-|+]                  |
@@ -39,7 +39,7 @@
 |                            74 | x             | o             | Filter Cutoff                       |
 |                            71 | x             | o             | Filter Resonance                    |
 |                            24 | x             | o             | Filter EG Amt [-|+]                 |
-|                            26 | x             | o             | Filter Key Track [0.0|0.5|1.0] $    |
+|                            26 | x             | o             | Filter Key Track [0.0|0.5|1.0] $1   |
 |                               |               |               |                                     |
 |                            73 | x             | o             | EG Attack                           |
 |                            75 | x             | o             | EG Decay                            |
@@ -86,8 +86,8 @@
 |                            35 | x             | o             | Delay Mode [S|P]                    |
 |                               |               |               |                                     |
 |                               |               |               |                                     |
-|                            87 | x             | o             | Program Number to Write to $$$$     |
-|                           106 | x             | o             | Write Parameters to Program $$$$    |
+|                            87 | x             | o             | Program Number to Write to $4       |
+|                           106 | x             | o             | Write Parameters to Program $4      |
 |                           112 |               |               | Program Change #8 by CC             |
 |                           113 |               |               | Program Change #9 by CC             |
 |                           114 |               |               | Program Change #10 by CC            |
@@ -107,8 +107,8 @@
 | Common       : Song Sel       | x             | x             |                                     |
 |              : Tune           | x             | x             |                                     |
 +-------------------------------+---------------+---------------+-------------------------------------+
-| System       : Clock          | x             | x             |                                     |
-| Real Time    : Commands       | x             | x             |                                     |
+| System       : Clock          | x $6          | x             |                                     |
+| Real Time    : Commands       | x $6          | x             | Compatible only with Start/Stop     |
 +-------------------------------+---------------+---------------+-------------------------------------+
 | Aux          : All Sound OFF  | x             | o 120         |                                     |
 | Messages     : Reset All      | x             | o 121         |                                     |
@@ -118,12 +118,14 @@
 |              : Active Sense   | x             | x             |                                     |
 |              : Reset          | x             | x             |                                     |
 +-------------------------------+---------------+---------------+-------------------------------------+
-| Notes                         | $ : Disabled in Paraphonic Mode                                     |
-|                               | $$ : Disabled if Osc 1 Wave is not Pls (Pulse)                      |
-|                               | $$$ : Mixer Noise is disabled if Osc 2 Wave is Nos (Noise)          |
-|                               | $$$$ : To write the current parameters to Program #8-15 and the     |
+| Notes                         | $1 : Disabled in Paraphonic Mode                                    |
+|                               | $2 : Disabled if Osc 1 Wave is not Pls (Pulse)                      |
+|                               | $3 : Mixer Noise is disabled if Osc 2 Wave is Nos (Noise)           |
+|                               | $4 : To write the current parameters to Program #8-15 and the       |
 |                               |   flash, set "Program Number to Write to" (# is the value mod 16)   |
 |                               |   and then change "Write Parameters to Program" from 0 to 1-127     |
+|                               | $5 : Basic Channel can be changed in PRA32-U with Panel             |
+|                               | $6 : o in PRA32-U with Panel                                        |
 +-------------------------------+---------------------------------------------------------------------+
   Mode 1: Omni On,  Poly          Mode 2: Omni On,  Mono          o: Yes                               
   Mode 3: Omni Off, Poly          Mode 4: Omni Off, Mono          x: No                                

@@ -1,6 +1,6 @@
-# Digital Synth PRA32-U v2.3.1
+# Digital Synth PRA32-U v2.4.0
 
-- 2024-04-21 ISGK Instruments
+- 2024-08-25 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
 
 
@@ -14,7 +14,7 @@
 - An **I2S DAC** hardware (e.g. Pimoroni Pico Audio Pack) is required
     - PWM Audio can also be used instead of I2S (PWM Audio does not require an I2S DAC hardware)
 - Prebuilt UF2 files ("bin")
-    - "Digital-Synth-PRA32-U-2.3.1-Pimoroni-Pico-Audio-Pack.uf2" is for Raspberry Pi Pico and Pimoroni Pico Audio Pack
+    - "Digital-Synth-PRA32-U-2.4.0-Pimoroni-Pico-Audio-Pack.uf2" is for Raspberry Pi Pico and Pimoroni Pico Audio Pack
 
 
 ## [Change History](/PRA32-U-Change-History.md)
@@ -27,8 +27,8 @@
     - Info: <https://www.arduino.cc/en/software>
 - Please install Arduino-Pico = **Raspberry Pi Pico/RP2040** (by Earle F. Philhower, III) core
     - Additional Board Manager URL: <https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json>
-    - This sketch is tested with version **3.7.2**: <https://github.com/earlephilhower/arduino-pico/releases/tag/3.7.2>
-        - Arduino-Pico version 3.7.2 includes Adafruit TinyUSB Library version 2.3.0
+    - This sketch is tested with version **3.9.5**: <https://github.com/earlephilhower/arduino-pico/releases/tag/3.9.5>
+        - Arduino-Pico version 3.9.5 includes Adafruit TinyUSB Library version 3.1.5
     - Info: <https://github.com/earlephilhower/arduino-pico>
 - Please install Arduino **MIDI Library** (by Francois Best, lathoub)
     - This sketch is tested with version **5.0.2**: <https://github.com/FortySevenEffects/arduino_midi_library/releases/tag/5.0.2>
@@ -66,12 +66,13 @@
 
 #### I2S (Default)
 
-- Use an I2S DAC (e.g. Texas Instruments PCM5100A and Cirrus Logic CS4344), Sampling Rate: 48 kHz, Bit Depth: 16 bit
+- Use an I2S DAC (Texas Instruments PCM5100A, PCM5101A, or PCM5102A is recommended), Sampling Rate: 48 kHz, Bit Depth: 16 bit
 - NOTE: The RP2040 system clock (sysclk) changes to overclocked 147.6 MHz by I2S Audio Library setSysClk()
 - Modify `PRA32_U_I2S_DAC_MUTE_OFF_PIN`, `PRA32_U_I2S_DATA_PIN`, `PRA32_U_I2S_MCLK_PIN`, `PRA32_U_I2S_MCLK_MULT`,
   `PRA32_U_I2S_BCLK_PIN`, `PRA32_U_I2S_SWAP_BCLK_AND_LRCLK_PINS`, and `PRA32_U_I2S_SWAP_LEFT_AND_RIGHT`
   in "Digital-Synth-PRA32-U.ino" to match the hardware configuration
 - The default setting is for Pimoroni [Pico Audio Pack](https://shop.pimoroni.com/products/pico-audio-pack) (PIM544)
+    - GY-PCM5102 (PCM5102A I2S DAC Module) can also be used
 ```
 #define PRA32_U_I2S_DAC_MUTE_OFF_PIN          (22)
 #define PRA32_U_I2S_DATA_PIN                  (9)
@@ -158,6 +159,7 @@
 - PRA32-U (USB MIDI Device, I2S), Default
 - PRA32-U (USB MIDI Device, UART MIDI, I2S)
 - PRA32-U (USB MIDI Device, PWM Audio)
+- PRA32-U with Panel (USB MIDI Device, UART MIDI, I2S, Control Panel)
 
 
 ## [Parameter Guide](/PRA32-U-Parameter-Guide.md)
@@ -230,7 +232,9 @@ graph LR
 ```
 
 
-## Circuit Diagram (Simple Circuit for PWM Audio)
+## Simple Circuit for PWM Audio
+
+### Circuit Diagram (Simple Circuit for PWM Audio)
 
 ![Circuit Diagram](./pra32-u-pwm-audio-circuit-diagram.png)
 
@@ -243,50 +247,25 @@ graph LR
   Connecting a headphone or a passive speaker may cause a large current to flow and damage the devices.
 
 
-## Actual Wiring Diagram (Simple Circuit for PWM Audio)
+### Actual Wiring Diagram (Simple Circuit for PWM Audio)
 
 ![Actual Wiring Diagram](./pra32-u-pwm-audio-bread-board.png)
 
 - This image was created with Fritzing.
 
 
-## PRA32-U with Panel, Prototype 1 (Experimental) (Optional)
-
-![PRA32-U with Panel, Prototype 1](./pra32-u-with-panel-prototype-1.jpg)
-
-- Uncomment out `//#define PRA32_U_USE_CONTROL_PANEL` in "Digital-Synth-PRA32-U.ino" and modify options
-- This option requires 3 tactile switches, 3 ADCs, and SSD1306 compatible monochrome 128x64 OLED Display
-    - Tested with Seeed Studio's Grove Shield for Pi Pico, Buttons, Rotary Angle Sensors, and a OLED Display 0.96 inch
-- Inputs
-    - SW0: Prev Key
-    - SW1: Next Key
-    - SW2: Play Key (play notes)
-    - ADC0: Parameter A
-    - ADC1: Parameter B
-    - ADC2: Parameter C
-- Panel Parameters
-    - Panel Pitch
-    - Panel Scale [Ful|Pen|Maj]
-        - Full = Chromatic, 10 + 7/12 octaves
-        - Major Pentatonic, 2 octaves
-        - Major, 2 octaves
-    - Panel Transpose [-|+]
-    - Panel Velocity
-- Other Operations
-    - Write Program 8-15: Change the value from 0 [Rdy] to 127 [Exe]
-    - Read Program 1-7, 8-15: Change the value from 0-63 [Rdy] to 64-127 [Exe]
-- NOTE: Specifications may change significantly in the future
+## [PRA32-U with Panel](./README-PRA32-U-with-Panel.md) (Experimental) (Optional)
 
 
 ## License
 
 ![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)
 
-**Digital Synth PRA32-U v2.3.1 by ISGK Instruments (Ryo Ishigaki)**
+**Digital Synth PRA32-U v2.4.0 by ISGK Instruments (Ryo Ishigaki)**
 
 To the extent possible under law, ISGK Instruments (Ryo Ishigaki)
 has waived all copyright and related or neighboring rights
-to Digital Synth PRA32-U v2.3.1.
+to Digital Synth PRA32-U v2.4.0.
 
 You should have received a copy of the CC0 legalcode along with this
 work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.

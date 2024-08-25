@@ -1,14 +1,14 @@
-# Digital Synth PRA32-U Parameter Guide v2.3.1
+# Digital Synth PRA32-U Parameter Guide v2.4.0
 
-- 2024-04-21 ISGK Instruments
+- 2024-08-25 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
 
 ## Control Change Parameters
 
 - Notes
-    - $ : Disabled in Paraphonic Mode
-    - $$ : Disabled if Osc 1 Wave is not Pls (Pulse)
-    - $$$ : Mixer Noise is disabled if Osc 2 Wave is Nos (Noise)
+    - $1 : Disabled in Paraphonic Mode
+    - $2 : Disabled if Osc 1 Wave is not Pls (Pulse)
+    - $3 : Mixer Noise is disabled if Osc 2 Wave is Nos (Noise)
 - Osc 1 Wave [Saw|Sin|-|Tri|-|Pls]
     - 0, 6-12: Saw Wave
     - 1, 25 (13-38): Sine Wave
@@ -16,14 +16,14 @@
     - 3, 75 (64-88): Triangle Wave
     - 4, 100 (89-114): Pulse Wave (Shape adjustable)
     - 5, 127 (115-127): Pulse Wave (Shape adjustable)
-- Osc 1 Shape $$
+- Osc 1 Shape $2
     - Sine Wave (Phase Modulation): Modulation Depth
     - Pulse Wave (= 1st Saw + Phase Shifted 2nd Saw)
         - 0: Pulse Width 50%, or 2nd Saw Phase 50% (min)
         - 64: Pulse Width 25%, or 2nd Saw Phase 25%
         - 96: Pulse Width 12.5%, or 2nd Saw Phase 12.5%
         - 127: Pulse Width 0.4%, or 2nd Saw Phase 99.6% (max)
-- Osc 1 Morph $$
+- Osc 1 Morph $2
     - Sine Wave (Phase Modulation): Frequency Ratio of Modulator
         - 0: Ratio 0.500 (min)
         - 1: Ratio 0.625
@@ -41,7 +41,7 @@
         - 64: Saw 100%
         - 96: Saw 100% + Saw 50%
         - 127: Saw 100% + Saw 100% (max)
-- Mixer Noise/Sub Osc [N|S] $$$
+- Mixer Noise/Sub Osc [N|S] $3
     - -64 (0): Noise 100%
     - -63 (1): Noise 98.4%
     - -62 (2): Noise 96.9%
@@ -94,7 +94,7 @@
 - Filter EG Amt [-|+], LFO Filter Amt [-|+]
     - -60 (4): -60 (min)
     - +60 (124): +60 (max)
-- Filter Key Track [0.0|0.5|1.0] $
+- Filter Key Track [0.0|0.5|1.0] $1
     - 0 (0-31): 0.0
     - 64 (32-95): 0.5
     - 127 (96-127): 1.0

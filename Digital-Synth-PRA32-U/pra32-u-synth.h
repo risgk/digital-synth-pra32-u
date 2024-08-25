@@ -20,7 +20,7 @@ extern I2S g_i2s_output;
 #include <algorithm>
 #include <cstring>
 
-static const uint8_t s_program_table_parameters[] = {
+static uint8_t s_program_table_parameters[] = {
   OSC_1_WAVE     ,
   OSC_1_SHAPE    ,
   OSC_1_MORPH    ,
@@ -82,6 +82,83 @@ static const uint8_t s_program_table_parameters[] = {
 
 };
 
+static uint8_t s_program_table_panel_parameters[] = {
+  PANEL_SCALE    ,
+  PANEL_TRANSPOSE,
+  PANEL_PLAY_MODE,
+  PANEL_MIDI_CH  ,
+
+  PANEL_PLAY_PIT ,
+  PANEL_PLAY_VELO,
+
+  SEQ_PITCH_0    ,
+  SEQ_PITCH_1    ,
+  SEQ_PITCH_2    ,
+  SEQ_PITCH_3    ,
+
+  SEQ_PITCH_4    ,
+  SEQ_PITCH_5    ,
+  SEQ_PITCH_6    ,
+  SEQ_PITCH_7    ,
+
+  SEQ_VELO_0     ,
+  SEQ_VELO_1     ,
+  SEQ_VELO_2     ,
+  SEQ_VELO_3     ,
+
+  SEQ_VELO_4     ,
+  SEQ_VELO_5     ,
+  SEQ_VELO_6     ,
+  SEQ_VELO_7     ,
+
+  SEQ_TEMPO      ,
+  SEQ_CLOCK_SRC  ,
+  SEQ_GATE_TIME  ,
+  SEQ_LAST_STEP  ,
+
+  SEQ_PATTERN    ,
+  SEQ_ACT_STEPS  ,
+  SEQ_TRANSPOSE  ,
+};
+
+
+const uint8_t   DEFAULT_PANEL_SCALE     = 0  ;
+const uint8_t   DEFAULT_PANEL_TRANSPOSE = 64 ;
+const uint8_t   DEFAULT_PANEL_PLAY_MODE = 0  ;
+
+const uint8_t   DEFAULT_PANEL_PLAY_PIT  = 64 ;
+const uint8_t   DEFAULT_PANEL_PLAY_VELO = 64 ;
+
+const uint8_t   DEFAULT_SEQ_PITCH_0     = 64 ;
+const uint8_t   DEFAULT_SEQ_PITCH_1     = 82 ;
+const uint8_t   DEFAULT_SEQ_PITCH_2     = 97 ;
+const uint8_t   DEFAULT_SEQ_PITCH_3     = 117;
+
+const uint8_t   DEFAULT_SEQ_PITCH_4     = 72 ;
+const uint8_t   DEFAULT_SEQ_PITCH_5     = 91 ;
+const uint8_t   DEFAULT_SEQ_PITCH_6     = 107;
+const uint8_t   DEFAULT_SEQ_PITCH_7     = 122;
+
+const uint8_t   DEFAULT_SEQ_VELO_0      = 64 ;
+const uint8_t   DEFAULT_SEQ_VELO_1      = 64 ;
+const uint8_t   DEFAULT_SEQ_VELO_2      = 64 ;
+const uint8_t   DEFAULT_SEQ_VELO_3      = 64 ;
+
+const uint8_t   DEFAULT_SEQ_VELO_4      = 64 ;
+const uint8_t   DEFAULT_SEQ_VELO_5      = 64 ;
+const uint8_t   DEFAULT_SEQ_VELO_6      = 64 ;
+const uint8_t   DEFAULT_SEQ_VELO_7      = 64 ;
+
+const uint8_t   DEFAULT_SEQ_TEMPO       = 64 ;
+const uint8_t   DEFAULT_SEQ_CLOCK_SRC   = 0  ;
+const uint8_t   DEFAULT_SEQ_GATE_TIME   = 60 ;
+const uint8_t   DEFAULT_SEQ_LAST_STEP   = 127;
+
+const uint8_t   DEFAULT_SEQ_PATTERN     = 0  ;
+const uint8_t   DEFAULT_SEQ_ACT_STEPS   = 127;
+const uint8_t   DEFAULT_SEQ_TRANSPOSE   = 64 ;
+
+
 class PRA32_U_Synth {
   PRA32_U_Osc       m_osc;
   PRA32_U_Filter    m_filter[4];
@@ -127,6 +204,7 @@ class PRA32_U_Synth {
   uint8_t           m_sp_prog_chg_cc_values[8];
   uint8_t           m_current_controller_value_table[128 + 128];
   uint8_t           m_program_table[128][PROGRAM_NUMBER_MAX + 1];
+  uint8_t           m_program_table_panel[2][128 + 128];
 
   volatile int32_t  m_secondary_core_processing_argument;
   volatile uint32_t m_secondary_core_processing_request;
@@ -179,6 +257,7 @@ public:
   , m_sp_prog_chg_cc_values()
   , m_current_controller_value_table()
   , m_program_table()
+  , m_program_table_panel()
 
   , m_secondary_core_processing_argument()
   , m_secondary_core_processing_request()
@@ -205,9 +284,6 @@ public:
   }
 
   INLINE void initialize() {
-    std::memset(m_current_controller_value_table, sizeof(m_current_controller_value_table), 255);
-    std::memset(m_program_table, sizeof(m_program_table), 255);
-
     std::memcpy(m_program_table[OSC_1_WAVE     ], g_preset_table_OSC_1_WAVE     , sizeof(m_program_table[0]));
     std::memcpy(m_program_table[OSC_1_SHAPE    ], g_preset_table_OSC_1_SHAPE    , sizeof(m_program_table[0]));
     std::memcpy(m_program_table[OSC_1_MORPH    ], g_preset_table_OSC_1_MORPH    , sizeof(m_program_table[0]));
@@ -267,6 +343,44 @@ public:
     std::memcpy(m_program_table[DELAY_TIME     ], g_preset_table_DELAY_TIME     , sizeof(m_program_table[0]));
     std::memcpy(m_program_table[DELAY_MODE     ], g_preset_table_DELAY_MODE     , sizeof(m_program_table[0]));
 
+    for (uint32_t i = 0; i < sizeof(m_program_table_panel) / sizeof(m_program_table_panel[0]); ++i) {
+      m_program_table_panel[i][PANEL_SCALE    ] = DEFAULT_PANEL_SCALE    ;
+      m_program_table_panel[i][PANEL_TRANSPOSE] = DEFAULT_PANEL_TRANSPOSE;
+      m_program_table_panel[i][PANEL_PLAY_MODE] = DEFAULT_PANEL_PLAY_MODE;
+      m_program_table_panel[i][PANEL_MIDI_CH  ] = g_midi_ch              ;
+
+      m_program_table_panel[i][PANEL_PLAY_PIT ] = DEFAULT_PANEL_PLAY_PIT ;
+      m_program_table_panel[i][PANEL_PLAY_VELO] = DEFAULT_PANEL_PLAY_VELO;
+
+      m_program_table_panel[i][SEQ_PITCH_0    ] = DEFAULT_SEQ_PITCH_0    ;
+      m_program_table_panel[i][SEQ_PITCH_1    ] = DEFAULT_SEQ_PITCH_1    ;
+      m_program_table_panel[i][SEQ_PITCH_2    ] = DEFAULT_SEQ_PITCH_2    ;
+      m_program_table_panel[i][SEQ_PITCH_3    ] = DEFAULT_SEQ_PITCH_3    ;
+
+      m_program_table_panel[i][SEQ_PITCH_4    ] = DEFAULT_SEQ_PITCH_4    ;
+      m_program_table_panel[i][SEQ_PITCH_5    ] = DEFAULT_SEQ_PITCH_5    ;
+      m_program_table_panel[i][SEQ_PITCH_6    ] = DEFAULT_SEQ_PITCH_6    ;
+      m_program_table_panel[i][SEQ_PITCH_7    ] = DEFAULT_SEQ_PITCH_7    ;
+
+      m_program_table_panel[i][SEQ_VELO_0     ] = DEFAULT_SEQ_VELO_0     ;
+      m_program_table_panel[i][SEQ_VELO_1     ] = DEFAULT_SEQ_VELO_1     ;
+      m_program_table_panel[i][SEQ_VELO_2     ] = DEFAULT_SEQ_VELO_2     ;
+      m_program_table_panel[i][SEQ_VELO_3     ] = DEFAULT_SEQ_VELO_3     ;
+
+      m_program_table_panel[i][SEQ_VELO_4     ] = DEFAULT_SEQ_VELO_4     ;
+      m_program_table_panel[i][SEQ_VELO_5     ] = DEFAULT_SEQ_VELO_5     ;
+      m_program_table_panel[i][SEQ_VELO_6     ] = DEFAULT_SEQ_VELO_6     ;
+      m_program_table_panel[i][SEQ_VELO_7     ] = DEFAULT_SEQ_VELO_7     ;
+
+      m_program_table_panel[i][SEQ_TEMPO      ] = DEFAULT_SEQ_TEMPO      ;
+      m_program_table_panel[i][SEQ_CLOCK_SRC  ] = DEFAULT_SEQ_CLOCK_SRC  ;
+      m_program_table_panel[i][SEQ_GATE_TIME  ] = DEFAULT_SEQ_GATE_TIME  ;
+      m_program_table_panel[i][SEQ_LAST_STEP  ] = DEFAULT_SEQ_LAST_STEP  ;
+
+      m_program_table_panel[i][SEQ_PATTERN    ] = DEFAULT_SEQ_PATTERN    ;
+      m_program_table_panel[i][SEQ_ACT_STEPS  ] = DEFAULT_SEQ_ACT_STEPS  ;
+      m_program_table_panel[i][SEQ_TRANSPOSE  ] = DEFAULT_SEQ_TRANSPOSE  ;
+    }
 
 #if defined(ARDUINO_ARCH_RP2040)
 #if defined(PRA32_U_USE_EMULATED_EEPROM)
@@ -277,15 +391,38 @@ public:
       if ((EEPROM.read(program_number * 128) == 'U') && (EEPROM.read(program_number * 128 + 1) == program_number)) {
         for (uint32_t i = 0; i < sizeof(s_program_table_parameters) / sizeof(s_program_table_parameters[0]); ++i) {
           uint32_t control_number = s_program_table_parameters[i];
-          m_program_table[control_number][program_number] = std::min<uint8_t>(127, EEPROM.read(program_number * 128 + control_number));
+          uint8_t value_read = EEPROM.read(program_number * 128 + control_number);
+          if (value_read < 128) {
+            m_program_table[control_number][program_number] = value_read;
+          }
         }
       }
     }
+
+#if defined(PRA32_U_USE_CONTROL_PANEL)
+    if ((EEPROM.read(0) == 'P') && (EEPROM.read(1) == 0)) {
+      for (uint32_t i = 0; i < sizeof(s_program_table_panel_parameters) / sizeof(s_program_table_panel_parameters[0]); ++i) {
+        uint32_t control_number = s_program_table_panel_parameters[i];
+        uint8_t value_read = EEPROM.read(control_number);
+        if (value_read < 128) {
+          m_program_table_panel[0][control_number] = value_read;
+        }
+      }
+    }
+#endif  // defined(PRA32_U_USE_CONTROL_PANEL)
+
 #endif  // !defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
 #endif  // defined(PRA32_U_USE_EMULATED_EEPROM)
 #endif  // defined(ARDUINO_ARCH_RP2040)
 
     program_change(PROGRAM_NUMBER_DEFAULT);
+
+#if defined(PRA32_U_USE_CONTROL_PANEL)
+    for (uint32_t i = 0; i < sizeof(s_program_table_panel_parameters) / sizeof(s_program_table_panel_parameters[0]); ++i) {
+      uint32_t control_number = s_program_table_panel_parameters[i];
+      control_change(control_number, m_program_table_panel[0][control_number]);
+    }
+#endif  // defined(PRA32_U_USE_CONTROL_PANEL)
   }
 
   INLINE uint8_t current_controller_value(uint8_t control_number) {
@@ -293,6 +430,11 @@ public:
   }
 
   /* INLINE */ void note_on(uint8_t note_number, uint8_t velocity) {
+    if (velocity == 0) {
+      note_off(note_number);
+      return;
+    }
+
     if (m_note_on_total_count == 255) {
       return;
     }
@@ -894,6 +1036,12 @@ public:
 
   /* INLINE */ void program_change(uint8_t program_number) {
     if (program_number > PROGRAM_NUMBER_MAX) {
+      if ((program_number == 128) || (program_number == 129)) {
+        for (uint32_t i = 0; i < sizeof(s_program_table_panel_parameters) / sizeof(s_program_table_panel_parameters[0]); ++i) {
+          uint32_t control_number = s_program_table_panel_parameters[i];
+          control_change(control_number, m_program_table_panel[program_number - 128][control_number]);
+        }
+      }
       return;
     }
 
@@ -904,44 +1052,73 @@ public:
   }
 
   /* INLINE */ void write_parameters_to_program(uint8_t program_number_to_write) {
-    if (program_number_to_write < (PRESET_PROGRAM_NUMBER_MAX + 1)) {
+    if (program_number_to_write <= PRESET_PROGRAM_NUMBER_MAX) {
       return;
     }
 
-    for (uint32_t i = 0; i < sizeof(s_program_table_parameters) / sizeof(s_program_table_parameters[0]); ++i) {
-      uint32_t control_number = s_program_table_parameters[i];
-      m_program_table[control_number][program_number_to_write] = m_current_controller_value_table[control_number];
+    if (program_number_to_write <= PROGRAM_NUMBER_MAX) {
+      for (uint32_t i = 0; i < sizeof(s_program_table_parameters) / sizeof(s_program_table_parameters[0]); ++i) {
+        uint32_t control_number = s_program_table_parameters[i];
+        m_program_table[control_number][program_number_to_write] = m_current_controller_value_table[control_number];
+      }
     }
+
+#if defined(PRA32_U_USE_CONTROL_PANEL)
+    if (program_number_to_write == 128) {
+      for (uint32_t i = 0; i < sizeof(s_program_table_panel_parameters) / sizeof(s_program_table_panel_parameters[0]); ++i) {
+        uint32_t control_number = s_program_table_panel_parameters[i];
+        m_program_table_panel[0][control_number] = m_current_controller_value_table[control_number];
+      }
+    }
+#endif  // defined(PRA32_U_USE_CONTROL_PANEL)
 
 #if defined(ARDUINO_ARCH_RP2040)
+
 #if defined(PRA32_U_USE_EMULATED_EEPROM)
-    for (uint32_t i = 0; i < sizeof(s_program_table_parameters) / sizeof(s_program_table_parameters[0]); ++i) {
-      uint32_t control_number = s_program_table_parameters[i];
-      EEPROM.write(program_number_to_write * 128 + control_number, m_current_controller_value_table[control_number]);
+    if (program_number_to_write <= PROGRAM_NUMBER_MAX) {
+      for (uint32_t i = 0; i < sizeof(s_program_table_parameters) / sizeof(s_program_table_parameters[0]); ++i) {
+        uint32_t control_number = s_program_table_parameters[i];
+        EEPROM.write(program_number_to_write * 128 + control_number, m_current_controller_value_table[control_number]);
+      }
+
+      EEPROM.write(program_number_to_write * 128,     'U');
+      EEPROM.write(program_number_to_write * 128 + 1, program_number_to_write);
     }
 
-    EEPROM.write(program_number_to_write * 128,     'U');
-    EEPROM.write(program_number_to_write * 128 + 1, program_number_to_write);
+#if defined(PRA32_U_USE_CONTROL_PANEL)
+    if (program_number_to_write == 128) {
+      for (uint32_t i = 0; i < sizeof(s_program_table_panel_parameters) / sizeof(s_program_table_panel_parameters[0]); ++i) {
+        uint32_t control_number = s_program_table_panel_parameters[i];
+        EEPROM.write(control_number, m_program_table_panel[0][control_number]);
+      }
 
-#if !defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
-    // To avoid noise, the data will not be written to the flash
-    // if PRA32_U_I2S_DAC_MUTE_OFF_PIN is not defined or PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S is defined
+      EEPROM.write(0, 'P');
+      EEPROM.write(1, 0);
+    }
+#endif  // defined(PRA32_U_USE_CONTROL_PANEL)
+
+#if defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+
+#else  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
 
 #if defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN)
     digitalWrite(PRA32_U_I2S_DAC_MUTE_OFF_PIN, LOW);
-#else  // defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN)
-    g_i2s_output.end();
 #endif  // defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN)
+
+    g_i2s_output.end();
 
     EEPROM.commit();
 
+    g_i2s_output.begin();
+
 #if defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN)
     digitalWrite(PRA32_U_I2S_DAC_MUTE_OFF_PIN, HIGH);
-#else  // defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN)
-    g_i2s_output.begin();
 #endif  // defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN)
-#endif
+
+#endif  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+
 #endif  // defined(PRA32_U_USE_EMULATED_EEPROM)
+
 #endif  // defined(ARDUINO_ARCH_RP2040)
   }
 
@@ -1096,6 +1273,17 @@ public:
       }
 #endif  // defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
     }
+
+#if 1
+    // Increase the output level using Extra Amp and Limiter
+
+    // voice_mixer_output_clamped = clamp((voice_mixer_output << 1), (-INT16_MAX), (+INT16_MAX))
+    volatile int32_t voice_mixer_output_clamped = (voice_mixer_output * 2) - (+INT16_MAX);
+    voice_mixer_output_clamped = (voice_mixer_output_clamped < 0) * voice_mixer_output_clamped + (+INT16_MAX) - (-INT16_MAX);
+    voice_mixer_output_clamped = (voice_mixer_output_clamped > 0) * voice_mixer_output_clamped + (-INT16_MAX);
+
+    voice_mixer_output = voice_mixer_output_clamped;
+#endif
 
     int16_t chorus_fx_output_r;
     int16_t chorus_fx_output_l = m_chorus_fx.process(voice_mixer_output, chorus_fx_output_r);
