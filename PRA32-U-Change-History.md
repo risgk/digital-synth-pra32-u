@@ -1,6 +1,6 @@
 ## Digital Synth PRA32-U Change History
 
-- v2.4.0 (2024-**-**):
+- v2.4.0 (2024-08-25):
     - Increase the output level using Extra Amp and Limiter
     - For safety, change the mode of the PWM audio output pins to OUTPUT_12MA
     - Update the option PRA32-U with Panel to Prototype 2 (experimental)
