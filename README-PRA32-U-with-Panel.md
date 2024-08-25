@@ -18,49 +18,53 @@
     - VR0 (ADC0): Parameter A
     - VR1 (ADC1): Parameter B
     - VR2 (ADC2): Parameter C
-- Panel Parameters
-    - Panel Scale [Maj|Min|MaP|MiP|Chr|Ful]
-        - Major, 2 octaves
-        - Minor, 2 octaves
-        - Major Pentatonic, 2 octaves
-        - Minor Pentatonic, 2 octaves
-        - Chromatic, 2 octaves
-        - Full = Chromatic, 10 + 7/12 octaves
-    - Panel Transpose [-|+]
-    - Panel Play Mode [Nrm|Seq]
-        - Normal Mode
-        - Sequencer Mode
-    - Panel MIDI Ch
-    - Panel Play Pitch
-    - Panel Play Velo
-- Step Sequencer Parameters
-    - Seq Pitch 0-7
-    - Seq Velo 0-7
-    - Seq Tempo
-        - BPM 60-240
-    - Seq Clock Src [Int|Ext]
-        - Internal
-        - External (MIDI Clock)
-    - Seq Gate Time [1/6|2/6|3/6|4/6|5/6|6/6]
-    - Seq Pattern [Nrm|Rvs|Bnc]
-        - Normal
-        - Reverse
-        - Bounce
-    - Seq Act Steps (Active Steps)
-        - bit 0: step 1
-        - bit 1: step 2
-        - bit 2: step 3
-        - bit 3: step 4
-        - bit 4: step 5
-        - bit 5: step 6
-        - bit 6: step 7
-    - Seq Last Step
-    - Seq Transpose [-|+]
-- Other Operations
-    - Write Program 8-15, Write Panel Prms (Panel and Step Sequencer Parameters), Read Program 1-7, 8-15, Read Panel Prms, Init Panel Prms
-      - Change the value from 0-63 [Rdy] to 64-127 [Exe]
+- Group A
+    - Synth Parameters
+- Group B
+    - Panel Parameters
+        - Panel Play Mode [Nrm|Seq]
+            - Normal Mode
+            - Step Sequencer Mode
+        - Panel MIDI Ch
+        - Panel Play Pitch
+        - Panel Play Velo
+        - Panel Scale [Maj|Min|Chr]
+            - Major, 2 octaves
+            - Minor, 2 octaves
+            - Chromatic, 2 octaves
+        - Panel Transpose [-|+]
+    - Step Sequencer Parameters
+        - Seq Pattern [Fwd|Bnc|Rvs]
+            - Forward
+            - Bounce
+            - Reverse
+        - Seq Act Steps (Active Steps)
+            - bit 0: Step 1 Active, ,,,, bit 6: Step 7 Active
+        - Seq Last Step
+        - Seq Tempo
+            - BPM 60-240
+        - Seq Gate Time [1/6|2/6|3/6|4/6|5/6|6/6]
+        - Seq Transpose [-|+]
+        - Seq Clock Src [Int|Ext]
+            - Internal
+            - External (Rx MIDI Clock)
+        - Seq Pitch 0-7
+        - Seq Velo 0-7
+    - Control Parameters
+       - Modulation
+       - Breath Controller
+       - Sustain Pedal
+- Group C
+    - Write Operations
+        - Write Program 8-15, Write Panel Prms (Write Panel and Step Sequencer Parameters)
+          - Change the value from 0-63 [Rdy] to 64-127 [Exe] to write to the flash
+- Group D
+    - Read Operations
+        - Read Program 1-7, 8-15, Read Panel Prms, Init Panel Prms
+          - Change the value from 0-63 [Rdy] to 64-127 [Exe]
 - KNOWN ISSUE: An OLED display refresh is slow when switching pages
-- NOTE: Specifications may change significantly in the future
+- NOTE: UART MIDI control is recommended to prevent ADCs from being affected by USB MIDI communication noise
+- NOTE: Specifications may change significantly in the future to read from the flash
 
 
 ### Circuit Diagram

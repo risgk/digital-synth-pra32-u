@@ -923,7 +923,7 @@ function writeParameters(number) {
 
 function noteOn(noteNumber) {
   if (midiOutput) {
-    midiOutput.send([(NOTE_ON | midi_ch), noteNumber + transpose, 100]);
+    midiOutput.send([(NOTE_ON | midi_ch), noteNumber + transpose, 64]);
     sleep(0);
   }
 }

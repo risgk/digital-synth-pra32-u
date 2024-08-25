@@ -5,9 +5,12 @@
     - For safety, change the mode of the PWM audio output pins to OUTPUT_12MA
     - Update the option PRA32-U with Panel to Prototype 2 (experimental)
         - Change the page structure (Add page groups)
-        - Add Minor, Minor Pentatonic, and Chromatic (2 octaves) to Panel Scale
-        - Add the functions "Read Panel Prms" and "Write Panel Prms"
+        - Change the specification of "Panel Scale"
+        - Add the parameter "Panel MIDI Ch"
+        - Add Step Sequencer Mode
         - Add the option PRA32_U_KEY_INPUT_PIN_MODE (default: INPUT_PULLDOWN)
+        - Add the functions "Write Panel Prms", "Read Panel Prms", and "Init Panel Prms"
+    - PRA32-U CTRL: Change the note on velocity to 64
     - Other changes
 - v2.3.1 (2024-04-21):
     - Abolish the option to write user programs to the flash when using PWM audio due to performance problem uncovered
