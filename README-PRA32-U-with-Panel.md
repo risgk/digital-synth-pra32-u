@@ -25,7 +25,7 @@
         - Panel Play Mode [Nrm|Seq]
             - Normal Mode
             - Step Sequencer Mode
-        - Panel MIDI Ch
+        - Panel MIDI Ch (Basic Channel)
         - Panel Play Pitch
         - Panel Play Velo
         - Panel Scale [Maj|Min|Chr]
@@ -36,8 +36,8 @@
     - Step Sequencer Parameters
         - Seq Pattern [Fwd|Rvs|Bnc]
             - Forward
-            - Bounce
             - Reverse
+            - Bounce
         - Seq Act Steps (Active Steps)
             - bit 0: Step 1 Active, ,,,, bit 6: Step 7 Active
         - Seq Last Step
@@ -57,11 +57,11 @@
 - Group C
     - Write Operations
         - Write Program 8-15, Write Panel Prms (Write Panel and Step Sequencer Parameters)
-          - Change the value from 0-63 [Rdy] to 64-127 [Exe] to write to the flash
+            - Change the value from 0-63 [Rdy] to 64-127 [Exe] to write to the flash
 - Group D
     - Read Operations
         - Read Program 1-7, 8-15, Read Panel Prms, Init Panel Prms
-          - Change the value from 0-63 [Rdy] to 64-127 [Exe]
+            - Change the value from 0-63 [Rdy] to 64-127 [Exe]
 - KNOWN ISSUE: An OLED display refresh is slow when switching pages
 - NOTE: UART MIDI control is recommended to prevent ADCs from being affected by USB MIDI communication noise
 - NOTE: Specifications may change significantly in the future to read from the flash
