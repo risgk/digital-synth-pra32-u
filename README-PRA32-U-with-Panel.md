@@ -25,7 +25,7 @@
         - Panel Play Mode [Nrm|Seq]
             - Normal Mode
             - Step Sequencer Mode
-        - Panel MIDI Ch (Basic Channel)
+        - Panel MIDI Ch (Basic Channel 1-16)
         - Panel Play Pitch
         - Panel Play Velo
         - Panel Scale [Maj|Min|Chr]
@@ -41,8 +41,7 @@
         - Seq Act Steps (Active Steps)
             - bit 0: Step 1 Active, ,,,, bit 6: Step 7 Active
         - Seq Last Step
-        - Seq Tempo
-            - BPM 30-300
+        - Seq Tempo (BPM 30-300)
         - Seq Gate Time [1/6|2/6|3/6|4/6|5/6|6/6]
         - Seq Transpose [-|+]
         - Seq Clock Src [Int|Ext]
