@@ -12,6 +12,7 @@
         - Add the functions "Write Panel Prms", "Read Panel Prms", and "Init Panel Prms"
     - PRA32-U CTRL: Change the Note ON velocity to 64
     - Other changes
+    - Tested with Arduino-Pico version 3.9.5
 - v2.3.1 (2024-04-21):
     - Abolish the option to write user programs to the flash when using PWM audio due to performance problem uncovered
     - Tested with Arduino-Pico version 3.7.2
