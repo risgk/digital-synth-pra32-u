@@ -4,13 +4,13 @@
     - Increase the output level using Extra Amp and Limiter
     - For safety, change the mode of the PWM audio output pins to OUTPUT_12MA
     - Update the option PRA32-U with Panel to Prototype 2 (experimental)
-        - Change the page structure (Add page groups)
+        - Change the page structure (Add the page groups A, B, C, and D)
         - Change the specification of "Panel Scale"
-        - Add the parameter "Panel MIDI Ch"
-        - Add Step Sequencer Mode
+        - Add the parameter "Panel MIDI Ch" (Basic Channel)
+        - Add Step Sequencer Mode ("Seq") to "Panel Play Mode"
         - Add the option PRA32_U_KEY_INPUT_PIN_MODE (default: INPUT_PULLDOWN)
         - Add the functions "Write Panel Prms", "Read Panel Prms", and "Init Panel Prms"
-    - PRA32-U CTRL: Change the note on velocity to 64
+    - PRA32-U CTRL: Change the Note ON velocity to 64
     - Other changes
 - v2.3.1 (2024-04-21):
     - Abolish the option to write user programs to the flash when using PWM audio due to performance problem uncovered
