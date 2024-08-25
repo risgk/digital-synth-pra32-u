@@ -34,7 +34,7 @@
             - Chromatic, 2 octaves
         - Panel Transpose [-|+]
     - Step Sequencer Parameters
-        - Seq Pattern [Fwd|Bnc|Rvs]
+        - Seq Pattern [Fwd|Rvs|Bnc]
             - Forward
             - Bounce
             - Reverse

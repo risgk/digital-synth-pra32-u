@@ -244,7 +244,7 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
     s_seq_sub_step = 0;
 
     do {
-      if (s_seq_pattern == 0) {  // Normal
+      if (s_seq_pattern == 0) {  // Forward
         ++s_seq_step;
 
         if (s_seq_step > s_seq_last_step) {
@@ -252,7 +252,7 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
         }
 
         s_seq_pattern_dir = +1;
-      } else if (s_seq_pattern == 2) {  // Reverse
+      } else if (s_seq_pattern == 1) {  // Reverse
         --s_seq_step;
 
         if (s_seq_step < 0) {
@@ -308,10 +308,10 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
 static INLINE void PRA32_U_ControlPanel_seq_start() {
   s_playing_status = PlayingStatus_Seq;
 
-  if (s_seq_pattern == 0) {  // Normal
+  if (s_seq_pattern == 0) {  // Forward
     s_seq_step = 7;
     s_seq_pattern_dir = +1;
-  } else if (s_seq_pattern == 2) {  // Reverse
+  } else if (s_seq_pattern == 1) {  // Reverse
     s_seq_step = 0;
     s_seq_pattern_dir = -1;
   } else {  // Bounce
@@ -698,7 +698,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     break;
   case SEQ_PATTERN    :
     {
-      char ary[3][5] = {"Fwd","Bnc","Rvs"};
+      char ary[3][5] = {"Fwd","Rvs","Bnc"};
       uint32_t index = ((controller_value * 4) + 127) / 254;
       if (controller_value < 2) { index = controller_value; }
       std::strcpy(value_display_text, ary[index]);
