@@ -107,8 +107,8 @@
 | Common       : Song Sel       | x             | x             |                                     |
 |              : Tune           | x             | x             |                                     |
 +-------------------------------+---------------+---------------+-------------------------------------+
-| System       : Clock          | x $6          | x             |                                     |
-| Real Time    : Commands       | x $6          | x             | Compatible only with Start/Stop     |
+| System       : Clock          | x             | x $6          |                                     |
+| Real Time    : Commands       | x             | x $6          | Compatible only with Start/Stop     |
 +-------------------------------+---------------+---------------+-------------------------------------+
 | Aux          : All Sound OFF  | x             | o 120         |                                     |
 | Messages     : Reset All      | x             | o 121         |                                     |
@@ -125,7 +125,7 @@
 |                               |   flash, set "Program Number to Write to" (# is the value mod 16)   |
 |                               |   and then change "Write Parameters to Program" from 0 to 1-127     |
 |                               | $5 : Basic Channel can be changed in PRA32-U with Panel             |
-|                               | $6 : o in PRA32-U with Panel                                        |
+|                               | $6 : o in PRA32-U with Panel if Seq Clock Src is External           |
 +-------------------------------+---------------------------------------------------------------------+
   Mode 1: Omni On,  Poly          Mode 2: Omni On,  Mono          o: Yes                               
   Mode 3: Omni Off, Poly          Mode 4: Omni Off, Mono          x: No                                
