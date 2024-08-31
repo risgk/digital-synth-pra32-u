@@ -1045,7 +1045,9 @@ INLINE void PRA32_U_ControlPanel_update_control() {
 INLINE void PRA32_U_ControlPanel_on_clock()
 {
   if (s_seq_clock_src_external) {
-    PRA32_U_ControlPanel_seq_clock();
+    if (s_playing_status == PlayingStatus_Seq) {
+      PRA32_U_ControlPanel_seq_clock();
+    }
   }
 }
 

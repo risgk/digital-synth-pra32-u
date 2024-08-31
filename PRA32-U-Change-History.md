@@ -1,7 +1,8 @@
 ## Digital Synth PRA32-U Change History
 
 - v2.4.1 (2024-09-01):
-    - If Seq Clock Src is Internal, Start/Stop MIDI Commands are not recognized
+    - PRA32-U with Panel: Fix a problem with MIDI clock being processed even when sequencer is stopped
+    - PRA32-U with Panel: Fix a problem where Start/Stop MIDI commands are processed even when Seq Clock Src is Internal
     - Fix MIDI Implementation Chart
     - Tested with Arduino-Pico version 4.0.1
 - v2.4.0 (2024-08-25):
