@@ -1,8 +1,9 @@
 ## Digital Synth PRA32-U Change History
 
-- v2.4.1 (2024-08-**):
+- v2.4.1 (2024-09-01):
     - If Seq Clock Src is Internal, Start/Stop MIDI Commands are not recognized
     - Fix MIDI Implementation Chart
+    - Tested with Arduino-Pico version 4.0.1
 - v2.4.0 (2024-08-25):
     - Increase the output level using Extra Amp and Limiter
     - For safety, change the mode of the PWM audio output pins to OUTPUT_12MA
