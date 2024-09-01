@@ -1,5 +1,10 @@
 ## Digital Synth PRA32-U Change History
 
+- v2.4.1 (2024-09-01):
+    - PRA32-U with Panel: Fix a problem with MIDI clock being processed even when sequencer is stopped
+    - PRA32-U with Panel: Fix a problem where Start/Stop MIDI commands are processed even when Seq Clock Src is Internal
+    - Fix MIDI Implementation Chart
+    - Tested with Arduino-Pico version 4.0.1
 - v2.4.0 (2024-08-25):
     - Increase the output level using Extra Amp and Limiter
     - For safety, change the mode of the PWM audio output pins to OUTPUT_12MA
@@ -12,6 +17,7 @@
         - Add the functions "Write Panel Prms", "Read Panel Prms", and "Init Panel Prms"
     - PRA32-U CTRL: Change the Note ON velocity to 64
     - Other changes
+    - Tested with Arduino-Pico version 3.9.5
 - v2.3.1 (2024-04-21):
     - Abolish the option to write user programs to the flash when using PWM audio due to performance problem uncovered
     - Tested with Arduino-Pico version 3.7.2

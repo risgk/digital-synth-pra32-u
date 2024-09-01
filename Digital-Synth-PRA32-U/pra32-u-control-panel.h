@@ -1045,15 +1045,19 @@ INLINE void PRA32_U_ControlPanel_update_control() {
 INLINE void PRA32_U_ControlPanel_on_clock()
 {
   if (s_seq_clock_src_external) {
-    PRA32_U_ControlPanel_seq_clock();
+    if (s_playing_status == PlayingStatus_Seq) {
+      PRA32_U_ControlPanel_seq_clock();
+    }
   }
 }
 
 INLINE void PRA32_U_ControlPanel_on_start()
 {
-  if (s_play_mode == 1) {  // Seq Mode
-    if (s_playing_status == PlayingStatus_Stop) {
-      PRA32_U_ControlPanel_seq_start();
+  if (s_seq_clock_src_external) {
+    if (s_play_mode == 1) {  // Seq Mode
+      if (s_playing_status == PlayingStatus_Stop) {
+        PRA32_U_ControlPanel_seq_start();
+      }
     }
   }
 
@@ -1062,9 +1066,11 @@ INLINE void PRA32_U_ControlPanel_on_start()
 
 INLINE void PRA32_U_ControlPanel_on_stop()
 {
-  if (s_play_mode == 1) {  // Seq Mode
-    if (s_playing_status != PlayingStatus_Stop) {
-      PRA32_U_ControlPanel_seq_stop();
+  if (s_seq_clock_src_external) {
+    if (s_play_mode == 1) {  // Seq Mode
+      if (s_playing_status != PlayingStatus_Stop) {
+        PRA32_U_ControlPanel_seq_stop();
+      }
     }
   }
 
