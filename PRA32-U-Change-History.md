@@ -1,6 +1,6 @@
 ## Digital Synth PRA32-U Change History
 
-- v2.5.0 (2024-09-**):
+- v2.5.0 (2024-09-04):
     - PRA32-U with Panel: Support MIDI Clock and Start/Stop Commands transmission
     - Fix "pra32-u-make-sample-wav-file.cc"
     - Other changes
