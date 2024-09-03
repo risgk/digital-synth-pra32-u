@@ -308,7 +308,7 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
     }
 
     PRA32_U_ControlPanel_update_pitch(true);
-  } else  if (s_seq_sub_step == (s_seq_gate_time << 1)) {
+  } else  if (s_seq_sub_step == (static_cast<uint32_t>(s_seq_gate_time) << 1)) {
     s_panel_play_note_gate = false;
   }
 }
