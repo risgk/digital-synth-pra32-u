@@ -2,6 +2,7 @@
 
 - v2.5.0 (2024-09-**):
     - PRA32-U with Panel: Support MIDI Clock and Start/Stop Commands transmission
+    - Other changes
     - Tested with Arduino-Pico version 4.0.1
 - v2.4.1 (2024-09-01):
     - PRA32-U with Panel: Fix a problem with MIDI clock being processed even when sequencer is stopped
