@@ -238,6 +238,14 @@ static INLINE void PRA32_U_ControlPanel_update_pitch(bool progress_seq_step) {
 }
 
 static INLINE void PRA32_U_ControlPanel_seq_clock() {
+#if defined(PRA32_U_USE_USB_MIDI)
+      USB_MIDI.sendRealTime(midi::Clock);
+#endif  // defined(PRA32_U_USE_USB_MIDI)
+
+#if defined(PRA32_U_USE_UART_MIDI)
+      UART_MIDI.sendRealTime(midi::Clock);
+#endif  // defined(PRA32_U_USE_UART_MIDI)
+
   ++s_seq_sub_step;
 
   if (s_seq_sub_step >= 12) {
@@ -300,12 +308,20 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
     }
 
     PRA32_U_ControlPanel_update_pitch(true);
-  } else  if (s_seq_sub_step == (s_seq_gate_time << 1)) {
+  } else  if (s_seq_sub_step == (static_cast<uint32_t>(s_seq_gate_time) << 1)) {
     s_panel_play_note_gate = false;
   }
 }
 
 static INLINE void PRA32_U_ControlPanel_seq_start() {
+#if defined(PRA32_U_USE_USB_MIDI)
+  USB_MIDI.sendRealTime(midi::Start);
+#endif  // defined(PRA32_U_USE_USB_MIDI)
+
+#if defined(PRA32_U_USE_UART_MIDI)
+  UART_MIDI.sendRealTime(midi::Start);
+#endif  // defined(PRA32_U_USE_UART_MIDI)
+
   s_playing_status = PlayingStatus_Seq;
 
   if (s_seq_pattern == 0) {  // Forward
@@ -325,6 +341,14 @@ static INLINE void PRA32_U_ControlPanel_seq_start() {
 }
 
 static INLINE void PRA32_U_ControlPanel_seq_stop() {
+#if defined(PRA32_U_USE_USB_MIDI)
+  USB_MIDI.sendRealTime(midi::Stop);
+#endif  // defined(PRA32_U_USE_USB_MIDI)
+
+#if defined(PRA32_U_USE_UART_MIDI)
+  UART_MIDI.sendRealTime(midi::Stop);
+#endif  // defined(PRA32_U_USE_UART_MIDI)
+
   s_playing_status = PlayingStatus_Stop;
   s_display_buffer[0][20] = ' ';
   s_panel_play_note_gate = false;

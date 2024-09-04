@@ -1,5 +1,10 @@
 ## Digital Synth PRA32-U Change History
 
+- v2.5.0 (2024-09-04):
+    - PRA32-U with Panel: Support MIDI Clock and Start/Stop Commands transmission
+    - Fix "pra32-u-make-sample-wav-file.cc"
+    - Other changes
+    - Tested with Arduino-Pico version 4.0.1
 - v2.4.1 (2024-09-01):
     - PRA32-U with Panel: Fix a problem with MIDI clock being processed even when sequencer is stopped
     - PRA32-U with Panel: Fix a problem where Start/Stop MIDI commands are processed even when Seq Clock Src is Internal

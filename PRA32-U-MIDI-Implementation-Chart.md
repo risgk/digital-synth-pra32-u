@@ -1,6 +1,6 @@
 ```
-  [Polyphonic/Paraphonic Synthesizer]                             Date: 2024-09-01                     
-  Model: Digital Synth PRA32-U    MIDI Implementation Chart       Version: 2.4.1                       
+  [Polyphonic/Paraphonic Synthesizer]                             Date: 2024-09-04                     
+  Model: Digital Synth PRA32-U    MIDI Implementation Chart       Version: 2.5.0                       
 +-------------------------------+---------------+---------------+-------------------------------------+
 | Function...                   | Transmitted   | Recognized    | Remarks                             |
 +-------------------------------+---------------+---------------+-------------------------------------+
@@ -107,8 +107,8 @@
 | Common       : Song Sel       | x             | x             |                                     |
 |              : Tune           | x             | x             |                                     |
 +-------------------------------+---------------+---------------+-------------------------------------+
-| System       : Clock          | x             | x $6          |                                     |
-| Real Time    : Commands       | x             | x $6          | Compatible only with Start/Stop     |
+| System       : Clock          | x $6          | x $7          |                                     |
+| Real Time    : Commands       | x $6          | x $7          | Compatible only with Start/Stop     |
 +-------------------------------+---------------+---------------+-------------------------------------+
 | Aux          : All Sound OFF  | x             | o 120         |                                     |
 | Messages     : Reset All      | x             | o 121         |                                     |
@@ -125,7 +125,8 @@
 |                               |   flash, set "Program Number to Write to" (# is the value mod 16)   |
 |                               |   and then change "Write Parameters to Program" from 0 to 1-127     |
 |                               | $5 : Basic Channel can be changed in PRA32-U with Panel             |
-|                               | $6 : o in PRA32-U with Panel if Seq Clock Src is External           |
+|                               | $6 : o in PRA32-U with Panel                                        |
+|                               | $7 : o in PRA32-U with Panel if Seq Clock Src is External           |
 +-------------------------------+---------------------------------------------------------------------+
   Mode 1: Omni On,  Poly          Mode 2: Omni On,  Mono          o: Yes                               
   Mode 3: Omni Off, Poly          Mode 4: Omni Off, Mono          x: No                                
