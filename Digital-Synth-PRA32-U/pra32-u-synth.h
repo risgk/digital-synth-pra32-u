@@ -1277,10 +1277,10 @@ public:
 #if 1
     // Increase the output level using Extra Amp and Limiter
 
-    // voice_mixer_output_clamped = clamp((voice_mixer_output << 2), INT16_MIN, INT16_MAX)
-    volatile int32_t voice_mixer_output_clamped = (voice_mixer_output << 2) - INT16_MAX;
-    voice_mixer_output_clamped = (voice_mixer_output_clamped < 0) * voice_mixer_output_clamped + INT16_MAX - INT16_MIN;
-    voice_mixer_output_clamped = (voice_mixer_output_clamped > 0) * voice_mixer_output_clamped + INT16_MIN;
+    // voice_mixer_output_clamped = clamp((voice_mixer_output << 1), (-INT16_MAX), (+INT16_MAX))
+    volatile int32_t voice_mixer_output_clamped = (voice_mixer_output * 2) - (+INT16_MAX);
+    voice_mixer_output_clamped = (voice_mixer_output_clamped < 0) * voice_mixer_output_clamped + (+INT16_MAX) - (-INT16_MAX);
+    voice_mixer_output_clamped = (voice_mixer_output_clamped > 0) * voice_mixer_output_clamped + (-INT16_MAX);
 
     voice_mixer_output = voice_mixer_output_clamped;
 #endif
