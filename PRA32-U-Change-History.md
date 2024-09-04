@@ -1,5 +1,9 @@
 ## Digital Synth PRA32-U Change History
 
+- v2.6.0 (2024-09-**):
+    - Increase the output level
+        - NOTE: Be careful of clipping caused by increasing Amp Gain
+    - Tested with Arduino-Pico version 4.0.1
 - v2.5.0 (2024-09-04):
     - PRA32-U with Panel: Support MIDI Clock and Start/Stop Commands transmission
     - Fix "pra32-u-make-sample-wav-file.cc"
