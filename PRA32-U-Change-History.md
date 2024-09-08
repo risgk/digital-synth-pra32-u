@@ -1,6 +1,6 @@
 ## Digital Synth PRA32-U Change History
 
-- v2.5.1 (2024-09-**):
+- v2.5.1 (2024-09-08):
     - Fix a problem with noise in PRA32-U CTRL Recall operation when PWM Audio is used
         - This problem occurred when 3 or 4 notes were playing in Poly Mode and PRA32_U_USE_DEBUG_PRINT was commented out (default)
     - Add description to Delay Time in Parameter Guide
