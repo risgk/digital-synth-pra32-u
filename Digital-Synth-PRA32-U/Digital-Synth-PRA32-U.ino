@@ -2,7 +2,7 @@
  * Digital Synth PRA32-U
  */
 
-#define PRA32_U_VERSION                       "v2.5.0    "
+#define PRA32_U_VERSION                       "v2.5.1    "
 
 //#define PRA32_U_USE_DEBUG_PRINT               // Serial1
 
@@ -273,7 +273,7 @@ void __not_in_flash_func(loop)() {
   uint32_t debug_measurement_start0_us = micros();
 #endif  // defined(PRA32_U_USE_DEBUG_PRINT)
 
-  for (uint32_t i = 0; i < (PRA32_U_I2S_BUFFER_WORDS + 15) / 16; i++) {
+  for (uint32_t i = 0; i < ((PRA32_U_I2S_BUFFER_WORDS + 31) / 32) + 1; i++) {
 #if defined(PRA32_U_USE_USB_MIDI)
     USB_MIDI.read();
 #endif  // defined(PRA32_U_USE_USB_MIDI)

@@ -1,6 +1,6 @@
 # PRA32-U with Panel (Experimental) (Optional)
 
-- 2024-09-04 ISGK Instruments
+- 2024-09-08 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
 
 
