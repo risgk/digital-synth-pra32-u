@@ -251,12 +251,15 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
   if (s_seq_sub_step >= 12) {
     s_seq_sub_step = 0;
 
+    bool update_scale = false;
+
     do {
       if (s_seq_pattern == 0) {  // Forward
         ++s_seq_step;
 
         if (s_seq_step > s_seq_last_step) {
           s_seq_step = 0;
+          update_scale = true;
         }
 
         s_seq_pattern_dir = +1;
@@ -265,6 +268,7 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
 
         if (s_seq_step < 0) {
           s_seq_step = s_seq_last_step;
+          update_scale = true;
         }
 
         s_seq_pattern_dir = -1;
@@ -274,6 +278,7 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
 
           if (s_seq_step > s_seq_last_step) {
             s_seq_step = s_seq_last_step;
+            update_scale = true;
             s_seq_pattern_dir = -1;
           } else {
             s_seq_pattern_dir = +1;
@@ -283,6 +288,7 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
 
           if (s_seq_step < 0) {
             s_seq_step = 0;
+            update_scale = true;
             s_seq_pattern_dir = +1;
           } else {
             s_seq_pattern_dir = -1;
@@ -293,7 +299,7 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
 
     s_display_buffer[0][20] = '0' + s_seq_step;
 
-    if (s_seq_step == 0) {
+    if (update_scale) {
       s_index_scale     = ((g_synth.current_controller_value(PANEL_SCALE) * 4) + 127) / 254;
       s_panel_transpose = g_synth.current_controller_value(PANEL_TRANSPOSE) - 64;
 

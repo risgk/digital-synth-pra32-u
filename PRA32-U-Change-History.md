@@ -1,5 +1,7 @@
 ## Digital Synth PRA32-U Change History
 
+- v2.5.2 (2024-09-**):
+    - Fix Panel Scale and Seq Transpose update timing in Seq Pattern Reverse and Bounce
 - v2.5.1 (2024-09-08):
     - Fix a problem with noise in PRA32-U CTRL Recall operation when PWM Audio is used
         - This problem occurred when 3 or 4 notes were playing in Poly Mode and PRA32_U_USE_DEBUG_PRINT was commented out (default)
