@@ -1,6 +1,7 @@
 ## Digital Synth PRA32-U Change History
 
 - v2.5.2 (2024-09-**):
+    - Extend Delay Time range (20-300 to 1-333.3 ms)
     - PRA32-U CTRL, PRA32-U with Panel: Add ms display of Delay Time
     - PRA32-U with Panel: Fix Panel Scale, Panel Transpose, and Seq Transpose update timing in Seq Pattern Reverse and Bounce
 - v2.5.1 (2024-09-08):

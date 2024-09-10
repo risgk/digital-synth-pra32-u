@@ -584,14 +584,14 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     {
       int display_value;
 
-      if (controller_value < 12) {
-        display_value = 20;
+      if (controller_value < 5) {
+        display_value = controller_value + 1;
       } else if (controller_value < 27) {
         display_value = (controller_value * 2) -4;
-      } else if (controller_value < 102) {
+      } else if (controller_value < 112) {
         display_value = (((controller_value * 20) + 3) / 6) - 40;
       } else {
-        display_value = 300;
+        display_value = 333;
       }
 
       std::sprintf(value_display_text, "%3d", display_value);

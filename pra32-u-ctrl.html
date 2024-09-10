@@ -808,14 +808,14 @@ function updateDisplayOfControl(number, value) {
     break;
   case DELAY_TIME      :
     {
-      if (value < 12) {
-        dispValue = 20;
+      if (value < 5) {
+        dispValue = parseInt(value) + 1;
       } else if (value < 27) {
         dispValue = (value * 2) -4;
-      } else if (value < 102) {
+      } else if (value < 112) {
         dispValue = Math.floor(((value * 20) + 3) / 6) - 40;
       } else {
-        dispValue = 300;
+        dispValue = 333;
       }
     }
     break;
