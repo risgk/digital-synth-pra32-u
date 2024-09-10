@@ -806,6 +806,19 @@ function updateDisplayOfControl(number, value) {
       dispValue = ary[index];
     }
     break;
+  case DELAY_TIME      :
+    {
+      if (value < 12) {
+        dispValue = 20;
+      } else if (value < 27) {
+        dispValue = (value * 2) -4;
+      } else if (value < 102) {
+        dispValue = Math.floor(((value * 20) + 3) / 6) - 40;
+      } else {
+        dispValue = 300;
+      }
+    }
+    break;
   }
 
   document.getElementById("span" + controlNumberToStringMap.get(number)).innerHTML = value;

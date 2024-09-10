@@ -580,6 +580,24 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
       result = true;
     }
     break;
+  case DELAY_TIME      :
+    {
+      int display_value;
+
+      if (controller_value < 12) {
+        display_value = 20;
+      } else if (controller_value < 27) {
+        display_value = (controller_value * 2) -4;
+      } else if (controller_value < 102) {
+        display_value = (((controller_value * 20) + 3) / 6) - 40;
+      } else {
+        display_value = 300;
+      }
+
+      std::sprintf(value_display_text, "%3d", display_value);
+      result = true;
+    }
+    break;
   case  RD_PROGRAM_0   :
   case  RD_PROGRAM_1   :
   case  RD_PROGRAM_2   :
