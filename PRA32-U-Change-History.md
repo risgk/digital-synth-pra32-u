@@ -4,6 +4,7 @@
     - Extend Delay Time range (20-300 to 1-333.3 ms)
     - PRA32-U CTRL, PRA32-U with Panel: Add ms display of Delay Time
     - PRA32-U with Panel: Fix Panel Scale, Panel Transpose, and Seq Transpose update timing in Seq Pattern Reverse and Bounce
+    - Fix MIDI Implementation Chart
 - v2.5.1 (2024-09-08):
     - Fix a problem with noise in PRA32-U CTRL Recall operation when PWM Audio is used
         - This problem occurred when 3 or 4 notes were playing in Poly Mode and PRA32_U_USE_DEBUG_PRINT was commented out (default)

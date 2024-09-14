@@ -88,14 +88,14 @@
 |                               |               |               |                                     |
 |                            87 | x             | o             | Program Number to Write to $4       |
 |                           106 | x             | o             | Write Parameters to Program $4      |
-|                           112 |               |               | Program Change #8 by CC             |
-|                           113 |               |               | Program Change #9 by CC             |
-|                           114 |               |               | Program Change #10 by CC            |
-|                           115 |               |               | Program Change #11 by CC            |
-|                           116 |               |               | Program Change #12 by CC            |
-|                           117 |               |               | Program Change #13 by CC            |
-|                           118 |               |               | Program Change #14 by CC            |
-|                           119 |               |               | Program Change #15 by CC            |
+|                           112 | x             | o             | Program Change #8 by CC             |
+|                           113 | x             | o             | Program Change #9 by CC             |
+|                           114 | x             | o             | Program Change #10 by CC            |
+|                           115 | x             | o             | Program Change #11 by CC            |
+|                           116 | x             | o             | Program Change #12 by CC            |
+|                           117 | x             | o             | Program Change #13 by CC            |
+|                           118 | x             | o             | Program Change #14 by CC            |
+|                           119 | x             | o             | Program Change #15 by CC            |
 |                           111 | x             | x             | [Reserved]                          |
 +-------------------------------+---------------+---------------+-------------------------------------+
 | Program                       | x             | o             |                                     |
