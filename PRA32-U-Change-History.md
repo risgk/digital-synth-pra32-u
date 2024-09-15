@@ -2,9 +2,11 @@
 
 - v2.5.2 (2024-09-**):
     - Extend "Delay Time" range (20-300 to 1-333.3 ms)
+    - Update the option PRA32-U with Panel to Prototype 3 (experimental)
+        - Add the parameter "Seq Step Note" (Quarter Note, Eighth Note, Sixteenth Note)
+        - "Panel Play Pitch" and "Seq Pitch 0-7" displays reflect "Panel Transpose" (but not "Seq Transpose")
+        - Fix "Panel Scale", "Panel Transpose", and "Seq Transpose" update timing in "Seq Pattern" Reverse and Bounce
     - PRA32-U CTRL, PRA32-U with Panel: Add ms display of "Delay Time"
-    - PRA32-U with Panel: "Panel Play Pitch" and "Seq Pitch 0-7" displays reflect "Panel Transpose" (but not "Seq Transpose")
-    - PRA32-U with Panel: Fix "Panel Scale", "Panel Transpose", and "Seq Transpose" update timing in "Seq Pattern" Reverse and Bounce
     - Fix MIDI Implementation Chart
 - v2.5.1 (2024-09-08):
     - Fix a problem with noise in PRA32-U CTRL Recall operation when PWM Audio is used

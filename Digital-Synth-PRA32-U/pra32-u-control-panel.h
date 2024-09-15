@@ -25,14 +25,16 @@ static          uint32_t s_next_key_current_value;
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL)
 static          uint32_t s_play_key_current_value;
 
-static          uint8_t  s_play_mode       = 0;
-static          int8_t   s_panel_transpose = 0;
-static          int8_t   s_seq_transpose   = 0;
-static          uint8_t  s_seq_gate_time   = 6;
-static          uint8_t  s_seq_last_step   = 7;
-static          uint8_t  s_seq_pattern     = 0;
-static          int8_t   s_seq_pattern_dir = +1;
-static          uint8_t  s_seq_act_steps   = 127;
+static          uint8_t  s_play_mode                = 0;
+static          int8_t   s_panel_transpose          = 0;
+static          int8_t   s_seq_transpose            = 0;
+static          uint8_t  s_seq_step_clock_candidate = 12;
+static          uint8_t  s_seq_step_clock           = 12;
+static          uint8_t  s_seq_gate_time            = 6;
+static          uint8_t  s_seq_last_step            = 7;
+static          uint8_t  s_seq_pattern              = 0;
+static          int8_t   s_seq_pattern_dir          = +1;
+static          uint8_t  s_seq_act_steps            = 127;
 
 static          uint32_t s_index_scale;
 
@@ -297,9 +299,12 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
 
   ++s_seq_sub_step;
 
-  if (s_seq_sub_step >= 12) {
+  if (s_seq_sub_step >= 24) {
     s_seq_sub_step = 0;
+    s_seq_step_clock = s_seq_step_clock_candidate;
+  }
 
+  if ((s_seq_sub_step % s_seq_step_clock) == 0) {
     bool update_scale = false;
 
     do {
@@ -745,6 +750,15 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     {
       char ary[6][5] = {"1/6","2/6","3/6","4/6","5/6","6/6"};
       uint32_t index = ((controller_value * 10) + 127) / 254;
+      std::strcpy(value_display_text, ary[index]);
+      result = true;
+    }
+    break;
+  case SEQ_STEP_NOTE   :
+    {
+      char ary[3][5] = {"  4","  8"," 16"};
+      uint32_t index = ((controller_value * 4) + 127) / 254;
+      if (controller_value < 2) { index = controller_value; }
       std::strcpy(value_display_text, ary[index]);
       result = true;
     }
@@ -1361,6 +1375,12 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
   } else if (control_number == SEQ_GATE_TIME) {
     uint8_t controller_value = g_synth.current_controller_value(SEQ_GATE_TIME  );
     s_seq_gate_time = (((controller_value * 10) + 127) / 254) + 1;
+  } else if (control_number == SEQ_STEP_NOTE) {
+      uint8_t ary[3] = {24, 12, 6};
+      uint8_t controller_value = g_synth.current_controller_value(SEQ_STEP_NOTE  );
+      uint32_t index = ((controller_value * 4) + 127) / 254;
+      if (controller_value < 2) { index = controller_value; }
+      s_seq_step_clock_candidate = ary[index];
   } else if (control_number == SEQ_LAST_STEP) {
     uint8_t last_step = g_synth.current_controller_value(SEQ_LAST_STEP  );
     last_step = (last_step + 8) >> 4;

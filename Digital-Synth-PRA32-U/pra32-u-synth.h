@@ -119,6 +119,7 @@ static uint8_t s_program_table_panel_parameters[] = {
   SEQ_PATTERN    ,
   SEQ_ACT_STEPS  ,
   SEQ_TRANSPOSE  ,
+  SEQ_STEP_NOTE  ,
 };
 
 
@@ -157,6 +158,7 @@ const uint8_t   DEFAULT_SEQ_LAST_STEP   = 127;
 const uint8_t   DEFAULT_SEQ_PATTERN     = 0  ;
 const uint8_t   DEFAULT_SEQ_ACT_STEPS   = 127;
 const uint8_t   DEFAULT_SEQ_TRANSPOSE   = 64 ;
+const uint8_t   DEFAULT_SEQ_STEP_NOTE   = 64 ;
 
 
 class PRA32_U_Synth {
@@ -380,6 +382,7 @@ public:
       m_program_table_panel[i][SEQ_PATTERN    ] = DEFAULT_SEQ_PATTERN    ;
       m_program_table_panel[i][SEQ_ACT_STEPS  ] = DEFAULT_SEQ_ACT_STEPS  ;
       m_program_table_panel[i][SEQ_TRANSPOSE  ] = DEFAULT_SEQ_TRANSPOSE  ;
+      m_program_table_panel[i][SEQ_STEP_NOTE  ] = DEFAULT_SEQ_STEP_NOTE  ;
     }
 
 #if defined(ARDUINO_ARCH_RP2040)
