@@ -75,7 +75,7 @@ static INLINE uint8_t PRA32_U_ControlPanel_get_index_scale()
 {
   uint8_t controller_value = g_synth.current_controller_value(PANEL_SCALE    );
   uint8_t index_scale = ((controller_value * 4) + 127) / 254;
-  if (controller_value < 3) { index_scale = controller_value; }
+//if (controller_value < 3) { index_scale = controller_value; }
   return index_scale;
 }
 
@@ -719,6 +719,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     {
       char ary[6][5] = {"Maj","Min","Chr"};
       uint32_t index = PRA32_U_ControlPanel_get_index_scale();
+//    if (controller_value < 3) { index_scale = controller_value; }
       std::strcpy(value_display_text, ary[index]);
       result = true;
     }
@@ -727,7 +728,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     {
       char ary[2][5] = {"Nrm","Seq"};
       uint32_t index = ((controller_value * 2) + 127) / 254;
-      if (controller_value < 2) { index = controller_value; }
+//    if (controller_value < 2) { index = controller_value; }
       std::strcpy(value_display_text, ary[index]);
       result = true;
     }
@@ -742,7 +743,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
   case SEQ_CLOCK_SRC  :
     {
       uint32_t index = ((controller_value * 2) + 127) / 254;
-      if (controller_value < 2) { index = controller_value; }
+//    if (controller_value < 2) { index = controller_value; }
 
       if (index == 0) {
         value_display_text[0] = 'I';
@@ -769,7 +770,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     {
       char ary[3][5] = {"  4","  8"," 16"};
       uint32_t index = ((controller_value * 4) + 127) / 254;
-      if (controller_value < 3) { index = controller_value; }
+//    if (controller_value < 3) { index = controller_value; }
       std::strcpy(value_display_text, ary[index]);
       result = true;
     }
@@ -787,7 +788,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     {
       char ary[3][5] = {"Fwd","Rvs","Bnc"};
       uint32_t index = ((controller_value * 4) + 127) / 254;
-      if (controller_value < 3) { index = controller_value; }
+//    if (controller_value < 3) { index = controller_value; }
       std::strcpy(value_display_text, ary[index]);
       result = true;
     }
@@ -1366,7 +1367,7 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
   } else if (control_number == PANEL_PLAY_MODE) {
     uint8_t controller_value = g_synth.current_controller_value(PANEL_PLAY_MODE);
     uint8_t index = ((controller_value * 2) + 127) / 254;
-    if (controller_value < 2) { index = controller_value; }
+//  if (controller_value < 2) { index = controller_value; }
 
     if (s_play_mode != index) {
       s_play_mode = index;
@@ -1384,17 +1385,17 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
   } else if (control_number == SEQ_CLOCK_SRC) {
     uint32_t controller_value = g_synth.current_controller_value(SEQ_CLOCK_SRC  );
     uint32_t index = ((controller_value * 2) + 127) / 254;
-    if (controller_value < 2) { index = controller_value; }
+//  if (controller_value < 2) { index = controller_value; }
     s_seq_clock_src_external = index;
   } else if (control_number == SEQ_GATE_TIME) {
     uint8_t controller_value = g_synth.current_controller_value(SEQ_GATE_TIME  );
     s_seq_gate_time = (((controller_value * 10) + 127) / 254) + 1;
   } else if (control_number == SEQ_STEP_NOTE) {
-      uint8_t ary[3] = {24, 12, 6};
-      uint8_t controller_value = g_synth.current_controller_value(SEQ_STEP_NOTE  );
-      uint32_t index = ((controller_value * 4) + 127) / 254;
-      if (controller_value < 3) { index = controller_value; }
-      s_seq_step_clock_candidate = ary[index];
+    uint8_t ary[3] = {24, 12, 6};
+    uint8_t controller_value = g_synth.current_controller_value(SEQ_STEP_NOTE  );
+    uint32_t index = ((controller_value * 4) + 127) / 254;
+//  if (controller_value < 3) { index = controller_value; }
+    s_seq_step_clock_candidate = ary[index];
   } else if (control_number == SEQ_LAST_STEP) {
     uint8_t last_step = g_synth.current_controller_value(SEQ_LAST_STEP  );
     last_step = (last_step + 8) >> 4;
@@ -1403,7 +1404,7 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
   } else if (control_number == SEQ_PATTERN    ) {
     uint8_t controller_value = g_synth.current_controller_value(SEQ_PATTERN    );
     uint32_t index = ((controller_value * 4) + 127) / 254;
-    if (controller_value < 3) { index = controller_value; }
+//  if (controller_value < 3) { index = controller_value; }
     s_seq_pattern = index;
   } else if (control_number == SEQ_ACT_STEPS  ) {
     s_seq_act_steps = g_synth.current_controller_value(SEQ_ACT_STEPS  );

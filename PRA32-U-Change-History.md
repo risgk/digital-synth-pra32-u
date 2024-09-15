@@ -6,7 +6,6 @@
         - Add the parameter "Seq Step Note" (Quarter Note, Eighth Note, Sixteenth Note)
         - "Panel Play Pitch" and "Seq Pitch 0-7" displays reflect "Panel Transpose" (but not "Seq Transpose")
         - Fix "Panel Scale", "Panel Transpose", and "Seq Transpose" update timing in "Seq Pattern" Reverse and Bounce
-        - Fix displays and behaviors when some parameters have a value of 1 or 2: "Panel Play Mode", "Panel Scale", "Seq Pattern", "Seq Step Note", and "Seq Clock Src"
     - PRA32-U CTRL, PRA32-U with Panel: Add ms display of "Delay Time"
     - Fix MIDI Implementation Chart
 - v2.5.1 (2024-09-08):
