@@ -69,6 +69,87 @@ static char s_display_buffer[8][21 + 1] = {
 };
 
 
+static INLINE uint8_t PRA32_U_ControlPanel_calc_scaled_pitch(uint32_t index_scale, uint8_t pitch)
+{
+  uint8_t new_pitch = pitch;
+
+  if        (index_scale == 0) {
+    const uint8_t ary_major[53] =
+      { 48, 48, 48, 48, 48, 50, 50, 50, 50, 52, 52, 52, 53, 53, 53,
+                    55, 55, 55, 55, 57, 57, 57, 57, 59, 59, 59, 60,
+                    60, 60, 62, 62, 62, 62, 64, 64, 64, 65, 65, 65,
+                    67, 67, 67, 67, 69, 69, 69, 69, 71, 71, 71, 72, 72, 72 };
+    uint32_t index_pitch = (((new_pitch + 3) * 2) + 1) / 5;
+    new_pitch = ary_major[index_pitch];
+  } else if (index_scale == 1) {
+    const uint8_t ary_minor[53] =
+      { 48, 48, 48, 48, 48, 50, 50, 50, 51, 51, 51, 53, 53, 53, 53,
+                    55, 55, 55, 56, 56, 56, 58, 58, 58, 58, 60, 60,
+                    60, 60, 62, 62, 62, 63, 63, 63, 65, 65, 65, 65,
+                    67, 67, 67, 68, 68, 68, 70, 70, 70, 70, 72, 72, 72, 72 };
+    uint32_t index_pitch = (((new_pitch + 3) * 2) + 1) / 5;
+    new_pitch = ary_minor[index_pitch];
+  } else if (index_scale == 2) {
+    const uint8_t ary_chromatic[53] =
+      { 48, 48, 48, 48, 49, 49, 50, 50, 51, 51, 52, 52, 53, 53, 54,
+                    54, 55, 55, 56, 56, 57, 57, 58, 58, 59, 59, 60,
+                    60, 61, 61, 62, 62, 63, 63, 64, 64, 65, 65, 66,
+                    66, 67, 67, 68, 68, 69, 69, 70, 70, 71, 71, 72, 72, 72 };
+    uint32_t index_pitch = (((new_pitch + 3) * 2) + 1) / 5;
+    new_pitch = ary_chromatic[index_pitch];
+  }
+
+  return new_pitch;
+}
+
+static INLINE uint8_t PRA32_U_ControlPanel_calc_transposed_pitch(uint8_t pitch, int32_t transpose)
+{
+  int32_t new_pitch = pitch + transpose;
+
+  if (new_pitch < 0) {
+    new_pitch = 0;
+  } else if (new_pitch > 127) {
+    new_pitch = 127;
+  }
+
+  return static_cast<uint8_t>(new_pitch);
+}
+
+static INLINE int8_t PRA32_U_ControlPanel_get_seq_transpose_value()
+{
+  int16_t seq_transpose_value = g_synth.current_controller_value(SEQ_TRANSPOSE);
+  if (seq_transpose_value < 2) {
+    seq_transpose_value = 2;
+  } else if (seq_transpose_value > 126) {
+    seq_transpose_value = 126;
+  }
+  seq_transpose_value = ((seq_transpose_value - 2) / 5) - 12;
+
+  return static_cast<int8_t>(seq_transpose_value);
+}
+
+static INLINE void PRA32_U_ControlPanel_calc_value_display_pitch(uint8_t pitch, char value_display_text[5])
+{
+  uint8_t new_pitch = PRA32_U_ControlPanel_calc_scaled_pitch(
+    ((g_synth.current_controller_value(PANEL_SCALE) * 4) + 127) / 254, pitch);
+  new_pitch = PRA32_U_ControlPanel_calc_transposed_pitch(
+    new_pitch, g_synth.current_controller_value(PANEL_TRANSPOSE) - 64);
+
+  char ary[12][5] = { " C", "C#", " D", "D#", " E", " F", "F#", " G", "G#", " A", "A#", " B" };
+
+  uint32_t quotient  = new_pitch / 12;
+  uint32_t remainder = new_pitch % 12;
+
+  value_display_text[0] = ary[remainder][0];
+  value_display_text[1] = ary[remainder][1];
+
+  if (quotient == 0) {
+    value_display_text[2] = '-';
+  } else {
+    value_display_text[2] = '0' + quotient - 1;
+  }
+}
+
 static INLINE uint32_t PRA32_U_ControlPanel_calc_bpm(uint8_t tempo_control_value) {
   uint32_t bpm = tempo_control_value + 56;
 
@@ -86,6 +167,7 @@ static INLINE uint32_t PRA32_U_ControlPanel_calc_bpm(uint8_t tempo_control_value
 
   return bpm;
 }
+
 
 static INLINE void PRA32_U_ControlPanel_update_page() {
   s_adc_control_catched[0] = false;
@@ -170,7 +252,7 @@ static INLINE boolean PRA32_U_ControlPanel_process_note_off_on() {
 }
 
 static INLINE void PRA32_U_ControlPanel_update_pitch(bool progress_seq_step) {
-  int32_t new_pitch    = 60;
+  uint8_t new_pitch    = 60;
   uint8_t new_velocity = 127;
 
   if (s_play_mode == 0) {  // Normal Mode
@@ -185,41 +267,8 @@ static INLINE void PRA32_U_ControlPanel_update_pitch(bool progress_seq_step) {
     new_velocity      = g_synth.current_controller_value(SEQ_VELO_0  + s_seq_step);
   }
 
-  uint32_t index_scale = s_index_scale;
-
-  if        (index_scale == 0) {
-    const uint8_t ary_major[53] =
-      { 48, 48, 48, 48, 48, 50, 50, 50, 50, 52, 52, 52, 53, 53, 53,
-                    55, 55, 55, 55, 57, 57, 57, 57, 59, 59, 59, 60,
-                    60, 60, 62, 62, 62, 62, 64, 64, 64, 65, 65, 65,
-                    67, 67, 67, 67, 69, 69, 69, 69, 71, 71, 71, 72, 72, 72 };
-    uint32_t index_pitch = (((new_pitch + 3) * 2) + 1) / 5;
-    new_pitch = ary_major[index_pitch];
-  } else if (index_scale == 1) {
-    const uint8_t ary_minor[53] =
-      { 48, 48, 48, 48, 48, 50, 50, 50, 51, 51, 51, 53, 53, 53, 53,
-                    55, 55, 55, 56, 56, 56, 58, 58, 58, 58, 60, 60,
-                    60, 60, 62, 62, 62, 63, 63, 63, 65, 65, 65, 65,
-                    67, 67, 67, 68, 68, 68, 70, 70, 70, 70, 72, 72, 72, 72 };
-    uint32_t index_pitch = (((new_pitch + 3) * 2) + 1) / 5;
-    new_pitch = ary_minor[index_pitch];
-  } else if (index_scale == 2) {
-    const uint8_t ary_chromatic[53] =
-      { 48, 48, 48, 48, 49, 49, 50, 50, 51, 51, 52, 52, 53, 53, 54,
-                    54, 55, 55, 56, 56, 57, 57, 58, 58, 59, 59, 60,
-                    60, 61, 61, 62, 62, 63, 63, 64, 64, 65, 65, 66,
-                    66, 67, 67, 68, 68, 69, 69, 70, 70, 71, 71, 72, 72, 72 };
-    uint32_t index_pitch = (((new_pitch + 3) * 2) + 1) / 5;
-    new_pitch = ary_chromatic[index_pitch];
-  }
-
-  new_pitch += s_panel_transpose + s_seq_transpose;
-
-  if (new_pitch < 0) {
-    new_pitch = 0;
-  } else if (new_pitch > 127) {
-    new_pitch = 127;
-  }
+  new_pitch = PRA32_U_ControlPanel_calc_scaled_pitch(s_index_scale, new_pitch);
+  new_pitch = PRA32_U_ControlPanel_calc_transposed_pitch(new_pitch, s_panel_transpose + s_seq_transpose);
 
   s_panel_play_note_velocity = new_velocity;
 
@@ -302,15 +351,7 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
     if (update_scale) {
       s_index_scale     = ((g_synth.current_controller_value(PANEL_SCALE) * 4) + 127) / 254;
       s_panel_transpose = g_synth.current_controller_value(PANEL_TRANSPOSE) - 64;
-
-      int seq_transpose_value = g_synth.current_controller_value(SEQ_TRANSPOSE);
-      if (seq_transpose_value < 2) {
-        seq_transpose_value = 2;
-      } else if (seq_transpose_value > 126) {
-        seq_transpose_value = 126;
-      }
-      seq_transpose_value = ((seq_transpose_value - 2) / 5) - 12;
-      s_seq_transpose = seq_transpose_value;
+      s_seq_transpose   = PRA32_U_ControlPanel_get_seq_transpose_value();
     }
 
     PRA32_U_ControlPanel_update_pitch(true);
@@ -657,34 +698,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
   case  SEQ_PITCH_6    :
   case  SEQ_PITCH_7    :
     {
-      uint32_t index_scale = ((g_synth.current_controller_value(PANEL_SCALE) * 4) + 127) / 254;
-
-      if (index_scale == 0) {
-       char ary_major[53][5] =
-          { " C3", " C3", " C3", " C3", " C3", " D3", " D3", " D3", " D3", " E3", " E3", " E3", " F3", " F3", " F3",
-                                 " G3", " G3", " G3", " G3", " A3", " A3", " A3", " A3", " B3", " B3", " B3", " C4",
-                                 " C4", " C4", " D4", " D4", " D4", " D4", " E4", " E4", " E4", " F4", " F4", " F4",
-                                 " G4", " G4", " G4", " G4", " A4", " A4", " A4", " A4", " B4", " B4", " B4", " C5", " C5", " C5" };
-        uint32_t index = (((g_synth.current_controller_value(control_target) + 3) * 2) + 1) / 5;
-        std::strcpy(value_display_text, ary_major[index]);
-      } else if (index_scale == 1) {
-       char ary_minor[53][5] =
-          { " C3", " C3", " C3", " C3", " C3", " D3", " D3", " D3", "D#3", "D#3", "D#3", " F3", " F3", " F3", " F3",
-                                 " G3", " G3", " G3", "G#3", "G#3", "G#3", "A#3", "A#3", "A#3", "A#3", " C4", " C4",
-                                 " C4", " C4", " D4", " D4", " D4", "D#4", "D#4", "D#4", " F4", " F4", " F4", " F4",
-                                 " G4", " G4", " G4", "G#4", "G#4", "G#4", "A#4", "A#4", "A#4", "A#4", " C4", " C5", " C5", " C5" };
-        uint32_t index = (((g_synth.current_controller_value(control_target) + 3) * 2) + 1) / 5;
-        std::strcpy(value_display_text, ary_minor[index]);
-      } else if (index_scale == 2) {
-       char ary_chromatic[53][5] =
-          { " C3", " C3", " C3", " C3", "C#3", "C#3", " D3", " D3", "D#3", "D#3", " E3", " E3", " F3", " F3", "F#3",
-                                 "F#3", " G3", " G3", "G#3", "G#3", " A3", " A3", "A#3", "A#3", " B3", " B3", " C4",
-                                 " C4", "C#4", "C#4", " D4", " D4", "D#4", "D#4", " E4", " E4", " F4", " F4", "F#4",
-                                 "F#4", " G4", " G4", "G#4", "G#4", " A4", " A4", "A#4", "A#4", " B4", " B4", " C5", " C5", " C5" };
-        uint32_t index = (((g_synth.current_controller_value(control_target) + 3) * 2) + 1) / 5;
-        std::strcpy(value_display_text, ary_chromatic[index]);
-      }
-
+      PRA32_U_ControlPanel_calc_value_display_pitch(controller_value, value_display_text);
       result = true;
     }
     break;
