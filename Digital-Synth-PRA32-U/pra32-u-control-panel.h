@@ -71,6 +71,14 @@ static char s_display_buffer[8][21 + 1] = {
 };
 
 
+static INLINE uint8_t PRA32_U_ControlPanel_get_index_scale()
+{
+  uint8_t controller_value = g_synth.current_controller_value(PANEL_SCALE    );
+  uint8_t index_scale = ((controller_value * 4) + 127) / 254;
+  if (controller_value < 3) { index_scale = controller_value; }
+  return index_scale;
+}
+
 static INLINE uint8_t PRA32_U_ControlPanel_calc_scaled_pitch(uint32_t index_scale, uint8_t pitch)
 {
   uint8_t new_pitch = pitch;
@@ -132,8 +140,8 @@ static INLINE int8_t PRA32_U_ControlPanel_get_seq_transpose_value()
 
 static INLINE void PRA32_U_ControlPanel_calc_value_display_pitch(uint8_t pitch, char value_display_text[5])
 {
-  uint8_t new_pitch = PRA32_U_ControlPanel_calc_scaled_pitch(
-    ((g_synth.current_controller_value(PANEL_SCALE) * 4) + 127) / 254, pitch);
+  uint8_t index_scale = PRA32_U_ControlPanel_get_index_scale();
+  uint8_t new_pitch  = PRA32_U_ControlPanel_calc_scaled_pitch(index_scale, pitch);
   new_pitch = PRA32_U_ControlPanel_calc_transposed_pitch(
     new_pitch, g_synth.current_controller_value(PANEL_TRANSPOSE) - 64);
 
@@ -261,7 +269,7 @@ static INLINE void PRA32_U_ControlPanel_update_pitch(bool progress_seq_step) {
     new_pitch         = g_synth.current_controller_value(PANEL_PLAY_PIT );
     new_velocity      = g_synth.current_controller_value(PANEL_PLAY_VELO);
 
-    s_index_scale     = ((g_synth.current_controller_value(PANEL_SCALE) * 4) + 127) / 254;
+    s_index_scale     = PRA32_U_ControlPanel_get_index_scale();
     s_panel_transpose = g_synth.current_controller_value(PANEL_TRANSPOSE) - 64;
     s_seq_transpose   = 0;
   } else {  // Seq Mode
@@ -354,7 +362,7 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
     s_display_buffer[0][20] = '0' + s_seq_step;
 
     if (update_scale) {
-      s_index_scale     = ((g_synth.current_controller_value(PANEL_SCALE) * 4) + 127) / 254;
+      s_index_scale     = PRA32_U_ControlPanel_get_index_scale();
       s_panel_transpose = g_synth.current_controller_value(PANEL_TRANSPOSE) - 64;
       s_seq_transpose   = PRA32_U_ControlPanel_get_seq_transpose_value();
     }
@@ -710,7 +718,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
   case  PANEL_SCALE   :
     {
       char ary[6][5] = {"Maj","Min","Chr"};
-      uint32_t index = ((controller_value * 4) + 127) / 254;
+      uint32_t index = PRA32_U_ControlPanel_get_index_scale();
       std::strcpy(value_display_text, ary[index]);
       result = true;
     }
@@ -733,7 +741,10 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     break;
   case SEQ_CLOCK_SRC  :
     {
-      if        (controller_value < 64) {
+      uint32_t index = ((controller_value * 2) + 127) / 254;
+      if (controller_value < 2) { index = controller_value; }
+
+      if (index == 0) {
         value_display_text[0] = 'I';
         value_display_text[1] = 'n';
         value_display_text[2] = 't';
@@ -758,7 +769,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     {
       char ary[3][5] = {"  4","  8"," 16"};
       uint32_t index = ((controller_value * 4) + 127) / 254;
-      if (controller_value < 2) { index = controller_value; }
+      if (controller_value < 3) { index = controller_value; }
       std::strcpy(value_display_text, ary[index]);
       result = true;
     }
@@ -776,7 +787,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     {
       char ary[3][5] = {"Fwd","Rvs","Bnc"};
       uint32_t index = ((controller_value * 4) + 127) / 254;
-      if (controller_value < 2) { index = controller_value; }
+      if (controller_value < 3) { index = controller_value; }
       std::strcpy(value_display_text, ary[index]);
       result = true;
     }
@@ -1353,11 +1364,12 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
       (control_number == PANEL_TRANSPOSE)) {
     PRA32_U_ControlPanel_update_pitch(false);
   } else if (control_number == PANEL_PLAY_MODE) {
-    uint8_t play_mode_cc_value = g_synth.current_controller_value(PANEL_PLAY_MODE);
-    uint8_t new_play_mode = (play_mode_cc_value >= 64);
+    uint8_t controller_value = g_synth.current_controller_value(PANEL_PLAY_MODE);
+    uint8_t index = ((controller_value * 2) + 127) / 254;
+    if (controller_value < 2) { index = controller_value; }
 
-    if (s_play_mode != new_play_mode) {
-      s_play_mode = new_play_mode;
+    if (s_play_mode != index) {
+      s_play_mode = index;
 
       s_playing_status = PlayingStatus_Stop;
       s_display_buffer[0][20] = ' ';
@@ -1370,8 +1382,10 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
     uint32_t bpm = PRA32_U_ControlPanel_calc_bpm(g_synth.current_controller_value(SEQ_TEMPO));
     s_seq_count_increment = bpm * 8192;
   } else if (control_number == SEQ_CLOCK_SRC) {
-    uint32_t seq_clock_src = g_synth.current_controller_value(SEQ_CLOCK_SRC  );
-    s_seq_clock_src_external = (seq_clock_src >= 64);
+    uint32_t controller_value = g_synth.current_controller_value(SEQ_CLOCK_SRC  );
+    uint32_t index = ((controller_value * 2) + 127) / 254;
+    if (controller_value < 2) { index = controller_value; }
+    s_seq_clock_src_external = index;
   } else if (control_number == SEQ_GATE_TIME) {
     uint8_t controller_value = g_synth.current_controller_value(SEQ_GATE_TIME  );
     s_seq_gate_time = (((controller_value * 10) + 127) / 254) + 1;
@@ -1379,7 +1393,7 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
       uint8_t ary[3] = {24, 12, 6};
       uint8_t controller_value = g_synth.current_controller_value(SEQ_STEP_NOTE  );
       uint32_t index = ((controller_value * 4) + 127) / 254;
-      if (controller_value < 2) { index = controller_value; }
+      if (controller_value < 3) { index = controller_value; }
       s_seq_step_clock_candidate = ary[index];
   } else if (control_number == SEQ_LAST_STEP) {
     uint8_t last_step = g_synth.current_controller_value(SEQ_LAST_STEP  );
@@ -1387,8 +1401,10 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
     if (last_step > 7) { last_step = 7; }
     s_seq_last_step = last_step;
   } else if (control_number == SEQ_PATTERN    ) {
-    uint8_t pattern = g_synth.current_controller_value(SEQ_PATTERN    );
-    s_seq_pattern = ((pattern * 4) + 127) / 254;
+    uint8_t controller_value = g_synth.current_controller_value(SEQ_PATTERN    );
+    uint32_t index = ((controller_value * 4) + 127) / 254;
+    if (controller_value < 3) { index = controller_value; }
+    s_seq_pattern = index;
   } else if (control_number == SEQ_ACT_STEPS  ) {
     s_seq_act_steps = g_synth.current_controller_value(SEQ_ACT_STEPS  );
   } else if (control_number == PANEL_MIDI_CH) {
