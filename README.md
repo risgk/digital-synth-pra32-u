@@ -107,6 +107,7 @@
 #### PWM Audio (Optional)
 
 - PWM Audio can also be used instead of I2S
+    - NOTE: Probably smaller output volume than I2S DAC boards
     - NOTE: To avoid noise, the parameters will not be written to the flash when using PWM audio
     - We recommend adding RC filter (post LPF) circuits to reduce PWM ripples
         - A 1st-order LPFs with a cutoff frequency 7.2 kHz (R = 220 ohm, C = 100 nF) works well
