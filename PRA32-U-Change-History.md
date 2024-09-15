@@ -1,6 +1,6 @@
 ## Digital Synth PRA32-U Change History
 
-- v2.5.2 (2024-09-**):
+- v2.6.0 (2024-09-15):
     - Extend "Delay Time" range (20-300 to 1-333.3 ms)
     - Update the option PRA32-U with Panel to Prototype 3 (experimental)
         - Add the parameter "Seq Step Note" (Quarter Note, Eighth Note, Sixteenth Note)
@@ -9,6 +9,8 @@
         - Fix a problem with "Seq Pattern" displaying incorrectly when the value is 1
     - PRA32-U CTRL, PRA32-U with Panel: Add ms display of "Delay Time"
     - Fix MIDI Implementation Chart
+    - Other improvements
+    - Tested with Arduino-Pico version 4.0.2
 - v2.5.1 (2024-09-08):
     - Fix a problem with noise in PRA32-U CTRL Recall operation when PWM Audio is used
         - This problem occurred when 3 or 4 notes were playing in Poly Mode and PRA32_U_USE_DEBUG_PRINT was commented out (default)
