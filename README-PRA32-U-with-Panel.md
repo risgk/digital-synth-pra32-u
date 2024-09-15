@@ -4,7 +4,7 @@
 - <https://github.com/risgk/digital-synth-pra32-u>
 
 
-## PRA32-U with Panel, Prototype 2
+## PRA32-U with Panel, Prototype 3
 
 ![PRA32-U with Panel (Grove System)](./pra32-u-with-panel-grove-system.jpg)
 
