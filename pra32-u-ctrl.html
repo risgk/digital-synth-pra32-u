@@ -41,7 +41,7 @@ td.keyh {
 }
 </style>
 <script>
-const APP_NAME_VERSION = "PRA32-U CTRL v2.5.1";
+const APP_NAME_VERSION = "PRA32-U CTRL v2.6.0";
 
 const PRA32_U_MIDI_CH = 0;  // 0-based
 
@@ -804,6 +804,19 @@ function updateDisplayOfControl(number, value) {
       var index = Math.floor(((value * 2) + 127) / 254);
       if (value < 2) { index = value; }
       dispValue = ary[index];
+    }
+    break;
+  case DELAY_TIME      :
+    {
+      if (value < 5) {
+        dispValue = parseInt(value) + 1;
+      } else if (value < 27) {
+        dispValue = (value * 2) -4;
+      } else if (value < 112) {
+        dispValue = Math.floor(((value * 20) + 3) / 6) - 40;
+      } else {
+        dispValue = 333;
+      }
     }
     break;
   }

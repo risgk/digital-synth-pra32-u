@@ -25,14 +25,16 @@ static          uint32_t s_next_key_current_value;
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL)
 static          uint32_t s_play_key_current_value;
 
-static          uint8_t  s_play_mode       = 0;
-static          int8_t   s_panel_transpose = 0;
-static          int8_t   s_seq_transpose   = 0;
-static          uint8_t  s_seq_gate_time   = 6;
-static          uint8_t  s_seq_last_step   = 7;
-static          uint8_t  s_seq_pattern     = 0;
-static          int8_t   s_seq_pattern_dir = +1;
-static          uint8_t  s_seq_act_steps   = 127;
+static          uint8_t  s_play_mode                = 0;
+static          int8_t   s_panel_transpose          = 0;
+static          int8_t   s_seq_transpose            = 0;
+static          uint8_t  s_seq_step_clock_candidate = 12;
+static          uint8_t  s_seq_step_clock           = 12;
+static          uint8_t  s_seq_gate_time            = 6;
+static          uint8_t  s_seq_last_step            = 7;
+static          uint8_t  s_seq_pattern              = 0;
+static          int8_t   s_seq_pattern_dir          = +1;
+static          uint8_t  s_seq_act_steps            = 127;
 
 static          uint32_t s_index_scale;
 
@@ -69,6 +71,95 @@ static char s_display_buffer[8][21 + 1] = {
 };
 
 
+static INLINE uint8_t PRA32_U_ControlPanel_get_index_scale()
+{
+  uint8_t controller_value = g_synth.current_controller_value(PANEL_SCALE    );
+  uint8_t index_scale = ((controller_value * 4) + 127) / 254;
+//if (controller_value < 3) { index_scale = controller_value; }
+  return index_scale;
+}
+
+static INLINE uint8_t PRA32_U_ControlPanel_calc_scaled_pitch(uint32_t index_scale, uint8_t pitch)
+{
+  uint8_t new_pitch = pitch;
+
+  if        (index_scale == 0) {
+    const uint8_t ary_major[53] =
+      { 48, 48, 48, 48, 48, 50, 50, 50, 50, 52, 52, 52, 53, 53, 53,
+                    55, 55, 55, 55, 57, 57, 57, 57, 59, 59, 59, 60,
+                    60, 60, 62, 62, 62, 62, 64, 64, 64, 65, 65, 65,
+                    67, 67, 67, 67, 69, 69, 69, 69, 71, 71, 71, 72, 72, 72 };
+    uint32_t index_pitch = (((new_pitch + 3) * 2) + 1) / 5;
+    new_pitch = ary_major[index_pitch];
+  } else if (index_scale == 1) {
+    const uint8_t ary_minor[53] =
+      { 48, 48, 48, 48, 48, 50, 50, 50, 51, 51, 51, 53, 53, 53, 53,
+                    55, 55, 55, 56, 56, 56, 58, 58, 58, 58, 60, 60,
+                    60, 60, 62, 62, 62, 63, 63, 63, 65, 65, 65, 65,
+                    67, 67, 67, 68, 68, 68, 70, 70, 70, 70, 72, 72, 72, 72 };
+    uint32_t index_pitch = (((new_pitch + 3) * 2) + 1) / 5;
+    new_pitch = ary_minor[index_pitch];
+  } else if (index_scale == 2) {
+    const uint8_t ary_chromatic[53] =
+      { 48, 48, 48, 48, 49, 49, 50, 50, 51, 51, 52, 52, 53, 53, 54,
+                    54, 55, 55, 56, 56, 57, 57, 58, 58, 59, 59, 60,
+                    60, 61, 61, 62, 62, 63, 63, 64, 64, 65, 65, 66,
+                    66, 67, 67, 68, 68, 69, 69, 70, 70, 71, 71, 72, 72, 72 };
+    uint32_t index_pitch = (((new_pitch + 3) * 2) + 1) / 5;
+    new_pitch = ary_chromatic[index_pitch];
+  }
+
+  return new_pitch;
+}
+
+static INLINE uint8_t PRA32_U_ControlPanel_calc_transposed_pitch(uint8_t pitch, int32_t transpose)
+{
+  int32_t new_pitch = pitch + transpose;
+
+  if (new_pitch < 0) {
+    new_pitch = 0;
+  } else if (new_pitch > 127) {
+    new_pitch = 127;
+  }
+
+  return static_cast<uint8_t>(new_pitch);
+}
+
+static INLINE int8_t PRA32_U_ControlPanel_get_seq_transpose_value()
+{
+  int16_t seq_transpose_value = g_synth.current_controller_value(SEQ_TRANSPOSE);
+  if (seq_transpose_value < 2) {
+    seq_transpose_value = 2;
+  } else if (seq_transpose_value > 126) {
+    seq_transpose_value = 126;
+  }
+  seq_transpose_value = ((seq_transpose_value - 2) / 5) - 12;
+
+  return static_cast<int8_t>(seq_transpose_value);
+}
+
+static INLINE void PRA32_U_ControlPanel_calc_value_display_pitch(uint8_t pitch, char value_display_text[5])
+{
+  uint8_t index_scale = PRA32_U_ControlPanel_get_index_scale();
+  uint8_t new_pitch  = PRA32_U_ControlPanel_calc_scaled_pitch(index_scale, pitch);
+  new_pitch = PRA32_U_ControlPanel_calc_transposed_pitch(
+    new_pitch, g_synth.current_controller_value(PANEL_TRANSPOSE) - 64);
+
+  char ary[12][5] = { " C", "C#", " D", "D#", " E", " F", "F#", " G", "G#", " A", "A#", " B" };
+
+  uint32_t quotient  = new_pitch / 12;
+  uint32_t remainder = new_pitch % 12;
+
+  value_display_text[0] = ary[remainder][0];
+  value_display_text[1] = ary[remainder][1];
+
+  if (quotient == 0) {
+    value_display_text[2] = '-';
+  } else {
+    value_display_text[2] = '0' + quotient - 1;
+  }
+}
+
 static INLINE uint32_t PRA32_U_ControlPanel_calc_bpm(uint8_t tempo_control_value) {
   uint32_t bpm = tempo_control_value + 56;
 
@@ -86,6 +177,7 @@ static INLINE uint32_t PRA32_U_ControlPanel_calc_bpm(uint8_t tempo_control_value
 
   return bpm;
 }
+
 
 static INLINE void PRA32_U_ControlPanel_update_page() {
   s_adc_control_catched[0] = false;
@@ -170,14 +262,14 @@ static INLINE boolean PRA32_U_ControlPanel_process_note_off_on() {
 }
 
 static INLINE void PRA32_U_ControlPanel_update_pitch(bool progress_seq_step) {
-  int32_t new_pitch    = 60;
+  uint8_t new_pitch    = 60;
   uint8_t new_velocity = 127;
 
   if (s_play_mode == 0) {  // Normal Mode
     new_pitch         = g_synth.current_controller_value(PANEL_PLAY_PIT );
     new_velocity      = g_synth.current_controller_value(PANEL_PLAY_VELO);
 
-    s_index_scale     = ((g_synth.current_controller_value(PANEL_SCALE) * 4) + 127) / 254;
+    s_index_scale     = PRA32_U_ControlPanel_get_index_scale();
     s_panel_transpose = g_synth.current_controller_value(PANEL_TRANSPOSE) - 64;
     s_seq_transpose   = 0;
   } else {  // Seq Mode
@@ -185,41 +277,8 @@ static INLINE void PRA32_U_ControlPanel_update_pitch(bool progress_seq_step) {
     new_velocity      = g_synth.current_controller_value(SEQ_VELO_0  + s_seq_step);
   }
 
-  uint32_t index_scale = s_index_scale;
-
-  if        (index_scale == 0) {
-    const uint8_t ary_major[53] =
-      { 48, 48, 48, 48, 48, 50, 50, 50, 50, 52, 52, 52, 53, 53, 53,
-                    55, 55, 55, 55, 57, 57, 57, 57, 59, 59, 59, 60,
-                    60, 60, 62, 62, 62, 62, 64, 64, 64, 65, 65, 65,
-                    67, 67, 67, 67, 69, 69, 69, 69, 71, 71, 71, 72, 72, 72 };
-    uint32_t index_pitch = (((new_pitch + 3) * 2) + 1) / 5;
-    new_pitch = ary_major[index_pitch];
-  } else if (index_scale == 1) {
-    const uint8_t ary_minor[53] =
-      { 48, 48, 48, 48, 48, 50, 50, 50, 51, 51, 51, 53, 53, 53, 53,
-                    55, 55, 55, 56, 56, 56, 58, 58, 58, 58, 60, 60,
-                    60, 60, 62, 62, 62, 63, 63, 63, 65, 65, 65, 65,
-                    67, 67, 67, 68, 68, 68, 70, 70, 70, 70, 72, 72, 72, 72 };
-    uint32_t index_pitch = (((new_pitch + 3) * 2) + 1) / 5;
-    new_pitch = ary_minor[index_pitch];
-  } else if (index_scale == 2) {
-    const uint8_t ary_chromatic[53] =
-      { 48, 48, 48, 48, 49, 49, 50, 50, 51, 51, 52, 52, 53, 53, 54,
-                    54, 55, 55, 56, 56, 57, 57, 58, 58, 59, 59, 60,
-                    60, 61, 61, 62, 62, 63, 63, 64, 64, 65, 65, 66,
-                    66, 67, 67, 68, 68, 69, 69, 70, 70, 71, 71, 72, 72, 72 };
-    uint32_t index_pitch = (((new_pitch + 3) * 2) + 1) / 5;
-    new_pitch = ary_chromatic[index_pitch];
-  }
-
-  new_pitch += s_panel_transpose + s_seq_transpose;
-
-  if (new_pitch < 0) {
-    new_pitch = 0;
-  } else if (new_pitch > 127) {
-    new_pitch = 127;
-  }
+  new_pitch = PRA32_U_ControlPanel_calc_scaled_pitch(s_index_scale, new_pitch);
+  new_pitch = PRA32_U_ControlPanel_calc_transposed_pitch(new_pitch, s_panel_transpose + s_seq_transpose);
 
   s_panel_play_note_velocity = new_velocity;
 
@@ -248,8 +307,13 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
 
   ++s_seq_sub_step;
 
-  if (s_seq_sub_step >= 12) {
+  if (s_seq_sub_step >= 24) {
     s_seq_sub_step = 0;
+    s_seq_step_clock = s_seq_step_clock_candidate;
+  }
+
+  if ((s_seq_sub_step % s_seq_step_clock) == 0) {
+    bool update_scale = false;
 
     do {
       if (s_seq_pattern == 0) {  // Forward
@@ -257,6 +321,7 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
 
         if (s_seq_step > s_seq_last_step) {
           s_seq_step = 0;
+          update_scale = true;
         }
 
         s_seq_pattern_dir = +1;
@@ -265,6 +330,7 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
 
         if (s_seq_step < 0) {
           s_seq_step = s_seq_last_step;
+          update_scale = true;
         }
 
         s_seq_pattern_dir = -1;
@@ -274,6 +340,7 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
 
           if (s_seq_step > s_seq_last_step) {
             s_seq_step = s_seq_last_step;
+            update_scale = true;
             s_seq_pattern_dir = -1;
           } else {
             s_seq_pattern_dir = +1;
@@ -283,6 +350,7 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
 
           if (s_seq_step < 0) {
             s_seq_step = 0;
+            update_scale = true;
             s_seq_pattern_dir = +1;
           } else {
             s_seq_pattern_dir = -1;
@@ -293,18 +361,10 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
 
     s_display_buffer[0][20] = '0' + s_seq_step;
 
-    if (s_seq_step == 0) {
-      s_index_scale     = ((g_synth.current_controller_value(PANEL_SCALE) * 4) + 127) / 254;
+    if (update_scale) {
+      s_index_scale     = PRA32_U_ControlPanel_get_index_scale();
       s_panel_transpose = g_synth.current_controller_value(PANEL_TRANSPOSE) - 64;
-
-      int seq_transpose_value = g_synth.current_controller_value(SEQ_TRANSPOSE);
-      if (seq_transpose_value < 2) {
-        seq_transpose_value = 2;
-      } else if (seq_transpose_value > 126) {
-        seq_transpose_value = 126;
-      }
-      seq_transpose_value = ((seq_transpose_value - 2) / 5) - 12;
-      s_seq_transpose = seq_transpose_value;
+      s_seq_transpose   = PRA32_U_ControlPanel_get_seq_transpose_value();
     }
 
     PRA32_U_ControlPanel_update_pitch(true);
@@ -574,6 +634,24 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
       result = true;
     }
     break;
+  case DELAY_TIME      :
+    {
+      int display_value;
+
+      if (controller_value < 5) {
+        display_value = controller_value + 1;
+      } else if (controller_value < 27) {
+        display_value = (controller_value * 2) -4;
+      } else if (controller_value < 112) {
+        display_value = (((controller_value * 20) + 3) / 6) - 40;
+      } else {
+        display_value = 333;
+      }
+
+      std::sprintf(value_display_text, "%3d", display_value);
+      result = true;
+    }
+    break;
   case  RD_PROGRAM_0   :
   case  RD_PROGRAM_1   :
   case  RD_PROGRAM_2   :
@@ -633,41 +711,15 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
   case  SEQ_PITCH_6    :
   case  SEQ_PITCH_7    :
     {
-      uint32_t index_scale = ((g_synth.current_controller_value(PANEL_SCALE) * 4) + 127) / 254;
-
-      if (index_scale == 0) {
-       char ary_major[53][5] =
-          { " C3", " C3", " C3", " C3", " C3", " D3", " D3", " D3", " D3", " E3", " E3", " E3", " F3", " F3", " F3",
-                                 " G3", " G3", " G3", " G3", " A3", " A3", " A3", " A3", " B3", " B3", " B3", " C4",
-                                 " C4", " C4", " D4", " D4", " D4", " D4", " E4", " E4", " E4", " F4", " F4", " F4",
-                                 " G4", " G4", " G4", " G4", " A4", " A4", " A4", " A4", " B4", " B4", " B4", " C5", " C5", " C5" };
-        uint32_t index = (((g_synth.current_controller_value(control_target) + 3) * 2) + 1) / 5;
-        std::strcpy(value_display_text, ary_major[index]);
-      } else if (index_scale == 1) {
-       char ary_minor[53][5] =
-          { " C3", " C3", " C3", " C3", " C3", " D3", " D3", " D3", "D#3", "D#3", "D#3", " F3", " F3", " F3", " F3",
-                                 " G3", " G3", " G3", "G#3", "G#3", "G#3", "A#3", "A#3", "A#3", "A#3", " C4", " C4",
-                                 " C4", " C4", " D4", " D4", " D4", "D#4", "D#4", "D#4", " F4", " F4", " F4", " F4",
-                                 " G4", " G4", " G4", "G#4", "G#4", "G#4", "A#4", "A#4", "A#4", "A#4", " C4", " C5", " C5", " C5" };
-        uint32_t index = (((g_synth.current_controller_value(control_target) + 3) * 2) + 1) / 5;
-        std::strcpy(value_display_text, ary_minor[index]);
-      } else if (index_scale == 2) {
-       char ary_chromatic[53][5] =
-          { " C3", " C3", " C3", " C3", "C#3", "C#3", " D3", " D3", "D#3", "D#3", " E3", " E3", " F3", " F3", "F#3",
-                                 "F#3", " G3", " G3", "G#3", "G#3", " A3", " A3", "A#3", "A#3", " B3", " B3", " C4",
-                                 " C4", "C#4", "C#4", " D4", " D4", "D#4", "D#4", " E4", " E4", " F4", " F4", "F#4",
-                                 "F#4", " G4", " G4", "G#4", "G#4", " A4", " A4", "A#4", "A#4", " B4", " B4", " C5", " C5", " C5" };
-        uint32_t index = (((g_synth.current_controller_value(control_target) + 3) * 2) + 1) / 5;
-        std::strcpy(value_display_text, ary_chromatic[index]);
-      }
-
+      PRA32_U_ControlPanel_calc_value_display_pitch(controller_value, value_display_text);
       result = true;
     }
     break;
   case  PANEL_SCALE   :
     {
       char ary[6][5] = {"Maj","Min","Chr"};
-      uint32_t index = ((controller_value * 4) + 127) / 254;
+      uint32_t index = PRA32_U_ControlPanel_get_index_scale();
+//    if (controller_value < 3) { index_scale = controller_value; }
       std::strcpy(value_display_text, ary[index]);
       result = true;
     }
@@ -676,7 +728,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     {
       char ary[2][5] = {"Nrm","Seq"};
       uint32_t index = ((controller_value * 2) + 127) / 254;
-      if (controller_value < 2) { index = controller_value; }
+//    if (controller_value < 2) { index = controller_value; }
       std::strcpy(value_display_text, ary[index]);
       result = true;
     }
@@ -690,7 +742,10 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     break;
   case SEQ_CLOCK_SRC  :
     {
-      if        (controller_value < 64) {
+      uint32_t index = ((controller_value * 2) + 127) / 254;
+//    if (controller_value < 2) { index = controller_value; }
+
+      if (index == 0) {
         value_display_text[0] = 'I';
         value_display_text[1] = 'n';
         value_display_text[2] = 't';
@@ -711,6 +766,15 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
       result = true;
     }
     break;
+  case SEQ_STEP_NOTE   :
+    {
+      char ary[3][5] = {"  4","  8"," 16"};
+      uint32_t index = ((controller_value * 4) + 127) / 254;
+//    if (controller_value < 3) { index = controller_value; }
+      std::strcpy(value_display_text, ary[index]);
+      result = true;
+    }
+    break;
   case SEQ_LAST_STEP  :
     {
       uint8_t last_step = g_synth.current_controller_value(SEQ_LAST_STEP  );
@@ -724,7 +788,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     {
       char ary[3][5] = {"Fwd","Rvs","Bnc"};
       uint32_t index = ((controller_value * 4) + 127) / 254;
-      if (controller_value < 2) { index = controller_value; }
+//    if (controller_value < 3) { index = controller_value; }
       std::strcpy(value_display_text, ary[index]);
       result = true;
     }
@@ -1301,11 +1365,12 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
       (control_number == PANEL_TRANSPOSE)) {
     PRA32_U_ControlPanel_update_pitch(false);
   } else if (control_number == PANEL_PLAY_MODE) {
-    uint8_t play_mode_cc_value = g_synth.current_controller_value(PANEL_PLAY_MODE);
-    uint8_t new_play_mode = (play_mode_cc_value >= 64);
+    uint8_t controller_value = g_synth.current_controller_value(PANEL_PLAY_MODE);
+    uint8_t index = ((controller_value * 2) + 127) / 254;
+//  if (controller_value < 2) { index = controller_value; }
 
-    if (s_play_mode != new_play_mode) {
-      s_play_mode = new_play_mode;
+    if (s_play_mode != index) {
+      s_play_mode = index;
 
       s_playing_status = PlayingStatus_Stop;
       s_display_buffer[0][20] = ' ';
@@ -1318,19 +1383,29 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
     uint32_t bpm = PRA32_U_ControlPanel_calc_bpm(g_synth.current_controller_value(SEQ_TEMPO));
     s_seq_count_increment = bpm * 8192;
   } else if (control_number == SEQ_CLOCK_SRC) {
-    uint32_t seq_clock_src = g_synth.current_controller_value(SEQ_CLOCK_SRC  );
-    s_seq_clock_src_external = (seq_clock_src >= 64);
+    uint32_t controller_value = g_synth.current_controller_value(SEQ_CLOCK_SRC  );
+    uint32_t index = ((controller_value * 2) + 127) / 254;
+//  if (controller_value < 2) { index = controller_value; }
+    s_seq_clock_src_external = index;
   } else if (control_number == SEQ_GATE_TIME) {
     uint8_t controller_value = g_synth.current_controller_value(SEQ_GATE_TIME  );
     s_seq_gate_time = (((controller_value * 10) + 127) / 254) + 1;
+  } else if (control_number == SEQ_STEP_NOTE) {
+    uint8_t ary[3] = {24, 12, 6};
+    uint8_t controller_value = g_synth.current_controller_value(SEQ_STEP_NOTE  );
+    uint32_t index = ((controller_value * 4) + 127) / 254;
+//  if (controller_value < 3) { index = controller_value; }
+    s_seq_step_clock_candidate = ary[index];
   } else if (control_number == SEQ_LAST_STEP) {
     uint8_t last_step = g_synth.current_controller_value(SEQ_LAST_STEP  );
     last_step = (last_step + 8) >> 4;
     if (last_step > 7) { last_step = 7; }
     s_seq_last_step = last_step;
   } else if (control_number == SEQ_PATTERN    ) {
-    uint8_t pattern = g_synth.current_controller_value(SEQ_PATTERN    );
-    s_seq_pattern = ((pattern * 4) + 127) / 254;
+    uint8_t controller_value = g_synth.current_controller_value(SEQ_PATTERN    );
+    uint32_t index = ((controller_value * 4) + 127) / 254;
+//  if (controller_value < 3) { index = controller_value; }
+    s_seq_pattern = index;
   } else if (control_number == SEQ_ACT_STEPS  ) {
     s_seq_act_steps = g_synth.current_controller_value(SEQ_ACT_STEPS  );
   } else if (control_number == PANEL_MIDI_CH) {

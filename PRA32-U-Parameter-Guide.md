@@ -1,6 +1,6 @@
-# Digital Synth PRA32-U Parameter Guide v2.5.1
+# Digital Synth PRA32-U Parameter Guide v2.6.0
 
-- 2024-09-08 ISGK Instruments
+- 2024-09-15 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
 
 ## Control Change Parameters
@@ -194,7 +194,11 @@
     - 64: Feedback 25%
     - 127: Feedback 49.6% (max)
 - Delay Time
-    - 12: 20 ms (min)
+    - 0: 1 ms (min)
+    - 5: 6 ms
+    - 6: 8 ms
+    - 7: 10 ms
+    - 12: 20 ms
     - 27: 50 ms
     - 42: 100 ms = eighth note time at 300 BPM
     - 57: 150 ms = eighth note time at 200 BPM
@@ -203,7 +207,8 @@
     - 72: 200 ms = eighth note time at 150 BPM
     - 87: 250 ms = eighth note time at 120 BPM
     - 93: 270 ms
-    - 102: 300 ms = eighth note time at 100 BPM (max)
+    - 102: 300 ms = eighth note time at 100 BPM
+    - 112: 333.3 ms (max)
 - Delay Mode [S|P]
     - 0, 2-63: Stereo Delay
     - 1, 127 (64-127): Ping Pong Delay

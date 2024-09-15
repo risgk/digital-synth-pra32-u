@@ -1,13 +1,18 @@
 # PRA32-U with Panel (Experimental) (Optional)
 
-- 2024-09-08 ISGK Instruments
+- 2024-09-15 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
 
 
-## PRA32-U with Panel, Prototype 2
+## PRA32-U with Panel, Prototype 3
 
 ![PRA32-U with Panel (Grove System)](./pra32-u-with-panel-grove-system.jpg)
 
+- Features
+    - Edit and display parameters by panel operation
+    - Playing by panel operation
+    - Built-in monophonic 8-step sequencer
+    - Panel and Step Sequencer Parameters
 - This option requires 3 SWs (tactile switches), 3 VRs (ADCs), and a monochrome 128x64 OLED Display based on SSD1306 series drivers
     - Tested with Pimoroni Pico Audio Pack, necobit電子 MIDI Unit for GROVE (optional), Long Leg 2x20 Pin Socket * 2, Seeed Studio's Grove Shield for Pi Pico, Buttons * 3, Rotary Angle Sensors * 3, and an OLED Display 0.96 inch
 - Uncomment out `//#define PRA32_U_USE_CONTROL_PANEL` in "Digital-Synth-PRA32-U.ino" and modify the constants
@@ -22,37 +27,27 @@
     - Synth Parameters
 - Group B
     - Panel Parameters
-        - Panel Play Mode [Nrm|Seq]
-            - Normal Mode
-            - Step Sequencer Mode
-        - Panel MIDI Ch (Basic Channel 1-16)
+        - Panel Play Mode [Nrm|Seq]: Normal Mode, Step Sequencer Mode
+        - Panel MIDI Ch: Basic Channel 1-16
         - Panel Play Pitch
         - Panel Play Velo
-        - Panel Scale [Maj|Min|Chr]
-            - Major, 2 octaves
-            - Minor, 2 octaves
-            - Chromatic, 2 octaves
+        - Panel Scale [Maj|Min|Chr]: Major (2 octaves), Minor (2 octaves), Chromatic (2 octaves)
         - Panel Transpose [-|+]
     - Step Sequencer Parameters
-        - Seq Pattern [Fwd|Rvs|Bnc]
-            - Forward
-            - Reverse
-            - Bounce
-        - Seq Act Steps (Active Steps)
-            - bit 0: Step 1 Active, ,,,, bit 6: Step 7 Active
+        - Seq Pattern [Fwd|Rvs|Bnc]: Forward, Reverse, Bounce
+        - Seq Act Steps (Active Steps): bit 0 is Step 1 Active, ,,,, bit 6 is Step 7 Active
+        - Seq Step Note [4|8|16]: Quarter Note, Eighth Note, Sixteenth Note
         - Seq Last Step
-        - Seq Tempo (BPM 30-300)
+        - Seq Tempo: BPM 30-300
         - Seq Gate Time [1/6|2/6|3/6|4/6|5/6|6/6]
         - Seq Transpose [-|+]
-        - Seq Clock Src [Int|Ext]
-            - Internal
-            - External (Rx MIDI Clock)
+        - Seq Clock Src [Int|Ext]: Internal, External (Rx MIDI Clock)
         - Seq Pitch 0-7
         - Seq Velo 0-7
     - Control Parameters
-       - Modulation
-       - Breath Controller
-       - Sustain Pedal
+        - Modulation
+        - Breath Controller
+        - Sustain Pedal
 - Group C
     - Write Operations
         - Write Program 8-15, Write Panel Prms (Write Panel and Step Sequencer Parameters)
