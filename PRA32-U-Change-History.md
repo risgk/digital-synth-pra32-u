@@ -1,5 +1,7 @@
 ## Digital Synth PRA32-U Change History
 
+- v2.6.1 (2024-**-**):
+    - Other improvements
 - v2.6.0 (2024-09-15):
     - Extend "Delay Time" range (20-300 to 1-333.3 ms)
     - Update the option PRA32-U with Panel to Prototype 3 (experimental)
