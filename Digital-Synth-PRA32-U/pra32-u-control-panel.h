@@ -22,8 +22,8 @@ static volatile boolean  s_adc_control_catched[3];
 #if defined(PRA32_U_USE_CONTROL_PANEL)
 static          uint32_t s_prev_key_current_value;
 static          uint32_t s_next_key_current_value;
-#endif  // defined(PRA32_U_USE_CONTROL_PANEL)
 static          uint32_t s_play_key_current_value;
+#endif  // defined(PRA32_U_USE_CONTROL_PANEL)
 
 static          uint8_t  s_play_mode                = 0;
 static          int8_t   s_panel_transpose          = 0;
