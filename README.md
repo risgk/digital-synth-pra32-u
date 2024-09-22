@@ -1,6 +1,6 @@
-# Digital Synth PRA32-U v2.6.0
+# Digital Synth PRA32-U v2.6.1
 
-- 2024-09-15 ISGK Instruments
+- 2024-09-22 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
 
 
@@ -114,6 +114,7 @@
         - A 1st-order LPFs with a cutoff frequency 7.2 kHz (R = 220 ohm, C = 100 nF) works well
     - See "PWM audio" in [Hardware design with RP2040](https://datasheets.raspberrypi.com/rp2040/hardware-design-with-rp2040.pdf)
       for details on PWM audio
+- NOTE: Select CPU Speed: "150 MHz (Overclock)" in the Arduino IDE "Tools" menu
 - Uncomment out `//#define PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S`
   in "Digital-Synth-PRA32-U.ino" and modify `PRA32_U_PWM_AUDIO_L_PIN` and `PRA32_U_PWM_AUDIO_R_PIN`
 - The following is setting is for Pimoroni Pico VGA Demo Base (PIM553)
@@ -263,11 +264,11 @@ graph LR
 
 ![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)
 
-**Digital Synth PRA32-U v2.6.0 by ISGK Instruments (Ryo Ishigaki)**
+**Digital Synth PRA32-U v2.6.1 by ISGK Instruments (Ryo Ishigaki)**
 
 To the extent possible under law, ISGK Instruments (Ryo Ishigaki)
 has waived all copyright and related or neighboring rights
-to Digital Synth PRA32-U v2.6.0.
+to Digital Synth PRA32-U v2.6.1.
 
 You should have received a copy of the CC0 legalcode along with this
 work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.

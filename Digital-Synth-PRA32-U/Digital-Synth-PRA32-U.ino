@@ -2,7 +2,7 @@
  * Digital Synth PRA32-U
  */
 
-#define PRA32_U_VERSION                       "v2.6.0    "
+#define PRA32_U_VERSION                       "v2.6.1    "
 
 //#define PRA32_U_USE_DEBUG_PRINT               // Serial1
 
@@ -30,7 +30,7 @@
 #define PRA32_U_I2S_BUFFERS                   (4)
 #define PRA32_U_I2S_BUFFER_WORDS              (64)
 
-//#define PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S
+//#define PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S  // Select CPU Speed: "150 MHz (Overclock)" in the Arduino IDE "Tools" menu
 
 // for Pimoroni Pico VGA Demo Base (PIM553)
 #define PRA32_U_PWM_AUDIO_L_PIN               (28)
@@ -172,7 +172,6 @@ void __not_in_flash_func(loop1)() {
 }
 
 void __not_in_flash_func(setup)() {
-  g_i2s_output.setSysClk(SAMPLING_RATE);
 #if defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
   pinMode(PRA32_U_PWM_AUDIO_L_PIN, OUTPUT_12MA);
   pinMode(PRA32_U_PWM_AUDIO_R_PIN, OUTPUT_12MA);
@@ -195,6 +194,7 @@ void __not_in_flash_func(setup)() {
   g_pwm_r.begin();
 #endif
 #else  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+  g_i2s_output.setSysClk(SAMPLING_RATE);
   g_i2s_output.setFrequency(SAMPLING_RATE);
   g_i2s_output.setDATA(PRA32_U_I2S_DATA_PIN);
 #if defined(PRA32_U_I2S_MCLK_PIN)
