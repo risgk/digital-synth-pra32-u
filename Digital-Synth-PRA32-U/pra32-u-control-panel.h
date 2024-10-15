@@ -193,9 +193,6 @@ static INLINE void PRA32_U_ControlPanel_update_page() {
     current_page.control_target_c = SEQ_TRANSPOSE;
   }
 
-  std::memset(&s_display_buffer[3], ' ', 21);
-  std::memset(&s_display_buffer[7], ' ', 21);
-
   std::memcpy(&s_display_buffer[1][ 0], current_page.page_name_line_0            , 10);
   std::memcpy(&s_display_buffer[2][ 0], current_page.page_name_line_1            , 10);
 
@@ -1102,7 +1099,6 @@ INLINE void PRA32_U_ControlPanel_update_control() {
         }
       }
 
-      PRA32_U_ControlPanel_update_page();
       return;
     }
   }
@@ -1149,8 +1145,6 @@ INLINE void PRA32_U_ControlPanel_on_start()
       }
     }
   }
-
-  PRA32_U_ControlPanel_update_page();
 }
 
 INLINE void PRA32_U_ControlPanel_on_stop()
@@ -1162,8 +1156,6 @@ INLINE void PRA32_U_ControlPanel_on_stop()
       }
     }
   }
-
-  PRA32_U_ControlPanel_update_page();
 }
 
 INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
@@ -1204,6 +1196,8 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
         s_display_buffer[7][ 8] = value_display_text[2];
         s_display_buffer[7][ 9] = ']';
       }
+    } else {
+      std::memset(&s_display_buffer[7][ 0], ' ', 10);
     }
 
     uint8_t adc_control_target_1 = s_adc_control_target[1];
@@ -1237,6 +1231,8 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
         s_display_buffer[7][19] = value_display_text[2];
         s_display_buffer[7][20] = ']';
       }
+    } else {
+      std::memset(&s_display_buffer[7][11], ' ', 10);
     }
 
     uint8_t adc_control_target_2 = s_adc_control_target[2];
@@ -1270,6 +1266,8 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
         s_display_buffer[3][19] = value_display_text[2];
         s_display_buffer[3][20] = ']';
       }
+    } else {
+      std::memset(&s_display_buffer[3][11], ' ', 10);
     }
   }
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL)
