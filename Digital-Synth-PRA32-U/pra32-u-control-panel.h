@@ -57,7 +57,8 @@ static volatile uint8_t  s_panel_play_note_velocity = 127;
 static volatile bool     s_panel_play_note_gate     = false;
 static volatile bool     s_panel_play_note_trigger  = false;
 
-static volatile int32_t s_display_draw_counter = 0;
+static volatile int32_t s_display_draw_counter         = -1;
+static          bool    s_display_draw_position_update = false;
 
 static char s_display_buffer[8][21 + 1] = {
   "                     ",
@@ -1283,17 +1284,23 @@ INLINE void PRA32_U_ControlPanel_update_display(uint32_t loop_counter) {
   static uint32_t s_display_draw_position_x = 0;
   static uint32_t s_display_draw_position_y = 0;
 
-  if ((loop_counter & 0x7F) == 0x40) {
-    int32_t display_draw_counter = s_display_draw_counter;
+  if ((loop_counter & 0x3F) == 0x00) {
+    if (s_display_draw_position_update) {
+      PRA32_U_ControlPanel_draw_character(s_display_buffer[s_display_draw_position_y][s_display_draw_position_x]);
+      s_display_draw_position_update = false;
+      return;
+    }
 
-    s_display_draw_counter++;
+    ++s_display_draw_counter;
     if (s_display_draw_counter == (8 * 22) + 0) {
+      s_display_draw_position_update = true;
       s_display_draw_counter = (6 * 22) + 10;
     } else if (s_display_draw_counter == 0) {
+      s_display_draw_position_update = true;
       s_display_draw_position_y = 0;
       s_display_draw_position_x = 20;
     } else {
-      switch (display_draw_counter / 22) {
+      switch (s_display_draw_counter / 22) {
       case 0:
         s_display_draw_position_y = 1;
         break;
@@ -1320,22 +1327,32 @@ INLINE void PRA32_U_ControlPanel_update_display(uint32_t loop_counter) {
         break;
       }
 
-      s_display_draw_position_x = display_draw_counter % 22;
+      s_display_draw_position_x = s_display_draw_counter % 22;
 
       if (s_display_draw_position_x == 0) {
+        s_display_draw_position_update = true;
         s_display_draw_position_y = 0;
         s_display_draw_position_x = 20;
       } else if (s_display_draw_position_x == 11) {
+        s_display_draw_position_update = true;
         s_display_draw_position_y = 0;
         s_display_draw_position_x = 20;
       } else {
         --s_display_draw_position_x;
+
+        if (s_display_draw_position_x == 0) {
+          s_display_draw_position_update = true;
+        } else if (s_display_draw_position_x == 11) {
+          s_display_draw_position_update = true;
+        }
       }
     }
 
-    PRA32_U_ControlPanel_set_draw_position(s_display_draw_position_x, s_display_draw_position_y);
-  } else if ((loop_counter & 0x7F) == 0x00) {
-    PRA32_U_ControlPanel_draw_character(s_display_buffer[s_display_draw_position_y][s_display_draw_position_x]);
+    if (s_display_draw_position_update) {
+      PRA32_U_ControlPanel_set_draw_position(s_display_draw_position_x, s_display_draw_position_y);
+    } else {
+      PRA32_U_ControlPanel_draw_character(s_display_buffer[s_display_draw_position_y][s_display_draw_position_x]);
+    }
   }
 #endif  // defined(PRA32_U_USE_CONTROL_PANEL_OLED_DISPLAY)
 
