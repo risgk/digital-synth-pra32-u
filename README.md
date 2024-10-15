@@ -257,7 +257,7 @@ graph LR
 - This image was created with Fritzing.
 
 
-## [PRA32-U with Panel](./README-PRA32-U-with-Panel.md) (Experimental) (Optional)
+## [PRA32-U with Panel](./README-PRA32-U-with-Panel.md) (Optional)
 
 
 ## License
