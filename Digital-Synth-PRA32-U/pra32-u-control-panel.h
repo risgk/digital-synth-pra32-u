@@ -1195,6 +1195,8 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
         s_display_buffer[7][ 7] = value_display_text[1];
         s_display_buffer[7][ 8] = value_display_text[2];
         s_display_buffer[7][ 9] = ']';
+      } else {
+        std::memset(&s_display_buffer[7][ 5], ' ', 5);
       }
     } else {
       std::memset(&s_display_buffer[7][ 0], ' ', 10);
@@ -1230,6 +1232,8 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
         s_display_buffer[7][18] = value_display_text[1];
         s_display_buffer[7][19] = value_display_text[2];
         s_display_buffer[7][20] = ']';
+      } else {
+        std::memset(&s_display_buffer[7][16], ' ', 5);
       }
     } else {
       std::memset(&s_display_buffer[7][11], ' ', 10);
@@ -1265,6 +1269,8 @@ INLINE void PRA32_U_ControlPanel_update_display_buffer(uint32_t loop_counter) {
         s_display_buffer[3][18] = value_display_text[1];
         s_display_buffer[3][19] = value_display_text[2];
         s_display_buffer[3][20] = ']';
+      } else {
+        std::memset(&s_display_buffer[3][16], ' ', 5);
       }
     } else {
       std::memset(&s_display_buffer[3][11], ' ', 10);
