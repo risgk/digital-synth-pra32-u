@@ -1,10 +1,10 @@
-# PRA32-U with Panel (Experimental) (Optional)
+# Digital Synth PRA32-U with Panel v2.6.1
 
 - 2024-09-22 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
 
 
-## PRA32-U with Panel, Prototype 3
+## PRA32-U with Panel (Optional)
 
 ![PRA32-U with Panel (Grove System)](./pra32-u-with-panel-grove-system.jpg)
 
