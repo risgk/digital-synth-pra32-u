@@ -1297,79 +1297,76 @@ INLINE void PRA32_U_ControlPanel_update_display(uint32_t loop_counter) {
 
     ++s_display_draw_counter;
 
-    if (s_display_draw_counter == (14 * 11)) {
-      s_display_draw_counter = (11 * 11);
+    if (s_display_draw_counter == (14 * 10) + 1) {
+      s_display_draw_counter = (11 * 10);
     }
 
-    switch (s_display_draw_counter / 11) {
+    switch (s_display_draw_counter / 10) {
     case 0:
-      s_display_draw_position_x = s_display_draw_counter % 11;
+      s_display_draw_position_x = s_display_draw_counter % 10;
       s_display_draw_position_y = 1;
       break;
     case 1:
-      s_display_draw_position_x = s_display_draw_counter % 11;
+      s_display_draw_position_x = s_display_draw_counter % 10;
       s_display_draw_position_y = 2;
       break;
     case 2:
-      s_display_draw_position_x = s_display_draw_counter % 11;
+      s_display_draw_position_x = s_display_draw_counter % 10;
       s_display_draw_position_y = 5;
       break;
     case 3:
-      s_display_draw_position_x = s_display_draw_counter % 11;
+      s_display_draw_position_x = s_display_draw_counter % 10;
       s_display_draw_position_y = 6;
       break;
     case 4:
-      s_display_draw_position_x = s_display_draw_counter % 11;
+      s_display_draw_position_x = s_display_draw_counter % 10;
       s_display_draw_position_y = 7;
       break;
     case 5:
-      s_display_draw_position_x = s_display_draw_counter % 11 + 11;
+      s_display_draw_position_x = s_display_draw_counter % 10 + 11;
       s_display_draw_position_y = 5;
       break;
     case 6:
-      s_display_draw_position_x = s_display_draw_counter % 11 + 11;
+      s_display_draw_position_x = s_display_draw_counter % 10 + 11;
       s_display_draw_position_y = 6;
       break;
     case 7:
-      s_display_draw_position_x = s_display_draw_counter % 11 + 11;
+      s_display_draw_position_x = s_display_draw_counter % 10 + 11;
       s_display_draw_position_y = 7;
       break;
     case 8:
-      s_display_draw_position_x = s_display_draw_counter % 11 + 11;
+      s_display_draw_position_x = s_display_draw_counter % 10 + 11;
       s_display_draw_position_y = 1;
       break;
     case 9:
-      s_display_draw_position_x = s_display_draw_counter % 11 + 11;
+      s_display_draw_position_x = s_display_draw_counter % 10 + 11;
       s_display_draw_position_y = 2;
       break;
     case 10:
-      s_display_draw_position_x = s_display_draw_counter % 11 + 11;
+      s_display_draw_position_x = s_display_draw_counter % 10 + 11;
       s_display_draw_position_y = 3;
       break;
     case 11:
-      s_display_draw_position_x = s_display_draw_counter % 11;
+      s_display_draw_position_x = s_display_draw_counter % 10;
       s_display_draw_position_y = 7;
       break;
     case 12:
-      s_display_draw_position_x = s_display_draw_counter % 11 + 11;
+      s_display_draw_position_x = s_display_draw_counter % 10 + 11;
       s_display_draw_position_y = 7;
       break;
     case 13:
-      s_display_draw_position_x = s_display_draw_counter % 11 + 11;
+      s_display_draw_position_x = s_display_draw_counter % 10 + 11;
       s_display_draw_position_y = 3;
+      break;
+    case 14:
+      s_display_draw_position_update = true;
+      s_display_draw_position_x = 20;
+      s_display_draw_position_y = 0;
       break;
     }
 
     if ((s_display_draw_position_x == 0) || (s_display_draw_position_x == 11)) {
       s_display_draw_position_update = true;
-      s_display_draw_position_x = 20;
-      s_display_draw_position_y = 0;
-    } else {
-      --s_display_draw_position_x;
-
-      if ((s_display_draw_position_x == 0) || (s_display_draw_position_x == 11)) {
-        s_display_draw_position_update = true;
-      }
     }
 
     if (s_display_draw_position_update) {
