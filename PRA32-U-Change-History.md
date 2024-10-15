@@ -1,5 +1,8 @@
 ## Digital Synth PRA32-U Change History
 
+- v3.0.0 (2024-**-**):
+    - Officially support the option PRA32-U with Panel
+        - Faster OLED display updates
 - v2.6.1 (2024-09-22):
     - Fix Bug: PWM Audio: Notes are played a whole tone higher
     - Other improvements
