@@ -31,7 +31,7 @@ static          int8_t   s_seq_transpose            = 0;
 static          uint8_t  s_seq_step_clock_candidate = 12;
 static          uint8_t  s_seq_step_clock           = 12;
 static          uint8_t  s_seq_gate_time            = 6;
-static          uint8_t  s_seq_last_step            = 7;
+static          int32_t  s_seq_last_step            = 7;
 static          uint8_t  s_seq_pattern              = 0;
 static          int8_t   s_seq_pattern_dir          = +1;
 static          uint8_t  s_seq_act_steps            = 127;
@@ -775,10 +775,10 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     break;
   case SEQ_LAST_STEP  :
     {
-      uint8_t last_step = g_synth.current_controller_value(SEQ_LAST_STEP  );
-      last_step = (last_step + 8) >> 4;
-      if (last_step > 7) { last_step = 7; }
-      std::sprintf(value_display_text, "%3d", last_step);
+      int32_t last_step = g_synth.current_controller_value(SEQ_LAST_STEP  );
+      last_step = (last_step - 8) >> 4;
+      if (last_step < 0) { last_step = 0; }
+      std::sprintf(value_display_text, "%3ld", last_step);
       result = true;
     }
     break;
@@ -1435,9 +1435,9 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
 //  if (controller_value < 3) { index = controller_value; }
     s_seq_step_clock_candidate = ary[index];
   } else if (control_number == SEQ_LAST_STEP) {
-    uint8_t last_step = g_synth.current_controller_value(SEQ_LAST_STEP  );
-    last_step = (last_step + 8) >> 4;
-    if (last_step > 7) { last_step = 7; }
+    int32_t last_step = g_synth.current_controller_value(SEQ_LAST_STEP  );
+    last_step = (last_step - 8) >> 4;
+    if (last_step < 0) { last_step = 0; }
     s_seq_last_step = last_step;
   } else if (control_number == SEQ_PATTERN    ) {
     uint8_t controller_value = g_synth.current_controller_value(SEQ_PATTERN    );

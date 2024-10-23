@@ -4,6 +4,7 @@
     - Rename PRA32-U CTRL to PRA32-U Editor
     - Officially support the option PRA32-U with Panel
         - Faster OLED display updates
+        - Change the specification of Seq Last Step
 - v2.6.1 (2024-09-22):
     - Fix Bug: PWM Audio: Notes are played a whole tone higher
     - Other improvements
