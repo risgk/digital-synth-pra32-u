@@ -37,7 +37,7 @@
         - Seq Pattern [Fwd|Rvs|Bnc]: Forward, Reverse, Bounce
         - Seq Act Steps (Active Steps): bit 0 is Step 1 Active, ..., bit 6 is Step 7 Active
         - Seq Step Note [4|8|16]: Quarter Note, Eighth Note, Sixteenth Note
-        - Seq Last Step
+        - Seq Last Step: 0-31 (current step mod 8 is used as the index for Seq Pitch and Seq Velo)
         - Seq Tempo: BPM 30-300
         - Seq Gate Time [1/6|2/6|3/6|4/6|5/6|6/6]
         - Seq Transpose [-|+]

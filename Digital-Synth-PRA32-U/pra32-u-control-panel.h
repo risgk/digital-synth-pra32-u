@@ -46,7 +46,7 @@ enum PlayingStatus {
 
 static          uint32_t s_playing_status = PlayingStatus_Stop;
 
-static          int32_t  s_seq_step               = 7;
+static          int32_t  s_seq_step               = 31;
 static          uint32_t s_seq_sub_step           = 23;
 static          uint32_t s_seq_count              = 0;
 static          uint32_t s_seq_count_increment    = 0;
@@ -271,8 +271,8 @@ static INLINE void PRA32_U_ControlPanel_update_pitch(bool progress_seq_step) {
     s_panel_transpose = g_synth.current_controller_value(PANEL_TRANSPOSE) - 64;
     s_seq_transpose   = 0;
   } else {  // Seq Mode
-    new_pitch         = g_synth.current_controller_value(SEQ_PITCH_0 + s_seq_step);
-    new_velocity      = g_synth.current_controller_value(SEQ_VELO_0  + s_seq_step);
+    new_pitch         = g_synth.current_controller_value(SEQ_PITCH_0 + (s_seq_step & 0x07));
+    new_velocity      = g_synth.current_controller_value(SEQ_VELO_0  + (s_seq_step & 0x07));
   }
 
   new_pitch = PRA32_U_ControlPanel_calc_scaled_pitch(s_index_scale, new_pitch);
@@ -355,9 +355,9 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
           }
         }
       }
-    } while ((s_seq_step != 0) && (((1 << (s_seq_step - 1)) & s_seq_act_steps) == 0));
+    } while (((s_seq_step & 0x07) != 0) && (((1 << ((s_seq_step & 0x07) - 1)) & s_seq_act_steps) == 0));
 
-    s_display_buffer[0][20] = '0' + s_seq_step;
+    s_display_buffer[0][20] = '0' + (s_seq_step & 0x07);
 
     if (update_scale) {
       s_index_scale     = PRA32_U_ControlPanel_get_index_scale();
@@ -383,7 +383,7 @@ static INLINE void PRA32_U_ControlPanel_seq_start() {
   s_playing_status = PlayingStatus_Seq;
 
   if (s_seq_pattern == 0) {  // Forward
-    s_seq_step = 7;
+    s_seq_step = 31;
     s_seq_pattern_dir = +1;
   } else if (s_seq_pattern == 1) {  // Reverse
     s_seq_step = 0;
@@ -776,7 +776,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
   case SEQ_LAST_STEP  :
     {
       int32_t last_step = g_synth.current_controller_value(SEQ_LAST_STEP  );
-      last_step = (last_step - 8) >> 4;
+      last_step = (last_step - 2) >> 2;
       if (last_step < 0) { last_step = 0; }
       std::sprintf(value_display_text, "%3ld", last_step);
       result = true;
@@ -1436,7 +1436,7 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
     s_seq_step_clock_candidate = ary[index];
   } else if (control_number == SEQ_LAST_STEP) {
     int32_t last_step = g_synth.current_controller_value(SEQ_LAST_STEP  );
-    last_step = (last_step - 8) >> 4;
+    last_step = (last_step - 2) >> 2;
     if (last_step < 0) { last_step = 0; }
     s_seq_last_step = last_step;
   } else if (control_number == SEQ_PATTERN    ) {
