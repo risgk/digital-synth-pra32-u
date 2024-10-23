@@ -1,6 +1,7 @@
 ## Digital Synth PRA32-U Change History
 
 - v3.0.0 (2024-**-**):
+    - Rename PRA32-U CTRL to PRA32-U Editor
     - Officially support the option PRA32-U with Panel
         - Faster OLED display updates
 - v2.6.1 (2024-09-22):

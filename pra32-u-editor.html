@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
 <meta charset="utf-8">
-<title>PRA32-U CTRL</title>
+<title>PRA32-U Editor</title>
 <style>
 * {
   font-size: 12px;
@@ -41,7 +41,7 @@ td.keyh {
 }
 </style>
 <script>
-const APP_NAME_VERSION = "PRA32-U CTRL v2.6.1";
+const APP_NAME_VERSION = "PRA32-U Editor v2.6.1";
 
 const PRA32_U_MIDI_CH = 0;  // 0-based
 
@@ -129,7 +129,7 @@ const PC_BY_CC_13     = 117;
 const PC_BY_CC_14     = 118;
 const PC_BY_CC_15     = 119;
 
-const SP_RAND_CTRL    = 111;  // Special Random Control (for PRA32-U CTRL)
+const SP_RAND_CTRL    = 111;  // Special Random Control (for PRA32-U Editor)
 
 
 const ALL_SOUND_OFF   = 120;
@@ -540,7 +540,7 @@ function onMIDIMessage(event) {
         return;
       }
     } else if (number == SP_RAND_CTRL   ) {
-      // Special Random Control (only for PRA32-U CTRL)
+      // Special Random Control (only for PRA32-U Editor)
       var oldValue = specialRandomControlCCValue;
       specialRandomControlCCValue = value;
       if (oldValue <= 63 && value >= 64) {
@@ -1140,7 +1140,7 @@ function getStoredCCValueString(index, number) {
 <body>
 
 <table>
-<tr><td><span id="spanAppNameVersion"></span></td><td>&nbsp;&nbsp;Digital Synth PRA32-U Controller Application (<a href="https://github.com/risgk/digital-synth-pra32-u">View on GitHub</a>)</td></tr>
+<tr><td><span id="spanAppNameVersion"></span></td><td>&nbsp;&nbsp;Digital Synth PRA32-U Editor Application (<a href="https://github.com/risgk/digital-synth-pra32-u">View on GitHub</a>)</td></tr>
 <tr><td>&nbsp;</td></tr>
 </table>
 
