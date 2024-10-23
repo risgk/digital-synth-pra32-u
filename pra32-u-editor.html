@@ -461,18 +461,6 @@ function afterChangeOsc1Or2WaveOrMixerSubOscOrVoiceModeOrEGAmpModOrRelEqDecay() 
     document.getElementById("span2OSC_1_MORPH    ").style.color = 'lightgray';
   }
 
-  var valueOsc2Wave = localStorage.getItem("keyOSC_2_WAVE     ");
-  var indexOsc2Wave = Math.floor(((valueOsc2Wave * 10) + 127) / 254);
-  var valueMixerSubOsc = localStorage.getItem("keyMIXER_SUB_OSC  ");
-  if (((valueOsc2Wave == 4) || (indexOsc2Wave == 4)) && (valueMixerSubOsc < 64)) {
-//  if ((indexOsc2Wave == 4) && (valueMixerSubOsc < 64)) {
-    document.getElementById( "spanMIXER_SUB_OSC  ").style.color = 'lightgray';
-    document.getElementById("span2MIXER_SUB_OSC  ").style.color = 'lightgray';
-  } else {
-    document.getElementById( "spanMIXER_SUB_OSC  ").style.color = 'black';
-    document.getElementById("span2MIXER_SUB_OSC  ").style.color = 'black';
-  }
-
   var valueEGAmpMod = localStorage.getItem("keyEG_AMP_MOD     ");
   if (valueEGAmpMod == 1 || valueEGAmpMod >= 64) {
 //  if (valueEGAmpMod >= 64) {

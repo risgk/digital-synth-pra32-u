@@ -29,7 +29,7 @@
 |                           102 | x             | o             | Osc 1 Wave [Saw|Sin|-|Tri|-|Pls]    |
 |                            19 | x             | o             | Osc 1 Shape $2                      |
 |                            20 | x             | o             | Osc 1 Morph $2                      |
-|                            23 | x             | o             | Mixer Noise/Sub Osc [N|S] $3        |
+|                            23 | x             | o             | Mixer Noise/Sub Osc [N|S]           |
 |                               |               |               |                                     |
 |                           104 | x             | o             | Osc 2 Wave [Saw|Sin|-|Tri|Nos|Sqr]  |
 |                            85 | x             | o             | Osc 2 Coarse [-|+]                  |
@@ -120,7 +120,6 @@
 +-------------------------------+---------------+---------------+-------------------------------------+
 | Notes                         | $1 : Disabled in Paraphonic Mode                                    |
 |                               | $2 : Disabled if Osc 1 Wave is not Pls (Pulse)                      |
-|                               | $3 : Mixer Noise is disabled if Osc 2 Wave is Nos (Noise)           |
 |                               | $4 : To write the current parameters to Program #8-15 and the       |
 |                               |   flash, set "Program Number to Write to" (# is the value mod 16)   |
 |                               |   and then change "Write Parameters to Program" from 0 to 1-127     |

@@ -1,6 +1,7 @@
 ## Digital Synth PRA32-U Change History
 
 - v3.0.0 (2024-**-**):
+    - Mixer Noise is not disabled even if Osc 2 Wave is Nos (Noise)
     - Rename PRA32-U CTRL to PRA32-U Editor
     - Officially support the option PRA32-U with Panel
         - Faster OLED display updates
