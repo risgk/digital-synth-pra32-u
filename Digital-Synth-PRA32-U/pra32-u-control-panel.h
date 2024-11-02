@@ -773,12 +773,12 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
       result = true;
     }
     break;
-  case SEQ_LAST_STEP  :
+  case SEQ_NUM_STEPS  :
     {
-      int32_t last_step = g_synth.current_controller_value(SEQ_LAST_STEP  );
+      int32_t last_step = g_synth.current_controller_value(SEQ_NUM_STEPS  );
       last_step = (last_step - 2) >> 2;
       if (last_step < 0) { last_step = 0; }
-      std::sprintf(value_display_text, "%3ld", last_step);
+      std::sprintf(value_display_text, "%3ld", last_step + 1);
       result = true;
     }
     break;
@@ -1417,25 +1417,25 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
       PRA32_U_ControlPanel_update_pitch(false);
       PRA32_U_ControlPanel_update_page();
     }
-  } else if (control_number == SEQ_TEMPO) {
+  } else if (control_number == SEQ_TEMPO      ) {
     uint32_t bpm = PRA32_U_ControlPanel_calc_bpm(g_synth.current_controller_value(SEQ_TEMPO));
     s_seq_count_increment = bpm * 8192;
-  } else if (control_number == SEQ_CLOCK_SRC) {
+  } else if (control_number == SEQ_CLOCK_SRC  ) {
     uint32_t controller_value = g_synth.current_controller_value(SEQ_CLOCK_SRC  );
     uint32_t index = ((controller_value * 2) + 127) / 254;
 //  if (controller_value < 2) { index = controller_value; }
     s_seq_clock_src_external = index;
-  } else if (control_number == SEQ_GATE_TIME) {
+  } else if (control_number == SEQ_GATE_TIME  ) {
     uint8_t controller_value = g_synth.current_controller_value(SEQ_GATE_TIME  );
     s_seq_gate_time = (((controller_value * 10) + 127) / 254) + 1;
-  } else if (control_number == SEQ_STEP_NOTE) {
+  } else if (control_number == SEQ_STEP_NOTE  ) {
     uint8_t ary[3] = {24, 12, 6};
     uint8_t controller_value = g_synth.current_controller_value(SEQ_STEP_NOTE  );
     uint32_t index = ((controller_value * 4) + 127) / 254;
 //  if (controller_value < 3) { index = controller_value; }
     s_seq_step_clock_candidate = ary[index];
-  } else if (control_number == SEQ_LAST_STEP) {
-    int32_t last_step = g_synth.current_controller_value(SEQ_LAST_STEP  );
+  } else if (control_number == SEQ_NUM_STEPS  ) {
+    int32_t last_step = g_synth.current_controller_value(SEQ_NUM_STEPS  );
     last_step = (last_step - 2) >> 2;
     if (last_step < 0) { last_step = 0; }
     s_seq_last_step = last_step;
@@ -1446,7 +1446,7 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
     s_seq_pattern = index;
   } else if (control_number == SEQ_ACT_STEPS  ) {
     s_seq_act_steps = g_synth.current_controller_value(SEQ_ACT_STEPS  );
-  } else if (control_number == PANEL_MIDI_CH) {
+  } else if (control_number == PANEL_MIDI_CH  ) {
     uint8_t midi_ch = g_synth.current_controller_value(PANEL_MIDI_CH);
 
     if (midi_ch > 15) {
