@@ -34,6 +34,7 @@ static          uint8_t  s_seq_gate_time            = 6;
 static          int32_t  s_seq_last_step            = 7;
 static          uint8_t  s_seq_pattern              = 0;
 static          int8_t   s_seq_pattern_dir          = +1;
+static          uint8_t  s_seq_on_steps             = 127;
 static          uint8_t  s_seq_act_steps            = 127;
 
 static          uint32_t s_index_scale;
@@ -273,6 +274,9 @@ static INLINE void PRA32_U_ControlPanel_update_pitch(bool progress_seq_step) {
   } else {  // Seq Mode
     new_pitch         = g_synth.current_controller_value(SEQ_PITCH_0 + (s_seq_step & 0x07));
     new_velocity      = g_synth.current_controller_value(SEQ_VELO_0  + (s_seq_step & 0x07));
+    if (((s_seq_step & 0x07) != 0) && ((1 << ((s_seq_step & 0x07) - 1)) & s_seq_on_steps) == 0) {
+      new_velocity = 0;
+    }
   }
 
   new_pitch = PRA32_U_ControlPanel_calc_scaled_pitch(s_index_scale, new_pitch);
@@ -788,6 +792,13 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
       uint32_t index = ((controller_value * 4) + 127) / 254;
 //    if (controller_value < 3) { index = controller_value; }
       std::strcpy(value_display_text, ary[index]);
+      result = true;
+    }
+    break;
+  case SEQ_ON_STEPS   :
+    {
+      uint8_t on_steps = g_synth.current_controller_value(SEQ_ON_STEPS   );
+      std::sprintf(value_display_text, "x%02X", on_steps);
       result = true;
     }
     break;
@@ -1444,6 +1455,8 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
     uint32_t index = ((controller_value * 4) + 127) / 254;
 //  if (controller_value < 3) { index = controller_value; }
     s_seq_pattern = index;
+  } else if (control_number == SEQ_ON_STEPS   ) {
+    s_seq_on_steps = g_synth.current_controller_value(SEQ_ON_STEPS   );
   } else if (control_number == SEQ_ACT_STEPS  ) {
     s_seq_act_steps = g_synth.current_controller_value(SEQ_ACT_STEPS  );
   } else if (control_number == PANEL_MIDI_CH  ) {

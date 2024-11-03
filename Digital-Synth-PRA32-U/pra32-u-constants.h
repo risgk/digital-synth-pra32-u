@@ -216,6 +216,11 @@ const uint8_t   SEQ_ACT_STEPS   = 128 + 53;
 const uint8_t   SEQ_TRANSPOSE   = 128 + 54;
 const uint8_t   SEQ_STEP_NOTE   = 128 + 55;
 
+const uint8_t   SEQ_ON_STEPS    = 128 + 56;
+
+
+
+
 const uint8_t   RD_PROGRAM_0    = 128 + 64;
 const uint8_t   RD_PROGRAM_1    = 128 + 65;
 const uint8_t   RD_PROGRAM_2    = 128 + 66;
