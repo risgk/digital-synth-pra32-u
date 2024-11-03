@@ -10,6 +10,7 @@
         - Add Seq On Steps parameter
         - Change the specification of Panel Scale parameter
         - Change the specification of Seq Last Step parameter and rename Seq Last Step to Seq Num Steps (Number of Steps)
+    - Tested with Arduino-Pico version 4.2.0
 - v2.6.1 (2024-09-22):
     - Fix Bug: PWM Audio: Notes are played a whole tone higher
     - Other improvements
