@@ -1,6 +1,7 @@
 ## Digital Synth PRA32-U Change History
 
 - v3.0.0 (2024-**-**):
+    - Change Control Numbers: Osc 1 Wave 102 to 14, Voice Mode 14 to 102
     - Mixer Noise is not disabled even if Osc 2 Wave is Nos (Noise)
     - Change Preset programs: Change Delay Mode to S (Stereo Delay)
     - Rename PRA32-U CTRL to PRA32-U Editor

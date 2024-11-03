@@ -54,7 +54,7 @@ const uint8_t   BTH_CONTROLLER  = 2;
 const uint8_t   SUSTAIN_PEDAL   = 64;
 
 
-const uint8_t   OSC_1_WAVE      = 102;
+const uint8_t   OSC_1_WAVE      = 14;
 const uint8_t   OSC_1_SHAPE     = 19;
 const uint8_t   OSC_1_MORPH     = 20;
 const uint8_t   MIXER_SUB_OSC   = 23;
@@ -76,7 +76,7 @@ const uint8_t   EG_RELEASE      = 72;
 
 const uint8_t   EG_OSC_AMT      = 91;
 const uint8_t   EG_OSC_DST      = 89;
-const uint8_t   VOICE_MODE      = 14;
+const uint8_t   VOICE_MODE      = 102;
 const uint8_t   PORTAMENTO      = 5;
 
 const uint8_t   LFO_WAVE        = 12;

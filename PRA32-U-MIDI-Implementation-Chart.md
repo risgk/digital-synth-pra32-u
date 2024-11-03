@@ -26,7 +26,7 @@
 | Change                      2 | x             | o             | Breath Controller                   |
 |                            64 | x             | o             | Sustain Pedal [Off|On]              |
 |                               |               |               |                                     |
-|                           102 | x             | o             | Osc 1 Wave [Saw|Sin|-|Tri|-|Pls]    |
+|                            14 | x             | o             | Osc 1 Wave [Saw|Sin|-|Tri|-|Pls]    |
 |                            19 | x             | o             | Osc 1 Shape $2                      |
 |                            20 | x             | o             | Osc 1 Morph $2                      |
 |                            23 | x             | o             | Mixer Noise/Sub Osc [N|S]           |
@@ -48,7 +48,7 @@
 |                               |               |               |                                     |
 |                            91 | x             | o             | EG Osc Amt [-|+]                    |
 |                            89 | x             | o             | EG Osc Dst [P|2P|1S]                |
-|                            14 | x             | o             | Voice Mode [Pol|Par|-|Mon|LP|Lgt]   |
+|                           102 | x             | o             | Voice Mode [Pol|Par|-|Mon|LP|Lgt]   |
 |                             5 | x             | o             | Portamento                          |
 |                               |               |               |                                     |
 |                            12 | x             | o             | LFO Wave [Tri|Sin|-|Saw|SH|Sqr]     |

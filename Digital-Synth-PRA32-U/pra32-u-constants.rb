@@ -54,7 +54,7 @@ BTH_CONTROLLER  = 2
 SUSTAIN_PEDAL   = 64
 
 
-OSC_1_WAVE      = 102
+OSC_1_WAVE      = 14
 OSC_1_SHAPE     = 19
 OSC_1_MORPH     = 20
 MIXER_SUB_OSC   = 23
@@ -76,7 +76,7 @@ EG_RELEASE      = 72
 
 EG_OSC_AMT      = 91
 EG_OSC_DST      = 89
-VOICE_MODE      = 14
+VOICE_MODE      = 102
 PORTAMENTO      = 5
 
 LFO_WAVE        = 12
