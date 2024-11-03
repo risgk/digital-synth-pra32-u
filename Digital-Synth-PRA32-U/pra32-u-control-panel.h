@@ -81,58 +81,60 @@ static INLINE uint8_t PRA32_U_ControlPanel_get_index_scale()
   return index_scale;
 }
 
-static INLINE uint8_t PRA32_U_ControlPanel_calc_scaled_pitch(uint32_t index_scale, uint8_t pitch)
+static INLINE uint8_t PRA32_U_ControlPanel_calc_scaled_pitch(uint32_t index_scale, uint8_t pitch, int8_t pit_ofst)
 {
-  uint8_t new_pitch = pitch;
+  if (pitch < 4) {
+    pitch = 4;
+  } else if (pitch > 124) {
+    pitch = 124;
+  }
+
+  if (pit_ofst < -60) {
+    pit_ofst = -60;
+  } else if (pit_ofst > +60) {
+    pit_ofst = +60;
+  }
+
+  uint32_t new_pitch    = ((((pitch + pit_ofst + 3) * 2) + 1) / 5) - 3 + 24;
+  uint32_t index_pitch  = new_pitch % 24;
+  uint32_t index_octave = new_pitch / 24;
 
   if        (index_scale == 0) {
-    const uint8_t ary_major[53] =
-      { 48, 48, 48, 48, 48, 50, 50, 50, 50, 52, 52, 52, 53, 53, 53,
-                    55, 55, 55, 55, 57, 57, 57, 57, 59, 59, 59, 60,
-                    60, 60, 62, 62, 62, 62, 64, 64, 64, 65, 65, 65,
-                    67, 67, 67, 67, 69, 69, 69, 69, 71, 71, 71, 72, 72, 72 };
-    uint32_t index_pitch = (((new_pitch + 3) * 2) + 1) / 5;
-    new_pitch = ary_major[index_pitch];
+    const uint8_t ary_major[25] =
+      { 60, 60, 62, 62, 62, 62, 64, 64, 64, 65, 65, 65,
+        67, 67, 67, 67, 69, 69, 69, 69, 71, 71, 71, 72, 72 };
+    new_pitch  = ary_major[index_pitch];
+    new_pitch += index_octave * 12 - 24;
   } else if (index_scale == 1) {
-    const uint8_t ary_melodic_minor[53] =
-      { 48, 48, 48, 48, 48, 50, 50, 50, 51, 51, 51, 53, 53, 53, 53,
-                    55, 55, 55, 55, 57, 57, 57, 57, 59, 59, 59, 60,
-                    60, 60, 62, 62, 62, 63, 63, 63, 65, 65, 65, 65,
-                    67, 67, 67, 67, 69, 69, 69, 69, 71, 71, 71, 72, 72, 72 };
-    uint32_t index_pitch = (((new_pitch + 3) * 2) + 1) / 5;
-    new_pitch = ary_melodic_minor[index_pitch];
+    const uint8_t ary_melodic_minor[25] =
+      { 60, 60, 62, 62, 62, 63, 63, 63, 65, 65, 65, 65,
+        67, 67, 67, 67, 69, 69, 69, 69, 71, 71, 71, 72, 72 };
+    new_pitch  = ary_melodic_minor[index_pitch];
+    new_pitch += index_octave * 12 - 24;
   } else if (index_scale == 2) {
-    const uint8_t ary_natural_minor[53] =
-      { 48, 48, 48, 48, 48, 50, 50, 50, 51, 51, 51, 53, 53, 53, 53,
-                    55, 55, 55, 56, 56, 56, 58, 58, 58, 58, 60, 60,
-                    60, 60, 62, 62, 62, 63, 63, 63, 65, 65, 65, 65,
-                    67, 67, 67, 68, 68, 68, 70, 70, 70, 70, 72, 72, 72, 72 };
-    uint32_t index_pitch = (((new_pitch + 3) * 2) + 1) / 5;
-    new_pitch = ary_natural_minor[index_pitch];
+    const uint8_t ary_natural_minor[25] =
+      { 60, 60, 62, 62, 62, 63, 63, 63, 65, 65, 65, 65,
+        67, 67, 67, 68, 68, 68, 70, 70, 70, 70, 72, 72, 72 };
+    new_pitch  = ary_natural_minor[index_pitch];
+    new_pitch += index_octave * 12 - 24;
   } else if (index_scale == 3) {
-    const uint8_t ary_major_pentatonic[53] =
-      { 48, 48, 48, 48, 48, 50, 50, 50, 50, 52, 52, 52, 52, 52, 55,
-                    55, 55, 55, 55, 57, 57, 57, 57, 57, 60, 60, 60,
-                    60, 60, 62, 62, 62, 62, 64, 64, 64, 64, 64, 67,
-                    67, 67, 67, 67, 69, 69, 69, 69, 69, 72, 72, 72, 72, 72 };
-    uint32_t index_pitch = (((new_pitch + 3) * 2) + 1) / 5;
-    new_pitch = ary_major_pentatonic[index_pitch];
+    const uint8_t ary_major_pentatonic[25] =
+      { 60, 60, 62, 62, 62, 62, 64, 64, 64, 64, 64, 67,
+        67, 67, 67, 67, 69, 69, 69, 69, 69, 72, 72, 72, 72 };
+    new_pitch  = ary_major_pentatonic[index_pitch];
+    new_pitch += index_octave * 12 - 24;
   } else if (index_scale == 4) {
-    const uint8_t ary_major_blues[53] =
-      { 48, 48, 48, 48, 48, 50, 50, 50, 51, 51, 52, 52, 52, 52, 55,
-                    55, 55, 55, 55, 57, 57, 57, 57, 57, 60, 60, 60,
-                    60, 60, 62, 62, 62, 63, 63, 64, 64, 64, 64, 67,
-                    67, 67, 67, 67, 69, 69, 69, 69, 69, 72, 72, 72, 72, 72 };
-    uint32_t index_pitch = (((new_pitch + 3) * 2) + 1) / 5;
-    new_pitch = ary_major_blues[index_pitch];
+    const uint8_t ary_major_blues[25] =
+      { 60, 60, 62, 62, 62, 63, 63, 64, 64, 64, 64, 67,
+        67, 67, 67, 67, 69, 69, 69, 69, 69, 72, 72, 72, 72 };
+    new_pitch  = ary_major_blues[index_pitch];
+    new_pitch += index_octave * 12 - 24;
   } else if (index_scale == 5) {
-    const uint8_t ary_chromatic[53] =
-      { 48, 48, 48, 48, 49, 49, 50, 50, 51, 51, 52, 52, 53, 53, 54,
-                    54, 55, 55, 56, 56, 57, 57, 58, 58, 59, 59, 60,
-                    60, 61, 61, 62, 62, 63, 63, 64, 64, 65, 65, 66,
-                    66, 67, 67, 68, 68, 69, 69, 70, 70, 71, 71, 72, 72, 72 };
-    uint32_t index_pitch = (((new_pitch + 3) * 2) + 1) / 5;
-    new_pitch = ary_chromatic[index_pitch];
+    const uint8_t ary_chromatic[25] =
+      { 60, 61, 61, 62, 62, 63, 63, 64, 64, 65, 65, 66,
+        66, 67, 67, 68, 68, 69, 69, 70, 70, 71, 71, 72, 72 };
+    new_pitch  = ary_chromatic[index_pitch];
+    new_pitch += index_octave * 12 - 24;
   }
 
   return new_pitch;
@@ -167,9 +169,10 @@ static INLINE int8_t PRA32_U_ControlPanel_get_seq_transpose_value()
 static INLINE void PRA32_U_ControlPanel_calc_value_display_pitch(uint8_t pitch, char value_display_text[5])
 {
   uint8_t index_scale = PRA32_U_ControlPanel_get_index_scale();
-  uint8_t new_pitch  = PRA32_U_ControlPanel_calc_scaled_pitch(index_scale, pitch);
+  uint8_t new_pitch   = PRA32_U_ControlPanel_calc_scaled_pitch(
+                          index_scale, pitch, g_synth.current_controller_value(PANEL_PIT_OFST  ) - 64);
   new_pitch = PRA32_U_ControlPanel_calc_transposed_pitch(
-    new_pitch, g_synth.current_controller_value(PANEL_TRANSPOSE) - 64);
+    new_pitch, g_synth.current_controller_value(PANEL_TRANSPOSE ) - 64);
 
   char ary[12][5] = { " C", "C#", " D", "D#", " E", " F", "F#", " G", "G#", " A", "A#", " B" };
 
@@ -289,21 +292,22 @@ static INLINE void PRA32_U_ControlPanel_update_pitch(bool progress_seq_step) {
   uint8_t new_velocity = 127;
 
   if (s_play_mode == 0) {  // Normal Mode
-    new_pitch         = g_synth.current_controller_value(PANEL_PLAY_PIT );
-    new_velocity      = g_synth.current_controller_value(PANEL_PLAY_VELO);
+    new_pitch          = g_synth.current_controller_value(PANEL_PLAY_PIT  );
+    new_velocity       = g_synth.current_controller_value(PANEL_PLAY_VELO );
 
-    s_index_scale     = PRA32_U_ControlPanel_get_index_scale();
-    s_panel_transpose = g_synth.current_controller_value(PANEL_TRANSPOSE) - 64;
-    s_seq_transpose   = 0;
+    s_index_scale      = PRA32_U_ControlPanel_get_index_scale();
+    s_panel_transpose  = g_synth.current_controller_value(PANEL_TRANSPOSE ) - 64;
+    s_seq_transpose    = 0;
   } else {  // Seq Mode
-    new_pitch         = g_synth.current_controller_value(SEQ_PITCH_0 + (s_seq_step & 0x07));
-    new_velocity      = g_synth.current_controller_value(SEQ_VELO_0  + (s_seq_step & 0x07));
+    new_pitch          = g_synth.current_controller_value(SEQ_PITCH_0      + (s_seq_step & 0x07));
+    new_velocity       = g_synth.current_controller_value(SEQ_VELO_0       + (s_seq_step & 0x07));
     if (((s_seq_step & 0x07) != 0) && ((1 << ((s_seq_step & 0x07) - 1)) & s_seq_on_steps) == 0) {
       new_velocity = 0;
     }
   }
 
-  new_pitch = PRA32_U_ControlPanel_calc_scaled_pitch(s_index_scale, new_pitch);
+  new_pitch = PRA32_U_ControlPanel_calc_scaled_pitch(
+                s_index_scale, new_pitch, g_synth.current_controller_value(PANEL_PIT_OFST  ) - 64);
   new_pitch = PRA32_U_ControlPanel_calc_transposed_pitch(new_pitch, s_panel_transpose + s_seq_transpose);
 
   s_panel_play_note_velocity = new_velocity;
@@ -532,6 +536,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
   case LFO_OSC_AMT     :
   case LFO_FILTER_AMT  :
   case BTH_FILTER_AMT  :
+  case PANEL_PIT_OFST  :
   case PANEL_TRANSPOSE :
     {
       std::sprintf(value_display_text, "%+3d", static_cast<int>(controller_value) - 64);
@@ -1435,6 +1440,7 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
   if ((control_number == PANEL_PLAY_PIT ) ||
       (control_number == PANEL_PLAY_VELO) ||
       (control_number == PANEL_SCALE    ) ||
+      (control_number == PANEL_PIT_OFST ) ||
       (control_number == PANEL_TRANSPOSE)) {
     PRA32_U_ControlPanel_update_pitch(false);
   } else if (control_number == PANEL_PLAY_MODE) {

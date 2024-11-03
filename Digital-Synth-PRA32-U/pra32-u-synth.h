@@ -90,6 +90,8 @@ static uint8_t s_program_table_panel_parameters[] = {
 
   PANEL_PLAY_PIT ,
   PANEL_PLAY_VELO,
+  PANEL_PIT_OFST ,
+
 
   SEQ_PITCH_0    ,
   SEQ_PITCH_1    ,
@@ -134,6 +136,8 @@ const uint8_t   DEFAULT_PANEL_PLAY_MODE = 0  ;
 
 const uint8_t   DEFAULT_PANEL_PLAY_PIT  = 64 ;
 const uint8_t   DEFAULT_PANEL_PLAY_VELO = 64 ;
+const uint8_t   DEFAULT_PANEL_PIT_OFST  = 64 ;
+
 
 const uint8_t   DEFAULT_SEQ_PITCH_0     = 64 ;
 const uint8_t   DEFAULT_SEQ_PITCH_1     = 82 ;
@@ -363,6 +367,8 @@ public:
 
       m_program_table_panel[i][PANEL_PLAY_PIT ] = DEFAULT_PANEL_PLAY_PIT ;
       m_program_table_panel[i][PANEL_PLAY_VELO] = DEFAULT_PANEL_PLAY_VELO;
+      m_program_table_panel[i][PANEL_PIT_OFST ] = DEFAULT_PANEL_PIT_OFST ;
+
 
       m_program_table_panel[i][SEQ_PITCH_0    ] = DEFAULT_SEQ_PITCH_0    ;
       m_program_table_panel[i][SEQ_PITCH_1    ] = DEFAULT_SEQ_PITCH_1    ;

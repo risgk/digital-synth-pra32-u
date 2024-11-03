@@ -29,10 +29,18 @@
     - Panel Parameters
         - Panel Play Mode [Nrm|Seq]: Normal Mode, Step Sequencer Mode
         - Panel MIDI Ch: Basic Channel 1-16
-        - Panel Play Pitch
+        - Panel Play Pitch: min 4 to max 124
         - Panel Play Velo
-        - Panel Scale [Maj|Mel|Min|Pen|Blu|Chr]: Major, Melodic Minor, Natural Minor, Pentatonic, Blues, Chromatic (2 octaves)
+        - Panel Scale [Maj|Mel|Min|Pen|Blu|Chr]: Major, Melodic Minor, Natural Minor, Major Pentatonic, Major Blues, Chromatic (2 octaves)
+        - Panel Pitch Ofst (Pitch Offset) [-|+]: Offset Panel Play Pitch and Seq Pitch 0-7 (min -60 to max +60)
+            - For example, if Panel Scale is Maj and Panel Pitch Ofst is -25, the scale is G Mixolydian
+            - For example, if Panel Scale is Maj and Panel Pitch Ofst is -15, the scale is A Aeolian (Natural Minor)
+            - For example, if Panel Scale is Maj and Panel Pitch Ofst is +10, the scale is D Dorian
+            - For example, if Panel Scale is Maj and Panel Pitch Ofst is +20, the scale is E Phrygian
+            - For example, if Panel Scale is Maj and Panel Pitch Ofst is +25, the scale is F Lydian
+            - For example, if Panel Scale is Pen/Blu and Panel Pitch Ofst is -15, the scale is A Minor Pentatonic/Blues
         - Panel Transpose [-|+]
+            - For example, if Panel Scale is Mel and Panel Transpose is -3, the scale is A Melodic Minor
     - Step Sequencer Parameters
         - Seq Pattern [Fwd|Rvs|Bnc]: Forward, Reverse, Bounce
         - Seq Num Steps (Number of Steps): 1-32 (current step mod 8 is used as the index for Seq Pitch and Seq Velo)
@@ -43,7 +51,7 @@
         - Seq Gate Time [1/6|2/6|3/6|4/6|5/6|6/6]
         - Seq Transpose [-|+]
         - Seq Clock Src [Int|Ext]: Internal, External (Rx MIDI Clock)
-        - Seq Pitch 0-7
+        - Seq Pitch 0-7: min 4 to max 124
         - Seq Velo 0-7
     - Control Parameters
         - Modulation

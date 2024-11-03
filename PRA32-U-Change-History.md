@@ -6,9 +6,10 @@
     - Rename PRA32-U CTRL to PRA32-U Editor
     - Officially support the option PRA32-U with Panel
         - Faster OLED display updates
+        - Add Panel Pitch Ofst (Pitch Offset) parameter
         - Add Seq On Steps parameter
-        - Change the specification of Panel Scale
-        - Change the specification of Seq Last Step and rename Seq Last Step to Seq Num Steps
+        - Change the specification of Panel Scale parameter
+        - Change the specification of Seq Last Step parameter and rename Seq Last Step to Seq Num Steps (Number of Steps)
 - v2.6.1 (2024-09-22):
     - Fix Bug: PWM Audio: Notes are played a whole tone higher
     - Other improvements
