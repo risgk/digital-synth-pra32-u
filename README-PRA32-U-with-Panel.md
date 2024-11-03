@@ -31,7 +31,7 @@
         - Panel MIDI Ch: Basic Channel 1-16
         - Panel Play Pitch
         - Panel Play Velo
-        - Panel Scale [Maj|Min|Chr]: Major (2 octaves), Minor (2 octaves), Chromatic (2 octaves)
+        - Panel Scale [Maj|Mel|Min|Pen|Blu|Chr]: Major, Melodic Minor, Natural Minor, Pentatonic, Blues, Chromatic (2 octaves)
         - Panel Transpose [-|+]
     - Step Sequencer Parameters
         - Seq Pattern [Fwd|Rvs|Bnc]: Forward, Reverse, Bounce

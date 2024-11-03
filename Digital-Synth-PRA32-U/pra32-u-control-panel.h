@@ -37,7 +37,7 @@ static          int8_t   s_seq_pattern_dir          = +1;
 static          uint8_t  s_seq_on_steps             = 127;
 static          uint8_t  s_seq_act_steps            = 127;
 
-static          uint32_t s_index_scale;
+static          uint32_t s_index_scale              = 0;
 
 enum PlayingStatus {
   PlayingStatus_Stop = 0,
@@ -76,8 +76,8 @@ static char s_display_buffer[8][21 + 1] = {
 static INLINE uint8_t PRA32_U_ControlPanel_get_index_scale()
 {
   uint8_t controller_value = g_synth.current_controller_value(PANEL_SCALE    );
-  uint8_t index_scale = ((controller_value * 4) + 127) / 254;
-//if (controller_value < 3) { index_scale = controller_value; }
+  uint8_t index_scale = ((controller_value * 10) + 127) / 254;
+//if (controller_value < 6) { index_scale = controller_value; }
   return index_scale;
 }
 
@@ -94,14 +94,38 @@ static INLINE uint8_t PRA32_U_ControlPanel_calc_scaled_pitch(uint32_t index_scal
     uint32_t index_pitch = (((new_pitch + 3) * 2) + 1) / 5;
     new_pitch = ary_major[index_pitch];
   } else if (index_scale == 1) {
-    const uint8_t ary_minor[53] =
+    const uint8_t ary_melodic_minor[53] =
+      { 48, 48, 48, 48, 48, 50, 50, 50, 51, 51, 51, 53, 53, 53, 53,
+                    55, 55, 55, 55, 57, 57, 57, 57, 59, 59, 59, 60,
+                    60, 60, 62, 62, 62, 63, 63, 63, 65, 65, 65, 65,
+                    67, 67, 67, 67, 69, 69, 69, 69, 71, 71, 71, 72, 72, 72 };
+    uint32_t index_pitch = (((new_pitch + 3) * 2) + 1) / 5;
+    new_pitch = ary_melodic_minor[index_pitch];
+  } else if (index_scale == 2) {
+    const uint8_t ary_natural_minor[53] =
       { 48, 48, 48, 48, 48, 50, 50, 50, 51, 51, 51, 53, 53, 53, 53,
                     55, 55, 55, 56, 56, 56, 58, 58, 58, 58, 60, 60,
                     60, 60, 62, 62, 62, 63, 63, 63, 65, 65, 65, 65,
                     67, 67, 67, 68, 68, 68, 70, 70, 70, 70, 72, 72, 72, 72 };
     uint32_t index_pitch = (((new_pitch + 3) * 2) + 1) / 5;
-    new_pitch = ary_minor[index_pitch];
-  } else if (index_scale == 2) {
+    new_pitch = ary_natural_minor[index_pitch];
+  } else if (index_scale == 3) {
+    const uint8_t ary_major_pentatonic[53] =
+      { 48, 48, 48, 48, 48, 50, 50, 50, 50, 52, 52, 52, 52, 52, 55,
+                    55, 55, 55, 55, 57, 57, 57, 57, 57, 60, 60, 60,
+                    60, 60, 62, 62, 62, 62, 64, 64, 64, 64, 64, 67,
+                    67, 67, 67, 67, 69, 69, 69, 69, 69, 72, 72, 72, 72, 72 };
+    uint32_t index_pitch = (((new_pitch + 3) * 2) + 1) / 5;
+    new_pitch = ary_major_pentatonic[index_pitch];
+  } else if (index_scale == 4) {
+    const uint8_t ary_major_blues[53] =
+      { 48, 48, 48, 48, 48, 50, 50, 50, 51, 51, 52, 52, 52, 52, 55,
+                    55, 55, 55, 55, 57, 57, 57, 57, 57, 60, 60, 60,
+                    60, 60, 62, 62, 62, 63, 63, 64, 64, 64, 64, 67,
+                    67, 67, 67, 67, 69, 69, 69, 69, 69, 72, 72, 72, 72, 72 };
+    uint32_t index_pitch = (((new_pitch + 3) * 2) + 1) / 5;
+    new_pitch = ary_major_blues[index_pitch];
+  } else if (index_scale == 5) {
     const uint8_t ary_chromatic[53] =
       { 48, 48, 48, 48, 49, 49, 50, 50, 51, 51, 52, 52, 53, 53, 54,
                     54, 55, 55, 56, 56, 57, 57, 58, 58, 59, 59, 60,
@@ -719,9 +743,9 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     break;
   case  PANEL_SCALE   :
     {
-      char ary[6][5] = {"Maj","Min","Chr"};
+      char ary[6][5] = {"Maj","Mel","Min","Pen","Blu","Chr"};
       uint32_t index = PRA32_U_ControlPanel_get_index_scale();
-//    if (controller_value < 3) { index_scale = controller_value; }
+//    if (controller_value < 6) { index_scale = controller_value; }
       std::strcpy(value_display_text, ary[index]);
       result = true;
     }
