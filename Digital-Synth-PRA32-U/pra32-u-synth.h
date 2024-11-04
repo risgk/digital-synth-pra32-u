@@ -1386,6 +1386,10 @@ public:
     return processed;
   }
 
+  INLINE void get_rand_uint8_array(uint8_t array[8]) {
+    m_noise_gen.get_rand_uint8_array(array);
+  }
+
 private:
 
   INLINE void note_queue_on(uint8_t note_on_osc_index) {
