@@ -7,7 +7,7 @@
     - Rename PRA32-U CTRL to PRA32-U Editor
     - Officially support the option PRA32-U with Panel
         - Faster OLED display updates
-        - Change the default pages
+        - Change the page layout and the default pages
         - Change the specification of Panel Scale parameter
         - Change the specification of Seq Last Step parameter and rename Seq Last Step to Seq Num Steps (Number of Steps)
         - Add Panel Pitch Ofst (Pitch Offset) parameter
