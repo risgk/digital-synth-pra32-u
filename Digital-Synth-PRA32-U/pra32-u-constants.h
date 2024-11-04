@@ -269,3 +269,4 @@ const uint8_t   IN_PANEL_PRMS   = 128 + 97;
 const uint8_t   WR_PANEL_PRMS   = 128 + 100;
 
 const uint8_t   SEQ_RAND_PITCH  = 128 + 104;
+const uint8_t   SEQ_RAND_VELO   = 128 + 105;
