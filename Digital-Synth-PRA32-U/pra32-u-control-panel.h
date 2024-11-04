@@ -398,8 +398,24 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
     }
 
     PRA32_U_ControlPanel_update_pitch(true);
-  } else  if (s_seq_sub_step == (static_cast<uint32_t>(s_seq_gate_time) << 1)) {
-    s_panel_play_note_gate = false;
+  } else {
+    uint32_t seq_gate_time_corrected;
+
+    switch (s_seq_step_clock) {
+    case 6:
+      seq_gate_time_corrected = static_cast<uint32_t>(s_seq_gate_time) << 0;
+      break;
+    case 12:
+      seq_gate_time_corrected = static_cast<uint32_t>(s_seq_gate_time) << 1;
+      break;
+    case 24:
+      seq_gate_time_corrected = static_cast<uint32_t>(s_seq_gate_time) << 2;
+      break;
+    }
+
+    if ((s_seq_sub_step % s_seq_step_clock) >= seq_gate_time_corrected) {
+      s_panel_play_note_gate = false;
+    }
   }
 }
 

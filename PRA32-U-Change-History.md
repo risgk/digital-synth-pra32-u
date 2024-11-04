@@ -14,6 +14,7 @@
         - Add Seq On Steps parameter
         - Add Seq Rand Pitch (Randomize Pitch 0-7) function
         - Add Seq Rand Velo (Randomize Velo 0-7) function
+        - Fix Seq Gate Time behavior
     - Tested with Arduino-Pico version 4.2.0
 - v2.6.1 (2024-09-22):
     - Fix Bug: PWM Audio: Notes are played a whole tone higher
