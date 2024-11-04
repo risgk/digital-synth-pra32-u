@@ -1,10 +1,10 @@
 #pragma once
 
 const uint8_t   PAGE_GROUP_DEFAULT   = 0;
-const uint8_t   PAGE_INDEX_DEFAULT_A = 0;
-const uint8_t   PAGE_INDEX_DEFAULT_B = 0;
+const uint8_t   PAGE_INDEX_DEFAULT_A = 7;
+const uint8_t   PAGE_INDEX_DEFAULT_B = 2;
 const uint8_t   PAGE_INDEX_DEFAULT_C = 0;
-const uint8_t   PAGE_INDEX_DEFAULT_D = 0;
+const uint8_t   PAGE_INDEX_DEFAULT_D = 4;
 
 struct PRA32_U_ControlPanelPage {
   char    page_name_line_0            [10 + 1];
