@@ -124,10 +124,10 @@ static INLINE uint8_t PRA32_U_ControlPanel_calc_scaled_pitch(uint32_t index_scal
     new_pitch  = ary_major_pentatonic[index_pitch];
     new_pitch += index_octave * 12 - 24;
   } else if (index_scale == 4) {
-    const uint8_t ary_major_blues[25] =
-      { 60, 60, 62, 62, 62, 63, 63, 64, 64, 64, 64, 67,
-        67, 67, 67, 67, 69, 69, 69, 69, 69, 72, 72, 72, 72 };
-    new_pitch  = ary_major_blues[index_pitch];
+    const uint8_t ary_minor_blues[25] =
+      { 60, 60, 60, 63, 63, 63, 63, 63, 65, 65, 65, 66,
+        66, 67, 67, 67, 67, 70, 70, 70, 70, 70, 72, 72, 72 };
+    new_pitch  = ary_minor_blues[index_pitch];
     new_pitch += index_octave * 12 - 24;
   } else if (index_scale == 5) {
     const uint8_t ary_chromatic[25] =
