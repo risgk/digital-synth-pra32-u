@@ -302,9 +302,13 @@ static INLINE void PRA32_U_ControlPanel_update_pitch(bool progress_seq_step) {
   } else {  // Seq Mode
     new_pitch          = g_synth.current_controller_value(SEQ_PITCH_0      + (s_seq_step & 0x07));
     new_velocity       = g_synth.current_controller_value(SEQ_VELO_0       + (s_seq_step & 0x07));
+
     if (((s_seq_step & 0x07) != 0) && ((1 << ((s_seq_step & 0x07) - 1)) & s_seq_on_steps) == 0) {
       new_velocity = 0;
     }
+
+    s_index_scale      = PRA32_U_ControlPanel_get_index_scale();
+    s_panel_transpose  = g_synth.current_controller_value(PANEL_TRANSPOSE) - 64;
   }
 
   new_pitch = PRA32_U_ControlPanel_calc_scaled_pitch(
@@ -344,7 +348,7 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
   }
 
   if ((s_seq_sub_step % s_seq_step_clock) == 0) {
-    bool update_scale = false;
+    bool update_seq_transpose = false;
 
     do {
       if (s_seq_pattern == 0) {  // Forward
@@ -352,7 +356,7 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
 
         if (s_seq_step > s_seq_last_step) {
           s_seq_step = 0;
-          update_scale = true;
+          update_seq_transpose = true;
         }
 
         s_seq_pattern_dir = +1;
@@ -361,7 +365,7 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
 
         if (s_seq_step < 0) {
           s_seq_step = s_seq_last_step;
-          update_scale = true;
+          update_seq_transpose = true;
         }
 
         s_seq_pattern_dir = -1;
@@ -371,7 +375,7 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
 
           if (s_seq_step > s_seq_last_step) {
             s_seq_step = s_seq_last_step;
-            update_scale = true;
+            update_seq_transpose = true;
             s_seq_pattern_dir = -1;
           } else {
             s_seq_pattern_dir = +1;
@@ -381,7 +385,7 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
 
           if (s_seq_step < 0) {
             s_seq_step = 0;
-            update_scale = true;
+            update_seq_transpose = true;
             s_seq_pattern_dir = +1;
           } else {
             s_seq_pattern_dir = -1;
@@ -392,10 +396,8 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
 
     s_display_buffer[0][20] = '0' + (s_seq_step & 0x07);
 
-    if (update_scale) {
-      s_index_scale     = PRA32_U_ControlPanel_get_index_scale();
-      s_panel_transpose = g_synth.current_controller_value(PANEL_TRANSPOSE) - 64;
-      s_seq_transpose   = PRA32_U_ControlPanel_get_seq_transpose_value();
+    if (update_seq_transpose) {
+      s_seq_transpose = PRA32_U_ControlPanel_get_seq_transpose_value();
     }
 
     PRA32_U_ControlPanel_update_pitch(true);
