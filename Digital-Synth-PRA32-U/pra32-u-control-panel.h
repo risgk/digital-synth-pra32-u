@@ -27,6 +27,7 @@ static          uint32_t s_play_key_current_value;
 
 static          uint8_t  s_play_mode                = 0;
 static          int8_t   s_panel_transpose          = 0;
+static          int8_t   s_panel_pit_ofst           = 0;
 static          int8_t   s_seq_transpose            = 0;
 static          uint8_t  s_seq_step_clock_candidate = 12;
 static          uint8_t  s_seq_step_clock           = 12;
@@ -150,7 +151,7 @@ static INLINE uint8_t PRA32_U_ControlPanel_calc_transposed_pitch(uint8_t pitch, 
 
 static INLINE int8_t PRA32_U_ControlPanel_get_seq_transpose_value()
 {
-  int16_t seq_transpose_value = g_synth.current_controller_value(SEQ_TRANSPOSE);
+  int16_t seq_transpose_value = g_synth.current_controller_value(SEQ_TRANSPOSE  );
   if (seq_transpose_value < 2) {
     seq_transpose_value = 2;
   } else if (seq_transpose_value > 126) {
@@ -165,7 +166,7 @@ static INLINE void PRA32_U_ControlPanel_calc_value_display_pitch(uint8_t pitch, 
 {
   uint8_t index_scale = PRA32_U_ControlPanel_get_index_scale();
   uint8_t new_pitch   = PRA32_U_ControlPanel_calc_scaled_pitch(
-                          index_scale, pitch, g_synth.current_controller_value(PANEL_PIT_OFST  ));
+                          index_scale, pitch, g_synth.current_controller_value(PANEL_PIT_OFST ));
   new_pitch = PRA32_U_ControlPanel_calc_transposed_pitch(
     new_pitch, g_synth.current_controller_value(PANEL_TRANSPOSE ) - 64);
 
@@ -213,7 +214,7 @@ static INLINE void PRA32_U_ControlPanel_update_page() {
   if (s_play_mode == 1) {  // Seq Mode
     std::memcpy(current_page.control_target_c_name_line_0, "Seq       ", 10);
     std::memcpy(current_page.control_target_c_name_line_1, "Transpose ", 10);
-    current_page.control_target_c = SEQ_TRANSPOSE;
+    current_page.control_target_c = SEQ_TRANSPOSE  ;
   }
 
   std::memcpy(&s_display_buffer[1][ 0], current_page.page_name_line_0            , 10);
@@ -287,22 +288,22 @@ static INLINE void PRA32_U_ControlPanel_update_pitch(bool progress_seq_step) {
   uint8_t new_velocity = 127;
 
   if (s_play_mode == 0) {  // Normal Mode
-    new_pitch          = g_synth.current_controller_value(PANEL_PLAY_PIT  );
-    new_velocity       = g_synth.current_controller_value(PANEL_PLAY_VELO );
+    new_pitch         = g_synth.current_controller_value(PANEL_PLAY_PIT );
+    new_velocity      = g_synth.current_controller_value(PANEL_PLAY_VELO);
 
-    s_index_scale      = PRA32_U_ControlPanel_get_index_scale();
-    s_panel_transpose  = g_synth.current_controller_value(PANEL_TRANSPOSE ) - 64;
-    s_seq_transpose    = 0;
+    s_index_scale     = PRA32_U_ControlPanel_get_index_scale();
+    s_panel_pit_ofst  = g_synth.current_controller_value(PANEL_PIT_OFST );
+    s_panel_transpose = g_synth.current_controller_value(PANEL_TRANSPOSE) - 64;
+    s_seq_transpose   = 0;
   } else {  // Seq Mode
-    new_pitch          = g_synth.current_controller_value(SEQ_PITCH_0      + (s_seq_step & 0x07));
-    new_velocity       = g_synth.current_controller_value(SEQ_VELO_0       + (s_seq_step & 0x07));
+    new_pitch         = g_synth.current_controller_value(SEQ_PITCH_0      + (s_seq_step & 0x07));
+    new_velocity      = g_synth.current_controller_value(SEQ_VELO_0       + (s_seq_step & 0x07));
     if (((s_seq_step & 0x07) != 0) && ((1 << ((s_seq_step & 0x07) - 1)) & s_seq_on_steps) == 0) {
       new_velocity = 0;
     }
   }
 
-  new_pitch = PRA32_U_ControlPanel_calc_scaled_pitch(
-                s_index_scale, new_pitch, g_synth.current_controller_value(PANEL_PIT_OFST  ));
+  new_pitch = PRA32_U_ControlPanel_calc_scaled_pitch(s_index_scale, new_pitch, s_panel_pit_ofst);
   new_pitch = PRA32_U_ControlPanel_calc_transposed_pitch(new_pitch, s_panel_transpose + s_seq_transpose);
 
   s_panel_play_note_velocity = new_velocity;
@@ -388,17 +389,17 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
 
     if (update_scale) {
       s_index_scale     = PRA32_U_ControlPanel_get_index_scale();
+      s_panel_pit_ofst  = g_synth.current_controller_value(PANEL_PIT_OFST );
       s_panel_transpose = g_synth.current_controller_value(PANEL_TRANSPOSE) - 64;
       s_seq_transpose   = PRA32_U_ControlPanel_get_seq_transpose_value();
     }
 
     PRA32_U_ControlPanel_update_pitch(true);
   } else {
-    uint32_t seq_gate_time_corrected;
+    uint32_t seq_gate_time_corrected = static_cast<uint32_t>(s_seq_gate_time) << 0;
 
     switch (s_seq_step_clock) {
     case 6:
-      seq_gate_time_corrected = static_cast<uint32_t>(s_seq_gate_time) << 0;
       break;
     case 12:
       seq_gate_time_corrected = static_cast<uint32_t>(s_seq_gate_time) << 1;
