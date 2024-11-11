@@ -81,7 +81,7 @@ static INLINE uint8_t PRA32_U_ControlPanel_get_index_scale()
   return index_scale;
 }
 
-static INLINE uint8_t PRA32_U_ControlPanel_calc_scaled_pitch(uint32_t index_scale, uint8_t pitch, int8_t pit_ofst)
+static INLINE uint8_t PRA32_U_ControlPanel_calc_scaled_pitch(uint32_t index_scale, uint8_t pitch, int pit_ofst)
 {
   if (pitch < 4) {
     pitch = 4;
@@ -89,6 +89,7 @@ static INLINE uint8_t PRA32_U_ControlPanel_calc_scaled_pitch(uint32_t index_scal
     pitch = 124;
   }
 
+  pit_ofst = (((static_cast<int>(pit_ofst) + 3) / 5) - 13) * 5;
   if (pit_ofst < -60) {
     pit_ofst = -60;
   } else if (pit_ofst > +60) {
@@ -170,7 +171,7 @@ static INLINE void PRA32_U_ControlPanel_calc_value_display_pitch(uint8_t pitch, 
 {
   uint8_t index_scale = PRA32_U_ControlPanel_get_index_scale();
   uint8_t new_pitch   = PRA32_U_ControlPanel_calc_scaled_pitch(
-                          index_scale, pitch, g_synth.current_controller_value(PANEL_PIT_OFST  ) - 64);
+                          index_scale, pitch, g_synth.current_controller_value(PANEL_PIT_OFST  ));
   new_pitch = PRA32_U_ControlPanel_calc_transposed_pitch(
     new_pitch, g_synth.current_controller_value(PANEL_TRANSPOSE ) - 64);
 
@@ -307,7 +308,7 @@ static INLINE void PRA32_U_ControlPanel_update_pitch(bool progress_seq_step) {
   }
 
   new_pitch = PRA32_U_ControlPanel_calc_scaled_pitch(
-                s_index_scale, new_pitch, g_synth.current_controller_value(PANEL_PIT_OFST  ) - 64);
+                s_index_scale, new_pitch, g_synth.current_controller_value(PANEL_PIT_OFST  ));
   new_pitch = PRA32_U_ControlPanel_calc_transposed_pitch(new_pitch, s_panel_transpose + s_seq_transpose);
 
   s_panel_play_note_velocity = new_velocity;
@@ -578,10 +579,22 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
   case LFO_OSC_AMT     :
   case LFO_FILTER_AMT  :
   case BTH_FILTER_AMT  :
-  case PANEL_PIT_OFST  :
   case PANEL_TRANSPOSE :
     {
       std::sprintf(value_display_text, "%+3d", static_cast<int>(controller_value) - 64);
+      result = true;
+    }
+    break;
+  case PANEL_PIT_OFST  :
+    {
+      int pit_ofst = (((static_cast<int>(controller_value) + 3) / 5) - 13) * 5;
+      if (pit_ofst < -60) {
+        pit_ofst = -60;
+      } else if (pit_ofst > +60) {
+        pit_ofst = +60;
+      }
+
+      std::sprintf(value_display_text, "%+3d", pit_ofst);
       result = true;
     }
     break;
