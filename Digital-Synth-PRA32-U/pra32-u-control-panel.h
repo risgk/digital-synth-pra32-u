@@ -90,7 +90,7 @@ static INLINE uint8_t PRA32_U_ControlPanel_calc_scaled_pitch(uint32_t index_scal
     pitch = 124;
   }
 
-  pit_ofst = (((static_cast<int>(pit_ofst) + 3) / 5) - 13) * 5;
+  pit_ofst -= 64;
   if (pit_ofst < -60) {
     pit_ofst = -60;
   } else if (pit_ofst > +60) {
@@ -582,7 +582,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     break;
   case PANEL_PIT_OFST  :
     {
-      int pit_ofst = (((static_cast<int>(controller_value) + 3) / 5) - 13) * 5;
+      int pit_ofst = controller_value - 64;
       if (pit_ofst < -60) {
         pit_ofst = -60;
       } else if (pit_ofst > +60) {
