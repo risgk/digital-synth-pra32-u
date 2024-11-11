@@ -107,18 +107,12 @@ static INLINE uint8_t PRA32_U_ControlPanel_calc_scaled_pitch(uint32_t index_scal
     new_pitch  = ary_major[index_pitch];
     new_pitch += index_octave * 12 - 24;
   } else if (index_scale == 1) {
-    const uint8_t ary_melodic_minor[25] =
-      { 60, 60, 62, 62, 62, 63, 63, 63, 65, 65, 65, 65,
-        67, 67, 67, 67, 69, 69, 69, 69, 71, 71, 71, 72, 72 };
-    new_pitch  = ary_melodic_minor[index_pitch];
-    new_pitch += index_octave * 12 - 24;
-  } else if (index_scale == 2) {
     const uint8_t ary_natural_minor[25] =
       { 60, 60, 62, 62, 62, 63, 63, 63, 65, 65, 65, 65,
         67, 67, 67, 68, 68, 68, 70, 70, 70, 70, 72, 72, 72 };
     new_pitch  = ary_natural_minor[index_pitch];
     new_pitch += index_octave * 12 - 24;
-  } else if (index_scale == 3) {
+  } else if ((index_scale == 2) || (index_scale == 3)) {
     const uint8_t ary_major_pentatonic[25] =
       { 60, 60, 62, 62, 62, 62, 64, 64, 64, 64, 64, 67,
         67, 67, 67, 67, 69, 69, 69, 69, 69, 72, 72, 72, 72 };
@@ -807,7 +801,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     break;
   case  PANEL_SCALE   :
     {
-      char ary[6][5] = {"Maj","Mel","Min","MaP","MiP","Chr"};
+      char ary[6][5] = {"Maj","Min","  -","MaP","MiP","Chr"};
       uint32_t index = PRA32_U_ControlPanel_get_index_scale();
 //    if (controller_value < 6) { index_scale = controller_value; }
       std::strcpy(value_display_text, ary[index]);

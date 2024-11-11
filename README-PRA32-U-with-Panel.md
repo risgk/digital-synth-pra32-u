@@ -31,7 +31,7 @@
         - Panel MIDI Ch: Basic Channel 1-16
         - Panel Play Pitch: min 4 to max 124
         - Panel Play Velo (Velocity)
-        - Panel Scale [Maj|Mel|Min|MaP|MiP|Chr]: Major, Ascending Melodic Minor (Jazz Minor), Natural Minor, Major Pentatonic, Minor Pentatonic, Chromatic (2 octaves)
+        - Panel Scale [Maj|Min|-|MaP|MiP|Chr]: Major, Minor, (Major Pentatonic,) Major Pentatonic, Minor Pentatonic, Chromatic (2 octaves)
         - Panel Pitch Ofst (Pitch Offset) [-|+]: Offset Panel Play Pitch and Seq Pitch 0-7 (min -60 to max +60)
             - For example, if Panel Scale is Maj and Panel Pitch Ofst is -25, the scale is G Mixolydian
             - For example, if Panel Scale is Maj and Panel Pitch Ofst is -15, the scale is A Aeolian (Natural Minor)
@@ -39,7 +39,6 @@
             - For example, if Panel Scale is Maj and Panel Pitch Ofst is +20, the scale is E Phrygian
             - For example, if Panel Scale is Maj and Panel Pitch Ofst is +25, the scale is F Lydian
         - Panel Transpose [-|+]
-            - For example, if Panel Scale is Mel and Panel Transpose is -3, the scale is A Ascending Melodic Minor (Jazz Minor)
             - For example, if Panel Scale is Min and Panel Transpose is -3, the scale is A Natural Minor
             - For example, if Panel Scale is MiP and Panel Transpose is -3, the scale is A Minor Pentatonic
     - Step Sequencer Parameters
