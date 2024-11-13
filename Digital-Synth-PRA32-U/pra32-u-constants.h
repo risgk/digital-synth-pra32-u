@@ -54,7 +54,7 @@ const uint8_t   BTH_CONTROLLER  = 2;
 const uint8_t   SUSTAIN_PEDAL   = 64;
 
 
-const uint8_t   OSC_1_WAVE      = 102;
+const uint8_t   OSC_1_WAVE      = 14;
 const uint8_t   OSC_1_SHAPE     = 19;
 const uint8_t   OSC_1_MORPH     = 20;
 const uint8_t   MIXER_SUB_OSC   = 23;
@@ -76,7 +76,7 @@ const uint8_t   EG_RELEASE      = 72;
 
 const uint8_t   EG_OSC_AMT      = 91;
 const uint8_t   EG_OSC_DST      = 89;
-const uint8_t   VOICE_MODE      = 14;
+const uint8_t   VOICE_MODE      = 102;
 const uint8_t   PORTAMENTO      = 5;
 
 const uint8_t   LFO_WAVE        = 12;
@@ -165,6 +165,8 @@ const uint8_t   PANEL_MIDI_CH   = 128 + 11;
 
 const uint8_t   PANEL_PLAY_PIT  = 128 + 12;
 const uint8_t   PANEL_PLAY_VELO = 128 + 13;
+const uint8_t   PANEL_PIT_OFST  = 128 + 14;
+
 
 const uint8_t   SEQ_PITCH_0     = 128 + 16;
 const uint8_t   SEQ_PITCH_1     = 128 + 17;
@@ -209,12 +211,17 @@ const uint8_t   SEQ_VELO_15     = 128 + 47;
 const uint8_t   SEQ_TEMPO       = 128 + 48;
 const uint8_t   SEQ_CLOCK_SRC   = 128 + 49;
 const uint8_t   SEQ_GATE_TIME   = 128 + 50;
-const uint8_t   SEQ_LAST_STEP   = 128 + 51;
+const uint8_t   SEQ_NUM_STEPS   = 128 + 51;
 
 const uint8_t   SEQ_PATTERN     = 128 + 52;
 const uint8_t   SEQ_ACT_STEPS   = 128 + 53;
 const uint8_t   SEQ_TRANSPOSE   = 128 + 54;
 const uint8_t   SEQ_STEP_NOTE   = 128 + 55;
+
+const uint8_t   SEQ_ON_STEPS    = 128 + 56;
+
+
+
 
 const uint8_t   RD_PROGRAM_0    = 128 + 64;
 const uint8_t   RD_PROGRAM_1    = 128 + 65;
@@ -260,3 +267,6 @@ const uint8_t   RD_PANEL_PRMS   = 128 + 96;
 const uint8_t   IN_PANEL_PRMS   = 128 + 97;
 
 const uint8_t   WR_PANEL_PRMS   = 128 + 100;
+
+const uint8_t   SEQ_RAND_PITCH  = 128 + 104;
+const uint8_t   SEQ_RAND_VELO   = 128 + 105;

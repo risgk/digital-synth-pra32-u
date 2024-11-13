@@ -1,5 +1,21 @@
 ## Digital Synth PRA32-U Change History
 
+- v3.0.0 (2024-11-13):
+    - Change Control Numbers: Osc 1 Wave 102 to 14, Voice Mode 14 to 102
+    - Mixer Noise is not disabled even if Osc 2 Wave is Nos (Noise)
+    - Change Preset programs: Change Delay Mode to S (Stereo Delay)
+    - Rename PRA32-U CTRL to PRA32-U Editor
+    - Officially support the option PRA32-U with Panel
+        - Faster OLED display updates
+        - Change the page layout and the default pages
+        - Change the specification of Panel Scale parameter
+        - Change the specification of Seq Last Step parameter and rename Seq Last Step to Seq Num Steps (Number of Steps)
+        - Add Panel Pitch Ofst (Pitch Offset) parameter
+        - Add Seq On Steps parameter
+        - Add Seq Rand Pitch (Randomize Pitch 0-7) function
+        - Add Seq Rand Velo (Randomize Velo 0-7) function
+        - Fix Seq Gate Time behavior
+    - Tested with Arduino-Pico version 4.2.0
 - v2.6.1 (2024-09-22):
     - Fix Bug: PWM Audio: Notes are played a whole tone higher
     - Other improvements

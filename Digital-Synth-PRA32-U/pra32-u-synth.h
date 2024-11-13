@@ -90,6 +90,8 @@ static uint8_t s_program_table_panel_parameters[] = {
 
   PANEL_PLAY_PIT ,
   PANEL_PLAY_VELO,
+  PANEL_PIT_OFST ,
+
 
   SEQ_PITCH_0    ,
   SEQ_PITCH_1    ,
@@ -114,12 +116,17 @@ static uint8_t s_program_table_panel_parameters[] = {
   SEQ_TEMPO      ,
   SEQ_CLOCK_SRC  ,
   SEQ_GATE_TIME  ,
-  SEQ_LAST_STEP  ,
+  SEQ_NUM_STEPS  ,
 
   SEQ_PATTERN    ,
   SEQ_ACT_STEPS  ,
   SEQ_TRANSPOSE  ,
   SEQ_STEP_NOTE  ,
+
+  SEQ_ON_STEPS   ,
+
+
+
 };
 
 
@@ -129,6 +136,8 @@ const uint8_t   DEFAULT_PANEL_PLAY_MODE = 0  ;
 
 const uint8_t   DEFAULT_PANEL_PLAY_PIT  = 64 ;
 const uint8_t   DEFAULT_PANEL_PLAY_VELO = 64 ;
+const uint8_t   DEFAULT_PANEL_PIT_OFST  = 64 ;
+
 
 const uint8_t   DEFAULT_SEQ_PITCH_0     = 64 ;
 const uint8_t   DEFAULT_SEQ_PITCH_1     = 82 ;
@@ -153,12 +162,17 @@ const uint8_t   DEFAULT_SEQ_VELO_7      = 64 ;
 const uint8_t   DEFAULT_SEQ_TEMPO       = 64 ;
 const uint8_t   DEFAULT_SEQ_CLOCK_SRC   = 0  ;
 const uint8_t   DEFAULT_SEQ_GATE_TIME   = 60 ;
-const uint8_t   DEFAULT_SEQ_LAST_STEP   = 127;
+const uint8_t   DEFAULT_SEQ_NUM_STEPS   = 32 ;
 
 const uint8_t   DEFAULT_SEQ_PATTERN     = 0  ;
 const uint8_t   DEFAULT_SEQ_ACT_STEPS   = 127;
 const uint8_t   DEFAULT_SEQ_TRANSPOSE   = 64 ;
 const uint8_t   DEFAULT_SEQ_STEP_NOTE   = 64 ;
+
+const uint8_t   DEFAULT_SEQ_ON_STEPS    = 127;
+
+
+
 
 
 class PRA32_U_Synth {
@@ -353,6 +367,8 @@ public:
 
       m_program_table_panel[i][PANEL_PLAY_PIT ] = DEFAULT_PANEL_PLAY_PIT ;
       m_program_table_panel[i][PANEL_PLAY_VELO] = DEFAULT_PANEL_PLAY_VELO;
+      m_program_table_panel[i][PANEL_PIT_OFST ] = DEFAULT_PANEL_PIT_OFST ;
+
 
       m_program_table_panel[i][SEQ_PITCH_0    ] = DEFAULT_SEQ_PITCH_0    ;
       m_program_table_panel[i][SEQ_PITCH_1    ] = DEFAULT_SEQ_PITCH_1    ;
@@ -377,12 +393,17 @@ public:
       m_program_table_panel[i][SEQ_TEMPO      ] = DEFAULT_SEQ_TEMPO      ;
       m_program_table_panel[i][SEQ_CLOCK_SRC  ] = DEFAULT_SEQ_CLOCK_SRC  ;
       m_program_table_panel[i][SEQ_GATE_TIME  ] = DEFAULT_SEQ_GATE_TIME  ;
-      m_program_table_panel[i][SEQ_LAST_STEP  ] = DEFAULT_SEQ_LAST_STEP  ;
+      m_program_table_panel[i][SEQ_NUM_STEPS  ] = DEFAULT_SEQ_NUM_STEPS  ;
 
       m_program_table_panel[i][SEQ_PATTERN    ] = DEFAULT_SEQ_PATTERN    ;
       m_program_table_panel[i][SEQ_ACT_STEPS  ] = DEFAULT_SEQ_ACT_STEPS  ;
       m_program_table_panel[i][SEQ_TRANSPOSE  ] = DEFAULT_SEQ_TRANSPOSE  ;
       m_program_table_panel[i][SEQ_STEP_NOTE  ] = DEFAULT_SEQ_STEP_NOTE  ;
+
+      m_program_table_panel[i][SEQ_ON_STEPS   ] = DEFAULT_SEQ_ON_STEPS   ;
+
+
+
     }
 
 #if defined(ARDUINO_ARCH_RP2040)
@@ -1363,6 +1384,10 @@ public:
 #endif  // defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
 
     return processed;
+  }
+
+  INLINE void get_rand_uint8_array(uint8_t array[8]) {
+    m_noise_gen.get_rand_uint8_array(array);
   }
 
 private:

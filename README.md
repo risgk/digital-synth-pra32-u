@@ -1,6 +1,6 @@
-# Digital Synth PRA32-U v2.6.1
+# Digital Synth PRA32-U v3.0.0
 
-- 2024-09-22 ISGK Instruments
+- 2024-11-13 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
 
 
@@ -28,7 +28,7 @@
     - Info: <https://www.arduino.cc/en/software>
 - Please install Arduino-Pico = **Raspberry Pi Pico/RP2040** (by Earle F. Philhower, III) core
     - Additional Board Manager URL: <https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json>
-    - This sketch is tested with version **4.0.2**: <https://github.com/earlephilhower/arduino-pico/releases/tag/4.0.2>
+    - This sketch is tested with version **4.2.0**: <https://github.com/earlephilhower/arduino-pico/releases/tag/4.2.0>
     - Info: <https://github.com/earlephilhower/arduino-pico>
 - Please install Arduino **MIDI Library** (by Francois Best, lathoub)
     - This sketch is tested with version **5.0.2**: <https://github.com/FortySevenEffects/arduino_midi_library/releases/tag/5.0.2>
@@ -55,7 +55,7 @@
     - GP4 and GP5 pins are used by UART1 TX and UART1 RX by default
 - DIN/TRS MIDI is available by using (and modifying) Adafruit MIDI FeatherWing Kit, for example
     - Adafruit [MIDI FeatherWing Kit](https://www.adafruit.com/product/4740) (Product ID: 4740)
-    - M5Stack [Midi Unit with DIN Connector (SAM2695)](https://shop.m5stack.com/products/midi-unit-with-din-connector-sam2695) (SKU: U187)
+    - M5Stack [Midi Unit with DIN Connector (SAM2695)](https://shop.m5stack.com/products/midi-unit-with-din-connector-sam2695) (SKU: U187) in Separate mode
     - 木下研究所 [MIDI-UARTインターフェースさん キット](https://www.switch-science.com/products/8117) (Shipping to Japan only)
     - necobit電子 [MIDI Unit for GROVE](https://necobit.com/denshi/grove-midi-unit/) (Shipping to Japan only)
 - We recommend using [Hairless MIDI<->Serial Bridge](https://projectgus.github.io/hairless-midiserial/) on PC
@@ -135,23 +135,23 @@
     - A Ruby execution environment is required
 
 
-## PRA32-U CTRL
+## PRA32-U Editor
 
-- "pra32-u-ctrl.html": MIDI Controller (Editor) Application for PRA32-U, HTML App (Web App)
+- "pra32-u-editor.html": Editor (MIDI Controller) Application for PRA32-U, HTML App (Web App)
     - Modify `PRA32_U_MIDI_CH` to change the MIDI Channel
 - We recommend using Google Chrome, which implements Web MIDI API
 - Select "Digital Synth PRA32-U" in the list "MIDI Out"
 - Functions
-    - PRA32-U CTRL converts Program Changes (#0-7 for Preset programs, #8-15 for user programs) into Control Changes
+    - PRA32-U Editor converts Program Changes (#0-7 for Preset programs, #8-15 for user programs) into Control Changes
     - When Program Change #127 is entered or Control Change #111 is changed from Off (63 or lower) to On (64 or higher), "Rand Ctrl" is processed
-    - PRA32-U CTRL stores the current control values and the user programs (#8-15) in a Web browser (localStorage)
+    - PRA32-U Editor stores the current control values and the user programs (#8-15) in a Web browser (localStorage)
     - Current parameter values and user programs (#8-15) can be imported/exported from/to JSON files
-- When not using PRA32-U CTRL
-    - PRA32-U can also be controlled by MIDI without using PRA32-U CTRL
+- When not using PRA32-U Editor
+    - PRA32-U can also be controlled by MIDI without using PRA32-U Editor
     - Refer to "PRA32-U-MIDI-Implementation-Chart.txt" for the supported functions
     - The default program is #8
     - Programs #0-15 can be modified by editing "pra32-u-program-table.h"
-    - PRA32-U CTRL functions related to parameter writing
+    - PRA32-U Editor functions related to parameter writing
         - Write: Write the current parameters to PRA32-U (Program #8-15 and the flash)
         - Program Change: Send Program Change to PRA32-U directry
           (NOTE: The current parameters of PRA32-U will not be updated)
@@ -257,18 +257,18 @@ graph LR
 - This image was created with Fritzing.
 
 
-## [PRA32-U with Panel](./README-PRA32-U-with-Panel.md) (Experimental) (Optional)
+## [PRA32-U with Panel](./README-PRA32-U-with-Panel.md) (Optional)
 
 
 ## License
 
 ![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)
 
-**Digital Synth PRA32-U v2.6.1 by ISGK Instruments (Ryo Ishigaki)**
+**Digital Synth PRA32-U v3.0.0 by ISGK Instruments (Ryo Ishigaki)**
 
 To the extent possible under law, ISGK Instruments (Ryo Ishigaki)
 has waived all copyright and related or neighboring rights
-to Digital Synth PRA32-U v2.6.1.
+to Digital Synth PRA32-U v3.0.0.
 
 You should have received a copy of the CC0 legalcode along with this
 work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.

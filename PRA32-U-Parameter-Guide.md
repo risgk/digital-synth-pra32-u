@@ -1,6 +1,6 @@
-# Digital Synth PRA32-U Parameter Guide v2.6.1
+# Digital Synth PRA32-U Parameter Guide v3.0.0
 
-- 2024-09-22 ISGK Instruments
+- 2024-11-13 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
 
 ## Control Change Parameters
@@ -8,7 +8,6 @@
 - Notes
     - $1 : Disabled in Paraphonic Mode
     - $2 : Disabled if Osc 1 Wave is not Pls (Pulse)
-    - $3 : Mixer Noise is disabled if Osc 2 Wave is Nos (Noise)
 - Osc 1 Wave [Saw|Sin|-|Tri|-|Pls]
     - 0, 6-12: Saw Wave
     - 1, 25 (13-38): Sine Wave
@@ -41,7 +40,7 @@
         - 64: Saw 100%
         - 96: Saw 100% + Saw 50%
         - 127: Saw 100% + Saw 100% (max)
-- Mixer Noise/Sub Osc [N|S] $3
+- Mixer Noise/Sub Osc [N|S]
     - -64 (0): Noise 100%
     - -63 (1): Noise 98.4%
     - -62 (2): Noise 96.9%
