@@ -60,7 +60,6 @@ static volatile bool     s_panel_play_note_gate     = false;
 static volatile bool     s_panel_play_note_trigger  = false;
 
 static volatile int32_t s_display_draw_counter         = -1;
-static          bool    s_display_draw_position_update = false;
 
 static char s_display_buffer[8][21 + 1] = {
   "                     ",
@@ -1385,6 +1384,7 @@ INLINE void PRA32_U_ControlPanel_update_display(uint32_t loop_counter) {
 #if defined(PRA32_U_USE_CONTROL_PANEL_OLED_DISPLAY)
   static uint32_t s_display_draw_position_x = 0;
   static uint32_t s_display_draw_position_y = 0;
+  static bool     s_display_draw_position_update = false;
 
   if ((loop_counter & 0x3F) == 0x00) {
     if (s_display_draw_position_update) {
