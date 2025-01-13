@@ -4,6 +4,7 @@
     - PRA32-U with Panel: Change MIDI clock and commands not to be transmitted via USB MIDI
         - To avoid freeze problem when transmitting and receiving USB MIDI at the same time
     - Other improvements
+    - Tested with Arduino-Pico version 4.4.0
 - v3.0.0 (2024-11-13):
     - Change Control Numbers: Osc 1 Wave 102 to 14, Voice Mode 14 to 102
     - Mixer Noise is not disabled even if Osc 2 Wave is Nos (Noise)
