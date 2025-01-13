@@ -2,6 +2,7 @@
 
 - v3.1.0 (2024-**-**):
     - Sine Wave (Phase Modulation): Change the unit of Frequency Ratio from 0.25 to 0.5
+    - Extend Osc 2 Pitch range (-5 to +7 -> -15 to +15 semitone)
     - Extend Pitch modulation range by EG Osc Amt and LFO Osc Amt
     - PRA32-U with Panel: Change MIDI clock and commands not to be transmitted via USB MIDI
         - To avoid freeze problem when transmitting and receiving USB MIDI at the same time
