@@ -67,6 +67,8 @@
 #define PRA32_U_OLED_DISPLAY_CONTRAST           (0xFF)
 #define PRA32_U_OLED_DISPLAY_ROTATION           (true)
 
+#define PRA32_U_DISABLE_USB_MIDI_TRANSMITTION
+
 ////////////////////////////////////////////////////////////////
 
 uint8_t g_midi_ch = PRA32_U_MIDI_CH;

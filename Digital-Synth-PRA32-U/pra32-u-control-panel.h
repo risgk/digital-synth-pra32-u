@@ -328,9 +328,9 @@ static INLINE void PRA32_U_ControlPanel_update_pitch(bool progress_seq_step) {
 }
 
 static INLINE void PRA32_U_ControlPanel_seq_clock() {
-#if defined(PRA32_U_USE_USB_MIDI)
+#if defined(PRA32_U_USE_USB_MIDI) && !defined(PRA32_U_DISABLE_USB_MIDI_TRANSMITTION)
       USB_MIDI.sendRealTime(midi::Clock);
-#endif  // defined(PRA32_U_USE_USB_MIDI)
+#endif  // defined(PRA32_U_USE_USB_MIDI) && !defined(PRA32_U_DISABLE_USB_MIDI_TRANSMITTION)
 
 #if defined(PRA32_U_USE_UART_MIDI)
       UART_MIDI.sendRealTime(midi::Clock);
@@ -421,9 +421,9 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
 }
 
 static INLINE void PRA32_U_ControlPanel_seq_start() {
-#if defined(PRA32_U_USE_USB_MIDI)
+#if defined(PRA32_U_USE_USB_MIDI) && !defined(PRA32_U_DISABLE_USB_MIDI_TRANSMITTION)
   USB_MIDI.sendRealTime(midi::Start);
-#endif  // defined(PRA32_U_USE_USB_MIDI)
+#endif  // defined(PRA32_U_USE_USB_MIDI) && !defined(PRA32_U_DISABLE_USB_MIDI_TRANSMITTION)
 
 #if defined(PRA32_U_USE_UART_MIDI)
   UART_MIDI.sendRealTime(midi::Start);
@@ -448,9 +448,9 @@ static INLINE void PRA32_U_ControlPanel_seq_start() {
 }
 
 static INLINE void PRA32_U_ControlPanel_seq_stop() {
-#if defined(PRA32_U_USE_USB_MIDI)
+#if defined(PRA32_U_USE_USB_MIDI) && !defined(PRA32_U_DISABLE_USB_MIDI_TRANSMITTION)
   USB_MIDI.sendRealTime(midi::Stop);
-#endif  // defined(PRA32_U_USE_USB_MIDI)
+#endif  // defined(PRA32_U_USE_USB_MIDI) && !defined(PRA32_U_DISABLE_USB_MIDI_TRANSMITTION)
 
 #if defined(PRA32_U_USE_UART_MIDI)
   UART_MIDI.sendRealTime(midi::Stop);

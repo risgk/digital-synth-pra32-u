@@ -1,6 +1,8 @@
 ## Digital Synth PRA32-U Change History
 
-- v3.0.1 (2024-**-**):
+- v3.1.0 (2024-**-**):
+    - PRA32-U with Panel: Change MIDI clock and commands not to be transmitted via USB MIDI
+        - To avoid freeze problem when transmitting and receiving USB MIDI at the same time
     - Other improvements
 - v3.0.0 (2024-11-13):
     - Change Control Numbers: Osc 1 Wave 102 to 14, Voice Mode 14 to 102

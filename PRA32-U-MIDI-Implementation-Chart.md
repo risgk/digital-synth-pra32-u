@@ -124,7 +124,7 @@
 |                               |   flash, set "Program Number to Write to" (# is the value mod 16)   |
 |                               |   and then change "Write Parameters to Program" from 0 to 1-127     |
 |                               | $5 : Basic Channel can be changed in PRA32-U with Panel             |
-|                               | $6 : o in PRA32-U with Panel                                        |
+|                               | $6 : o in PRA32-U with Panel (No transmission via USB MIDI)         |
 |                               | $7 : o in PRA32-U with Panel if Seq Clock Src is External           |
 +-------------------------------+---------------------------------------------------------------------+
   Mode 1: Omni On,  Poly          Mode 2: Omni On,  Mono          o: Yes                               
