@@ -278,5 +278,6 @@ work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 If PRA32-U is to be embedded in instruments or others, it would be nice
 (but not required) to display the following:
+
     - "Powered by ISGK Instruments PRA32-U"
     - "Powered by PRA32-U"
