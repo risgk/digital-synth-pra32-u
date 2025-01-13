@@ -272,3 +272,11 @@ to Digital Synth PRA32-U v3.0.0.
 
 You should have received a copy of the CC0 legalcode along with this
 work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+
+
+### For Your Information
+
+If PRA32-U is to be embedded in instruments or others, it would be nice
+(but not required) to display the following:
+    - "Powered by ISGK Instruments PRA32-U"
+    - "Powered by PRA32-U"
