@@ -24,16 +24,15 @@
         - 127: Pulse Width 0.4%, or 2nd Saw Phase 99.6% (max)
 - Osc 1 Morph $2
     - Sine Wave (Phase Modulation): Frequency Ratio of Modulator
-        - 0: Ratio 0.500 (min)
-        - 1: Ratio 0.625
-        - 2: Ratio 0.750
-        - 3: Ratio 0.875
-        - 4: Ratio 1.000
-        - 12: Ratio 2.000
-        - 20: Ratio 3.000
-        - 28: Ratio 3.500
-        - 124: Ratio 16.000
-        - 127: Ratio 16.375 (max)
+        - 0: Ratio 0.50 (min)
+        - 1-2: Ratio 0.75
+        - 3-4: Ratio 1.00
+        - 11-12: Ratio 2.00
+        - 19-20: Ratio 3.00
+        - 27-28: Ratio 3.50
+        - 123-124: Ratio 16.00
+        - 125-126: Ratio 16.25
+        - 127: Ratio 16.50 (max)
     - Pulse Wave
         - 0: Pulse 100% = Saw 100% + Reverse Saw 100% (min)
         - 32: Pulse 50% + Saw 50% = Saw 100% + Reverse Saw 50%
