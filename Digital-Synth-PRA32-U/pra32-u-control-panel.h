@@ -33,8 +33,8 @@ static          uint8_t  s_seq_step_clock_candidate = 12;
 static          uint8_t  s_seq_step_clock           = 12;
 static          uint8_t  s_seq_gate_time            = 6;
 static          int32_t  s_seq_last_step            = 7;
-static          uint8_t  s_seq_pattern              = 0;
-static          int8_t   s_seq_pattern_dir          = +1;
+static          uint8_t  s_seq_mode                 = 0;
+static          int8_t   s_seq_mode_dir             = +1;
 static          uint8_t  s_seq_on_steps             = 127;
 static          uint8_t  s_seq_act_steps            = 127;
 
@@ -347,7 +347,7 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
     bool update_scale = false;
 
     do {
-      if (s_seq_pattern == 0) {  // Forward
+      if (s_seq_mode == 0) {  // Forward
         ++s_seq_step;
 
         if (s_seq_step > s_seq_last_step) {
@@ -355,8 +355,8 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
           update_scale = true;
         }
 
-        s_seq_pattern_dir = +1;
-      } else if (s_seq_pattern == 1) {  // Reverse
+        s_seq_mode_dir = +1;
+      } else if (s_seq_mode == 1) {  // Reverse
         --s_seq_step;
 
         if (s_seq_step < 0) {
@@ -364,17 +364,17 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
           update_scale = true;
         }
 
-        s_seq_pattern_dir = -1;
+        s_seq_mode_dir = -1;
       } else {  // Bounce
-        if (s_seq_pattern_dir > 0) {
+        if (s_seq_mode_dir > 0) {
           ++s_seq_step;
 
           if (s_seq_step > s_seq_last_step) {
             s_seq_step = s_seq_last_step;
             update_scale = true;
-            s_seq_pattern_dir = -1;
+            s_seq_mode_dir = -1;
           } else {
-            s_seq_pattern_dir = +1;
+            s_seq_mode_dir = +1;
           }
         } else {
           --s_seq_step;
@@ -382,9 +382,9 @@ static INLINE void PRA32_U_ControlPanel_seq_clock() {
           if (s_seq_step < 0) {
             s_seq_step = 0;
             update_scale = true;
-            s_seq_pattern_dir = +1;
+            s_seq_mode_dir = +1;
           } else {
-            s_seq_pattern_dir = -1;
+            s_seq_mode_dir = -1;
           }
         }
       }
@@ -431,15 +431,15 @@ static INLINE void PRA32_U_ControlPanel_seq_start() {
 
   s_playing_status = PlayingStatus_Seq;
 
-  if (s_seq_pattern == 0) {  // Forward
+  if (s_seq_mode == 0) {  // Forward
     s_seq_step = 31;
-    s_seq_pattern_dir = +1;
-  } else if (s_seq_pattern == 1) {  // Reverse
+    s_seq_mode_dir = +1;
+  } else if (s_seq_mode == 1) {  // Reverse
     s_seq_step = 0;
-    s_seq_pattern_dir = -1;
+    s_seq_mode_dir = -1;
   } else {  // Bounce
     s_seq_step = 0;
-    s_seq_pattern_dir = -1;
+    s_seq_mode_dir = -1;
   }
 
   s_seq_sub_step = 23;
@@ -872,7 +872,7 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
       result = true;
     }
     break;
-  case SEQ_PATTERN    :
+  case SEQ_MODE       :
     {
       char ary[3][5] = {"Fwd","Rvs","Bnc"};
       uint32_t index = ((controller_value * 4) + 127) / 254;
@@ -1538,11 +1538,11 @@ void PRA32_U_ControlPanel_on_control_change(uint8_t control_number)
     last_step = (last_step - 2) >> 2;
     if (last_step < 0) { last_step = 0; }
     s_seq_last_step = last_step;
-  } else if (control_number == SEQ_PATTERN    ) {
-    uint8_t controller_value = g_synth.current_controller_value(SEQ_PATTERN    );
+  } else if (control_number == SEQ_MODE       ) {
+    uint8_t controller_value = g_synth.current_controller_value(SEQ_MODE       );
     uint32_t index = ((controller_value * 4) + 127) / 254;
 //  if (controller_value < 3) { index = controller_value; }
-    s_seq_pattern = index;
+    s_seq_mode = index;
   } else if (control_number == SEQ_ON_STEPS   ) {
     s_seq_on_steps = g_synth.current_controller_value(SEQ_ON_STEPS   );
   } else if (control_number == SEQ_ACT_STEPS  ) {

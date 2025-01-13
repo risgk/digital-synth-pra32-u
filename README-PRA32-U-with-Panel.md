@@ -43,7 +43,7 @@
             - For example, if Panel Scale is Min and Panel Transpose is -3, the scale is A Natural Minor
             - For example, if Panel Scale is MiP and Panel Transpose is -3, the scale is A Minor Pentatonic
     - Step Sequencer Parameters
-        - Seq Pattern [Fwd|Rvs|Bnc]: Forward, Reverse, Bounce
+        - Seq Mode [Fwd|Rvs|Bnc]: Forward, Reverse, Bounce
         - Seq Num Steps (Number of Steps): 1-32 (current step mod 8 is used as the index for Seq Pitch and Seq Velo)
         - Seq On Steps: bit 0 is Step 1 On, ..., bit 6 is Step 7 On (Step 0 is always On)
         - Seq Act Steps (Active Steps): bit 0 is Step 1 Active, ..., bit 6 is Step 7 Active (Step 0 is always Active)
