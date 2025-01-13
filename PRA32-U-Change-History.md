@@ -1,10 +1,10 @@
 ## Digital Synth PRA32-U Change History
 
 - v3.1.0 (2024-**-**):
+    - Sine Wave (Phase Modulation): Change the unit of Frequency Ratio from 0.25 to 0.5
     - PRA32-U with Panel: Change MIDI clock and commands not to be transmitted via USB MIDI
         - To avoid freeze problem when transmitting and receiving USB MIDI at the same time
     - PRA32-U with Panel: Rename the parameter name Seq Pattern to Seq Mode
-    - Sine Wave (Phase Modulation): Change the unit of Frequency Ratio from 0.25 to 0.5
     - Other improvements
     - Tested with Arduino-Pico version 4.4.0
 - v3.0.0 (2024-11-13):
