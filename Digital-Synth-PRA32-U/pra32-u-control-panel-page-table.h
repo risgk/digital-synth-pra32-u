@@ -35,7 +35,7 @@ PRA32_U_ControlPanelPage g_control_panel_page_table_a[] = {
   { "Page=A-11 ", "EG b      ",   "EG        ", "Sustain   ", EG_SUSTAIN     ,   "EG        ", "Release   ", EG_RELEASE     ,   "Panel     ", "Play Pitch", PANEL_PLAY_PIT , },
   { "Page=A-12 ", "EG c      ",   "EG        ", "Amp Mod   ", EG_AMP_MOD     ,   "Release   ", "= Decay   ", REL_EQ_DECAY   ,   "Panel     ", "Play Pitch", PANEL_PLAY_PIT , },
   { "Page=A-13 ", "EG d      ",   "EG        ", "Osc Amt   ", EG_OSC_AMT     ,   "EG        ", "Osc Dst   ", EG_OSC_DST     ,   "Panel     ", "Play Pitch", PANEL_PLAY_PIT , },
-  { "Page=A-14 ", "EG e      ",   "          ", "          ", 0xFF           ,   "EG        ", "Velo Sens ", EG_VEL_SENS    ,   "Panel     ", "Play Pitch", PANEL_PLAY_PIT , },
+  { "Page=A-14 ", "EG e      ",   "Filter    ", "EG Amt    ", FILTER_EG_AMT  ,   "EG        ", "Velo Sens ", EG_VEL_SENS    ,   "Panel     ", "Play Pitch", PANEL_PLAY_PIT , },
   { "Page=A-15 ", "Amp a     ",   "Amp       ", "Attack    ", AMP_ATTACK     ,   "Amp       ", "Decay     ", AMP_DECAY      ,   "Panel     ", "Play Pitch", PANEL_PLAY_PIT , },
   { "Page=A-16 ", "Amp c     ",   "Amp       ", "Sustain   ", AMP_SUSTAIN    ,   "Amp       ", "Release   ", AMP_RELEASE    ,   "Panel     ", "Play Pitch", PANEL_PLAY_PIT , },
   { "Page=A-17 ", "Amp b     ",   "Amp       ", "Gain      ", AMP_GAIN       ,   "Amp       ", "Velo Sens ", AMP_VEL_SENS   ,   "Panel     ", "Play Pitch", PANEL_PLAY_PIT , },
