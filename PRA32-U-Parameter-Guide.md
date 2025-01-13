@@ -182,6 +182,9 @@
     - 0, 3-31: Off
     - 1, 64 (32-95): Quadratic Curve
     - 2, 127 (96-127): Liniear Curve
+- Voice Assign Mode [1|2]
+    - 0, 2-63: Mode 1, Free voice with small index has priority, Release is effective
+    - 1, 127 (64-127): Mode 2, Free voice with next index has priority, Portamento is effective
 - Chorus Rate
     - 0: LFO Frequency 0.012 Hz (min)
     - 64: LFO Frequency 0.48 Hz

@@ -1,6 +1,7 @@
 ## Digital Synth PRA32-U Change History
 
 - v3.1.0 (2024-**-**):
+    - Add the Voice Assign Mode [1|2] parameter
     - Sine Wave (Phase Modulation): Change the unit of Frequency Ratio from 0.25 to 0.5
     - Extend Osc 2 Pitch range (-5 to +7 -> -12 to +12 semitone)
     - Extend Pitch modulation range by EG Osc Amt and LFO Osc Amt (-24 to +24 -> -30 to +30 semitone)

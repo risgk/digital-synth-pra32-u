@@ -76,6 +76,11 @@
 |                            62 | x             | o             | EG Velocity Sensitivity             |
 |                            63 | x             | o             | Amp Velocity Sensitivity            |
 |                               |               |               |                                     |
+|                           108 | x             | o             | Voice Assign Mode [1|2]             |
+|                               |               |               |                                     |
+|                               |               |               |                                     |
+|                               |               |               |                                     |
+|                               |               |               |                                     |
 |                            27 | x             | o             | Chorus Mix [Dry|Wet]                |
 |                            58 | x             | o             | Chorus Rate                         |
 |                            59 | x             | o             | Chorus Depth                        |
