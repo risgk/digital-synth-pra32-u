@@ -111,7 +111,8 @@
     - 127: 18.6 s
 - EG Osc Amt [-|+], LFO Osc Amt [-|+]
     - Pitch
-        - -55 (9): -24 semitone (min)
+        - -61 (3): -30 semitone (min)
+        - -55 (9): -24 semitone
         - -43 (21): -12 semitone
         - -33 (31): -2 semitone
         - -32 (32): -100 cent
@@ -119,7 +120,8 @@
         - +32 (96): +100 cent
         - +33 (97): +2 semitone
         - +43 (107): +12 semitone
-        - +55 (119): +24 semitone (max)
+        - +55 (119): +24 semitone
+        - +61 (125): +30 semitone (max)
     - Shape
         - -63 (1): Shape -252 (min)
         - +63 (127): Shape +252 (max)
