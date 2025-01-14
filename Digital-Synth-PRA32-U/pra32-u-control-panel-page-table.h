@@ -22,7 +22,7 @@ struct PRA32_U_ControlPanelPage {
 
 PRA32_U_ControlPanelPage g_control_panel_page_table_a[] = {
   { "Page=A-00 ", "Info      ",   "PRA32-U   ", "with Panel", 0xFF           ,   "          ",PRA32_U_VERSION, 0xFF         ,   "Panel     ", "Play Pitch", PANEL_PLAY_PIT , },
-  { "Page=A-01 ", "Voice a   ",   "Voice     ", "Mode      ", VOICE_MODE     ,   "          ", "          ", 0xFF           ,   "Panel     ", "Play Pitch", PANEL_PLAY_PIT , },
+  { "Page=A-01 ", "Voice a   ",   "Voice     ", "Mode      ", VOICE_MODE     ,   "Voice     ", "Asgn Mode ", VOICE_ASGN_MODE,   "Panel     ", "Play Pitch", PANEL_PLAY_PIT , },
   { "Page=A-02 ", "Voice b   ",   "Portamento", "          ", PORTAMENTO     ,   "Pitch     ", "Bend Range", P_BEND_RANGE   ,   "Panel     ", "Play Pitch", PANEL_PLAY_PIT , },
   { "Page=A-03 ", "Osc a     ",   "Osc 1     ", "Wave      ", OSC_1_WAVE     ,   "Mixer     ", "Noise/Sub ", MIXER_SUB_OSC  ,   "Panel     ", "Play Pitch", PANEL_PLAY_PIT , },
   { "Page=A-04 ", "Osc b     ",   "Osc 1     ", "Shape     ", OSC_1_SHAPE    ,   "Osc 1     ", "Morph     ", OSC_1_MORPH    ,   "Panel     ", "Play Pitch", PANEL_PLAY_PIT , },

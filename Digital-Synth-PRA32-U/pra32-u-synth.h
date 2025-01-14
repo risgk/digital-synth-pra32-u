@@ -71,6 +71,11 @@ static uint8_t s_program_table_parameters[] = {
   EG_VEL_SENS    ,
   AMP_VEL_SENS   ,
 
+  VOICE_ASGN_MODE,
+
+
+
+
   CHORUS_MIX     ,
   CHORUS_RATE    ,
   CHORUS_DEPTH   ,
@@ -349,6 +354,11 @@ public:
     std::memcpy(m_program_table[BTH_AMP_MOD    ], g_preset_table_BTH_AMP_MOD    , sizeof(m_program_table[0]));
     std::memcpy(m_program_table[EG_VEL_SENS    ], g_preset_table_EG_VEL_SENS    , sizeof(m_program_table[0]));
     std::memcpy(m_program_table[AMP_VEL_SENS   ], g_preset_table_AMP_VEL_SENS   , sizeof(m_program_table[0]));
+
+    std::memcpy(m_program_table[VOICE_ASGN_MODE], g_preset_table_VOICE_ASGN_MODE, sizeof(m_program_table[0]));
+
+
+
 
     std::memcpy(m_program_table[CHORUS_MIX     ], g_preset_table_CHORUS_MIX     , sizeof(m_program_table[0]));
     std::memcpy(m_program_table[CHORUS_RATE    ], g_preset_table_CHORUS_RATE    , sizeof(m_program_table[0]));

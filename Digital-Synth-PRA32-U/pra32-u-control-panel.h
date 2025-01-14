@@ -711,6 +711,15 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
       result = true;
     }
     break;
+  case VOICE_ASGN_MODE :
+    {
+      char ary[2][5] = {"  1","  2"};
+      uint32_t index = ((controller_value * 2) + 127) / 254;
+      if (controller_value < 2) { index = controller_value; }
+      std::strcpy(value_display_text, ary[index]);
+      result = true;
+    }
+    break;
   case DELAY_MODE      :
     {
       char ary[2][5] = {"  S","  P"};
