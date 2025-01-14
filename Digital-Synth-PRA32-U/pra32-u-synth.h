@@ -196,8 +196,10 @@ class PRA32_U_Synth {
   uint8_t           m_note_on_number[4];
   uint8_t           m_note_on_count[128];
   uint8_t           m_note_on_total_count;
+  uint8_t           m_last_note_on_index;
   boolean           m_sustain_pedal;
   uint8_t           m_voice_mode;
+  uint8_t           m_voice_asgn_mode;
 
   uint8_t           m_output_error;
   uint8_t           m_portamento;
@@ -249,8 +251,10 @@ public:
   , m_note_on_number()
   , m_note_on_count()
   , m_note_on_total_count()
+  , m_last_note_on_index(3)
   , m_sustain_pedal()
   , m_voice_mode(0xFF)
+  , m_voice_asgn_mode(1)
 
   , m_output_error()
   , m_portamento()
@@ -528,6 +532,7 @@ public:
 
       m_osc.set_portamento<0>(m_portamento);
       m_osc.note_on<0>(note_number);
+      m_last_note_on_index = 0;
 
       m_eg[0].note_on(velocity);
       m_eg[1].note_on(velocity);
@@ -537,6 +542,7 @@ public:
 
       m_osc.set_portamento<1>(m_portamento);
       m_osc.note_on<1>(note_number);
+      m_last_note_on_index = 1;
 
       if (m_voice_mode == VOICE_POLYPHONIC) {
         m_eg[2].note_on(velocity);
@@ -551,6 +557,7 @@ public:
 
       m_osc.set_portamento<2>(m_portamento);
       m_osc.note_on<2>(note_number);
+      m_last_note_on_index = 2;
 
       if (m_voice_mode == VOICE_POLYPHONIC) {
         m_eg[4].note_on(velocity);
@@ -565,6 +572,7 @@ public:
 
       m_osc.set_portamento<3>(m_portamento);
       m_osc.note_on<3>(note_number);
+      m_last_note_on_index = 3;
 
       if (m_voice_mode == VOICE_POLYPHONIC) {
         m_eg[6].note_on(velocity);
@@ -575,16 +583,74 @@ public:
       }
     } else {
       uint8_t note_on_osc_index;
-      if        (m_note_on_number[0] == NOTE_NUMBER_INVALID) {
-        note_on_osc_index = 0;
-      } else if (m_note_on_number[1] == NOTE_NUMBER_INVALID) {
-        note_on_osc_index = 1;
-      } else if (m_note_on_number[2] == NOTE_NUMBER_INVALID) {
-        note_on_osc_index = 2;
-      } else if (m_note_on_number[3] == NOTE_NUMBER_INVALID) {
-        note_on_osc_index = 3;
-      } else {
-        note_on_osc_index = m_note_queue[0];
+
+      if (m_voice_asgn_mode == 1) {
+        switch (m_last_note_on_index) {
+        default:
+          if        (m_note_on_number[1] == NOTE_NUMBER_INVALID) {
+            note_on_osc_index = 1;
+          } else if (m_note_on_number[2] == NOTE_NUMBER_INVALID) {
+            note_on_osc_index = 2;
+          } else if (m_note_on_number[3] == NOTE_NUMBER_INVALID) {
+            note_on_osc_index = 3;
+          } else if (m_note_on_number[0] == NOTE_NUMBER_INVALID) {
+            note_on_osc_index = 0;
+          } else {
+            note_on_osc_index = m_note_queue[0];
+          }
+          break;
+        case 1:
+          if        (m_note_on_number[2] == NOTE_NUMBER_INVALID) {
+            note_on_osc_index = 2;
+          } else if (m_note_on_number[3] == NOTE_NUMBER_INVALID) {
+            note_on_osc_index = 3;
+          } else if (m_note_on_number[0] == NOTE_NUMBER_INVALID) {
+            note_on_osc_index = 0;
+          } else if (m_note_on_number[1] == NOTE_NUMBER_INVALID) {
+            note_on_osc_index = 1;
+          } else {
+            note_on_osc_index = m_note_queue[0];
+          }
+          break;
+        case 2:
+          if        (m_note_on_number[3] == NOTE_NUMBER_INVALID) {
+            note_on_osc_index = 3;
+          } else if (m_note_on_number[0] == NOTE_NUMBER_INVALID) {
+            note_on_osc_index = 0;
+          } else if (m_note_on_number[1] == NOTE_NUMBER_INVALID) {
+            note_on_osc_index = 1;
+          } else if (m_note_on_number[2] == NOTE_NUMBER_INVALID) {
+            note_on_osc_index = 2;
+          } else {
+            note_on_osc_index = m_note_queue[0];
+          }
+          break;
+        case 3:
+          if        (m_note_on_number[0] == NOTE_NUMBER_INVALID) {
+            note_on_osc_index = 0;
+          } else if (m_note_on_number[1] == NOTE_NUMBER_INVALID) {
+            note_on_osc_index = 1;
+          } else if (m_note_on_number[2] == NOTE_NUMBER_INVALID) {
+            note_on_osc_index = 2;
+          } else if (m_note_on_number[3] == NOTE_NUMBER_INVALID) {
+            note_on_osc_index = 3;
+          } else {
+            note_on_osc_index = m_note_queue[0];
+          }
+          break;
+        }
+      } else /* if (m_voice_asgn_mode == 2) */{
+        if        (m_note_on_number[0] == NOTE_NUMBER_INVALID) {
+          note_on_osc_index = 0;
+        } else if (m_note_on_number[1] == NOTE_NUMBER_INVALID) {
+          note_on_osc_index = 1;
+        } else if (m_note_on_number[2] == NOTE_NUMBER_INVALID) {
+          note_on_osc_index = 2;
+        } else if (m_note_on_number[3] == NOTE_NUMBER_INVALID) {
+          note_on_osc_index = 3;
+        } else {
+          note_on_osc_index = m_note_queue[0];
+        }
       }
 
       note_queue_on(note_on_osc_index);
@@ -599,18 +665,22 @@ public:
       default:
         m_osc.set_portamento<0>(m_portamento);
         m_osc.note_on<0>(note_number);
+        m_last_note_on_index = 0;
         break;
       case 1:
         m_osc.set_portamento<1>(m_portamento);
         m_osc.note_on<1>(note_number);
+        m_last_note_on_index = 1;
         break;
       case 2:
         m_osc.set_portamento<2>(m_portamento);
         m_osc.note_on<2>(note_number);
+        m_last_note_on_index = 2;
         break;
       case 3:
         m_osc.set_portamento<3>(m_portamento);
         m_osc.note_on<3>(note_number);
+        m_last_note_on_index = 3;
         break;
       }
 
@@ -759,6 +829,8 @@ public:
     m_osc.note_off<1>();
     m_osc.note_off<2>();
     m_osc.note_off<3>();
+
+    m_last_note_on_index = 3;
 
     m_eg[0].note_off();
     m_eg[1].note_off();
@@ -970,6 +1042,10 @@ public:
 
     case VOICE_MODE     :
       set_voice_mode(controller_value);
+      break;
+
+    case VOICE_ASGN_MODE:
+      m_voice_asgn_mode = (controller_value < 64) ? 1 : 2;
       break;
 
     case DELAY_FEEDBACK :
