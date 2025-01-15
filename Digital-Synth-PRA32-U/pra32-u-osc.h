@@ -474,7 +474,9 @@ private:
       phase_modulation_depth_candidate = (phase_modulation_depth_candidate > 0) * phase_modulation_depth_candidate;
 
       m_osc1_phase_modulation_depth[N] = phase_modulation_depth_candidate;
-      m_osc1_phase_modulation_frequency_ratio[N] = (((m_osc1_morph_control_effective + 2) >> 2) << 1) + 2;
+
+      volatile int32_t phase_modulation_frequency_ratio_candidate = (((m_osc1_morph_control_effective + 2) >> 2) << 1) + 2;
+      m_osc1_phase_modulation_frequency_ratio[N] = (m_osc1_phase_modulation_frequency_ratio[N] * (1 - new_period_osc1)) + (phase_modulation_frequency_ratio_candidate * new_period_osc1);
 
       uint32_t phase_3 = (((m_phase[N] >> 1) & 0x01FFFFFF) * m_osc1_phase_modulation_frequency_ratio[N]) >> 1;
       const int16_t* wave_table_sine = get_wave_table(WAVEFORM_SINE, 60);
