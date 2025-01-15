@@ -11,6 +11,7 @@
     - PRA32-U with Panel: Rename the parameter name Seq Pattern to Seq Mode
     - Other improvements
     - Tested with Arduino-Pico version 4.4.1
+        - Overclock to 153.6 MHz (instead of 147.6 MHz)
 - v3.0.0 (2024-11-13):
     - Change Control Numbers: Osc 1 Wave 102 to 14, Voice Mode 14 to 102
     - Mixer Noise is not disabled even if Osc 2 Wave is Nos (Noise)
