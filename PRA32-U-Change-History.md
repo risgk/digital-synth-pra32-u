@@ -2,6 +2,7 @@
 
 - v3.1.0 (2024-**-**):
     - Add the Voice Assign Mode [1|2] parameter
+        - Old versions is equivalent to Mode 2
     - Sine Wave (Phase Modulation): Change the unit of Frequency Ratio from 0.25 to 0.5
     - Sine Wave (Phase Modulation): Improve Frequency Ratio to change smoothly
     - Extend Osc 2 Pitch range (-5 to +7 -> -12 to +12 semitone)
