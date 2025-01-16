@@ -42,7 +42,7 @@
 
 ////////////////////////////////////////////////////////////////
 
-//#define PRA32_U_USE_CONTROL_PANEL               // Experimental
+//#define PRA32_U_USE_CONTROL_PANEL               // PRA32-U with Panel
 
 #define PRA32_U_USE_CONTROL_PANEL_KEY_INPUT     // Use tactile switches
 #define PRA32_U_KEY_INPUT_ACTIVE_LEVEL          (HIGH)
