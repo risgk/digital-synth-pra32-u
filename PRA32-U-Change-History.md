@@ -11,6 +11,8 @@
         - To avoid freeze problem when transmitting and receiving USB MIDI at the same time
     - PRA32-U with Panel: Add the Filter EG Amt parameter to the EG pages as well
     - PRA32-U with Panel: Rename the parameter name Seq Pattern to Seq Mode
+    - PRA32-U with Panel: Reduce memory usage
+        - Fix an issue where emulated EEPROM would not work with some compilation options
     - Other improvements
     - Tested with Arduino-Pico version 4.4.1
         - Overclock to 153.6 MHz (instead of 147.6 MHz)
