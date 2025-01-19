@@ -26,7 +26,7 @@
 - Please install **Arduino IDE**
     - NOTE: Large noise is generated during the sketch upload if other than Update Method: "Default (UF2)" is used
     - Info: <https://www.arduino.cc/en/software>
-- Please install Arduino-Pico = **Raspberry Pi Pico/RP2040** (by Earle F. Philhower, III) core
+- Please install Arduino-Pico = **Raspberry Pi Pico/RP2040/RP2350** (by Earle F. Philhower, III) core
     - Additional Board Manager URL: <https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json>
     - This sketch is tested with version **4.4.1**: <https://github.com/earlephilhower/arduino-pico/releases/tag/4.4.1>
     - Info: <https://github.com/earlephilhower/arduino-pico>
@@ -126,7 +126,7 @@
 
 ## Files
 
-- "Digital-Synth-PRA32-U.ino" is a Arduino sketch for Raspberry Pi Pico/RP2040 core
+- "Digital-Synth-PRA32-U.ino" is a Arduino sketch for Raspberry Pi Pico/RP2040/RP2350 core
     - Modify `PRA32_U_MIDI_CH` to change the MIDI Channel
 - "pra32-u-make-sample-wav-file.cc" is for debugging on PC
     - GCC (g++) for PC is required
