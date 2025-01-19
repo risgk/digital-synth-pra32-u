@@ -1,6 +1,6 @@
 ## Digital Synth PRA32-U Change History
 
-- v3.1.0 (2024-**-**):
+- v3.1.0 (2025-01-19):
     - Add the Voice Assign Mode [1|2] parameter
         - Old versions is equivalent to Mode 2
     - Sine Wave (Phase Modulation): Change the unit of Frequency Ratio from 0.25 to 0.5
