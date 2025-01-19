@@ -233,8 +233,8 @@ public:
 
   INLINE int16_t get_pitch_mod_amt_table(uint8_t controller_value) {
     static int16_t pitch_mod_amt_table[128] = {
-      -6144, -6144, -6144, -6144, -6144, -6144, -6144, -6144,
-      -6144, -6144, -5888, -5632, -5376, -5120, -4864, -4608,
+      -7680, -7680, -7680, -7680, -7424, -7168, -6912, -6656,
+      -6400, -6144, -5888, -5632, -5376, -5120, -4864, -4608,
       -4352, -4096, -3840, -3584, -3328, -3072, -2816, -2560,
       -2304, -2048, -1792, -1536, -1280, -1024,  -768,  -512,
        -256,  -248,  -240,  -232,  -224,  -216,  -208,  -200,
@@ -248,7 +248,7 @@ public:
        +256,  +512,  +768, +1024, +1280, +1536, +1792, +2048,
       +2304, +2560, +2816, +3072, +3328, +3584, +3840, +4096,
       +4352, +4608, +4864, +5120, +5376, +5632, +5888, +6144,
-      +6144, +6144, +6144, +6144, +6144, +6144, +6144, +6144,
+      +6400, +6656, +6912, +7168, +7424, +7680, +7680, +7680,
     };
 
     return pitch_mod_amt_table[controller_value];
@@ -298,9 +298,9 @@ public:
 
   INLINE void set_osc2_detune(uint8_t controller_value) {
     static int16_t m_osc2_detune_table[128] = {
-      -1280, -1280, -1280, -1280, -1280, -1280, -1280, -1280,
-      -1280, -1280, -1280, -1280, -1280, -1280, -1280, -1280,
-      -1280, -1280, -1280, -1280, -1280, -1280, -1280, -1280,
+      -3072, -3072, -3072, -3072, -3072, -3072, -3072, -3072,
+      -3072, -3072, -2944, -2816, -2688, -2560, -2432, -2304,
+      -2176, -2048, -1920, -1792, -1664, -1536, -1408, -1280,
       -1152, -1024,  -896,  -768,  -640,  -512,  -384,  -256,
        -128,  -124,  -120,  -116,  -112,  -108,  -104,  -100,
         -96,   -92,   -88,   -84,   -80,   -76,   -72,   -68,
@@ -311,9 +311,9 @@ public:
         +64,   +68,   +72,   +76,   +80,   +84,   +88,   +92,
         +96,  +100,  +104,  +108,  +112,  +116,  +120,  +124,
        +128,  +256,  +384,  +512,  +640,  +768,  +896, +1024,
-      +1152, +1280, +1408, +1536, +1664, +1792, +1792, +1792,
-      +1792, +1792, +1792, +1792, +1792, +1792, +1792, +1792,
-      +1792, +1792, +1792, +1792, +1792, +1792, +1792, +1792,
+      +1152, +1280, +1408, +1536, +1664, +1792, +1920, +2048,
+      +2176, +2304, +2432, +2560, +2688, +2816, +2944, +3072,
+      +3072, +3072, +3072, +3072, +3072, +3072, +3072, +3072,
     };
 
     m_osc2_detune = m_osc2_detune_table[controller_value];
@@ -474,7 +474,9 @@ private:
       phase_modulation_depth_candidate = (phase_modulation_depth_candidate > 0) * phase_modulation_depth_candidate;
 
       m_osc1_phase_modulation_depth[N] = phase_modulation_depth_candidate;
-      m_osc1_phase_modulation_frequency_ratio[N] = ((m_osc1_morph_control_effective + 1) >> 1) + 2;
+
+      volatile int32_t phase_modulation_frequency_ratio_candidate = (((m_osc1_morph_control_effective + 2) >> 2) << 1) + 2;
+      m_osc1_phase_modulation_frequency_ratio[N] = (m_osc1_phase_modulation_frequency_ratio[N] * (1 - new_period_osc1)) + (phase_modulation_frequency_ratio_candidate * new_period_osc1);
 
       uint32_t phase_3 = (((m_phase[N] >> 1) & 0x01FFFFFF) * m_osc1_phase_modulation_frequency_ratio[N]) >> 1;
       const int16_t* wave_table_sine = get_wave_table(WAVEFORM_SINE, 60);

@@ -2,7 +2,7 @@
  * Digital Synth PRA32-U
  */
 
-#define PRA32_U_VERSION                       "v3.0.0    "
+#define PRA32_U_VERSION                       "v3.1.0    "
 
 //#define PRA32_U_USE_DEBUG_PRINT               // Serial1
 
@@ -42,7 +42,7 @@
 
 ////////////////////////////////////////////////////////////////
 
-//#define PRA32_U_USE_CONTROL_PANEL               // Experimental
+//#define PRA32_U_USE_CONTROL_PANEL               // PRA32-U with Panel
 
 #define PRA32_U_USE_CONTROL_PANEL_KEY_INPUT     // Use tactile switches
 #define PRA32_U_KEY_INPUT_ACTIVE_LEVEL          (HIGH)
@@ -66,6 +66,8 @@
 #define PRA32_U_OLED_DISPLAY_I2C_ADDRESS        (0x3C)
 #define PRA32_U_OLED_DISPLAY_CONTRAST           (0xFF)
 #define PRA32_U_OLED_DISPLAY_ROTATION           (true)
+
+#define PRA32_U_DISABLE_USB_MIDI_TRANSMITTION
 
 ////////////////////////////////////////////////////////////////
 
@@ -242,15 +244,15 @@ void __not_in_flash_func(setup)() {
   Serial2.begin(PRA32_U_UART_MIDI_SPEED);
 #endif  // defined(PRA32_U_USE_UART_MIDI)
 
-#if defined(ARDUINO_RASPBERRY_PI_PICO)
+#if defined(ARDUINO_RASPBERRY_PI_PICO) || defined(ARDUINO_RASPBERRY_PI_PICO_2)
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
-#endif  // defined(ARDUINO_RASPBERRY_PI_PICO)
+#endif  // defined(ARDUINO_RASPBERRY_PI_PICO) || defined(ARDUINO_RASPBERRY_PI_PICO_2)
 
-#if defined(ARDUINO_RASPBERRY_PI_PICO) || defined(ARDUINO_RASPBERRY_PI_PICO_W)
+#if defined(ARDUINO_RASPBERRY_PI_PICO) || defined(ARDUINO_RASPBERRY_PI_PICO_W) || defined(ARDUINO_RASPBERRY_PI_PICO_2) || defined(ARDUINO_RASPBERRY_PI_PICO_2W)
   pinMode(23, OUTPUT);  // RT6150 (PMIC) Power Save Pin
   digitalWrite(23, HIGH);
-#endif  // defined(ARDUINO_RASPBERRY_PI_PICO) || defined(ARDUINO_RASPBERRY_PI_PICO_W)
+#endif  // defined(ARDUINO_RASPBERRY_PI_PICO) || defined(ARDUINO_RASPBERRY_PI_PICO_W) || defined(ARDUINO_RASPBERRY_PI_PICO_2) || defined(ARDUINO_RASPBERRY_PI_PICO_2W)
 
 #if defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
 #else  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)

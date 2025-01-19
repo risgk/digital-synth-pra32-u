@@ -41,7 +41,7 @@ td.keyh {
 }
 </style>
 <script>
-const APP_NAME_VERSION = "PRA32-U Editor v3.0.0";
+const APP_NAME_VERSION = "PRA32-U Editor v3.1.0";
 
 const PRA32_U_MIDI_CH = 0;  // 0-based
 
@@ -107,6 +107,11 @@ const BTH_FILTER_AMT  = 60;
 const BTH_AMP_MOD     = 61;
 const EG_VEL_SENS     = 62;
 const AMP_VEL_SENS    = 63;
+
+const VOICE_ASGN_MODE = 108;
+
+
+
 
 const CHORUS_MIX      = 27;
 const CHORUS_RATE     = 58;
@@ -193,6 +198,11 @@ var controlNumberToStringMap = new Map([
   [ EG_VEL_SENS    , "EG_VEL_SENS    " ],
   [ AMP_VEL_SENS   , "AMP_VEL_SENS   " ],
 
+  [ VOICE_ASGN_MODE, "VOICE_ASGN_MODE" ],
+
+
+
+
   [ CHORUS_MIX     , "CHORUS_MIX     " ],
   [ CHORUS_RATE    , "CHORUS_RATE    " ],
   [ CHORUS_DEPTH   , "CHORUS_DEPTH   " ],
@@ -254,6 +264,11 @@ var controllersInLocalStorage = [
   BTH_AMP_MOD    ,
   EG_VEL_SENS    ,
   AMP_VEL_SENS   ,
+
+  VOICE_ASGN_MODE,
+
+
+
 
   CHORUS_MIX     ,
   CHORUS_RATE    ,
@@ -318,6 +333,11 @@ presetControllers[BTH_FILTER_AMT ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
 presetControllers[BTH_AMP_MOD    ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 presetControllers[EG_VEL_SENS    ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
 presetControllers[AMP_VEL_SENS   ] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
+
+presetControllers[VOICE_ASGN_MODE] = [0  , 0  , 0  , 0  , 0  , 0  , 0  , 0  ];
+
+
+
 
 presetControllers[CHORUS_MIX     ] = [64 , 127, 127, 127, 64 , 64 , 127, 0  ];
 presetControllers[CHORUS_RATE    ] = [64 , 64 , 64 , 64 , 64 , 64 , 64 , 64 ];
@@ -786,6 +806,14 @@ function updateDisplayOfControl(number, value) {
       dispValue = ary[index];
     }
     break;
+  case VOICE_ASGN_MODE :
+    {
+      var ary = ["1","2"];
+      var index = Math.floor(((value * 2) + 127) / 254);
+      if (value < 2) { index = value; }
+      dispValue = ary[index];
+    }
+    break;
   case DELAY_MODE      :
     {
       var ary = ["S","P"];
@@ -853,7 +881,8 @@ function setRandom() {
         (i != BTH_FILTER_AMT ) &&
         (i != BTH_AMP_MOD    ) &&
         (i != EG_VEL_SENS    ) &&
-        (i != AMP_VEL_SENS   )) {
+        (i != AMP_VEL_SENS   ) &&
+        (i != VOICE_ASGN_MODE)) {
       onChangeControlChange(i, rand(128));
     }
   });
@@ -1074,6 +1103,11 @@ function fileExport() {
   str += fileExportOneLine(BTH_AMP_MOD    );
   str += fileExportOneLine(EG_VEL_SENS    );
   str += fileExportOneLine(AMP_VEL_SENS   );
+  str += "\n";
+  str += fileExportOneLine(VOICE_ASGN_MODE);
+  str += "\n";
+  str += "\n";
+  str += "\n";
   str += "\n";
   str += fileExportOneLine(CHORUS_MIX     );
   str += fileExportOneLine(CHORUS_RATE    );
@@ -1533,6 +1567,14 @@ function getStoredCCValueString(index, number) {
 <td><input  id="inputAMP_VEL_SENS   "  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(AMP_VEL_SENS   , value)"></td>
 <td><span    id="spanAMP_VEL_SENS   " >-</span></td>
 <td><span   id="span2AMP_VEL_SENS   " >-</span></td>
+</tr>
+<tr>
+<td colspan="3">Voice Assign Mode [1|2]         </td>
+</tr>
+<tr>
+<td><input  id="inputVOICE_ASGN_MODE"  type="range" min="0" max="127" step="1" oninput="onChangeControlChange(VOICE_ASGN_MODE, value)"></td>
+<td><span    id="spanVOICE_ASGN_MODE" >-</span></td>
+<td><span   id="span2VOICE_ASGN_MODE" >-</span></td>
 </tr>
 <tr>
 <td colspan="12"><hr></td>

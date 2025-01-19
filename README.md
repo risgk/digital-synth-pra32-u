@@ -1,6 +1,6 @@
-# Digital Synth PRA32-U v3.0.0
+# Digital Synth PRA32-U v3.1.0
 
-- 2024-11-13 ISGK Instruments
+- 2025-01-19 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
 
 
@@ -28,7 +28,7 @@
     - Info: <https://www.arduino.cc/en/software>
 - Please install Arduino-Pico = **Raspberry Pi Pico/RP2040** (by Earle F. Philhower, III) core
     - Additional Board Manager URL: <https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json>
-    - This sketch is tested with version **4.2.0**: <https://github.com/earlephilhower/arduino-pico/releases/tag/4.2.0>
+    - This sketch is tested with version **4.4.1**: <https://github.com/earlephilhower/arduino-pico/releases/tag/4.4.1>
     - Info: <https://github.com/earlephilhower/arduino-pico>
 - Please install Arduino **MIDI Library** (by Francois Best, lathoub)
     - This sketch is tested with version **5.0.2**: <https://github.com/FortySevenEffects/arduino_midi_library/releases/tag/5.0.2>
@@ -68,7 +68,7 @@
 #### I2S (Default)
 
 - Use an I2S DAC (Texas Instruments PCM5100A, PCM5101A, or PCM5102A is recommended), Sampling Rate: 48 kHz, Bit Depth: 16 bit
-- NOTE: The RP2040 system clock (sysclk) changes to overclocked 147.6 MHz by I2S Audio Library setSysClk()
+- NOTE: The RP2040 system clock (sysclk) changes to overclocked 153.6 MHz by I2S Audio Library setSysClk()
 - Modify `PRA32_U_I2S_DAC_MUTE_OFF_PIN`, `PRA32_U_I2S_DATA_PIN`, `PRA32_U_I2S_MCLK_PIN`, `PRA32_U_I2S_MCLK_MULT`,
   `PRA32_U_I2S_BCLK_PIN`, `PRA32_U_I2S_SWAP_BCLK_AND_LRCLK_PINS`, and `PRA32_U_I2S_SWAP_LEFT_AND_RIGHT`
   in "Digital-Synth-PRA32-U.ino" to match the hardware configuration
@@ -264,11 +264,20 @@ graph LR
 
 ![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)
 
-**Digital Synth PRA32-U v3.0.0 by ISGK Instruments (Ryo Ishigaki)**
+**Digital Synth PRA32-U v3.1.0 by ISGK Instruments (Ryo Ishigaki)**
 
 To the extent possible under law, ISGK Instruments (Ryo Ishigaki)
 has waived all copyright and related or neighboring rights
-to Digital Synth PRA32-U v3.0.0.
+to Digital Synth PRA32-U v3.1.0.
 
 You should have received a copy of the CC0 legalcode along with this
 work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+
+
+### For Your Information
+
+If PRA32-U is to be embedded in instruments or others, it would be nice
+(but not required) to display the following:
+
+- Powered by ISGK Instruments PRA32-U
+- Powered by PRA32-U

@@ -1,5 +1,21 @@
 ## Digital Synth PRA32-U Change History
 
+- v3.1.0 (2025-01-19):
+    - Add the Voice Assign Mode [1|2] parameter
+        - Old versions is equivalent to Mode 2
+    - Sine Wave (Phase Modulation): Change the unit of Frequency Ratio from 0.25 to 0.5
+    - Sine Wave (Phase Modulation): Improve Frequency Ratio to change smoothly
+    - Extend Osc 2 Pitch range (-5 to +7 -> -12 to +12 semitone)
+    - Extend Pitch modulation range by EG Osc Amt and LFO Osc Amt (-24 to +24 -> -30 to +30 semitone)
+    - PRA32-U with Panel: Change MIDI clock and commands not to be transmitted via USB MIDI
+        - To avoid freeze problem when transmitting and receiving USB MIDI at the same time
+    - PRA32-U with Panel: Add the Filter EG Amt parameter to the EG pages as well
+    - PRA32-U with Panel: Rename the parameter name Seq Pattern to Seq Mode
+    - PRA32-U with Panel: Reduce memory usage
+        - Fix an issue where emulated EEPROM would not work with some compilation options
+    - Other improvements
+    - Tested with Arduino-Pico version 4.4.1
+        - Overclock to 153.6 MHz (instead of 147.6 MHz)
 - v3.0.0 (2024-11-13):
     - Change Control Numbers: Osc 1 Wave 102 to 14, Voice Mode 14 to 102
     - Mixer Noise is not disabled even if Osc 2 Wave is Nos (Noise)

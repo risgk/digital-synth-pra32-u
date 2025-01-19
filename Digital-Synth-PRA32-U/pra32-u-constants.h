@@ -104,6 +104,11 @@ const uint8_t   BTH_AMP_MOD     = 61;
 const uint8_t   EG_VEL_SENS     = 62;
 const uint8_t   AMP_VEL_SENS    = 63;
 
+const uint8_t   VOICE_ASGN_MODE = 108;
+
+
+
+
 const uint8_t   CHORUS_MIX      = 27;
 const uint8_t   CHORUS_RATE     = 58;
 const uint8_t   CHORUS_DEPTH    = 59;
@@ -213,7 +218,7 @@ const uint8_t   SEQ_CLOCK_SRC   = 128 + 49;
 const uint8_t   SEQ_GATE_TIME   = 128 + 50;
 const uint8_t   SEQ_NUM_STEPS   = 128 + 51;
 
-const uint8_t   SEQ_PATTERN     = 128 + 52;
+const uint8_t   SEQ_MODE        = 128 + 52;
 const uint8_t   SEQ_ACT_STEPS   = 128 + 53;
 const uint8_t   SEQ_TRANSPOSE   = 128 + 54;
 const uint8_t   SEQ_STEP_NOTE   = 128 + 55;

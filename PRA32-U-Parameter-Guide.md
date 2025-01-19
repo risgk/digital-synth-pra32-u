@@ -1,6 +1,6 @@
-# Digital Synth PRA32-U Parameter Guide v3.0.0
+# Digital Synth PRA32-U Parameter Guide v3.1.0
 
-- 2024-11-13 ISGK Instruments
+- 2025-01-19 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
 
 ## Control Change Parameters
@@ -24,16 +24,15 @@
         - 127: Pulse Width 0.4%, or 2nd Saw Phase 99.6% (max)
 - Osc 1 Morph $2
     - Sine Wave (Phase Modulation): Frequency Ratio of Modulator
-        - 0: Ratio 0.500 (min)
-        - 1: Ratio 0.625
-        - 2: Ratio 0.750
-        - 3: Ratio 0.875
-        - 4: Ratio 1.000
-        - 12: Ratio 2.000
-        - 20: Ratio 3.000
-        - 28: Ratio 3.500
-        - 124: Ratio 16.000
-        - 127: Ratio 16.375 (max)
+        - 0 (0-1): Ratio 0.5 (min)
+        - 4 (2-5): Ratio 1.0
+        - 8 (6-9): Ratio 1.5
+        - 12 (10-13): Ratio 2.0
+        - 20 (18-21): Ratio 3.0
+        - 28 (26-29): Ratio 3.5
+        - 108 (106-109): Ratio 14.0
+        - 124 (122-125): Ratio 16.0
+        - 127 (126-127): Ratio 16.5 (max)
     - Pulse Wave
         - 0: Pulse 100% = Saw 100% + Reverse Saw 100% (min)
         - 32: Pulse 50% + Saw 50% = Saw 100% + Reverse Saw 50%
@@ -60,13 +59,15 @@
     - -60 (4): -60 semitone (min)
     - +60 (124): +60 semitone (max)
 - Osc 2 Pitch [-|+]
-    - -41 (23): -5 semitone (min)
+    - -55 (9): -12 semitone (min)
+    - -41 (23): -5 semitone
     - -33 (31): -1 semitone
     - -32 (32): -50 cent
     - +0 (64): +0 cent
     - +32 (96): +50 cent
     - +33 (97): +1 semitone
-    - +45 (109): +7 semitone (max)
+    - +45 (109): +7 semitone
+    - +55 (119): +12 semitone (max)
 - Mixer Osc Mix [1|2]
 - Filter Cutoff
     - 0: f = 13.0 Hz (min)
@@ -112,7 +113,8 @@
     - 127: 18.6 s
 - EG Osc Amt [-|+], LFO Osc Amt [-|+]
     - Pitch
-        - -55 (9): -24 semitone (min)
+        - -61 (3): -30 semitone (min)
+        - -55 (9): -24 semitone
         - -43 (21): -12 semitone
         - -33 (31): -2 semitone
         - -32 (32): -100 cent
@@ -120,7 +122,8 @@
         - +32 (96): +100 cent
         - +33 (97): +2 semitone
         - +43 (107): +12 semitone
-        - +55 (119): +24 semitone (max)
+        - +55 (119): +24 semitone
+        - +61 (125): +30 semitone (max)
     - Shape
         - -63 (1): Shape -252 (min)
         - +63 (127): Shape +252 (max)
@@ -179,6 +182,9 @@
     - 0, 3-31: Off
     - 1, 64 (32-95): Quadratic Curve
     - 2, 127 (96-127): Liniear Curve
+- Voice Assign Mode [1|2]
+    - 0, 2-63: Mode 1, Free voice with next number has priority in Polyphonic/Paraphonic Mode, Release is effective
+    - 1, 127 (64-127): Mode 2, Free voice with small number has priority in Polyphonic/Paraphonic Mode, Portamento is effective
 - Chorus Rate
     - 0: LFO Frequency 0.012 Hz (min)
     - 64: LFO Frequency 0.48 Hz

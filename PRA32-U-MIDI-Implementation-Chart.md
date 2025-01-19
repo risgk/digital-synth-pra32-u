@@ -1,6 +1,6 @@
 ```
-  [Polyphonic/Paraphonic Synthesizer]                             Date: 2024-11-13                     
-  Model: Digital Synth PRA32-U    MIDI Implementation Chart       Version: 3.0.0                       
+  [Polyphonic/Paraphonic Synthesizer]                             Date: 2025-01-19                     
+  Model: Digital Synth PRA32-U    MIDI Implementation Chart       Version: 3.1.0                       
 +-------------------------------+---------------+---------------+-------------------------------------+
 | Function...                   | Transmitted   | Recognized    | Remarks                             |
 +-------------------------------+---------------+---------------+-------------------------------------+
@@ -76,6 +76,11 @@
 |                            62 | x             | o             | EG Velocity Sensitivity             |
 |                            63 | x             | o             | Amp Velocity Sensitivity            |
 |                               |               |               |                                     |
+|                           108 | x             | o             | Voice Assign Mode [1|2]             |
+|                               |               |               |                                     |
+|                               |               |               |                                     |
+|                               |               |               |                                     |
+|                               |               |               |                                     |
 |                            27 | x             | o             | Chorus Mix [Dry|Wet]                |
 |                            58 | x             | o             | Chorus Rate                         |
 |                            59 | x             | o             | Chorus Depth                        |
@@ -124,7 +129,7 @@
 |                               |   flash, set "Program Number to Write to" (# is the value mod 16)   |
 |                               |   and then change "Write Parameters to Program" from 0 to 1-127     |
 |                               | $5 : Basic Channel can be changed in PRA32-U with Panel             |
-|                               | $6 : o in PRA32-U with Panel                                        |
+|                               | $6 : o in PRA32-U with Panel (No transmission via USB MIDI)         |
 |                               | $7 : o in PRA32-U with Panel if Seq Clock Src is External           |
 +-------------------------------+---------------------------------------------------------------------+
   Mode 1: Omni On,  Poly          Mode 2: Omni On,  Mono          o: Yes                               
