@@ -10,7 +10,7 @@
     - $2 : Disabled if Osc 1 Wave is not Pls (Pulse)
 - Osc 1 Wave [Saw|Sin|-|Tri|-|Pls]
     - 0, 6-12: Saw Wave
-    - 1, 25 (13-38): Sine Wave
+    - 1, 25 (13-38): Sine Wave (Shape adjustable)
     - 2, 50 (39-63): Triangle Wave
     - 3, 75 (64-88): Triangle Wave
     - 4, 100 (89-114): Pulse Wave (Shape adjustable)
