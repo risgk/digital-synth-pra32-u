@@ -7,7 +7,7 @@
 
 - Notes
     - $1 : Disabled in Paraphonic Mode
-    - $2 : Disabled if Osc 1 Wave is not Pls (Pulse)
+    - $2 : Disabled if Osc 1 Wave is not Sin or Pls
 - Osc 1 Wave [Saw|Sin|-|Tri|-|Pls]
     - 0, 6-12: Saw Wave
     - 1, 25 (13-38): Sine Wave (Shape adjustable)
