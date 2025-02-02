@@ -1,5 +1,8 @@
 ## Digital Synth PRA32-U Change History
 
+- v3.1.1 (20**-**-**):
+    - Fix a problem with Voice Assign Mode not being set to Mode 2 when the value is 1
+    - Fix documentation
 - v3.1.0 (2025-01-19):
     - Add the Voice Assign Mode [1|2] parameter
         - Old versions is equivalent to Mode 2
