@@ -693,11 +693,18 @@ static INLINE boolean PRA32_U_ControlPanel_calc_value_display(uint8_t control_ta
     break;
   case EG_AMP_MOD      :
   case REL_EQ_DECAY    :
-  case SUSTAIN_PEDAL   :
     {
       char ary[2][5] = {"Off"," On"};
       uint32_t index = ((controller_value * 2) + 127) / 254;
       if (controller_value < 2) { index = controller_value; }
+      std::strcpy(value_display_text, ary[index]);
+      result = true;
+    }
+    break;
+  case SUSTAIN_PEDAL   :
+    {
+      char ary[2][5] = {"Off"," On"};
+      uint32_t index = ((controller_value * 2) + 127) / 254;
       std::strcpy(value_display_text, ary[index]);
       result = true;
     }

@@ -2,6 +2,7 @@
 
 - v3.1.1 (20**-**-**):
     - Fix a problem with Voice Assign Mode not being set to Mode 2 when the value is 1
+    - PRA32-U with Panel: Fix a problem with Sustain Pedal being displayed as On when the value is 1
     - Fix documentation
 - v3.1.0 (2025-01-19):
     - Add the Voice Assign Mode [1|2] parameter
