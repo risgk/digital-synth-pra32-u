@@ -68,9 +68,8 @@
 - Group D
     - Read Operations
         - Read Program 1-7, 8-15, Read Panel Prms, Init Panel Prms
-            - Change the value from 0-63 [Rdy] to 64-127 [Exe]
+            - Change the value from 0-63 [Rdy] to 64-127 [Exe] to read from the flash
 - NOTE: UART MIDI control is recommended to prevent ADCs from being affected by USB MIDI communication noise
-- NOTE: Specifications may change significantly in the future to read from the flash
 
 
 ### Circuit Diagram
