@@ -1,6 +1,6 @@
 ```
-  [Polyphonic/Paraphonic Synthesizer]                             Date: 2025-01-19                     
-  Model: Digital Synth PRA32-U    MIDI Implementation Chart       Version: 3.1.0                       
+  [Polyphonic/Paraphonic Synthesizer]                             Date: 2025-05-11                     
+  Model: Digital Synth PRA32-U    MIDI Implementation Chart       Version: 3.2.0                       
 +-------------------------------+---------------+---------------+-------------------------------------+
 | Function...                   | Transmitted   | Recognized    | Remarks                             |
 +-------------------------------+---------------+---------------+-------------------------------------+
@@ -124,7 +124,7 @@
 |              : Reset          | x             | x             |                                     |
 +-------------------------------+---------------+---------------+-------------------------------------+
 | Notes                         | $1 : Disabled in Paraphonic Mode                                    |
-|                               | $2 : Disabled if Osc 1 Wave is not Pls (Pulse)                      |
+|                               | $2 : Disabled if Osc 1 Wave is not Sin or Pls                       |
 |                               | $4 : To write the current parameters to Program #8-15 and the       |
 |                               |   flash, set "Program Number to Write to" (# is the value mod 16)   |
 |                               |   and then change "Write Parameters to Program" from 0 to 1-127     |

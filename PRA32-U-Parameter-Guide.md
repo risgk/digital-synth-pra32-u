@@ -1,16 +1,16 @@
-# Digital Synth PRA32-U Parameter Guide v3.1.0
+# Digital Synth PRA32-U Parameter Guide v3.2.0
 
-- 2025-01-19 ISGK Instruments
+- 2025-05-11 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
 
 ## Control Change Parameters
 
 - Notes
     - $1 : Disabled in Paraphonic Mode
-    - $2 : Disabled if Osc 1 Wave is not Pls (Pulse)
+    - $2 : Disabled if Osc 1 Wave is not Sin or Pls
 - Osc 1 Wave [Saw|Sin|-|Tri|-|Pls]
     - 0, 6-12: Saw Wave
-    - 1, 25 (13-38): Sine Wave
+    - 1, 25 (13-38): Sine Wave (Shape adjustable)
     - 2, 50 (39-63): Triangle Wave
     - 3, 75 (64-88): Triangle Wave
     - 4, 100 (89-114): Pulse Wave (Shape adjustable)

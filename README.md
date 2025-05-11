@@ -1,6 +1,6 @@
-# Digital Synth PRA32-U v3.1.0
+# Digital Synth PRA32-U v3.2.0
 
-- 2025-01-19 ISGK Instruments
+- 2025-05-11 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
 
 
@@ -26,9 +26,9 @@
 - Please install **Arduino IDE**
     - NOTE: Large noise is generated during the sketch upload if other than Update Method: "Default (UF2)" is used
     - Info: <https://www.arduino.cc/en/software>
-- Please install Arduino-Pico = **Raspberry Pi Pico/RP2040** (by Earle F. Philhower, III) core
+- Please install Arduino-Pico = **Raspberry Pi Pico/RP2040/RP2350** (by Earle F. Philhower, III) core
     - Additional Board Manager URL: <https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json>
-    - This sketch is tested with version **4.4.1**: <https://github.com/earlephilhower/arduino-pico/releases/tag/4.4.1>
+    - This sketch is tested with version **4.5.3**: <https://github.com/earlephilhower/arduino-pico/releases/tag/4.5.3>
     - Info: <https://github.com/earlephilhower/arduino-pico>
 - Please install Arduino **MIDI Library** (by Francois Best, lathoub)
     - This sketch is tested with version **5.0.2**: <https://github.com/FortySevenEffects/arduino_midi_library/releases/tag/5.0.2>
@@ -126,7 +126,7 @@
 
 ## Files
 
-- "Digital-Synth-PRA32-U.ino" is a Arduino sketch for Raspberry Pi Pico/RP2040 core
+- "Digital-Synth-PRA32-U.ino" is a Arduino sketch for Raspberry Pi Pico/RP2040/RP2350 core
     - Modify `PRA32_U_MIDI_CH` to change the MIDI Channel
 - "pra32-u-make-sample-wav-file.cc" is for debugging on PC
     - GCC (g++) for PC is required
@@ -242,10 +242,7 @@ graph LR
 ![Circuit Diagram](./pra32-u-pwm-audio-circuit-diagram.png)
 
 - This image was created with Fritzing.
-
-- Adding 10 uF electrolytic capacitors (AC coupling capacitors) will cut
-  the DC components of the audio outputs.
-
+- Adding 10 uF electrolytic capacitors (AC coupling capacitors) will cut the DC components of the audio outputs.
 - NOTE: Connect an amplifier or an active speaker to the audio jack.
   Connecting a headphone or a passive speaker may cause a large current to flow and damage the devices.
 
@@ -264,11 +261,11 @@ graph LR
 
 ![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)
 
-**Digital Synth PRA32-U v3.1.0 by ISGK Instruments (Ryo Ishigaki)**
+**Digital Synth PRA32-U v3.2.0 by ISGK Instruments (Ryo Ishigaki)**
 
 To the extent possible under law, ISGK Instruments (Ryo Ishigaki)
 has waived all copyright and related or neighboring rights
-to Digital Synth PRA32-U v3.1.0.
+to Digital Synth PRA32-U v3.2.0.
 
 You should have received a copy of the CC0 legalcode along with this
 work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.

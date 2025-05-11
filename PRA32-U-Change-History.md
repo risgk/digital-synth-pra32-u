@@ -1,5 +1,12 @@
 ## Digital Synth PRA32-U Change History
 
+- v3.2.0 (2025-05-11):
+    - Renew High Pass Filter: No noise when changing Resonance
+    - Fix a problem with Voice Assign Mode not being set to Mode 2 when the value is 1
+    - PRA32-U with Panel: Fix a problem with Sustain Pedal being displayed as On when the value is 1
+    - Fix documentation
+    - Other improvements
+    - Tested with Arduino-Pico version 4.5.3
 - v3.1.0 (2025-01-19):
     - Add the Voice Assign Mode [1|2] parameter
         - Old versions is equivalent to Mode 2

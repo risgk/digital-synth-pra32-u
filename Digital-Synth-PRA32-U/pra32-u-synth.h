@@ -1046,6 +1046,9 @@ public:
 
     case VOICE_ASGN_MODE:
       m_voice_asgn_mode = (controller_value < 64) ? 1 : 2;
+      if (controller_value == 1) {
+        m_voice_asgn_mode = 2;
+      }
       break;
 
     case DELAY_FEEDBACK :
