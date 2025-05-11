@@ -1,6 +1,6 @@
 ## Digital Synth PRA32-U Change History
 
-- v3.2.0 (20**-**-**):
+- v3.2.0 (2025-05-11):
     - Renew High Pass Filter: No noise when changing Resonance
     - Fix a problem with Voice Assign Mode not being set to Mode 2 when the value is 1
     - PRA32-U with Panel: Fix a problem with Sustain Pedal being displayed as On when the value is 1
