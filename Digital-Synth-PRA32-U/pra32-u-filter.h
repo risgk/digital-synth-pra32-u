@@ -70,7 +70,7 @@ public:
   }
 
   INLINE void set_resonance(uint8_t controller_value) {
-    m_resonance_index = (controller_value + 2) >> 3;
+    m_resonance_index = (controller_value + 4) >> 3;
   }
 
   INLINE int8_t get_cutoff_mod_amt(uint8_t controller_value) {
