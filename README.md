@@ -13,6 +13,8 @@
 - Modifiable with Arduino IDE and Arduino-Pico (by Earle F. Philhower, III)
 - An **I2S DAC** hardware (e.g. Pimoroni Pico Audio Pack) is required
     - PWM Audio can also be used instead of I2S (PWM Audio does not require an I2S DAC hardware)
+        - KNOWN ISSUE: When using PWM Audio, signal discontinuity occurs approximately every 60-80 milliseconds
+            - Noise is particularly noticeable in the high frequency band and sine waves
 - Prebuilt UF2 files ("bin")
     - "Digital-Synth-PRA32-U-Pimoroni-Pico-Audio-Pack.uf2" is for Raspberry Pi Pico and Pimoroni Pico Audio Pack
     - "Digital-Synth-PRA32-U-PWM-Audio.uf2" is for Raspberry Pi Pico and PWM Audio
