@@ -3,17 +3,17 @@
 - v3.2.1 (20**-**-**):
     - Fix a problem with EG/Amp Sustain level not changing in note on states
     - Fix a problem with the meaning of the Filter Resonance control value (Parameter Guide also modified)
-    - KNOWN ISSUE: When using PWM Audio, signal discontinuity occurs approximately every 60-80 milliseconds
     - Tested with Arduino-Pico version 4.6.0
+    - KNOWN ISSUE: When using PWM Audio, signal discontinuity occurs approximately every 60-80 milliseconds
 - v3.2.0 (2025-05-11):
     - Renew High Pass Filter: No noise when changing Resonance
     - Fix a problem with Voice Assign Mode not being set to Mode 2 when the value is 1
     - PRA32-U with Panel: Fix a problem with Sustain Pedal being displayed as On when the value is 1
     - Fix documentation
     - Other improvements
+    - Tested with Arduino-Pico version 4.5.3
     - KNOWN ISSUE: When using PWM Audio, signal discontinuity occurs approximately every 60-80 milliseconds
         - Noise is particularly noticeable in the high frequency band and sine waves
-    - Tested with Arduino-Pico version 4.5.3
 - v3.1.0 (2025-01-19):
     - Add the Voice Assign Mode [1|2] parameter
         - Old versions is equivalent to Mode 2
