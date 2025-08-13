@@ -123,6 +123,8 @@
 #define PRA32_U_PWM_AUDIO_L_PIN               (28)
 #define PRA32_U_PWM_AUDIO_R_PIN               (27)
 ```
+- KNOWN ISSUE: When using PWM Audio, signal discontinuity occurs approximately every 60-80 milliseconds
+    - Click noise is particularly noticeable in the high frequency band and sine waves
 
 
 ## Files
