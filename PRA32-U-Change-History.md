@@ -14,7 +14,7 @@
     - Other improvements
     - Tested with Arduino-Pico version 4.5.3
     - KNOWN ISSUE: When using PWM Audio, signal discontinuity occurs approximately every 60-80 milliseconds
-        - Noise is particularly noticeable in the high frequency band and sine waves
+        - Click noise is particularly noticeable in the high frequency band and sine waves
 - v3.1.0 (2025-01-19):
     - Add the Voice Assign Mode [1|2] parameter
         - Old versions is equivalent to Mode 2
