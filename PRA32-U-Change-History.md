@@ -3,6 +3,7 @@
 - v3.2.1 (20**-**-**):
     - Fix a problem with EG/Amp Sustain level not changing in note on states
     - Fix a problem with the meaning of the Filter Resonance control value (Parameter Guide also modified)
+    - PRA32-U Editor: Improve stability when using Hairless MIDI<->Serial Bridge on Windows
     - Fix documentation
     - Discontinue the binary release of "Digital-Synth-PRA32-U-PWM-Audio.uf2"
     - Tested with Arduino-Pico version 4.6.0
