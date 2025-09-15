@@ -19,8 +19,8 @@
     - Sine Wave (Phase Modulation): Modulation Depth
     - Pulse Wave (= 1st Saw + Phase Shifted 2nd Saw)
         - 0: Pulse Width 50%, or 2nd Saw Phase 50% (min)
-        - 64: Pulse Width 25%, or 2nd Saw Phase 25%
-        - 96: Pulse Width 12.5%, or 2nd Saw Phase 12.5%
+        - 64: Pulse Width 25%, or 2nd Saw Phase 75%
+        - 96: Pulse Width 12.5%, or 2nd Saw Phase 87.5%
         - 127: Pulse Width 0.4%, or 2nd Saw Phase 99.6% (max)
 - Osc 1 Morph $2
     - Sine Wave (Phase Modulation): Frequency Ratio of Modulator
