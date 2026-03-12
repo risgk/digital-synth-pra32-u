@@ -55,6 +55,7 @@ public:
 
   INLINE void set_sustain(uint8_t controller_value) {
     m_sustain = (controller_value + 1) >> 1;
+    m_sustain_level = (m_attack_level >> 6) * m_sustain;
   }
 
   INLINE void set_release(uint8_t controller_value) {

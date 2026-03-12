@@ -1,6 +1,6 @@
-# Digital Synth PRA32-U v3.2.0
+# Digital Synth PRA32-U v3.3.0
 
-- 2025-05-11 ISGK Instruments
+- 2026-03-12 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
 
 
@@ -13,9 +13,10 @@
 - Modifiable with Arduino IDE and Arduino-Pico (by Earle F. Philhower, III)
 - An **I2S DAC** hardware (e.g. Pimoroni Pico Audio Pack) is required
     - PWM Audio can also be used instead of I2S (PWM Audio does not require an I2S DAC hardware)
+        - KNOWN ISSUE: When using PWM Audio, signal discontinuity occurs approximately every 60-80 milliseconds
+            - Click noise is particularly noticeable in the high frequency band and sine waves
 - Prebuilt UF2 files ("bin")
     - "Digital-Synth-PRA32-U-Pimoroni-Pico-Audio-Pack.uf2" is for Raspberry Pi Pico and Pimoroni Pico Audio Pack
-    - "Digital-Synth-PRA32-U-PWM-Audio.uf2" is for Raspberry Pi Pico and PWM Audio
 
 
 ## [Change History](/PRA32-U-Change-History.md)
@@ -28,7 +29,7 @@
     - Info: <https://www.arduino.cc/en/software>
 - Please install Arduino-Pico = **Raspberry Pi Pico/RP2040/RP2350** (by Earle F. Philhower, III) core
     - Additional Board Manager URL: <https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json>
-    - This sketch is tested with version **4.5.3**: <https://github.com/earlephilhower/arduino-pico/releases/tag/4.5.3>
+    - This sketch is tested with version **5.5.1**: <https://github.com/earlephilhower/arduino-pico/releases/tag/5.5.1>
     - Info: <https://github.com/earlephilhower/arduino-pico>
 - Please install Arduino **MIDI Library** (by Francois Best, lathoub)
     - This sketch is tested with version **5.0.2**: <https://github.com/FortySevenEffects/arduino_midi_library/releases/tag/5.0.2>
@@ -122,6 +123,8 @@
 #define PRA32_U_PWM_AUDIO_L_PIN               (28)
 #define PRA32_U_PWM_AUDIO_R_PIN               (27)
 ```
+- KNOWN ISSUE: When using PWM Audio, signal discontinuity occurs approximately every 60-80 milliseconds
+    - Click noise is particularly noticeable in the high frequency band and sine waves
 
 
 ## Files
@@ -261,11 +264,11 @@ graph LR
 
 ![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)
 
-**Digital Synth PRA32-U v3.2.0 by ISGK Instruments (Ryo Ishigaki)**
+**Digital Synth PRA32-U v3.3.0 by ISGK Instruments (Ryo Ishigaki)**
 
 To the extent possible under law, ISGK Instruments (Ryo Ishigaki)
 has waived all copyright and related or neighboring rights
-to Digital Synth PRA32-U v3.2.0.
+to Digital Synth PRA32-U v3.3.0.
 
 You should have received a copy of the CC0 legalcode along with this
 work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.

@@ -1,6 +1,6 @@
-# Digital Synth PRA32-U Parameter Guide v3.2.0
+# Digital Synth PRA32-U Parameter Guide v3.3.0
 
-- 2025-05-11 ISGK Instruments
+- 2026-03-12 ISGK Instruments
 - <https://github.com/risgk/digital-synth-pra32-u>
 
 ## Control Change Parameters
@@ -19,8 +19,8 @@
     - Sine Wave (Phase Modulation): Modulation Depth
     - Pulse Wave (= 1st Saw + Phase Shifted 2nd Saw)
         - 0: Pulse Width 50%, or 2nd Saw Phase 50% (min)
-        - 64: Pulse Width 25%, or 2nd Saw Phase 25%
-        - 96: Pulse Width 12.5%, or 2nd Saw Phase 12.5%
+        - 64: Pulse Width 25%, or 2nd Saw Phase 75%
+        - 96: Pulse Width 12.5%, or 2nd Saw Phase 87.5%
         - 127: Pulse Width 0.4%, or 2nd Saw Phase 99.6% (max)
 - Osc 1 Morph $2
     - Sine Wave (Phase Modulation): Frequency Ratio of Modulator
@@ -41,12 +41,12 @@
         - 127: Saw 100% + Saw 100% (max)
 - Mixer Noise/Sub Osc [N|S]
     - -64 (0): Noise 100%
-    - -63 (1): Noise 98.4%
-    - -62 (2): Noise 96.9%
-    - -1 (63): Noise 1.6%
-    - +0 (64): 0%
-    - +1 (65): Sub Osc 1.6%
-    - +62 (126): Sub Osc 96.9%
+    - -63 (1), -62 (2): Noise 96.9%
+    - -3 (61), -2 (62): Noise 3.1%
+    - -1 (63): Noise 0%
+    - +0 (64): Sub 0%
+    - +1 (65), +2 (66): Sub Osc 3.1%
+    - +61 (125), +62 (126): Sub Osc 96.9%
     - +63 (127): Sub Osc 100%
 - Osc 2 Wave [Saw|Sin|-|Tri|Nos|Sqr]
     - 0, 6-12: Saw Wave
@@ -76,21 +76,21 @@
     - 121: f = 14080 kHz
     - 127: f = 19912.1 Hz (max)
 - Filter Resonance
-    - 16 (0-19): Q = 0.7 (min)
-    - 24 (20-27): Q = 0.8
-    - 32 (28-35): Q = 1.0
-    - 40 (36-43): Q = 1.2
-    - 48 (44-51): Q = 1.4
-    - 56 (52-59): Q = 1.7
-    - 64 (60-67): Q = 2.0
-    - 72 (68-75): Q = 2.4
-    - 80 (76-83): Q = 2.8
-    - 88 (84-91): Q = 3.4
-    - 96 (92-99): Q = 4.0
-    - 104 (100-107): Q = 4.8
-    - 112 (108-115): Q = 5.6
-    - 120 (116-123): Q = 6.7
-    - 127 (124-127): Q = 8.0 (max)
+    -  8 (0-11): Q = 0.7 (min)
+    - 16 (12-19): Q = 0.8
+    - 24 (20-27): Q = 1.0
+    - 32 (28-35): Q = 1.2
+    - 40 (36-43): Q = 1.4
+    - 48 (44-51): Q = 1.7
+    - 56 (52-59): Q = 2.0
+    - 64 (60-67): Q = 2.4
+    - 72 (68-75): Q = 2.8
+    - 80 (76-83): Q = 3.4
+    - 88 (84-91): Q = 4.0
+    - 96 (92-99): Q = 4.8
+    - 104 (100-107): Q = 5.6
+    - 112 (108-115): Q = 6.7
+    - 120 (116-127): Q = 8.0 (max)
 - Filter EG Amt [-|+], LFO Filter Amt [-|+]
     - -60 (4): -60 (min)
     - +60 (124): +60 (max)

@@ -17,7 +17,7 @@ class PRA32_U_Osc {
   static const uint8_t WAVEFORM_1_PULSE       = 4;
   static const uint8_t WAVEFORM_2_NOISE       = 5;
 
-  uint32_t       m_portamento_coef[4];
+  int32_t        m_portamento_coef[4];
   int16_t        m_pitch_eg_amt[2];
   int16_t        m_pitch_lfo_amt[2];
 
@@ -25,8 +25,8 @@ class PRA32_U_Osc {
   int16_t        m_pitch_bend;
   uint8_t        m_pitch_bend_range;
   int16_t        m_pitch_bend_normalized;
-  uint32_t       m_pitch_target[4];
-  uint32_t       m_pitch_current[4];
+  int32_t        m_pitch_target[4];
+  int32_t        m_pitch_current[4];
   const int16_t* m_wave_table[4 * 4];
   const int16_t* m_wave_table_temp[4 * 3];
   uint32_t       m_freq[4 * 2];
@@ -113,10 +113,10 @@ public:
 
     m_waveform[0] = WAVEFORM_SAW;
     m_waveform[1] = WAVEFORM_SAW;
-    m_pitch_target[0] = 60 << 24;
-    m_pitch_target[1] = 60 << 24;
-    m_pitch_target[2] = 60 << 24;
-    m_pitch_target[3] = 60 << 24;
+    m_pitch_target[0] = 60 << (24 - 2);
+    m_pitch_target[1] = 60 << (24 - 2);
+    m_pitch_target[2] = 60 << (24 - 2);
+    m_pitch_target[3] = 60 << (24 - 2);
     m_pitch_current[0] = m_pitch_target[0];
     m_pitch_current[1] = m_pitch_target[1];
     m_pitch_current[2] = m_pitch_target[2];
@@ -335,7 +335,7 @@ public:
       n = note_number;
     }
 
-    m_pitch_target[N] = (n << 24);
+    m_pitch_target[N] = (n << (24 - 2));
     if (m_portamento_coef[N] == 0) {
       m_pitch_current[N] = m_pitch_target[N];
     }
@@ -362,14 +362,14 @@ public:
   }
 
   INLINE uint16_t get_osc_pitch(uint8_t index) {
-    uint16_t shifted_pitch = (64 << 8) + (m_pitch_current[index] >> 16) + m_pitch_bend_normalized;
+    uint16_t shifted_pitch = (64 << 8) + (m_pitch_current[index] >> (16 - 2)) + m_pitch_bend_normalized;
     uint16_t osc_pitch;
     if (shifted_pitch > (64 << 8) + (NOTE_NUMBER_MAX << 8)) {
       osc_pitch = (NOTE_NUMBER_MAX << 8);
     } else if (shifted_pitch < (64 << 8) + (NOTE_NUMBER_MIN << 8)) {
       osc_pitch = (NOTE_NUMBER_MIN << 8);
     } else {
-      osc_pitch = (m_pitch_current[index] >> 16) + m_pitch_bend_normalized;
+      osc_pitch = (m_pitch_current[index] >> (16 - 2)) + m_pitch_bend_normalized;
     }
     return osc_pitch;
   }
@@ -545,7 +545,7 @@ private:
     } else {
       pitch_eg_amt = m_pitch_eg_amt[0];
     }
-    uint16_t pitch_temp =  (64 << 8) + (m_pitch_current[N & 0x03] >> 16) + m_pitch_bend_normalized + ((eg_level * pitch_eg_amt) >> 14);
+    uint16_t pitch_temp =  (64 << 8) + (m_pitch_current[N & 0x03] >> (16 - 2)) + m_pitch_bend_normalized + ((eg_level * pitch_eg_amt) >> 14);
 
     uint8_t coarse = high_byte(pitch_temp);
     if (coarse < (NOTE_NUMBER_MIN + 64)) {

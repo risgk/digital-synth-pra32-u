@@ -1,5 +1,14 @@
 ## Digital Synth PRA32-U Change History
 
+- v3.3.0 (2026-03-12):
+    - Fix a problem with EG/Amp Sustain level not changing in note on states
+    - Fix a problem with the meaning of the Filter Resonance control value (Parameter Guide also modified)
+    - PRA32-U Editor: Improve stability when using Hairless MIDI<->Serial Bridge on Windows
+    - Fix documentation
+    - Discontinue the binary release of "Digital-Synth-PRA32-U-PWM-Audio.uf2"
+    - Other improvements
+    - Tested with Arduino-Pico version 5.5.1
+    - KNOWN ISSUE: When using PWM Audio, signal discontinuity occurs approximately every 60-80 milliseconds
 - v3.2.0 (2025-05-11):
     - Renew High Pass Filter: No noise when changing Resonance
     - Fix a problem with Voice Assign Mode not being set to Mode 2 when the value is 1
@@ -7,6 +16,8 @@
     - Fix documentation
     - Other improvements
     - Tested with Arduino-Pico version 4.5.3
+    - KNOWN ISSUE: When using PWM Audio, signal discontinuity occurs approximately every 60-80 milliseconds
+        - Click noise is particularly noticeable in the high frequency band and sine waves
 - v3.1.0 (2025-01-19):
     - Add the Voice Assign Mode [1|2] parameter
         - Old versions is equivalent to Mode 2
