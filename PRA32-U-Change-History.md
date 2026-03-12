@@ -1,6 +1,6 @@
 ## Digital Synth PRA32-U Change History
 
-- v3.2.1 (20**-**-**):
+- v3.3.0 (2026-03-12):
     - Fix a problem with EG/Amp Sustain level not changing in note on states
     - Fix a problem with the meaning of the Filter Resonance control value (Parameter Guide also modified)
     - PRA32-U Editor: Improve stability when using Hairless MIDI<->Serial Bridge on Windows
