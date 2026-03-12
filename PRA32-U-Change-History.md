@@ -6,7 +6,8 @@
     - PRA32-U Editor: Improve stability when using Hairless MIDI<->Serial Bridge on Windows
     - Fix documentation
     - Discontinue the binary release of "Digital-Synth-PRA32-U-PWM-Audio.uf2"
-    - Tested with Arduino-Pico version 4.6.0
+    - Other improvements
+    - Tested with Arduino-Pico version 5.5.1
     - KNOWN ISSUE: When using PWM Audio, signal discontinuity occurs approximately every 60-80 milliseconds
 - v3.2.0 (2025-05-11):
     - Renew High Pass Filter: No noise when changing Resonance
