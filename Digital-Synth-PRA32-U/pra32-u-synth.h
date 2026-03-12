@@ -1516,6 +1516,7 @@ private:
   }
 
   INLINE void set_voice_mode(uint8_t controller_value) {
+#if defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING) || defined(PRA32_U_EMULATION)
     static uint8_t voice_mode_table[6] = {
       VOICE_POLYPHONIC,
       VOICE_PARAPHONIC,
@@ -1524,6 +1525,16 @@ private:
       VOICE_LEGATO_PORTA,
       VOICE_LEGATO,
     };
+#else  // defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING) || defined(PRA32_U_EMULATION)
+    static uint8_t voice_mode_table[6] = {
+      VOICE_MONOPHONIC,
+      VOICE_MONOPHONIC,
+      VOICE_MONOPHONIC,
+      VOICE_MONOPHONIC,
+      VOICE_LEGATO_PORTA,
+      VOICE_LEGATO,
+    };
+#endif  // defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING) || defined(PRA32_U_EMULATION)
 
     volatile int32_t index = ((controller_value * 10) + 127) / 254;
 
