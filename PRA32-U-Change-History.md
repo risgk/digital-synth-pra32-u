@@ -1,5 +1,9 @@
 ## Digital Synth PRA32-U Change History
 
+- v3.3.2 (2026-03-??):
+    - Fix "pra32-u-make-sample-wav-file.cc"
+    - Tested with Arduino-Pico version 5.5.1
+    - KNOWN ISSUE: When using PWM Audio, signal discontinuity occurs approximately every 60-80 milliseconds
 - v3.3.1 (2026-03-13):
     - Improve customizability
     - Tested with Arduino-Pico version 5.5.1
