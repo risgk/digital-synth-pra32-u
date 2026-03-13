@@ -294,7 +294,7 @@ void __not_in_flash_func(loop)() {
   int16_t left_buffer[PRA32_U_I2S_BUFFER_WORDS];
   int16_t right_buffer[PRA32_U_I2S_BUFFER_WORDS];
   for (uint32_t i = 0; i < PRA32_U_I2S_BUFFER_WORDS; i++) {
-    left_buffer[i] = g_synth.process(right_buffer[i]);
+    left_buffer[i] = g_synth.process(0, right_buffer[i]);
   }
 
 #if defined(PRA32_U_USE_DEBUG_PRINT)

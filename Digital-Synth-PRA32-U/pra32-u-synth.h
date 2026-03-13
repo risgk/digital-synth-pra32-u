@@ -1253,7 +1253,7 @@ if constexpr (BYPASS_FX == false) {
 #endif  // defined(ARDUINO_ARCH_RP2040)
   }
 
-  INLINE int16_t process(int16_t& right_level) {
+  INLINE int16_t process(int16_t mono_input, int16_t& right_level) {
     ++m_count;
 
     int16_t noise_int15 = m_noise_gen.process();
@@ -1424,8 +1424,8 @@ if constexpr (BYPASS_FX == false) {
 #if 1
     // Increase the output level using Extra Amp and Limiter
 
-    // voice_mixer_output_clamped = clamp((voice_mixer_output << 1), (-INT16_MAX), (+INT16_MAX))
-    volatile int32_t voice_mixer_output_clamped = (voice_mixer_output * 2) - (+INT16_MAX);
+    // voice_mixer_output_clamped = clamp((voice_mixer_output << 1) + mono_input, (-INT16_MAX), (+INT16_MAX))
+    volatile int32_t voice_mixer_output_clamped = (voice_mixer_output << 1) + mono_input - (+INT16_MAX);
     voice_mixer_output_clamped = (voice_mixer_output_clamped < 0) * voice_mixer_output_clamped + (+INT16_MAX) - (-INT16_MAX);
     voice_mixer_output_clamped = (voice_mixer_output_clamped > 0) * voice_mixer_output_clamped + (-INT16_MAX);
 
