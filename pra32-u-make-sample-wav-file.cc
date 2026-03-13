@@ -17,7 +17,7 @@ uint8_t g_midi_ch = PRA32_U_MIDI_CH;
 #include "./pra32-u-midi-in.h"
 #include "./pra32-u-wav-file-out.h"
 
-PRA32_U_Synth      g_synth;
+PRA32_U_Synth<>    g_synth;
 PRA32_U_MIDIIn     g_midi_in;
 PRA32_U_WAVFileOut g_wav_file_out;
 
@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
     uint16_t r = SAMPLING_RATE / (SERIAL_SPEED_38400 / 10);
     for (uint16_t i = 0; i < r; i++) {
       int16_t right_level;
-      int16_t left_level = g_synth.process(right_level);
+      int16_t left_level = g_synth.process(0, right_level);
       g_wav_file_out.write(left_level, right_level);
     }
   }
