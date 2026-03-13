@@ -1,0 +1,151 @@
+/*
+ * Digital Synth PRA32-U
+ */
+
+#define PRA32_U_VERSION                       "v3.3.0    "
+
+#define PRA32_U_MIDI_CH                       (0)  // 0-based
+
+// for Pimoroni Pico Audio Pack (PIM544)
+#define PRA32_U_I2S_DAC_MUTE_OFF_PIN          (22)
+#define PRA32_U_I2S_DATA_PIN                  (9)
+//#define PRA32_U_I2S_MCLK_PIN                  (0)
+//#define PRA32_U_I2S_MCLK_MULT                 (0)
+#define PRA32_U_I2S_BCLK_PIN                  (10)  // LRCLK Pin is PRA32_U_I2S_BCLK_PIN + 1
+#define PRA32_U_I2S_SWAP_BCLK_AND_LRCLK_PINS  (false)
+#define PRA32_U_I2S_SWAP_LEFT_AND_RIGHT       (false)
+
+#define PRA32_U_I2S_BUFFERS                   (4)
+#define PRA32_U_I2S_BUFFER_WORDS              (64)
+
+//#define PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S  // Select CPU Speed: "150 MHz (Overclock)" in the Arduino IDE "Tools" menu
+
+// for Pimoroni Pico VGA Demo Base (PIM553)
+#define PRA32_U_PWM_AUDIO_L_PIN               (28)
+#define PRA32_U_PWM_AUDIO_R_PIN               (27)
+
+//#define PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING
+
+//#define PRA32_U_USE_EMULATED_EEPROM
+
+////////////////////////////////////////////////////////////////
+
+uint8_t g_midi_ch = PRA32_U_MIDI_CH;
+
+#include "pra32-u-common.h"
+#include "pra32-u-synth.h"
+
+PRA32_U_Synth<> g_synth;
+PRA32_U_Synth<true> g_sub_synth;
+
+#if defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+#include <PWMAudio.h>
+PWMAudio g_pwm_l(PRA32_U_PWM_AUDIO_L_PIN);
+PWMAudio g_pwm_r(PRA32_U_PWM_AUDIO_R_PIN);
+#endif  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+
+#include <I2S.h>
+I2S g_i2s_output(OUTPUT);
+
+void __not_in_flash_func(setup)() {
+}
+
+void __not_in_flash_func(loop)() {
+}
+
+void __not_in_flash_func(setup1)() {
+#if defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+  pinMode(PRA32_U_PWM_AUDIO_L_PIN, OUTPUT_12MA);
+  pinMode(PRA32_U_PWM_AUDIO_R_PIN, OUTPUT_12MA);
+#if ((PRA32_U_PWM_AUDIO_L_PIN + 1) == PRA32_U_PWM_AUDIO_R_PIN) && ((PRA32_U_PWM_AUDIO_L_PIN % 2) == 0)
+  g_pwm_l.setStereo(true);
+  g_pwm_l.setBuffers(PRA32_U_I2S_BUFFERS, PRA32_U_I2S_BUFFER_WORDS);
+  g_pwm_l.setFrequency(SAMPLING_RATE);
+  g_pwm_l.begin();
+#elif ((PRA32_U_PWM_AUDIO_R_PIN + 1) == PRA32_U_PWM_AUDIO_L_PIN) && ((PRA32_U_PWM_AUDIO_R_PIN % 2) == 0)
+  g_pwm_r.setStereo(true);
+  g_pwm_r.setBuffers(PRA32_U_I2S_BUFFERS, PRA32_U_I2S_BUFFER_WORDS);
+  g_pwm_r.setFrequency(SAMPLING_RATE);
+  g_pwm_r.begin();
+#else
+  g_pwm_l.setBuffers(PRA32_U_I2S_BUFFERS, PRA32_U_I2S_BUFFER_WORDS / 2);
+  g_pwm_r.setBuffers(PRA32_U_I2S_BUFFERS, PRA32_U_I2S_BUFFER_WORDS / 2);
+  g_pwm_l.setFrequency(SAMPLING_RATE);
+  g_pwm_r.setFrequency(SAMPLING_RATE);
+  g_pwm_l.begin();
+  g_pwm_r.begin();
+#endif
+#else  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+  g_i2s_output.setSysClk(SAMPLING_RATE);
+  g_i2s_output.setFrequency(SAMPLING_RATE);
+  g_i2s_output.setDATA(PRA32_U_I2S_DATA_PIN);
+#if defined(PRA32_U_I2S_MCLK_PIN)
+  g_i2s_output.setMCLK(PRA32_U_I2S_MCLK_PIN);
+  g_i2s_output.setMCLKmult(PRA32_U_I2S_MCLK_MULT);
+#endif  // defined(PRA32_U_I2S_MCLK_PIN)
+  g_i2s_output.setBCLK(PRA32_U_I2S_BCLK_PIN);
+  if (PRA32_U_I2S_SWAP_BCLK_AND_LRCLK_PINS) {
+    g_i2s_output.swapClocks();
+  }
+  g_i2s_output.setBitsPerSample(16);
+  g_i2s_output.setBuffers(PRA32_U_I2S_BUFFERS, PRA32_U_I2S_BUFFER_WORDS);
+  g_i2s_output.begin();
+#endif  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+
+#if defined(ARDUINO_RASPBERRY_PI_PICO) || defined(ARDUINO_RASPBERRY_PI_PICO_2)
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, HIGH);
+#endif  // defined(ARDUINO_RASPBERRY_PI_PICO) || defined(ARDUINO_RASPBERRY_PI_PICO_2)
+
+#if defined(ARDUINO_RASPBERRY_PI_PICO) || defined(ARDUINO_RASPBERRY_PI_PICO_W) || defined(ARDUINO_RASPBERRY_PI_PICO_2) || defined(ARDUINO_RASPBERRY_PI_PICO_2W)
+  pinMode(23, OUTPUT);  // RT6150 (PMIC) Power Save Pin
+  digitalWrite(23, HIGH);
+#endif  // defined(ARDUINO_RASPBERRY_PI_PICO) || defined(ARDUINO_RASPBERRY_PI_PICO_W) || defined(ARDUINO_RASPBERRY_PI_PICO_2) || defined(ARDUINO_RASPBERRY_PI_PICO_2W)
+
+#if defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+#else  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+#if defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN)
+  pinMode(PRA32_U_I2S_DAC_MUTE_OFF_PIN, OUTPUT);
+  digitalWrite(PRA32_U_I2S_DAC_MUTE_OFF_PIN, HIGH);
+#endif  // defined(PRA32_U_I2S_DAC_MUTE_OFF_PIN)
+#endif  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+
+  g_synth.initialize();
+  g_sub_synth.initialize();
+}
+
+void __not_in_flash_func(loop1)() {
+  // TODO
+
+  int16_t left_buffer[PRA32_U_I2S_BUFFER_WORDS];
+  int16_t right_buffer[PRA32_U_I2S_BUFFER_WORDS];
+  for (uint32_t i = 0; i < PRA32_U_I2S_BUFFER_WORDS; i++) {
+    int16_t sub_synth_output_l;
+    int16_t sub_synth_output_r;
+    sub_synth_output_l = g_sub_synth.process(0, sub_synth_output_r);
+    left_buffer[i] = g_synth.process(sub_synth_output_l, right_buffer[i]);
+  }
+
+#if defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+  for (uint32_t i = 0; i < PRA32_U_I2S_BUFFER_WORDS; i++) {
+#if ((PRA32_U_PWM_AUDIO_L_PIN + 1) == PRA32_U_PWM_AUDIO_R_PIN) && ((PRA32_U_PWM_AUDIO_L_PIN % 2) == 0)
+    g_pwm_l.write(left_buffer[i]);
+    g_pwm_l.write(right_buffer[i]);
+#elif ((PRA32_U_PWM_AUDIO_R_PIN + 1) == PRA32_U_PWM_AUDIO_L_PIN) && ((PRA32_U_PWM_AUDIO_R_PIN % 2) == 0)
+    g_pwm_r.write(right_buffer[i]);
+    g_pwm_r.write(left_buffer[i]);
+#else
+    g_pwm_l.write(left_buffer[i]);
+    g_pwm_r.write(right_buffer[i]);
+#endif
+  }
+#else  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+  for (uint32_t i = 0; i < PRA32_U_I2S_BUFFER_WORDS; i++) {
+    if (PRA32_U_I2S_SWAP_LEFT_AND_RIGHT) {
+      g_i2s_output.write16(right_buffer[i], left_buffer[i]);
+    } else {
+      g_i2s_output.write16(left_buffer[i], right_buffer[i]);
+    }
+  }
+#endif  // defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
+}
