@@ -85,7 +85,7 @@ extern void PRA32_U_ControlPanel_on_stop();
 #include "pra32-u-common.h"
 #include "pra32-u-synth.h"
 
-PRA32_U_Synth g_synth;
+PRA32_U_Synth<> g_synth;
 
 #include <MIDI.h>
 #if defined(PRA32_U_USE_USB_MIDI)
