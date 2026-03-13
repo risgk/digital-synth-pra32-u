@@ -19,6 +19,8 @@ extern I2S g_i2s_output;
 
 #include <algorithm>
 #include <cstring>
+#include <variant>
+#include <type_traits>
 
 static uint8_t s_program_table_parameters[] = {
   OSC_1_WAVE     ,
@@ -180,6 +182,7 @@ const uint8_t   DEFAULT_SEQ_ON_STEPS    = 127;
 
 
 
+template <boolean BYPASS_FX = false>
 class PRA32_U_Synth {
   PRA32_U_Osc       m_osc;
   PRA32_U_Filter    m_filter[4];
@@ -187,8 +190,11 @@ class PRA32_U_Synth {
   PRA32_U_NoiseGen  m_noise_gen;
   PRA32_U_LFO       m_lfo;
   PRA32_U_EG        m_eg[2 * 4];
-  PRA32_U_ChorusFx  m_chorus_fx;
-  PRA32_U_DelayFx   m_delay_fx;
+
+  using ChorusFx = std::conditional_t<BYPASS_FX, std::monostate, PRA32_U_ChorusFx>;
+  using DelayFx  = std::conditional_t<BYPASS_FX, std::monostate, PRA32_U_DelayFx>;
+  ChorusFx          m_chorus_fx;
+  DelayFx           m_delay_fx;
 
   uint32_t          m_count;
 
@@ -954,13 +960,19 @@ public:
       break;
 
     case CHORUS_DEPTH   :
+if constexpr (BYPASS_FX == false) {
       m_chorus_fx.set_chorus_depth(controller_value);
+}
       break;
     case CHORUS_RATE    :
+if constexpr (BYPASS_FX == false) {
       m_chorus_fx.set_chorus_rate(controller_value);
+}
       break;
     case CHORUS_MIX     :
+if constexpr (BYPASS_FX == false) {
       m_chorus_fx.set_chorus_mix(controller_value);
+}
       break;
 
 #if 0
@@ -1052,13 +1064,19 @@ public:
       break;
 
     case DELAY_FEEDBACK :
+if constexpr (BYPASS_FX == false) {
       m_delay_fx.set_delay_feedback(controller_value);
+}
       break;
     case DELAY_TIME     :
+if constexpr (BYPASS_FX == false) {
       m_delay_fx.set_delay_time(controller_value);
+}
       break;
     case DELAY_MODE     :
+if constexpr (BYPASS_FX == false) {
       m_delay_fx.set_delay_mode(controller_value);
+}
       break;
 
     case BTH_FILTER_AMT    :
@@ -1235,7 +1253,7 @@ public:
 #endif  // defined(ARDUINO_ARCH_RP2040)
   }
 
-  INLINE int16_t process(int16_t& right_level) {
+  INLINE int16_t process(int16_t mono_input, int16_t& right_level) {
     ++m_count;
 
     int16_t noise_int15 = m_noise_gen.process();
@@ -1246,16 +1264,22 @@ public:
       m_eg[1].process_at_low_rate();
       break;
     case 0x01:
+#if defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
       m_eg[2].process_at_low_rate();
       m_eg[3].process_at_low_rate();
+#endif  // defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
       break;
     case 0x02:
+#if defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
       m_eg[4].process_at_low_rate();
       m_eg[5].process_at_low_rate();
+#endif  // defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
       break;
     case 0x03:
+#if defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
       m_eg[6].process_at_low_rate();
       m_eg[7].process_at_low_rate();
+#endif  // defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
       m_lfo.process_at_low_rate(m_count >> 2, noise_int15);
       break;
     }
@@ -1276,21 +1300,31 @@ public:
       }
       break;
     case 0x01:
+#if defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
       m_osc.process_at_low_rate_a<1>(lfo_output, m_eg[2].get_output());
       m_filter[1].process_at_low_rate(m_count >> 2, m_eg[2].get_output(), lfo_output, m_osc.get_osc_pitch(1));
       m_amp[1].process_at_low_rate(m_eg[3].get_output());
+#endif  // defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
       break;
     case 0x02:
+#if defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
       m_osc.process_at_low_rate_a<2>(lfo_output, m_eg[4].get_output());
       m_filter[2].process_at_low_rate(m_count >> 2, m_eg[4].get_output(), lfo_output, m_osc.get_osc_pitch(2));
       m_amp[2].process_at_low_rate(m_eg[5].get_output());
+#endif  // defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
+if constexpr (BYPASS_FX == false) {
       m_delay_fx.process_at_low_rate(m_count >> 2);
+}
       break;
     case 0x03:
+#if defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
       m_osc.process_at_low_rate_a<3>(lfo_output, m_eg[6].get_output());
       m_filter[3].process_at_low_rate(m_count >> 2, m_eg[6].get_output(), lfo_output, m_osc.get_osc_pitch(3));
       m_amp[3].process_at_low_rate(m_eg[7].get_output());
+#endif  // defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING)
+if constexpr (BYPASS_FX == false) {
       m_chorus_fx.process_at_low_rate(m_count >> 2);
+}
       break;
     }
 
@@ -1390,8 +1424,8 @@ public:
 #if 1
     // Increase the output level using Extra Amp and Limiter
 
-    // voice_mixer_output_clamped = clamp((voice_mixer_output << 1), (-INT16_MAX), (+INT16_MAX))
-    volatile int32_t voice_mixer_output_clamped = (voice_mixer_output * 2) - (+INT16_MAX);
+    // voice_mixer_output_clamped = clamp((voice_mixer_output << 1) + mono_input, (-INT16_MAX), (+INT16_MAX))
+    volatile int32_t voice_mixer_output_clamped = (voice_mixer_output << 1) + mono_input - (+INT16_MAX);
     voice_mixer_output_clamped = (voice_mixer_output_clamped < 0) * voice_mixer_output_clamped + (+INT16_MAX) - (-INT16_MAX);
     voice_mixer_output_clamped = (voice_mixer_output_clamped > 0) * voice_mixer_output_clamped + (-INT16_MAX);
 
@@ -1399,10 +1433,19 @@ public:
 #endif
 
     int16_t chorus_fx_output_r;
-    int16_t chorus_fx_output_l = m_chorus_fx.process(voice_mixer_output, chorus_fx_output_r);
+    int16_t chorus_fx_output_l;
 
     int16_t delay_fx_output_r;
-    int16_t delay_fx_output_l = m_delay_fx.process(chorus_fx_output_l, chorus_fx_output_r, delay_fx_output_r);
+    int16_t delay_fx_output_l;
+
+if constexpr (BYPASS_FX == false) {
+    chorus_fx_output_l = m_chorus_fx.process(voice_mixer_output, chorus_fx_output_r);
+
+    delay_fx_output_l = m_delay_fx.process(chorus_fx_output_l, chorus_fx_output_r, delay_fx_output_r);
+} else {
+    delay_fx_output_r = voice_mixer_output;
+    delay_fx_output_l = voice_mixer_output;
+}
 
 #if defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
 #if defined(PRA32_U_USE_PWM_AUDIO_DITHERING_INSTEAD_OF_ERROR_DIFFUSION)

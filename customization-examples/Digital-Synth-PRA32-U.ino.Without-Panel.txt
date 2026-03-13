@@ -42,45 +42,7 @@
 
 ////////////////////////////////////////////////////////////////
 
-//#define PRA32_U_USE_CONTROL_PANEL               // PRA32-U with Panel
-
-#define PRA32_U_USE_CONTROL_PANEL_KEY_INPUT     // Use tactile switches
-#define PRA32_U_KEY_INPUT_ACTIVE_LEVEL          (HIGH)
-#define PRA32_U_KEY_INPUT_PIN_MODE              (INPUT_PULLDOWN)
-#define PRA32_U_KEY_INPUT_PREV_KEY_PIN          (16)
-#define PRA32_U_KEY_INPUT_NEXT_KEY_PIN          (18)
-#define PRA32_U_KEY_INPUT_PLAY_KEY_PIN          (20)
-#define PRA32_U_KEY_ANTI_CHATTERING_WAIT        (15)
-#define PRA32_U_KEY_LONG_PRESS_WAIT             (375)
-
-#define PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT  // Use ADC0, ADC1, and ADC2
-#define PRA32_U_ANALOG_INPUT_REVERSED           (true)
-#define PRA32_U_ANALOG_INPUT_CORRECTION         (-504)
-#define PRA32_U_ANALOG_INPUT_THRESHOLD          (504)
-#define PRA32_U_ANALOG_INPUT_DENOMINATOR        (504)
-
-#define PRA32_U_USE_CONTROL_PANEL_OLED_DISPLAY  // Use SSD1306 monochrome 128x64 OLED
-#define PRA32_U_OLED_DISPLAY_I2C                (i2c1)
-#define PRA32_U_OLED_DISPLAY_I2C_SDA_PIN        (6)
-#define PRA32_U_OLED_DISPLAY_I2C_SCL_PIN        (7)
-#define PRA32_U_OLED_DISPLAY_I2C_ADDRESS        (0x3C)
-#define PRA32_U_OLED_DISPLAY_CONTRAST           (0xFF)
-#define PRA32_U_OLED_DISPLAY_ROTATION           (true)
-
-#define PRA32_U_DISABLE_USB_MIDI_TRANSMITTION
-
-////////////////////////////////////////////////////////////////
-
 uint8_t g_midi_ch = PRA32_U_MIDI_CH;
-
-#include "hardware/adc.h"
-
-#if defined(PRA32_U_USE_CONTROL_PANEL)
-extern void PRA32_U_ControlPanel_on_control_change(uint8_t control_number);
-extern void PRA32_U_ControlPanel_on_clock();
-extern void PRA32_U_ControlPanel_on_start();
-extern void PRA32_U_ControlPanel_on_stop();
-#endif  // defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
 
 #include "pra32-u-common.h"
 #include "pra32-u-synth.h"
@@ -97,8 +59,6 @@ MIDI_CREATE_INSTANCE(Adafruit_USBD_MIDI, usbd_midi, USB_MIDI);
 #if defined(PRA32_U_USE_UART_MIDI)
 MIDI_CREATE_INSTANCE(HardwareSerial, Serial2, UART_MIDI);
 #endif
-
-#include "pra32-u-control-panel.h"
 
 #if defined(PRA32_U_USE_PWM_AUDIO_INSTEAD_OF_I2S)
 #include <PWMAudio.h>
@@ -119,14 +79,9 @@ void handleNoteOff(byte channel, byte pitch, byte velocity);
 void handleControlChange(byte channel, byte number, byte value);
 void handleProgramChange(byte channel, byte number);
 void handlePitchBend(byte channel, int bend);
-void handleClock();
-void handleStart();
-void handleStop();
 void writeProgramsToFlashAndEndSketch();
 
 void __not_in_flash_func(setup1)() {
-  PRA32_U_ControlPanel_setup();
-
 #if defined(PRA32_U_USE_DEBUG_PRINT)
   Serial1.setTX(0);
   Serial1.setRX(1);
@@ -142,10 +97,6 @@ void __not_in_flash_func(loop1)() {
     if (s_loop_counter >= 16 * 400) {
       s_loop_counter = 0;
     }
-
-    PRA32_U_ControlPanel_update_analog_inputs(s_loop_counter);
-    PRA32_U_ControlPanel_update_display_buffer(s_loop_counter);
-    PRA32_U_ControlPanel_update_display(s_loop_counter);
 
 #if defined(PRA32_U_USE_DEBUG_PRINT)
     switch (s_loop_counter) {
@@ -164,9 +115,6 @@ void __not_in_flash_func(loop1)() {
     case  4 * 400:
       Serial1.print("\e[5;1H\e[K");
       Serial1.print(s_debug_measurement_max0_us);
-      break;
-    default:
-      PRA32_U_ControlPanel_debug_print(s_loop_counter);
       break;
     }
 #endif  // defined(PRA32_U_USE_DEBUG_PRINT)
@@ -221,9 +169,6 @@ void __not_in_flash_func(setup)() {
   USB_MIDI.setHandleControlChange(handleControlChange);
   USB_MIDI.setHandleProgramChange(handleProgramChange);
   USB_MIDI.setHandlePitchBend(handlePitchBend);
-  USB_MIDI.setHandleClock(handleClock);
-  USB_MIDI.setHandleStart(handleStart);
-  USB_MIDI.setHandleStop(handleStop);
   USB_MIDI.begin(MIDI_CHANNEL_OMNI);
   USB_MIDI.turnThruOff();
 #endif  // defined(PRA32_U_USE_USB_MIDI)
@@ -236,9 +181,6 @@ void __not_in_flash_func(setup)() {
   UART_MIDI.setHandleControlChange(handleControlChange);
   UART_MIDI.setHandleProgramChange(handleProgramChange);
   UART_MIDI.setHandlePitchBend(handlePitchBend);
-  UART_MIDI.setHandleClock(handleClock);
-  UART_MIDI.setHandleStart(handleStart);
-  UART_MIDI.setHandleStop(handleStop);
   UART_MIDI.begin(MIDI_CHANNEL_OMNI);
   UART_MIDI.turnThruOff();
   Serial2.begin(PRA32_U_UART_MIDI_SPEED);
@@ -264,8 +206,6 @@ void __not_in_flash_func(setup)() {
 
   g_synth.initialize();
 
-  PRA32_U_ControlPanel_initialize_parameters();
-
   delay(100);
 }
 
@@ -284,8 +224,6 @@ void __not_in_flash_func(loop)() {
     UART_MIDI.read();
 #endif
   }
-
-  PRA32_U_ControlPanel_update_control();
 
 #if defined(PRA32_U_USE_DEBUG_PRINT)
   uint32_t debug_measurement_start1_us = micros();
@@ -369,25 +307,4 @@ void __not_in_flash_func(handlePitchBend)(byte channel, int bend)
   if ((channel - 1) == g_midi_ch) {
     g_synth.pitch_bend((bend + 8192) & 0x7F, (bend + 8192) >> 7);
   }
-}
-
-void __not_in_flash_func(handleClock)()
-{
-#if defined(PRA32_U_USE_CONTROL_PANEL)
-  PRA32_U_ControlPanel_on_clock();
-#endif  // defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
-}
-
-void __not_in_flash_func(handleStart)()
-{
-#if defined(PRA32_U_USE_CONTROL_PANEL)
-  PRA32_U_ControlPanel_on_start();
-#endif  // defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
-}
-
-void __not_in_flash_func(handleStop)()
-{
-#if defined(PRA32_U_USE_CONTROL_PANEL)
-  PRA32_U_ControlPanel_on_stop();
-#endif  // defined(PRA32_U_USE_CONTROL_PANEL_ANALOG_INPUT)
 }
