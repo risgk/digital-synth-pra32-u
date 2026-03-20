@@ -1,5 +1,9 @@
 ## Digital Synth PRA32-U Change History
 
+- v3.3.3 (20??-??-??):
+    - Add a description of **PRA32-U Editor for Renoise** by plantssystem to the README
+    - Tested with Arduino-Pico version 5.5.1
+    - KNOWN ISSUE: When using PWM Audio, signal discontinuity occurs approximately every 60-80 milliseconds
 - v3.3.2 (2026-03-14):
     - Fix "pra32-u-make-sample-wav-file.cc"
     - Tested with Arduino-Pico version 5.5.1
