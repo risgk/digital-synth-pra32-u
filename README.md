@@ -260,6 +260,11 @@ graph LR
 ## [PRA32-U with Panel](./README-PRA32-U-with-Panel.md) (Optional)
 
 
+## Special Thanks
+
+- **[PRA32-U Editor for Renoise](https://github.com/plantssystem/PRA32-U-Editor-for-Renoise)** by plantssystem
+
+
 ## License
 
 ![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)
