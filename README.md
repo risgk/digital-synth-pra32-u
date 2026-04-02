@@ -94,7 +94,7 @@
 #define PRA32_U_I2S_SWAP_BCLK_AND_LRCLK_PINS  (false)
 #define PRA32_U_I2S_SWAP_LEFT_AND_RIGHT       (false)
 ```
-- The following is setting is for [Waveshare Pico-Audio](https://www.waveshare.com/wiki/Pico-Audio) Rev2.1 Version (WAVESHARE-20167)
+- The following is setting is for [Waveshare Pico-Audio](https://www.waveshare.com/wiki/Pico-Audio) Rev2.1 Version (WAVESHARE-20167) (CURRENTLY NOT RECOMMENDED)
 ```
 //#define PRA32_U_I2S_DAC_MUTE_OFF_PIN          (0)
 #define PRA32_U_I2S_DATA_PIN                  (22)
