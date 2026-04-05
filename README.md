@@ -6,7 +6,7 @@
 
 ## Overview
 
-- 4 Voice Polyphonic/Paraphonic Synthesizer for Raspberry Pi Pico/RP2040
+- 4-Voice Polyphonic/Paraphonic Synthesizer for Raspberry Pi Pico/RP2040
     - Built-in Chorus and Delay FX
     - Controlled by MIDI -- PRA32-U is a MIDI sound module
     - Having the function of writing the parameters to the user programs and the flash
