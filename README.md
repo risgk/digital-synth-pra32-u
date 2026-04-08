@@ -94,6 +94,16 @@
 #define PRA32_U_I2S_SWAP_BCLK_AND_LRCLK_PINS  (false)
 #define PRA32_U_I2S_SWAP_LEFT_AND_RIGHT       (false)
 ```
+- The following is setting is for [Waveshare Pico-Audio](https://www.waveshare.com/wiki/Pico-Audio) Initial Version (WAVESHARE-20167)
+```
+//#define PRA32_U2_I2S_DAC_MUTE_OFF_PIN          (0)
+#define PRA32_U2_I2S_DATA_PIN                  (26)
+//#define PRA32_U2_I2S_MCLK_PIN                  (0)
+//#define PRA32_U2_I2S_MCLK_MULT                 (0)
+#define PRA32_U2_I2S_BCLK_PIN                  (27)  // LRCLK Pin is is PRA32_U2_I2S_BCLK_PIN + 1
+#define PRA32_U2_I2S_SWAP_BCLK_AND_LRCLK_PINS  (false)
+#define PRA32_U2_I2S_SWAP_LEFT_AND_RIGHT       (true)
+```
 - The following is setting is for [Waveshare Pico-Audio](https://www.waveshare.com/wiki/Pico-Audio) Rev2.1 Version (WAVESHARE-20167) (CURRENTLY NOT RECOMMENDED)
     - NOTE: No sound unless using Arduino-Pico 4.4.0
 ```
