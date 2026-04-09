@@ -4,6 +4,7 @@
     - Add a description of **PRA32-U Editor for Renoise** by plantssystem to the README
     - Waveshare Pico-Audio Rev2.1 Version is CURRENTLY NOT RECOMMENDED
         - NOTE: No sound unless using Arduino-Pico 4.4.0
+    - Improve customizability
     - Tested with Arduino-Pico version 5.5.1
     - KNOWN ISSUE: When using PWM Audio, signal discontinuity occurs approximately every 60-80 milliseconds
 - v3.3.2 (2026-03-14):

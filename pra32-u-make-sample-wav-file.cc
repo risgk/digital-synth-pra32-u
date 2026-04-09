@@ -1,4 +1,4 @@
-#define PRA32_U_EMULATION
+#define PRA32_U_ENABLE_POLY_ON_1_CORE
 
 #define PRA32_U_MIDI_CH (0)  // 0-based
 
