@@ -126,7 +126,11 @@ void handleStop();
 void writeProgramsToFlashAndEndSketch();
 
 void __not_in_flash_func(setup1)() {
+#if defined(PRA32_U_USE_CONTROL_PANEL)
   PRA32_U_ControlPanel_setup();
+#else  // defined(PRA32_U_USE_CONTROL_PANEL)
+  delay(100);
+#endif  // defined(PRA32_U_USE_CONTROL_PANEL)
 
 #if defined(PRA32_U_USE_DEBUG_PRINT)
   Serial1.setTX(0);
