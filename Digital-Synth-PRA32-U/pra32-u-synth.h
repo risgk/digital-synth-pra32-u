@@ -182,7 +182,7 @@ const uint8_t   DEFAULT_SEQ_ON_STEPS    = 127;
 
 
 
-template <boolean BYPASS_FX = false>
+template <boolean BYPASS_FX = false, boolean RESTRICT_POLY_PARA = false>
 class PRA32_U_Synth {
   PRA32_U_Osc       m_osc;
   PRA32_U_Filter    m_filter[4];
@@ -1265,20 +1265,26 @@ if constexpr (BYPASS_FX == false) {
       break;
     case 0x01:
 #if defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING) || defined(PRA32_U_ENABLE_POLY_ON_1_CORE)
+if constexpr (RESTRICT_POLY_PARA == false) {
       m_eg[2].process_at_low_rate();
       m_eg[3].process_at_low_rate();
+}
 #endif  // defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING) || defined(PRA32_U_ENABLE_POLY_ON_1_CORE)
       break;
     case 0x02:
 #if defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING) || defined(PRA32_U_ENABLE_POLY_ON_1_CORE)
+if constexpr (RESTRICT_POLY_PARA == false) {
       m_eg[4].process_at_low_rate();
       m_eg[5].process_at_low_rate();
+}
 #endif  // defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING) || defined(PRA32_U_ENABLE_POLY_ON_1_CORE)
       break;
     case 0x03:
 #if defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING) || defined(PRA32_U_ENABLE_POLY_ON_1_CORE)
+if constexpr (RESTRICT_POLY_PARA == false) {
       m_eg[6].process_at_low_rate();
       m_eg[7].process_at_low_rate();
+}
 #endif  // defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING) || defined(PRA32_U_ENABLE_POLY_ON_1_CORE)
       m_lfo.process_at_low_rate(m_count >> 2, noise_int15);
       break;
@@ -1301,16 +1307,20 @@ if constexpr (BYPASS_FX == false) {
       break;
     case 0x01:
 #if defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING) || defined(PRA32_U_ENABLE_POLY_ON_1_CORE)
+if constexpr (RESTRICT_POLY_PARA == false) {
       m_osc.process_at_low_rate_a<1>(lfo_output, m_eg[2].get_output());
       m_filter[1].process_at_low_rate(m_count >> 2, m_eg[2].get_output(), lfo_output, m_osc.get_osc_pitch(1));
       m_amp[1].process_at_low_rate(m_eg[3].get_output());
+}
 #endif  // defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING) || defined(PRA32_U_ENABLE_POLY_ON_1_CORE)
       break;
     case 0x02:
 #if defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING) || defined(PRA32_U_ENABLE_POLY_ON_1_CORE)
+if constexpr (RESTRICT_POLY_PARA == false) {
       m_osc.process_at_low_rate_a<2>(lfo_output, m_eg[4].get_output());
       m_filter[2].process_at_low_rate(m_count >> 2, m_eg[4].get_output(), lfo_output, m_osc.get_osc_pitch(2));
       m_amp[2].process_at_low_rate(m_eg[5].get_output());
+}
 #endif  // defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING) || defined(PRA32_U_ENABLE_POLY_ON_1_CORE)
 if constexpr (BYPASS_FX == false) {
       m_delay_fx.process_at_low_rate(m_count >> 2);
@@ -1318,9 +1328,11 @@ if constexpr (BYPASS_FX == false) {
       break;
     case 0x03:
 #if defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING) || defined(PRA32_U_ENABLE_POLY_ON_1_CORE)
+if constexpr (RESTRICT_POLY_PARA == false) {
       m_osc.process_at_low_rate_a<3>(lfo_output, m_eg[6].get_output());
       m_filter[3].process_at_low_rate(m_count >> 2, m_eg[6].get_output(), lfo_output, m_osc.get_osc_pitch(3));
       m_amp[3].process_at_low_rate(m_eg[7].get_output());
+}
 #endif  // defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING) || defined(PRA32_U_ENABLE_POLY_ON_1_CORE)
 if constexpr (BYPASS_FX == false) {
       m_chorus_fx.process_at_low_rate(m_count >> 2);
@@ -1568,6 +1580,11 @@ private:
       VOICE_LEGATO_PORTA,
       VOICE_LEGATO,
     };
+if constexpr (RESTRICT_POLY_PARA == false) {
+} else {
+    voice_mode_table[0] = VOICE_MONOPHONIC;
+    voice_mode_table[1] = VOICE_MONOPHONIC;
+}
 #else  // defined(PRA32_U_USE_2_CORES_FOR_SIGNAL_PROCESSING) || defined(PRA32_U_ENABLE_POLY_ON_1_CORE)
     static uint8_t voice_mode_table[6] = {
       VOICE_MONOPHONIC,
