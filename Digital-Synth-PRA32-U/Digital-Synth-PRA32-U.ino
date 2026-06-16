@@ -342,6 +342,10 @@ void __not_in_flash_func(loop)() {
 
 void __not_in_flash_func(handleNoteOn)(byte channel, byte pitch, byte velocity)
 {
+  if (velocity == 0) {
+    return handleNoteOff(channel, pitch, 0);  // It is required for some reason
+  }
+
   if ((channel - 1) == g_midi_ch) {
     g_synth.note_on(pitch, velocity);
   }
