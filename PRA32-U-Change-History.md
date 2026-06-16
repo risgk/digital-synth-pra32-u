@@ -1,6 +1,7 @@
 ## Digital Synth PRA32-U Change History
 
 - v3.3.3 (20??-??-??):
+    - Fix Note On with velocity 0 not treated as Note Off
     - Add a description of **PRA32-U Editor for Renoise** by plantssystem to the README
     - Waveshare Pico-Audio Rev2.1 Version is CURRENTLY NOT RECOMMENDED
         - NOTE: No sound unless using Arduino-Pico 4.4.0
